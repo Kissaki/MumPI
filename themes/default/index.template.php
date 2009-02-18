@@ -19,3 +19,4 @@
 <?php if($visitor['loggedIn']) echo 'Welcome '.$visitor['name']; 
 		else echo 'Welcome. You may want to register and account for a mumble server or log in to change your details.'?>
 </div>
+

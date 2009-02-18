@@ -5,6 +5,12 @@ body {
 	background-color:black; color:white;
 }
 
+img { border:0px; margin:0px; }
+ul { margin:0px; padding:0px; }
+li { margin:0px; padding:0px; }
+acronym, abbr { cursor: help; underline:dotted; }
+hr { clear: both; }
+
 #menu {
 	border:1px solid grey;
 	margin:0px; padding:0px;
@@ -15,7 +21,7 @@ body {
 }
 #menu li { display:inline; }
 #menu li a
-{
+{	display:block;
 	padding:0.2em 1em;
 	background:#fc6;
 	color:#000;
