@@ -9,7 +9,7 @@
 	<meta name="keywords" content="<?php echo $site['keywords']; ?>" />
 	<title><?php echo $site['title']; ?></title>
 	
-	<?php require_once($themedir.'/header.template.php'); ?>
+	<?php require_once($themedir.'/headerInclude.template.php'); ?>
 	
 	<!--<script language="JavaScript" type="text/javascript">
 	</script>-->
