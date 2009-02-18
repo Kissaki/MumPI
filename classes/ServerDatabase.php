@@ -36,11 +36,15 @@ class ServerDatabase_ICE implements IServerDatabase {
 	
 	private function connect(){
 		global $ICE;
-		// TODO: Can we catch this?:
-		// Fatal error: Uncaught Ice_UnknownLocalException Network.cpp:1218: Ice::ConnectionRefusedException: connection refused: WSAECONNREFUSED thrown in E:\xxx\Mumble PHP Interface\Mumble PHP Interface\classes\ServerDatabase.php on line <xy>
 		$conn = $ICE->stringToProxy("Meta:tcp -h 127.0.0.1 -p 6502");
+		try{
+			$meta = $conn->ice_checkedCast("::Murmur::Meta");
+		}catch(Ice_UnknownLocalException $ex) {
+		    echo '<div class="error"><b>Error</b>: Could not connect to ICE.<br/>Is your server running with ICE? Check your config
+		    	<div class="detail">'.$ex.'</div></div>';
+		    //TODO: make detail hidden by default but optionally view it
+  		}
 		
-		$meta = $conn->ice_checkedCast("::Murmur::Meta");
 	}
 	
 	public function getVersion(){
