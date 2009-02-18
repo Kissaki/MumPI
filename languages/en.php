@@ -1,5 +1,4 @@
 <?php
-	if(!defined(muInterface)) die();
 	
 	$txt['home'] = 'Home';
 	$txt['login'] = 'Login';
