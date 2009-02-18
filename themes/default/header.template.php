@@ -6,11 +6,11 @@
 <div id="topline">
 <div id="menu">
 	<ul>
-		<li><?php echo $txt['home']; ?></li><?php
+		<li><a href="./" title="<?php echo $txt['home']; ?>"><?php echo $txt['home']; ?></a></li><?php
 			if($visitor['loggedIn'])
-				echo '<li>'.$txt['login'].'</li><li>'.$txt['register'].'</li>';
+				echo '<li><a href="./">'.$txt['login'].'</a></li><li><a href="./">'.$txt['register'].'</a></li>';
 			else
-				echo '<li>'.$txt['profile'].'</li><li>'.$txt['logout'].'</li>';
+				echo '<li><a href="./">'.$txt['profile'].'</a></li><li><a href="./">'.$txt['logout'].'</a></li>';
 		?>
 	</ul>
 </div>
