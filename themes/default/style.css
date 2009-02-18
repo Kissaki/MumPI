@@ -16,6 +16,9 @@ a {}
 form table tr td.formitemname { text-align:right; padding:2px 6px 2px 2px; }
 
 .helpicon { background-image:URL('images/help.png'); width:16px; height:16px; background-repeat:no-repeat; }
+.error { color:red; }
+div.error { margin:20px; padding:20px; }
+div.error div.detail { margin-top:10px; color:white; }
 
 #topline {
 	border:1px solid grey; padding-right:6px; line-height:30px; text-align:right;
