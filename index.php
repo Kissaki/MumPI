@@ -1,6 +1,10 @@
 <?php
 	require_once('settings.inc.php');
 	require_once('languages/'.$lang.'.php');
+	
+	require_once('classes/ServerDatabase.php');
+	
+	require_once('include/dbFunctions.inc.php');
 ?>
 <?php	// TODO: implement login check and remove this php part
 	$visitor['loggedIn'] = false;
@@ -22,6 +26,9 @@
 <body>
 
 <?php
+	// Create database interface object.
+	$dbIObj = getDb();
+	
 	if(isset($_GET['section']))
 		switch($_GET['section']){
 			case 'register':
@@ -41,6 +48,10 @@
 		}
 	else
 		$pageSection = 'index';
+	
+	// Parse Template
 	require_once($themedir.'/'.$pageSection.'.template.php');
+	
+	
 ?>
 </body></html>

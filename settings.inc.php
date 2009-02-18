@@ -5,13 +5,11 @@
 	$lang = 'en';
 	
 	$site['url'] = 'http://localhost/Mumble%20PHP%20Interface';
-	
-	
-	
 	$site['title'] = 'New Mumble Interface';
 	$site['description'] = 'New Mumble Interface';
 	$site['keywords'] = 'mumble,murmur,web-interface,registration,account,management,voip';
 	
+	$dbInterface = 'ice';	// this may be: ice
 	
 	// Debug? - This should be turned off (commented out) for production sites. 
 	error_reporting(E_ALL);

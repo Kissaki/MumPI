@@ -36,24 +36,26 @@ class ServerDatabase_ICE implements IServerDatabase {
 	
 	private function connect(){
 		global $ICE;
-		$conn = $ICE->stringToProxy("Meta:tcp -h 127.0.0.1 -p 6502");
+		$this->conn = $ICE->stringToProxy("Meta:tcp -h 127.0.0.1 -p 6502");
 		try{
-			$meta = $conn->ice_checkedCast("::Murmur::Meta");
+			$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
 		}catch(Ice_UnknownLocalException $ex) {
 		    echo '<div class="error"><b>Error</b>: Could not connect to ICE.<br/>Is your server running with ICE? Check your config
 		    	<div class="detail">'.$ex.'</div></div>';
 		    //TODO: make detail hidden by default but optionally view it
+		    die();
   		}
 		
 	}
 	
 	public function getVersion(){
 		unset($major); unset($minor); unset($patch); unset($text);
-		$meta->getVersion($major, $minor, $patch, $text);
+		$this->meta->getVersion($major, $minor, $patch, $text);
 		return $major.'.'.$minor.'.'.$patch.' '.$text;
 	}
 	
 	function getServers(){
+		global $meta;
 		$servers = $meta->getAllServers;
 		return $servers;
 	}
