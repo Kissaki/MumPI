@@ -1,6 +1,6 @@
 
 <?php	// TODO: implement login check and remove this php part
-	$visitor['loggedIn'] = false;
+	$visitor['loggedIn'] = false; if(isset($_GET['loggedIn'])) $visitor['loggedIn']=$_GET['loggedIn'];
 	$visitor['name'] = 'foobar-user';
 ?>
 
