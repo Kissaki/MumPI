@@ -1,4 +1,7 @@
+<?php
 
+function printMenu(){
+	?>
 <div id="menu">
 	<ul>
 		<li><?php echo $txt['home']; ?></li>
@@ -10,3 +13,5 @@
 		?>
 	</ul>
 </div>
+	<?php
+}

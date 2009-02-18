@@ -1,2 +1,26 @@
 @CHARSET "UTF-8";
 
+body {
+	margin:0px; padding:0px;
+	background-color:black; color:white;
+}
+
+#menu ul {
+	white-space:nowrap;
+	list-style-type:none;
+}
+#menu li { display:inline; }
+#menu li a
+{
+	padding:0.2em 1em;
+	background:#fc6;
+	color:#000;
+	text-decoration:none;
+	float:left;
+	border:1px solid #000;
+}
+#menu li a:hover
+{
+	background:#08c;
+	color:#fff;
+}

@@ -1,5 +1,4 @@
 <?php
-	define('MuInterface', 1);
 	require_once('settings.inc.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -7,7 +6,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="description" content="DooC Forum - Index" />
 	<meta name="keywords" content="PHP, MySQL, bulletin, board, free, open, source, smf, simple, machines, forum" />
-	<link rel="stylesheet" type="text/css" href="style.css" />
 
 	<script language="JavaScript" type="text/javascript">
 	</script>
@@ -15,7 +13,6 @@
 <body>
 <?php
 	
-	require_once($muDir.'/templates/'.$theme.'/index.template.php');
-	echo 'UTF-8 Test: צהü<br/>';
+	require_once($themedir.'/index.template.php');
 ?>
 </body></html>
