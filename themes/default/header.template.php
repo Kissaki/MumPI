@@ -4,9 +4,9 @@
 	<ul>
 		<li><a href="./" title="<?php echo $txt['home']; ?>"><?php echo $txt['home']; ?></a></li><?php
 			if(!$visitor['loggedIn'])
-				echo '<li><a href="./?section=login">'.$txt['login'].'</a></li><li><a href="./section=register">'.$txt['register'].'</a></li>';
+				echo '<li><a href="./?section=login">'.$txt['login'].'</a></li><li><a href="./?section=register">'.$txt['register'].'</a></li>';
 			else
-				echo '<li><a href="./section=profile">'.$txt['profile'].'</a></li><li><a href="./section=logout">'.$txt['logout'].'</a></li>';
+				echo '<li><a href="./?section=profile">'.$txt['profile'].'</a></li><li><a href="./?section=logout">'.$txt['logout'].'</a></li>';
 		?>
 	</ul>
 </div>

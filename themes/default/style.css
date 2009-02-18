@@ -11,6 +11,9 @@ p { margin-bottom:6px; }
 acronym, abbr { cursor: help; underline:dotted; }
 hr { clear:both; }
 a {}
+//form table { display:block; }
+//form table tbody { display:block; }
+form table t
 
 #topline {
 	border:1px solid grey; padding-right:6px; line-height:30px; text-align:right;
