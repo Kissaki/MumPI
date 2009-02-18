@@ -7,8 +7,7 @@
 <div id="topline">
 <div id="menu">
 	<ul>
-		<li><?php echo $txt['home']; ?></li>
-		<?php
+		<li><?php echo $txt['home']; ?></li><?php
 			if($visitor['loggedIn'])
 				echo '<li>'.$txt['login'].'</li><li>'.$txt['register'].'</li>';
 			else
