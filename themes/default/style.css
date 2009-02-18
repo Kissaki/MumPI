@@ -6,7 +6,8 @@ body {
 }
 
 img { border:0px; }
-ul, li, div, span, img { margin:0px; padding:0px; }
+p, ul, li, div, span, img { margin:0px; padding:0px; }
+p { margin-bottom:6px; }
 acronym, abbr { cursor: help; underline:dotted; }
 hr { clear:both; }
 
@@ -36,3 +37,5 @@ hr { clear:both; }
 	background:#08c;
 	color:#fff;
 }
+
+#content { margin:20px 20% 0px 20%; text-align:center; }
