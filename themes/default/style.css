@@ -5,6 +5,10 @@ body {
 	background-color:black; color:white;
 }
 
+#menu {
+	border:1px solid grey;
+	margin:0px; padding:0px;
+}
 #menu ul {
 	white-space:nowrap;
 	list-style-type:none;
