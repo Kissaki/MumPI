@@ -1,8 +1,8 @@
 <?php
 
-interface iServerDatabase {
+interface IServerDatabase {
 	public function getVersion();
-	public function getServers();
+	/*public function getServers();
 	public function getServerById($sid);
 	public function getRunningServers($sid);
 	public function getUsers();
@@ -10,22 +10,43 @@ interface iServerDatabase {
 	public function getUserByName($name);
 	public function getUserByEmail($email);
 	public function createServer();
-	
-	public function addUser($serverid, $name, $password, $email);
+	*/
+	public function addUser($serverid, $name, $password, $email='');
 }
 
 class ServerDatabase_ICE implements IServerDatabase {
+	// mockable singleton
+	private static $dbObj;
+	public static function getDb($obj=NULL){
+		if(!isset($obj))
+			if(isset($dbObj)) return $dbObj;
+			else{
+				$dbObj = new ServerDatabase_ICE();
+				return $dbObj;
+			}
+	}
+	
 	private $conn;
 	private $meta;
 	
 	function __construct(){
 		Ice_loadProfile();
-		connect();
+		$this->connect();
 	}
 	
 	private function connect(){
+		global $ICE;
+		// TODO: Can we catch this?:
+		// Fatal error: Uncaught Ice_UnknownLocalException Network.cpp:1218: Ice::ConnectionRefusedException: connection refused: WSAECONNREFUSED thrown in E:\xxx\Mumble PHP Interface\Mumble PHP Interface\classes\ServerDatabase.php on line <xy>
 		$conn = $ICE->stringToProxy("Meta:tcp -h 127.0.0.1 -p 6502");
-		$meta = $base->ice_checkedCast("::Murmur::Meta");
+		
+		$meta = $conn->ice_checkedCast("::Murmur::Meta");
+	}
+	
+	public function getVersion(){
+		unset($major); unset($minor); unset($patch); unset($text);
+		$meta->getVersion($major, $minor, $patch, $text);
+		return $major.'.'.$minor.'.'.$patch.' '.$text;
 	}
 	
 	function getServers(){
