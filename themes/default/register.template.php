@@ -1,5 +1,3 @@
-<?php include 'header.template.php'; ?>
-
 <?php
 	if(isset($_GET['action']) && $_GET['action']='doregister'){
 		//TODO: register user to server

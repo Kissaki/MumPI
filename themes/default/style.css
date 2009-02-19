@@ -40,5 +40,9 @@ div.error div.detail { margin-top:10px; color:white; }
 #menu li a:hover {
 	background-color:#fc6; color:#fff;
 }
+#footer {
+	position:absolute; bottom:0px; width:100%;
+	text-align:center;
+}
 
 #content { margin:20px 20% 0px 20%; text-align:center; }

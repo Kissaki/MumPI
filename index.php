@@ -18,7 +18,7 @@
 	<meta name="keywords" content="<?php echo $site['keywords']; ?>" />
 	<title><?php echo $site['title']; ?></title>
 	
-	<?php require_once($themedir.'/headerInclude.template.php'); ?>
+	<?php require_once($themedir.'/HTMLHead.template.php'); ?>
 	
 	<!--<script language="JavaScript" type="text/javascript">
 	</script>-->
@@ -50,8 +50,9 @@
 		$pageSection = 'index';
 	
 	// Parse Template
+	require_once($themedir.'/header.template.php');
 	require_once($themedir.'/'.$pageSection.'.template.php');
-	
+	require_once($themedir.'/footer.template.php');
 	
 ?>
 </body></html>
