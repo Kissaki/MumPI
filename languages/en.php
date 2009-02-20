@@ -15,6 +15,7 @@
 	$txt['userid'] = 'user id';
 	
 	//Register
+	$txt['server'] = 'Server';
 	$txt['password_repeat'] = 'retype password';
 	$txt['doregister_success'] = 'You successfully registered.';
 	

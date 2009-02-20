@@ -1,6 +1,7 @@
 <?php
+	require_once('classes/SettingsManager.php');
 	require_once('settings.inc.php');
-	require_once('languages/'.$lang.'.php');
+	require_once('languages/'.$muPI_lang.'.php');
 	
 	require_once('classes/ServerDatabase.php');
 	
@@ -16,9 +17,9 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="description" content="<?php echo $site['description']; ?>" />
 	<meta name="keywords" content="<?php echo $site['keywords']; ?>" />
-	<title><?php echo $site['title']; ?></title>
+	<title><?php echo $muPI_site['title']; ?></title>
 	
-	<?php require_once($themedir.'/HTMLHead.template.php'); ?>
+	<?php require_once($muPI_themedir.'/HTMLHead.template.php'); ?>
 	
 	<!--<script language="JavaScript" type="text/javascript">
 	</script>-->
@@ -50,9 +51,9 @@
 		$pageSection = 'index';
 	
 	// Parse Template
-	require_once($themedir.'/header.template.php');
-	require_once($themedir.'/'.$pageSection.'.template.php');
-	require_once($themedir.'/footer.template.php');
+	require_once($muPI_themedir.'/header.template.php');
+	require_once($muPI_themedir.'/'.$pageSection.'.template.php');
+	require_once($muPI_themedir.'/footer.template.php');
 	
 ?>
 </body></html>

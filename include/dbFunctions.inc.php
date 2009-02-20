@@ -2,9 +2,9 @@
 require_once('../settings.inc.php');
 
 function getDb(){
-	global $dbInterface;
+	global $muPI_dbInterface;
 	
-	if($dbInterface == 'ice'){
+	if($muPI_dbInterface == 'ice'){
 		if(!extension_loaded('ice')) die('<div class="error"><b>Error</b>: Could not find loaded ice extension.<br/><br/>Please check <a href="http://mumble.sourceforge.net/ICE">the ICE page in the mumble wiki</a> if you don\'t know what to do.</div>');
 		return new ServerDatabase_ICE();
 	}else{

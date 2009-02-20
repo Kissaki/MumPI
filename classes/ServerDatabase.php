@@ -55,9 +55,12 @@ class ServerDatabase_ICE implements IServerDatabase {
 	}
 	
 	function getServers(){
-		global $meta;
-		$servers = $meta->getAllServers;
+		
+		$servers = $this->meta->getAllServers();
 		return $servers;
+	}
+	function getServer($srvid){
+		return $this->meta->getServer(intval($srvid));
 	}
 	
 	function addUser($serverid, $name, $password, $email=''){

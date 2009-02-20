@@ -1,1 +1,1 @@
-<link rel="stylesheet" type="text/css" href="<?php echo $themeurl; ?>/style.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo $muPI_themeurl; ?>/style.css" />
