@@ -1,7 +1,8 @@
 <?php
-	require_once('classes/SettingsManager.php');
 	require_once('settings.inc.php');
-	require_once('languages/'.$muPI_lang.'.php');
+	require_once('classes/SettingsManager.php');
+	
+	require_once('languages/'.'en'.'.php');
 	
 	require_once('classes/ServerDatabase.php');
 	
@@ -19,14 +20,12 @@
 	<meta name="keywords" content="<?php echo $site['keywords']; ?>" />
 	<title><?php echo $muPI_site['title']; ?></title>
 	
-	<?php require_once($muPI_themedir.'/HTMLHead.template.php'); ?>
-	
-	<!--<script language="JavaScript" type="text/javascript">
-	</script>-->
+	<?php require_once(SettingsManager::getInstance()->getThemeDir().'/HTMLHead.template.php'); ?>
 </head>
 <body>
 
 <?php
+	// TODO: make this OO with ServerDatabase class
 	// Create database interface object.
 	$dbIObj = getDb();
 	
@@ -51,9 +50,9 @@
 		$pageSection = 'index';
 	
 	// Parse Template
-	require_once($muPI_themedir.'/header.template.php');
-	require_once($muPI_themedir.'/'.$pageSection.'.template.php');
-	require_once($muPI_themedir.'/footer.template.php');
+	require_once(SettingsManager::getInstance()->getThemeDir().'/header.template.php');
+	require_once(SettingsManager::getInstance()->getThemeDir().'/'.$pageSection.'.template.php');
+	require_once(SettingsManager::getInstance()->getThemeDir().'/footer.template.php');
 	
 ?>
 </body></html>
