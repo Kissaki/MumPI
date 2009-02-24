@@ -1,44 +1,41 @@
 <?php
-	if(isset($_GET['action']) && $_GET['action']='doregister'){
-		//TODO: register user to server
+	if( isset($_GET['action']) && $_GET['action']='doregister' ){
 		//TODO: Add optional mail activation
-		//TODO: security: check posted vars
-		if(!isset($_POST['serverid']) || $_POST['serverid']=='' ){
+		if(!isset($_POST['serverid']) || empty($_POST['serverid']) ){
 			echo 'no server specified!<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
 		}elseif( !isset($_POST['name']) || empty($_POST['name']) ){
-			echo 'no server specified!<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
-		}elseif( !isset($_POST['password']) || empty($_POST['password'])
+			echo 'no name specified!<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
+		}elseif( !isset($_POST['password']) || empty($_POST['password'] )
 			|| !isset($_POST['password2']) || empty($_POST['password2']) ){
 				echo 'no password specified!<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
-		}elseif( $_POST['password'] != $_POST['password2']){
+		}elseif( $_POST['password'] != $_POST['password2'] ){
 			echo 'Your passwords did not match!<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
+		}elseif( SettingsManager::getInstance()->isForceEmail($_POST['serverid']) && empty($_POST['email']) ){
+			echo 'You did not enter an email address, however, this is required.<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
 		}else{
-			echo 'registering on server with id '.$_POST['serverid'].'...<br/>';
+			echo $txt['doregister_try'].'<br/>';
 			try{
-				$tmpServer = $dbIObj->getServer($_POST['serverid']);
+				$tmpServer = $dbIObj->getServer(intval($_POST['serverid']));
+				if(empty($tmpServer)){
+					echo 'Server could not be found.<br/>';
+					die();
+				}
 				$tmpUid = $tmpServer->registerPlayer($_POST['name']);
 				$tmpReg = $tmpServer->getRegistration($tmpUid);
-				echo $txt['doregister_success'];
-			}catch(InvalidServerException $exc){
-				echo 'invalid server<br/>';
+				$tmpReg->pw = $_POST['password'];
+				if(!empty($_POST['email']))
+					$tmpReg->email = $_POST['email'];
+				$tmpReg = $tmpServer->updateregistration($tmpReg);
+				echo $txt['doregister_success'].'<br/>';
+			}catch(InvalidServerException $exc){	// This is depreciated (murmur.ice)
+				echo 'Invalid server. Please check your server selection.<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a><br/>If the problem persists, please contact a server admin or webmaster.<br/>';
 			}catch(ServerBootedException $exc){
-				echo 'Server is currently not running, but it has to to register.<br/>Please contact a server admin';
-			}catch(Ice_UnknownUserException $exc){
-				switch($exc->unknown){
-					case 'Murmur::InvalidServerException':
-						echo 'Invalid server. Please check your server selection.<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a><br/>If the problem persists, please contact a server admin or webmaster.<br/>';
-						break;
-						
-					case 'Murmur::ServerBootedException':
-						echo 'Server is currently not running, but it has to to register.<br/>Please contact a server admin';
-						break;
-						
-					case 'Murmur::InvalidPlayerException':
-						echo 'The username you specified is probably already in use. Please try another one.<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
-						break;
-				}
+				echo 'Server is currently not running, but it has to to be able to register.<br/>Please contact a server admin';
+			}catch(InvalidPlayerException $exc){
+				echo 'The username you specified is probably already in use or invalid. Please try another one.<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
+			}catch(Ice_UnknownUserException $exc){	// This should not be caught
 				echo $exc->unknown.'<br/>';
-				echo '<pre>'; var_dump($exc); echo '</pre>';
+//				echo '<pre>'; var_dump($exc); echo '</pre>';
 			}
 		}
 	}else{	// no form data received -> display registration form
@@ -47,8 +44,6 @@
 <div id="content">
 	<form action="./?section=register&amp;action=doregister" method="post">
 		<table>
-			<?php // Only allow Server selection, if more than one exist
-				if($muPI_sett_server['numberOfServers'] == 1){ ?>
 			<tr>
 				<td class="formitemname"><?php echo $txt['server']; ?>:</td>
 				<td>
@@ -66,7 +61,6 @@
 				</td><td class="helpicon">
 				</td>
 			</tr>
-			<?php } ?>
 			<tr>
 				<td class="formitemname"><?php echo $txt['username']; ?>:</td><td><input type="text" name="name" value="" /></td><td class="helpicon"></td>
 			</tr><tr>

@@ -1,36 +1,55 @@
 <?php
+/**
+ * The SettingsManager class is an interface to the settings.
+ * @author Jan Klass
+ */
 class SettingsManager {
 	private static $instance;
 	
 	public static function getInstance($obj=NULL){
-		if(!empty($instance))
-			echo 'not empty';
 		
-		if(!isset($instance))
+		if(!isset(self::$instance))
 			if(!isset($obj))
-				$instance = new SettingsManager();
+				self::$instance = new SettingsManager();
 			else
-				$instance = $obj;
-			return $instance;
+				self::$instance = $obj;
+			return self::$instance;
 	}
 	
 	private $mainDir;
+	private $mainUrl;
 	private $theme;
 	private $language;
 	private $site;
+	private $dbInterfaceType;
+	private $numberOfServers;
+	private $servers;
 	
 	function __construct(){
-		global $muPI_muDir, $muPI_theme, $muPI_lang, $muPI_site;
+		global $muPI_muDir, $muPI_url, $muPI_theme, $muPI_lang, $muPI_dbInterface, $muPI_site, $muPI_sett_server;
 		
 		$this->mainDir = $muPI_muDir;
+		$this->mainUrl = $muPI_url;
+		$this->dbInterfaceType = $muPI_dbInterface;
 		$this->theme = $muPI_theme;
 		$this->language = $muPI_lang;
 		
 		$this->site = array();
-		$this->site['url'] = $muPI_site['url'];
 		$this->site['title'] = $muPI_site['title'];
 		$this->site['description'] = $muPI_site['description'];
 		$this->site['keywords'] = $muPI_site['keywords'];
+		
+		$this->servers = array();
+		
+		$this->numberOfServers = $muPI_sett_server['numberOfServers'];
+		for($i=0; $i < $this->numberOfServers; $i++){
+			$this->servers[$i]['id'] = $muPI_sett_server[1]['serverid'];
+			$this->servers[$i]['name'] = $muPI_sett_server[1]['name'];
+			$this->servers[$i]['forcemail'] = $muPI_sett_server[1]['forcemail'];
+			$this->servers[$i]['authbymail'] = $muPI_sett_server[1]['authbymail'];
+			if($this->servers[$i]['authbymail'])
+				$this->servers[$i]['forcemail'] = true;
+		}
 		
 	}
 	
@@ -48,6 +67,27 @@ class SettingsManager {
 	}
 	function getLanguage(){
 		return $this->language;
+	}
+	function getDbInterfaceType(){
+		
+	}
+	function getNumberOfServers(){
+		return $this->numberOfServers;
+	}
+	
+	function isForceEmail($serverid){
+		for($i=0; $i<$this->numberOfServers; $i++){
+			if( $this->servers[$i]['id'] == $serverid )
+				return $this->servers[$i]['forcemail'];
+		}
+		return null;	// no such server (TODO: implement exception?)
+	}
+	function isAuthByMail($serverid){
+		for($i=0; $i<$this->numberOfServers; $i++){
+			if($this->servers[$i]['id'] == $serverid)
+				return $this->servers[$i]['authbymail'];
+		}
+		return null;	// no such server (TODO: implement exception?)
 	}
 }
 ?>

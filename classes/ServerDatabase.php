@@ -40,9 +40,8 @@ class ServerDatabase_ICE implements IServerDatabase {
 		try{
 			$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
 		}catch(Ice_UnknownLocalException $ex) {
-		    echo '<div class="error"><b>Error</b>: Could not connect to ICE.<br/>Is your server running with ICE? Check your config
-		    	<div class="detail">'.$ex.'</div></div>';
-		    //TODO: make detail hidden by default but optionally view it
+		    echo '<div class="error"><b>Error</b>: Could not connect to ICE.<br/>Is your server running with ICE? Check your config';
+		    //echo '<div class="detail">'.$ex.'</div></div>';
 		    die();
   		}
 		
