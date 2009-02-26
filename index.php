@@ -43,6 +43,10 @@
 				$pageSection = 'logout';
 				break;
 			
+			case 'profile':
+				$pageSection = 'profile';
+				break;
+			
 			default:
 				$pageSection = 'index';
 		}

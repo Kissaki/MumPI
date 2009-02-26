@@ -1,3 +1,3 @@
 <div id="content">
-	<p>You're viewing <?php echo $site['title']; ?></p>
+	<p>Welcome.</p>
 </div>

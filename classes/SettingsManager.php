@@ -7,7 +7,6 @@ class SettingsManager {
 	private static $instance;
 	
 	public static function getInstance($obj=NULL){
-		
 		if(!isset(self::$instance))
 			if(!isset($obj))
 				self::$instance = new SettingsManager();
@@ -69,10 +68,17 @@ class SettingsManager {
 		return $this->language;
 	}
 	function getDbInterfaceType(){
-		
+		return $this->dbInterfaceType;
 	}
 	function getNumberOfServers(){
 		return $this->numberOfServers;
+	}
+	function getServerName($serverid){
+		for($i=0; $i<$this->numberOfServers; $i++){
+			if( $this->servers[$i]['id'] == $serverid )
+				return $this->servers[$i]['name'];
+		}
+		return null;	// no such server
 	}
 	
 	function isForceEmail($serverid){
