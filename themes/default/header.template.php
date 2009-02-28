@@ -2,14 +2,19 @@
 <div id="topline">
 <div id="menu">
 	<ul>
-		<li><a href="./" title="<?php echo $txt['home']; ?>"><?php echo $txt['home']; ?></a></li><?php
-			if(!$visitor['loggedIn'])
-				echo '<li><a href="./?section=login">'.$txt['login'].'</a></li><li><a href="./?section=register">'.$txt['register'].'</a></li>';
+		<li><a href="./"><?php echo TranslationManager::getInstance()->getText('home'); ?></a></li><?php
+			if(!isset($_SESSION['userid']))
+				echo '<li><a href="./?section=login">'.TranslationManager::getInstance()->getText('login').'</a></li>'.
+					'<li><a href="./?section=register">'.TranslationManager::getInstance()->getText('register').'</a></li>';
 			else
-				echo '<li><a href="./?section=profile">'.$txt['profile'].'</a></li><li><a href="./?section=logout">'.$txt['logout'].'</a></li>';
+				echo '<li><a href="./?section=profile">'.TranslationManager::getInstance()->getText('profile').'</a></li>'.
+					'<li><a href="./?section=logout">'.TranslationManager::getInstance()->getText('logout').'</a></li>';
 		?>
 	</ul>
 </div>
-<?php if($visitor['loggedIn']) echo 'Welcome '.$visitor['name']; 
-		else echo 'Welcome. You may want to register and account for a mumble server or log in to change your details.'?>
+<?php
+	if(isset($_SESSION['userid']))
+		echo 'Welcome '.ServerDatabase::getInstance()->getUserName($_SESSION['serverid'],$_SESSION['userid']); 
+	else
+		echo 'Welcome. You may want to register and account for a mumble server or log in to change your details.'?>
 </div>

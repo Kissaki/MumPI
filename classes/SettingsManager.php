@@ -12,7 +12,7 @@ class SettingsManager {
 				self::$instance = new SettingsManager();
 			else
 				self::$instance = $obj;
-			return self::$instance;
+		return self::$instance;
 	}
 	
 	private $mainDir;
@@ -31,7 +31,11 @@ class SettingsManager {
 		$this->mainUrl = $muPI_url;
 		$this->dbInterfaceType = $muPI_dbInterface;
 		$this->theme = $muPI_theme;
-		$this->language = $muPI_lang;
+		if(isset($_SESSION['language']) && file_exists($this->mainDir.'/languages/'.$_SESSION['language'].'.php') ){
+			$this->language = $_SESSION['language'];
+		}else{
+			$this->language = $muPI_lang;
+		}
 		
 		$this->site = array();
 		$this->site['title'] = $muPI_site['title'];
@@ -52,23 +56,46 @@ class SettingsManager {
 		
 	}
 	
+	function getMainDir(){
+		return $this->mainDir;
+	}
+	/**
+	 * @return theme name
+	 */
 	function getTheme(){
 		return $this->theme;
 	}
+	/**
+	 * 
+	 * @return path to theme without trailing slash (theme/ + themename)
+	 */
 	function getThemePath(){
-		return '/themes/'.$this->theme;
+		return 'themes/'.$this->theme;
 	}
+	/**
+	 * 
+	 * @return theme directoy on server filesystem
+	 */
 	function getThemeDir(){
-		return $this->mainDir.$this->getThemePath();
+		return $this->mainDir.'/'.$this->getThemePath();
 	}
 	function getThemeUrl(){
-		return $this->siteUrl.getThemePath();
+		return $this->mainUrl.'/'.$this->getThemePath();
 	}
 	function getLanguage(){
 		return $this->language;
 	}
 	function getDbInterfaceType(){
 		return $this->dbInterfaceType;
+	}
+	function getSiteTitle(){
+		return $this->site['title'];
+	}
+	function getSiteDescription(){
+		return $this->site['description'];
+	}
+	function getSiteKeywords(){
+		$this->site['keywords'];
 	}
 	function getNumberOfServers(){
 		return $this->numberOfServers;

@@ -8,17 +8,21 @@ body {
 img { border:0px; }
 p, ul, li, div, span, img { margin:0px; padding:0px; }
 p { margin-bottom:6px; }
-acronym, abbr { cursor: help; underline:dotted; }
+acronym, abbr, .info { cursor:help; border-bottom:1px dotted #aac; }
 hr { clear:both; }
-a {}
-//form table { display:block; }
-//form table tbody { display:block; }
+a { text-decoration:underline; }
+a:active, a:hover, a:focus {  }
+a:link { color:white; }
+a:visited { color:white; }
+a[href^="http://"]:after { font-size:x-small; vertical-align:top; content:" (out)"; }
+a[href$=".pdf"]:after { content:"(PDF)"; }
 form table tr td.formitemname { text-align:right; padding:2px 6px 2px 2px; }
 
 .helpicon { background-image:URL('images/help.png'); width:16px; height:16px; background-repeat:no-repeat; }
 .error { color:red; }
 div.error { margin:20px; padding:20px; }
 div.error div.detail { margin-top:10px; color:white; }
+.hidden { display:none; }
 
 #topline {
 	border:1px solid grey; padding-right:6px; line-height:30px; text-align:right;

@@ -6,15 +6,29 @@
 class TranslationManager {
 	private static $instance;
 	public static function getInstance($obj=null){
-		if(!isset($instance))
-			if(isset($obj))
-				$this->instance = $obj;
+		if(!isset(self::$instance))
+			if(!isset($obj))
+				self::$instance = new TranslationManager();
 			else
-				$this->instance = new TranslationManager();
-		return $instance;
+				self::$instance = $obj;
+		return self::$instance;
 	}
+	
+	private $text;
+	
 	private function __construct(){
-//		SettingsManager::getInstance()->getLanguage();
+		global $txt;
+		include(SettingsManager::getInstance()->getMainDir().'/languages/'.SettingsManager::getInstance()->getLanguage().'.php');
+		$this->text = $txt;
+	}
+	function __autoload($class_name) {
+		require_once $class_name.'.php';
+	}
+	
+	function getText($textname){
+		if(!isset($this->text[$textname]))
+			return 'unknown string';
+		return $this->text[$textname];
 	}
 }
 ?>

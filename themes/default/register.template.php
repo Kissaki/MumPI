@@ -15,7 +15,7 @@
 		}else{
 			echo $txt['doregister_try'].'<br/>';
 			try{
-				$tmpServer = $dbIObj->getServer(intval($_POST['serverid']));
+				$tmpServer = ServerDatabase::getInstance()->getServer(intval($_POST['serverid']));
 				if(empty($tmpServer)){
 					echo 'Server could not be found.<br/>';
 					die();
@@ -47,7 +47,7 @@
 			<tr>
 				<td class="formitemname"><?php echo $txt['server']; ?>:</td>
 				<td>
-					<?php $servers = $dbIObj->getServers(); ?>
+					<?php $servers = ServerDatabase::getInstance()->getServers(); ?>
 					<select name="serverid" style="width:100%">
 						<?php 
 							foreach($servers AS $key=>$server){

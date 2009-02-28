@@ -1,38 +1,17 @@
 <?php
 
-interface IServerDatabase {
-	public function getVersion();
-	public function getServers();
-	public function getServer($sid);
-//	public function getRunningServers($sid);
-//	public function getUsers();
-//	public function getUserById($uid);
-//	public function getUserByName($name);
-//	public function getUserByEmail($email);
-//	public function createServer();
-	public function addUser($serverid, $name, $password, $email='');
-}
-
 class ServerDatabase{
 	private static $instance;
 	public static function getInstance($obj=NULL){
 		if(!isset(self::$instance)){
-			if(!isset($obj)){
-				if(SettingsManager::getInstance()->getDbInterfaceType() == 'ice'){
-					if(!extension_loaded('ice')) die('<div class="error"><b>Error</b>: Could not find loaded ice extension.<br/><br/>Please check <a href="http://mumble.sourceforge.net/ICE">the ICE page in the mumble wiki</a> if you don\'t know what to do.</div>');
-					self::$instance = new ServerDatabase_ICE();
-				}else{
-					die('Misconfiguration: Unknown <acronym title="database">DB</acronym> Interface Type!');
-				}
-//				$dbType = SettingsManager::getInstance()->getDbInterfaceType();
-//				switch($dbType){
-//					case 'ICE': 
-//						self::$instance = new ServerDatabase_ICE();
-//						break;
-//				}
-//				die('Unknown DB Type. Check your configuration!');
-			}else{
+			if(isset($obj)){
 				self::$instance = $obj;
+			}else{
+				$dbType = SettingsManager::getInstance()->getDbInterfaceType();
+				if( class_exists('ServerDatabase_'.$dbType) )
+					eval('self::$instance = new ServerDatabase_'.$dbType.'();');
+				else
+					echo TranslationManager::getInstance()->getText('error_db_unknowninterface');
 			}
 		}
 		return self::$instance;
@@ -40,7 +19,7 @@ class ServerDatabase{
 	
 }
 
-class ServerDatabase_ICE implements IServerDatabase {
+class ServerDatabase_ICE {
 	// mockable singleton
 	private static $dbObj;
 	public static function getDb($obj=NULL){
@@ -56,7 +35,11 @@ class ServerDatabase_ICE implements IServerDatabase {
 	private $meta;
 	
 	function __construct(){
-		Ice_loadProfile();
+		try{
+			Ice_loadProfile();
+		}catch(Ice_ProfileAlreadyLoadedException $exc){
+			echo 'ICE Profile Already Loaded!';
+		}
 		$this->connect();
 	}
 	
@@ -87,6 +70,15 @@ class ServerDatabase_ICE implements IServerDatabase {
 	function getServer($srvid){
 		return $this->meta->getServer(intval($srvid));
 	}
+	function getUserName($srvid, $uid){
+		return $this->getServer($srvid)->getRegistration($uid)->name;
+	}
+	function getUserEmail($srvid, $uid){
+		return $this->getServer($srvid)->getRegistration($uid)->email;
+	}
+	function getUserPw($srvid, $uid){
+		return $this->getServer($srvid)->getRegistration($uid)->pw;
+	}
 	
 	function addUser($serverid, $name, $password, $email=''){
 		try {
@@ -113,8 +105,27 @@ class ServerDatabase_ICE implements IServerDatabase {
 		  }
 	}
 	
+	function updateUserName($srvid, $uid, $newName){
+		$srv = $this->getServer($srvid);
+		$reg = $srv->getRegistration($uid);
+		$reg->name = $newName;
+		$srv->updateregistration($reg);
+	}
+	function updateUserEmail($srvid, $uid, $newEmail){
+		$srv = $this->getServer($srvid);
+		$reg = $srv->getRegistration($uid);
+		$reg->email = $newEmail;
+		$srv->updateregistration($reg);
+	}
+	function updateUserPw($srvid, $uid, $newPw){
+		$srv = $this->getServer($srvid);
+		$reg = $srv->getRegistration($uid);
+		$reg->pw = $newPw;
+		$srv->updateregistration($reg);
+	}
+	
 	function verifyPassword($serverid,$uname,$pw){
-		return $this->meta->getServer(intval($serverid))->verifyPassword($uname,$pw);
+		return $this->getServer(intval($serverid))->verifyPassword($uname,$pw);
 	}
 }
 

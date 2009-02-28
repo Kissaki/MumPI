@@ -1,5 +1,5 @@
 <div id="footer">
 	<?php
-		echo 'Server Version: '.$dbIObj->getVersion();
+		echo 'Server Version: '.ServerDatabase::getInstance()->getVersion();
 	?>
 </div>
