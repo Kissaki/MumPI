@@ -1,7 +1,9 @@
 <?php
 require_once('../settings.inc.php');
 
+//TODO: remove
 function getDb(){
+	return ServerDatabase::getInstance();
 	global $muPI_dbInterface;
 	
 	if($muPI_dbInterface == 'ice'){
