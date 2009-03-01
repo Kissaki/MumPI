@@ -38,19 +38,54 @@ if(isset($_GET['action']) && $_GET['action']=='doedit'){
 			$fileExtension = pathinfo($_FILES['texture']['name']);
 			$fileExtension = isset($fileExtension['extension']) ? $fileExtension['extension'] : '';
 			
+function stringToByteArray($str){
+	return unpack('C*', $str);
+}
+function imgToString($imgRes){
+	$tex = '';
+	$aMin=266; $aMax=-1;
+	for($y=0; $y<imagesy($imgRes); $y++){
+		for($x=0; $x<imagesx($imgRes); $x++){
+			$colorIndex = imagecolorat($imgRes, $x, $y);
+			$colors = imagecolorsforindex($imgRes, $colorIndex);
+			$alpha = abs(254-$colors['alpha']*2);
+			$tex = $tex.pack('c4', $colors['blue'], $colors['green'], $colors['red'], $alpha);
+			if($alpha<$aMin){
+				$aMin = $alpha;
+			}
+			if($alpha>$aMax){
+				$aMax = $alpha;
+			}
+		}
+//		usleep(10000);	// don't use up all cpu
+	}
+	echo 'alpha: min '.($aMin).' und max '.($aMax).'<br/>';
+	return $tex;
+}
+			
 			switch($fileExtension){
 				case 'png':
+					ini_set('memory_limit', '60M');
+					
 					if(!$texImg = imagecreatefrompng($_FILES['texture']['tmp_name']))
 						die('<div class="error">Error: Could not create image resource.</div>');
-					$tex = '';
-					for($y=0; $y<imagesy($texImg); $y++){
-						for($x=0; $x<imagesx($texImg); $x++){
-							$colorIndex = imagecolorat($texImg, $x, $y);
-							$colors = imagecolorsforindex($texImg, $colorIndex);
-							$tex = $tex.$colors['red'].$colors['green'].$colors['blue'].$colors['alpha'];
-						}
-						usleep(100000);	// don't use up all cpu
+					if( imagesx($texImg)!=600 || imagesy($texImg)!=60 ){
+						die('<div class="error">Error: Image size is not 600x60.</div>');
 					}
+					imagealphablending($texImg, true);		// enablealpha blending
+					imagesavealpha($texImg, true);			// save alphablending
+					
+					$tex = imgToString($texImg);
+					imagedestroy($texImg);
+					
+					if( strlen($tex)!=144000 ){
+						die('<div class="error">Error: The conversation from image to data string failed.</div>');
+					}
+					
+					$texArray = stringToByteArray($tex);
+					
+					if(ServerDatabase::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray ))
+						echo 'Texture has been uploaded and set<br/>';
 					
 					break;
 				case 'jpg':
@@ -66,7 +101,7 @@ if(isset($_GET['action']) && $_GET['action']=='doedit'){
 					if(!$fd = fopen($_FILES['texture']['tmp_name'], 'r'))
 						die('<div class="error">opening temp file failed</div>'.$_FILES['texture']['tmp_name']);
 					
-					ini_set('memory_limit', '40M');
+//					ini_set('memory_limit', '40M');
 					$tex = fread($fd, $_FILES['texture']['size']);
 					fclose($fd);
 					
@@ -80,10 +115,13 @@ if(isset($_GET['action']) && $_GET['action']=='doedit'){
 					
 //					$tex = gzcompress($tex);
 					
-					$texArray = unpack('C*', $tex);
+					$texArray = stringToByteArray($tex);
 					
-					ServerDatabase::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray );
-					echo 'Texture has been uploaded and set<br/>';
+					if(ServerDatabase::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray ))
+						echo 'Texture has been uploaded and set<br/>';
+					break;
+				default:
+					echo 'unknown file extension';
 					break;
 			}
 			

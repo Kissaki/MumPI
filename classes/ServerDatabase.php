@@ -133,17 +133,14 @@ class ServerDatabase_ICE {
 		try{
 			if(is_string($newTexture)){
 				// TODO: implement conversation string -> byte array
-				$newTexArray = array();
-				for($i=0; $i<strlen($newTexture); $i++){
-	//				$newTexArray[$i] = $newTexture[$i];
-					
-				}
-				$this->getServer($srvid)->setTexture($uid, $newTexArray);
+				
 			}else{
 				$this->getServer($srvid)->setTexture($uid, $newTexture);
 			}
+		return true;
 		}catch(Murmur_InvalidTextureException $exc){
 			echo '<div class="error">failed: invalid texture</div>';
+			return false;
 		}
 	}
 	
