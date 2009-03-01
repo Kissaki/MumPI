@@ -43,21 +43,13 @@ function stringToByteArray($str){
 }
 function imgToString($imgRes){
 	$tex = '';
-	$aMin=266; $aMax=-1;
 	for($y=0; $y<imagesy($imgRes); $y++){
 		for($x=0; $x<imagesx($imgRes); $x++){
 			$colorIndex = imagecolorat($imgRes, $x, $y);
 			$colors = imagecolorsforindex($imgRes, $colorIndex);
-			$alpha = abs(254-$colors['alpha']*2);
-			$tex = $tex.pack('c4', $colors['blue'], $colors['green'], $colors['red'], $alpha);
-			if($alpha<$aMin){
-				$aMin = $alpha;
-			}
-			if($alpha>$aMax){
-				$aMax = $alpha;
-			}
+			// alpha has to be converted to be 0 and 254 (255 would be better) instead of 0 to 127 and inverted
+			$tex = $tex.pack('c4', $colors['blue'], $colors['green'], $colors['red'], abs(254-$colors['alpha']*2));
 		}
-//		usleep(10000);	// don't use up all cpu
 	}
 	echo 'alpha: min '.($aMin).' und max '.($aMax).'<br/>';
 	return $tex;
