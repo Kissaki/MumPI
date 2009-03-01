@@ -1,5 +1,10 @@
 <?php
 	
+	// General Functions
+	$txt['edit'] = 'edit';
+	$txt['cancel'] = 'cancel';
+	$txt['update'] = 'update';
+	
 	// Main Menu
 	$txt['home'] = 'Home';
 	$txt['login'] = 'Login';
@@ -23,9 +28,12 @@
 	$txt['help_login_server'] = 'Select the server you want to log in to (the one you have an account on).';
 	$txt['help_login_username'] = 'Enter your Username (sometimes also "Loginname" or "Playername").';
 	$txt['help_login_password'] = 'Enter your password.';
+	
 	//Profile
 	$txt['newpassword'] = 'new password';
 	$txt['newemail'] = 'new email';
+	$txt['texture'] = 'user image';
+	$txt['help_profile_textur'] = 'This user texture will be displayed in mumbles overlay instead of a nickname, if activated in the options.';
 	
 	//$txt['email'] = 'email';
 	

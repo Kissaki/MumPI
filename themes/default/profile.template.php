@@ -20,11 +20,84 @@ if(isset($_GET['action']) && $_GET['action']=='doedit'){
 	if(isset($_POST['email'])){
 		ServerDatabase::getInstance()->updateUserEmail($_SESSION['serverid'], $_SESSION['userid'], $_POST['email']);
 	}
+	// remove texture
+	if(isset($_GET['remove_texture'])){
+		//TODO: send empty texture
+		try{
+			ServerDatabase::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], array());
+		}catch(Murmur_InvalidTextureException $exc){
+			echo 'failed';
+		}
+	}
+	// new texture
+	if(isset($_FILES['texture'])){
+		if(!file_exists($_FILES['texture']['tmp_name'])){
+			echo '<div class="error">Temp file does not exist.</div>';
+		}else{
+			
+			$fileExtension = pathinfo($_FILES['texture']['name']);
+			$fileExtension = isset($fileExtension['extension']) ? $fileExtension['extension'] : '';
+			
+			switch($fileExtension){
+				case 'png':
+					if(!$texImg = imagecreatefrompng($_FILES['texture']['tmp_name']))
+						die('<div class="error">Error: Could not create image resource.</div>');
+					$tex = '';
+					for($y=0; $y<imagesy($texImg); $y++){
+						for($x=0; $x<imagesx($texImg); $x++){
+							$colorIndex = imagecolorat($texImg, $x, $y);
+							$colors = imagecolorsforindex($texImg, $colorIndex);
+							$tex = $tex.$colors['red'].$colors['green'].$colors['blue'].$colors['alpha'];
+						}
+						usleep(100000);	// don't use up all cpu
+					}
+					
+					break;
+				case 'jpg':
+				case 'jpeg':
+					if(!$texImg = imagecreatefromjpeg($_FILES['texture']['tmp_name']))
+						die('<div class="error">Error: Could not create image resource.</div>');
+					
+					break;
+				case 'gif':
+					
+					break;
+				case '':
+					if(!$fd = fopen($_FILES['texture']['tmp_name'], 'r'))
+						die('<div class="error">opening temp file failed</div>'.$_FILES['texture']['tmp_name']);
+					
+					ini_set('memory_limit', '40M');
+					$tex = fread($fd, $_FILES['texture']['size']);
+					fclose($fd);
+					
+					// RGBA to BGRA
+					// for each pixel, swap R with B (36000 = 600*60)
+					for($i=0; $i<36000; $i++) {
+						$red = $tex[$i*4];
+						$tex[$i*4] = $tex[$i*4+2];
+						$tex[$i*4+2] = $red;
+					}
+					
+//					$tex = gzcompress($tex);
+					
+					$texArray = unpack('C*', $tex);
+					
+					ServerDatabase::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray );
+					echo 'Texture has been uploaded and set<br/>';
+					break;
+			}
+			
+			
+			
+			
+		}
+		
+	}
 }
 
 ?>
 <h1>Edit Profile</h1>
-<form action="?section=profile&amp;action=doedit" method="post">
+<form action="?section=profile&amp;action=doedit" <?php if(isset($_GET['action'])&&$_GET['action']=='edit_texture') echo 'enctype="multipart/form-data" '; ?>method="post">
 	<table>
 		<tr><?php // SERVER Information (not changeable) ?>
 			<td class="formitemname"><?php echo $txt['server']; ?>:</td>
@@ -71,10 +144,34 @@ if(isset($_GET['action']) && $_GET['action']=='doedit'){
 				<?php if(isset($_GET['action']) && $_GET['action']=='edit_email'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_email_update" class="hidden">update</a>
 				<a href="?section=profile" id="profile_email_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_email'){ ?> class="hidden"<?php } ?>>cancel</a></td>
 		</tr>
+		<tr><?php // Texture ?>
+			<td class="formitemname"><?php echo $txt['texture']; ?>:</td>
+			<td><?php
+				if(isset($_GET['action']) && $_GET['action']=='edit_texture'){
+					?><input type="file" name="texture" id="texture" value="<?php echo ServerDatabase::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
+				}else{
+					$tex = ServerDatabase::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']);
+					if(count($tex)==0){
+						echo 'no image';
+					}else{
+						echo 'image set';
+					}
+//					print_r($tex);
+				}
+			?></td>
+			<td>
+				<a href="?section=profile&amp;action=edit_texture" id="profile_texture_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ ?> class="hidden"<?php } ?>>edit</a>
+				<a href="?section=profile&amp;action=doedit&amp;remove_texture" id="profile_texture_remove"<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ ?> class="hidden"<?php } ?>>remove</a>
+				<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_texture_update" class="hidden">update</a>
+				<a href="?section=profile" id="profile_texture_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>>cancel</a>
+			</td>
+		</tr>
 	</table>
+	
 	<script type="text/javascript">
 		$('#profile_uname_edit').click( function(event){
 			$('#profile_uname_*').toggle( function(){$(this).removeClass('hidden');}, function(){$(this).addClass('hidden');} );
 		} );
 	</script>
 </form>
+<p <?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>><b>Note:</b> Setting your texture may take several seconds. Please be patient if you upload one.</p>

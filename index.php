@@ -1,15 +1,92 @@
 <?php
+	function microtime_float()
+	{
+		list($usec, $sec) = explode(" ", microtime());
+		return ((float)$usec + (float)$sec);
+	}
+	$m_scriptStart = microtime_float();
 	session_start();
 	require_once('settings.inc.php');
 	require_once('classes/SettingsManager.php');
 	require_once('classes/TranslationManager.php');
+	require_once('classes/ServerDatabase.php');
+	
+	if(isset($_GET['ajax'])){
+		switch($_GET['ajax']){
+			case 'getTexture':
+				require_once('classes/SettingsManager.php');
+				require_once('classes/ServerDatabase.php');
+				
+				if( isset($_GET['sid']) && isset($_GET['uid']) ){
+					$texCompressed = ServerDatabase::getInstance()->getUserTexture($_GET['sid'], $_GET['uid']);
+					
+					$texCSize = count($texCompressed);
+					
+					$texStr = '';
+					foreach($texCompressed AS $val){
+						$texStr = $texStr.$val;
+					}
+//					for($px=0; $px<$texCSize; $px++){
+////						$texStr = $texStr.pack( 'C*', $texCompressed );
+//						$texStr = $texStr.$texCompressed[$px];
+//					}
+					
+					echo strlen($texStr).'<br/>';
+					
+					$texStr = gzuncompress($texStr);	// gzuncompress gzdecode
+					
+					echo strlen($texStr).'<br/>';
+					
+					// crc32 checksum instead of adler???
+//					$f = tempnam('/tmp', 'gz_fix');
+					$texStr = "\x1f\x8b\x08\x00\x00\x00\x00\x00".$texStr;
+					
+					$tex = unpack('C*', $texStr);
+					
+//					foreach(ServerDatabase::getInstance()->getUserTexture($_GET['sid'], $_GET['uid']) AS $key=>$val){
+//					}
+//					$tex = pack( 'C*', $tex );
+//					echo 'string length: '.strlen($tex).'<br/>';
+//					echo 'string: '.$tex.'<br/>';
+					
+					$img = imagecreatetruecolor(600,60);
+					$index = 1;
+					
+//					echo '<pre>';
+//					echo 'TEST: '.$tex[1].'<br/>';
+//					echo 'TEST: '.$tex[2].'<br/>';
+//					echo 'TEST: '.$tex[3].'<br/>';
+//					echo 'TEST: '.$tex[4].'<br/>';
+//					echo '</pre>';
+					
+					if(imagesx($img)*imagesy($img)-count($tex) != 0)
+						die('failed<br/>size x: '.imagesx($img).'<br/>size y: '.imagesy($img).'<br/>array size: '.count($tex));
+					
+					for($x=0; $x<imagesx($img); $x++ ){
+						for($y=0; $y<imagesy($img); $y++ ){
+//							imagesetpixel($img, $x, $y, imagecolorallocatealpha($img, $tex[$index], $tex[$index+1], $tex[$index+2], $tex[$index+3]) );
+							$index += 4;
+						}
+					}
+					
+					header('Content-type: image/png');
+					imagepng($img);
+					
+					
+				}else{
+					echo 'no image';
+				}
+				
+				break;
+		}
+		die();
+	}
+	
 	
 	//TODO: implement TranslationManager and remove this include
 //	require_once('languages/'.'en'.'.php');
 	
-	require_once('classes/ServerDatabase.php');
-	
-	require_once('include/dbFunctions.inc.php');
+//	require_once('include/dbFunctions.inc.php');
 	
 ?>
 <?php	// TODO: implement login check and remove this php part
@@ -29,7 +106,7 @@
 <body>
 
 <?php
-	if(isset($_GET['section']))
+	if(isset($_GET['section'])){
 		switch($_GET['section']){
 			case 'register':
 				$pageSection = 'register';
@@ -41,25 +118,34 @@
 			
 			case 'logout':
 				// Check that visitor is logged in
-				if(isset($_SESSION['userid']))
+				if(isset($_SESSION['userid'])){
 					$pageSection = 'logout';
-				else	// not logged in -> send to index
+				}else{	// not logged in -> send to index
 					header('Location: ./');
+					echo '<script type="text/javascript">location.replace("./")</script>';
+					echo 'Successfull logout.<br/>go <a href="./">here</a>';
+					$pageSection = 'index';
+				}
 				break;
 			
 			case 'profile':
 				// Check that visitor is logged in
-				if(isset($_SESSION['userid']))
+				if(isset($_SESSION['userid'])){
 					$pageSection = 'profile';
-				else	// not logged in -> send to index
+				}else{	// not logged in -> send to index
 					header('Location: ./');
+					echo '<script type="text/javascript">location.replace("./")</script>';
+					echo 'Not logged in.<br/>go <a href="./">here</a>';
+					$pageSection = 'index';
+				}
 				break;
 			
 			default:
 				$pageSection = 'index';
 		}
-	else
+	}else{
 		$pageSection = 'index';
+	}
 	
 	// Parse Template
 	require_once(SettingsManager::getInstance()->getThemeDir().'/header.template.php');

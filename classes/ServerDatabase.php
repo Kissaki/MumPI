@@ -70,14 +70,20 @@ class ServerDatabase_ICE {
 	function getServer($srvid){
 		return $this->meta->getServer(intval($srvid));
 	}
+	function getUser($srvid, $uid){
+		return $this->getServer($srvid)->getRegistration($uid);
+	}
 	function getUserName($srvid, $uid){
-		return $this->getServer($srvid)->getRegistration($uid)->name;
+		return $this->getUser($srvid,$uid)->name;
 	}
 	function getUserEmail($srvid, $uid){
-		return $this->getServer($srvid)->getRegistration($uid)->email;
+		return $this->getUser($srvid,$uid)->email;
 	}
 	function getUserPw($srvid, $uid){
-		return $this->getServer($srvid)->getRegistration($uid)->pw;
+		return $this->getUser($srvid,$uid)->pw;
+	}
+	function getUserTexture($srvid, $uid){
+		return $this->getServer($srvid)->getTexture(intval($uid));
 	}
 	
 	function addUser($serverid, $name, $password, $email=''){
@@ -122,6 +128,23 @@ class ServerDatabase_ICE {
 		$reg = $srv->getRegistration($uid);
 		$reg->pw = $newPw;
 		$srv->updateregistration($reg);
+	}
+	function updateUserTexture($srvid, $uid, $newTexture){
+		try{
+			if(is_string($newTexture)){
+				// TODO: implement conversation string -> byte array
+				$newTexArray = array();
+				for($i=0; $i<strlen($newTexture); $i++){
+	//				$newTexArray[$i] = $newTexture[$i];
+					
+				}
+				$this->getServer($srvid)->setTexture($uid, $newTexArray);
+			}else{
+				$this->getServer($srvid)->setTexture($uid, $newTexture);
+			}
+		}catch(Murmur_InvalidTextureException $exc){
+			echo '<div class="error">failed: invalid texture</div>';
+		}
 	}
 	
 	function verifyPassword($serverid,$uname,$pw){

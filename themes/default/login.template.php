@@ -12,7 +12,8 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 		default:	// login success
 			$_SESSION['serverid'] = $_POST['serverid'];
 			$_SESSION['userid'] = $tmpUid;
-			header('Location: ?section=profile');
+			echo '<script type="text/javascript">location.replace("?section=profile")</script>';
+			echo 'Successfull login.<br/><a href="?section=profile">profile</a>';
 			break;
 	}
 }else{
@@ -44,7 +45,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 				<td class="helpicon" title="<?php echo $txt['help_login_username']; ?>"></td>
 			</tr><tr>
 				<td class="formitemname"><?php echo $txt['password']; ?>:</td>
-				<td><input type="text" name="password" id="password" value="" /></td>
+				<td><input type="password" name="password" id="password" value="" /></td>
 				<td class="helpicon" title="<?php echo $txt['help_login_password']; ?>"></td>
 			</tr>
 		</table>

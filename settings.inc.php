@@ -1,6 +1,6 @@
 <?php
 	// Don't add trailing slashes
-	$muPI_muDir = 'E:/xxx/Mumble PHP Interface/Mumble PHP Interface';
+	$muPI_muDir = dirname(__FILE__);
 	$muPI_url = 'http://localhost/Mumble%20PHP%20Interface';
 	
 	$muPI_theme = 'default';
@@ -29,7 +29,7 @@
 	$muPI_sett_server[2]['authbymail'] = true;	// "normal" account activation by link sent by mail
 	
 	// Debug? - This should be turned off (commented out) for production sites. 
-	error_reporting(E_ALL);
+//	error_reporting(E_ALL);
 	
 	
 	// Don't edit the following. Settings to set up end here.
