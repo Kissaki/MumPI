@@ -1,6 +1,6 @@
 <?php
 if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
-	$tmpUid = ServerDatabase::getInstance()->verifyPassword($_POST['serverid'],$_POST['name'],$_POST['password']);
+	$tmpUid = ServerInterface::getInstance()->verifyPassword($_POST['serverid'],$_POST['name'],$_POST['password']);
 	switch($tmpUid){
 		case -2:
 			echo 'Unknown username.<br/><a onclick="history.go(-1); return false;" href="?section=login">Go back</a> and check your input.';
@@ -25,14 +25,16 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 			<tr>
 				<td class="formitemname"><?php echo TranslationManager::getInstance()->getText('server'); ?>:</td>
 				<td>
-					<?php $servers = ServerDatabase::getInstance()->getServers(); ?>
+					<?php $servers = SettingsManager::getInstance()->getServers(); ?>
 					<select name="serverid" style="width:100%">
-						<?php 
-							foreach($servers AS $key=>$server){
-								$srvid = intval($server->id());
-								echo '<option value="'.$srvid.'">';
-								echo $muPI_sett_server[$srvid]['name'];
-								echo '</option>';
+						<?php
+							foreach($servers AS $server){
+								// Check that server allows login and does exist
+								if($server['allowlogin'] && ServerInterface::getInstance()->getServer($server['id'])!=null){
+									echo '<option value="'.$server['id'].'">';
+									echo $server['name'];
+									echo '</option>';
+								}
 							}
 						?>
 					</select>

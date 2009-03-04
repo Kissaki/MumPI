@@ -13,61 +13,92 @@ class SettingsManager {
 				self::$instance = $obj;
 		return self::$instance;
 	}
-	/**
-	 * 
-	 * @return array with settingname=>value
-	 */
-	private static function parseSettingsFile(){
-		$set = array();
-		
-		
-		
-		return $set;
-	}
 	
 	private $mainDir;
 	private $mainUrl;
 	private $theme;
 	private $language;
 	private $site;
+	private $dbType;
 	private $dbInterfaceType;
 	private $numberOfServers;
 	private $servers;
+	private $isDebugMode;
 	
 	function __construct(){
-		global $muPI_muDir, $muPI_url, $muPI_theme, $muPI_lang, $muPI_dbInterface, $muPI_site, $muPI_sett_server;
+		$settings = self::parseSettingsFile();
 		
-		$this->mainDir = $muPI_muDir;
-		$this->mainUrl = $muPI_url;
-		$this->dbInterfaceType = $muPI_dbInterface;
-		$this->theme = $muPI_theme;
+		$this->mainDir = $settings['localDir'];
+		$this->mainUrl = $settings['url'];
+		$this->dbInterfaceType = $settings['dbInterface'];
+		$this->theme = $settings['theme'];
 		if(isset($_SESSION['language']) && file_exists($this->mainDir.'/languages/'.$_SESSION['language'].'.php') ){
-			$this->language = $_SESSION['language'];
+			$this->language = $settings['language'];
 		}else{
-			$this->language = $muPI_lang;
+			$this->language = $settings['language'];
 		}
+		$this->dbType = $settings['dbType'];
 		
 		$this->site = array();
-		$this->site['title'] = $muPI_site['title'];
-		$this->site['description'] = $muPI_site['description'];
-		$this->site['keywords'] = $muPI_site['keywords'];
+		$this->site['title'] = $settings['site_title'];
+		$this->site['description'] = $settings['site_description'];
+		$this->site['keywords'] = $settings['site_keywords'];
 		
 		$this->servers = array();
 		
-		$this->numberOfServers = $muPI_sett_server['numberOfServers'];
+		$this->numberOfServers = $settings['server_numberOfServers'];
 		for($i=0; $i < $this->numberOfServers; $i++){
-			$this->servers[$i]['id'] = $muPI_sett_server[1]['serverid'];
-			$this->servers[$i]['name'] = $muPI_sett_server[1]['name'];
-			$this->servers[$i]['forcemail'] = $muPI_sett_server[1]['forcemail'];
-			$this->servers[$i]['authbymail'] = $muPI_sett_server[1]['authbymail'];
+			$this->servers[$i]['id']			=	intval($settings['server_'.($i+1).'_serverid']);
+			$this->servers[$i]['name']			=	$settings['server_'.($i+1).'_name'];
+			$this->servers[$i]['allowlogin']	=	(boolean)$settings['server_'.($i+1).'_allowlogin'];
+			$this->servers[$i]['allowregistration']=(boolean)$settings['server_'.($i+1).'_allowregistration'];
+			$this->servers[$i]['forcemail']		=	(boolean)$settings['server_'.($i+1).'_forcemail'];
+			$this->servers[$i]['authbymail']	=	(boolean)$settings['server_'.($i+1).'_authbymail'];
 			if($this->servers[$i]['authbymail'])
 				$this->servers[$i]['forcemail'] = true;
 		}
-		
 	}
 	
+	/**
+	 * Parse a settings file to use the values it specifies
+	 * @return array with settingname=>value (key being the settingname and the value being its value)
+	 */
+	private static function parseSettingsFile($filename=null){
+		$set = array();
+		
+		if(!isset($filename)){
+			if(! $fd = fopen('./settings.inc.php', 'r'))
+				 if(! $fd = fopen('../settings.inc.php', 'r'))
+				 	die('could not find settings file');
+			
+		}else{
+			$fd = fopen($filename, 'r') || die('could not find custom settings file');
+		}
+		
+		fgets($fd);	// skip first line (die() against direct calls)
+		while( $line = fgets($fd) ){
+			$line = ltrim($line);
+			if( $line != '' && substr($line,0,2)!='//'){	// skip on: empty line, comment line
+				$lineArray = explode('=', $line, 2);
+				$lineArray[0] = rtrim($lineArray[0]);
+				$lineArray[1] = trim($lineArray[1]);
+				$set[$lineArray[0]] = $lineArray[1];
+			}
+		}
+		
+		fclose($fd);
+		
+		return $set;
+	}
+	
+	/**
+	 * @return string local main dir of the interface WITHOUT trailing slash
+	 */
 	function getMainDir(){
 		return $this->mainDir;
+	}
+	function getMainUrl(){
+		return $this->mainUrl;
 	}
 	/**
 	 * @return theme name
@@ -98,6 +129,9 @@ class SettingsManager {
 	function getDbInterfaceType(){
 		return $this->dbInterfaceType;
 	}
+	function getDbType(){
+		return $this->dbType;
+	}
 	function getSiteTitle(){
 		return $this->site['title'];
 	}
@@ -109,6 +143,9 @@ class SettingsManager {
 	}
 	function getNumberOfServers(){
 		return $this->numberOfServers;
+	}
+	function getServers(){
+		return $this->servers;
 	}
 	function getServerName($serverid){
 		for($i=0; $i<$this->numberOfServers; $i++){
@@ -131,6 +168,9 @@ class SettingsManager {
 				return $this->servers[$i]['authbymail'];
 		}
 		return null;	// no such server (TODO: implement exception?)
+	}
+	function isDebugMode(){
+		return $this->isDebugMode;
 	}
 }
 ?>

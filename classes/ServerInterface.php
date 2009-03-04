@@ -1,6 +1,6 @@
 <?php
 
-class ServerDatabase{
+class ServerInterface{
 	private static $instance;
 	public static function getInstance($obj=NULL){
 		if(!isset(self::$instance)){
@@ -8,8 +8,8 @@ class ServerDatabase{
 				self::$instance = $obj;
 			}else{
 				$dbType = SettingsManager::getInstance()->getDbInterfaceType();
-				if( class_exists('ServerDatabase_'.$dbType) )
-					eval('self::$instance = new ServerDatabase_'.$dbType.'();');
+				if( class_exists('ServerInterface_'.$dbType) )
+					eval('self::$instance = new ServerInterface_'.$dbType.'();');
 				else
 					echo TranslationManager::getInstance()->getText('error_db_unknowninterface');
 			}
@@ -19,14 +19,14 @@ class ServerDatabase{
 	
 }
 
-class ServerDatabase_ICE {
+class ServerInterface_ICE {
 	// mockable singleton
 	private static $dbObj;
 	public static function getDb($obj=NULL){
 		if(!isset($obj))
 			if(isset($dbObj)) return $dbObj;
 			else{
-				$dbObj = new ServerDatabase_ICE();
+				$dbObj = new ServerInterface_ICE();
 				return $dbObj;
 			}
 	}
@@ -87,28 +87,29 @@ class ServerDatabase_ICE {
 	}
 	
 	function addUser($serverid, $name, $password, $email=''){
-		try {
-		    
-		    
-		    $server = $meta->getServer($serverId);
-		
-		    try
-		    {
-		    $registrationId = $server->registerPlayer($_GET['uname']);
-		    }catch(ServerBootedException $ex){
-		      echo '<div style="color:red;">exception when trying to register<br/>Invalid Username?</div>';
-		      print_r($ex);
-		    }
-		    $registration = $server->getRegistration(intval($registrationId));
-		//echo '<pre>'; print_r($registration); echo '</pre>';
-		    $registration->pw = $_GET['password'];
-		    $registration->email = $_GET['email'];
-		//echo '<pre>'; print_r($registration); echo '</pre>';
-		    $server->updateregistration($registration);
-		    
-		  } catch (Ice_Exception $ex) {
-		    print_r($ex);
-		  }
+		try{
+			$tmpServer = ServerInterface::getInstance()->getServer(intval($serverid));
+			if(empty($tmpServer)){
+				echo 'Server could not be found.<br/>';
+				die();
+			}
+			$tmpUid = $tmpServer->registerPlayer($name);
+			$tmpReg = $tmpServer->getRegistration($tmpUid);
+			$tmpReg->pw = $password;
+			if(!empty($email))
+				$tmpReg->email = $email;
+			$tmpReg = $tmpServer->updateregistration($tmpReg);
+			echo TranslationManager::getInstance()->getText('doregister_success').'<br/>';
+		}catch(InvalidServerException $exc){	// This is depreciated (murmur.ice)
+			echo 'Invalid server. Please check your server selection.<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a><br/>If the problem persists, please contact a server admin or webmaster.<br/>';
+		}catch(ServerBootedException $exc){
+			echo 'Server is currently not running, but it has to to be able to register.<br/>Please contact a server admin';
+		}catch(InvalidPlayerException $exc){
+			echo 'The username you specified is probably already in use or invalid. Please try another one.<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
+		}catch(Ice_UnknownUserException $exc){	// This should not be caught
+			echo $exc->unknown.'<br/>';
+//			echo '<pre>'; var_dump($exc); echo '</pre>';
+		}
 	}
 	
 	function updateUserName($srvid, $uid, $newName){

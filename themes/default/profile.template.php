@@ -10,21 +10,21 @@ if(isset($_GET['action']) && $_GET['action']=='doedit'){
 		if(empty($_POST['password']))
 			echo 'Password field was empty. Sending you back...<br/>';
 		else
-			ServerDatabase::getInstance()->updateUserPw($_SESSION['serverid'], $_SESSION['userid'], $_POST['password']);
+			ServerInterface::getInstance()->updateUserPw($_SESSION['serverid'], $_SESSION['userid'], $_POST['password']);
 	}
 	// new username
 	if(isset($_POST['name'])){
-		ServerDatabase::getInstance()->updateUserName($_SESSION['serverid'], $_SESSION['userid'], $_POST['name']);
+		ServerInterface::getInstance()->updateUserName($_SESSION['serverid'], $_SESSION['userid'], $_POST['name']);
 	}
 	// new email
 	if(isset($_POST['email'])){
-		ServerDatabase::getInstance()->updateUserEmail($_SESSION['serverid'], $_SESSION['userid'], $_POST['email']);
+		ServerInterface::getInstance()->updateUserEmail($_SESSION['serverid'], $_SESSION['userid'], $_POST['email']);
 	}
 	// remove texture
 	if(isset($_GET['remove_texture'])){
 		//TODO: send empty texture
 		try{
-			ServerDatabase::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], array());
+			ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], array());
 		}catch(Murmur_InvalidTextureException $exc){
 			echo 'failed';
 		}
@@ -86,7 +86,7 @@ function checkMemoryLimit(){
 					
 					$texArray = stringToByteArray($tex);
 					
-					if(ServerDatabase::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray ))
+					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray ))
 						echo 'Texture has been uploaded and set<br/>';
 					
 					break;
@@ -128,7 +128,7 @@ function checkMemoryLimit(){
 					
 					$texArray = stringToByteArray($tex);
 					
-					if(ServerDatabase::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray ))
+					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray ))
 						echo 'Texture has been uploaded and set<br/>';
 					break;
 				default:
@@ -161,9 +161,9 @@ function checkMemoryLimit(){
 			<td class="formitemname"><?php echo $txt['username']; ?>:</td>
 			<td><?php
 				if(isset($_GET['action']) && $_GET['action']=='edit_uname'){
-					?><input type="text" name="name" value="<?php echo ServerDatabase::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
+					?><input type="text" name="name" value="<?php echo ServerInterface::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
 				}else{
-					echo ServerDatabase::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']);
+					echo ServerInterface::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']);
 				} ?></td>
 			<td>
 				<a href="?section=profile&amp;action=edit_uname" id="profile_uname_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_uname'){ echo 'class="hidden"'; } ?>>edit</a>
@@ -183,9 +183,9 @@ function checkMemoryLimit(){
 			<td class="formitemname"><?php echo $txt['newemail']; ?>:</td>
 			<td><?php
 				if(isset($_GET['action']) && $_GET['action']=='edit_email'){
-					?><input type="text" name="email" id="email" value="<?php echo ServerDatabase::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
+					?><input type="text" name="email" id="email" value="<?php echo ServerInterface::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
 				}else{
-					echo ServerDatabase::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']);
+					echo ServerInterface::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']);
 				}
 			?></td>
 			<td>
@@ -197,9 +197,9 @@ function checkMemoryLimit(){
 			<td class="formitemname"><?php echo $txt['texture']; ?>:</td>
 			<td><?php
 				if(isset($_GET['action']) && $_GET['action']=='edit_texture'){
-					?><input type="file" name="texture" id="texture" value="<?php echo ServerDatabase::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
+					?><input type="file" name="texture" id="texture" value="<?php echo ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
 				}else{
-					$tex = ServerDatabase::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']);
+					$tex = ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']);
 					if(count($tex)==0){
 						echo 'no image';
 					}else{

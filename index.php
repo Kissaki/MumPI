@@ -6,19 +6,21 @@
 	}
 	$m_scriptStart = microtime_float();
 	session_start();
-	require_once('settings.inc.php');
+	
 	require_once('classes/SettingsManager.php');
 	require_once('classes/TranslationManager.php');
-	require_once('classes/ServerDatabase.php');
+	require_once('classes/ServerInterface.php');
+	require_once('classes/DBManager.php');
+	
+	if(SettingsManager::getInstance()->isDebugMode())
+		error_reporting(E_ALL);
 	
 	if(isset($_GET['ajax'])){
 		switch($_GET['ajax']){
 			case 'getTexture':{
-				require_once('classes/SettingsManager.php');
-				require_once('classes/ServerDatabase.php');
 				
 				if( isset($_GET['sid']) && isset($_GET['uid']) ){
-					$texCompressed = ServerDatabase::getInstance()->getUserTexture($_GET['sid'], $_GET['uid']);
+					$texCompressed = ServerInterface::getInstance()->getUserTexture($_GET['sid'], $_GET['uid']);
 					
 					$texCSize = count($texCompressed);
 					
@@ -52,7 +54,7 @@
 					
 					$tex = unpack('C*', $texStr);
 					
-//					foreach(ServerDatabase::getInstance()->getUserTexture($_GET['sid'], $_GET['uid']) AS $key=>$val){
+//					foreach(ServerInterface::getInstance()->getUserTexture($_GET['sid'], $_GET['uid']) AS $key=>$val){
 //					}
 //					$tex = pack( 'C*', $tex );
 //					echo 'string length: '.strlen($tex).'<br/>';
@@ -103,7 +105,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="description" content="<?php echo SettingsManager::getInstance()->getSiteDescription(); ?>" />
 	<meta name="keywords" content="<?php echo SettingsManager::getInstance()->getSiteKeywords(); ?>" />
-	<title><?php echo $muPI_site['title']; ?></title>
+	<title><?php echo SettingsManager::getInstance()->getSiteTitle(); ?></title>
 	
 	<?php require_once(SettingsManager::getInstance()->getThemeDir().'/HTMLHead.template.php'); ?>
 </head>
