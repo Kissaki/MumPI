@@ -51,19 +51,29 @@ function imgToString($imgRes){
 			$tex = $tex.pack('c4', $colors['blue'], $colors['green'], $colors['red'], abs(254-$colors['alpha']*2));
 		}
 	}
-	echo 'alpha: min '.($aMin).' und max '.($aMax).'<br/>';
 	return $tex;
 }
-			
+/*
+ * used for memory intensive image calculations
+ * Checks that memory_limit is high enough and increases it if necessary.
+ */
+function checkMemoryLimit(){
+	// 40M should be enough, use 60M to be sure
+	$tmp_memLim = ini_get('memoty_limit');
+	if( intval(substr($tmp_memLim, 0, strlen($tmp_memLim)-1)) < 60 )
+		ini_set('memory_limit', '60M');
+}
+			$tex = '';
 			switch($fileExtension){
 				case 'png':
-					ini_set('memory_limit', '60M');
+					checkMemoryLimit();
 					
 					if(!$texImg = imagecreatefrompng($_FILES['texture']['tmp_name']))
 						die('<div class="error">Error: Could not create image resource.</div>');
 					if( imagesx($texImg)!=600 || imagesy($texImg)!=60 ){
 						die('<div class="error">Error: Image size is not 600x60.</div>');
 					}
+					//TODO: check if we need those 2:
 					imagealphablending($texImg, true);		// enablealpha blending
 					imagesavealpha($texImg, true);			// save alphablending
 					
@@ -82,18 +92,27 @@ function imgToString($imgRes){
 					break;
 				case 'jpg':
 				case 'jpeg':
+					checkMemoryLimit();
+					
 					if(!$texImg = imagecreatefromjpeg($_FILES['texture']['tmp_name']))
 						die('<div class="error">Error: Could not create image resource.</div>');
+					if( imagesx($texImg)!=600 || imagesy($texImg)!=60 ){
+						die('<div class="error">Error: Image size is not 600x60.</div>');
+					}
 					
 					break;
 				case 'gif':
+					checkMemoryLimit();
 					
 					break;
+				
+				// RAW RGBA Image Data
 				case '':
+				case 'raw':
+					checkMemoryLimit();
+					
 					if(!$fd = fopen($_FILES['texture']['tmp_name'], 'r'))
 						die('<div class="error">opening temp file failed</div>'.$_FILES['texture']['tmp_name']);
-					
-//					ini_set('memory_limit', '40M');
 					$tex = fread($fd, $_FILES['texture']['size']);
 					fclose($fd);
 					
@@ -186,7 +205,6 @@ function imgToString($imgRes){
 					}else{
 						echo 'image set';
 					}
-//					print_r($tex);
 				}
 			?></td>
 			<td>
@@ -204,4 +222,4 @@ function imgToString($imgRes){
 		} );
 	</script>
 </form>
-<p <?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>><b>Note:</b> Setting your texture may take several seconds. Please be patient if you upload one.</p>
+<p <?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>><b>Note:</b> Textures should be 600x60 px.</p>

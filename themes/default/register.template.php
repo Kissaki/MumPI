@@ -1,6 +1,5 @@
 <?php
 	if( isset($_GET['action']) && $_GET['action']='doregister' ){
-		//TODO: Add optional mail activation
 		if(!isset($_POST['serverid']) || empty($_POST['serverid']) ){
 			echo 'no server specified!<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
 		}elseif( !isset($_POST['name']) || empty($_POST['name']) ){
@@ -12,7 +11,11 @@
 			echo 'Your passwords did not match!<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
 		}elseif( SettingsManager::getInstance()->isForceEmail($_POST['serverid']) && empty($_POST['email']) ){
 			echo 'You did not enter an email address, however, this is required.<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
+		}elseif( SettingsManager::getInstance()->isAuthByMail($_POST['serverid']) ){
+			// Add unactivated account and send mail
+			
 		}else{
+			// Input ok, now do register
 			echo $txt['doregister_try'].'<br/>';
 			try{
 				$tmpServer = ServerDatabase::getInstance()->getServer(intval($_POST['serverid']));

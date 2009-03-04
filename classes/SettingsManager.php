@@ -5,7 +5,6 @@
  */
 class SettingsManager {
 	private static $instance;
-	
 	public static function getInstance($obj=NULL){
 		if(!isset(self::$instance))
 			if(!isset($obj))
@@ -13,6 +12,17 @@ class SettingsManager {
 			else
 				self::$instance = $obj;
 		return self::$instance;
+	}
+	/**
+	 * 
+	 * @return array with settingname=>value
+	 */
+	private static function parseSettingsFile(){
+		$set = array();
+		
+		
+		
+		return $set;
 	}
 	
 	private $mainDir;

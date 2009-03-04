@@ -13,7 +13,7 @@
 	
 	if(isset($_GET['ajax'])){
 		switch($_GET['ajax']){
-			case 'getTexture':
+			case 'getTexture':{
 				require_once('classes/SettingsManager.php');
 				require_once('classes/ServerDatabase.php');
 				
@@ -33,13 +33,22 @@
 					
 					echo strlen($texStr).'<br/>';
 					
+					// TODO: this produces a data error
+//					$texStr = substr($texStr, 0, strlen($texStr)-4);
 					$texStr = gzuncompress($texStr);	// gzuncompress gzdecode
+					
+//					$file = tempnam('tmp', 'tmp');
+//					file_put_contents($file, $texStr);
+//					$tmpTex = gzfile($file);
+//					$texStr = '';
+//					foreach($tmpTex AS $val){
+//						$texStr = $texStr.$val;
+//					}
 					
 					echo strlen($texStr).'<br/>';
 					
 					// crc32 checksum instead of adler???
 //					$f = tempnam('/tmp', 'gz_fix');
-					$texStr = "\x1f\x8b\x08\x00\x00\x00\x00\x00".$texStr;
 					
 					$tex = unpack('C*', $texStr);
 					
@@ -51,13 +60,6 @@
 					
 					$img = imagecreatetruecolor(600,60);
 					$index = 1;
-					
-//					echo '<pre>';
-//					echo 'TEST: '.$tex[1].'<br/>';
-//					echo 'TEST: '.$tex[2].'<br/>';
-//					echo 'TEST: '.$tex[3].'<br/>';
-//					echo 'TEST: '.$tex[4].'<br/>';
-//					echo '</pre>';
 					
 					if(imagesx($img)*imagesy($img)-count($tex) != 0)
 						die('failed<br/>size x: '.imagesx($img).'<br/>size y: '.imagesy($img).'<br/>array size: '.count($tex));
@@ -78,6 +80,8 @@
 				}
 				
 				break;
+			}
+			
 		}
 		die();
 	}
