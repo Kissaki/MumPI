@@ -146,6 +146,10 @@
 				}
 				break;
 			
+			case 'request':
+				$pageSection = 'request';
+				break;
+			
 			default:
 				$pageSection = 'index';
 		}

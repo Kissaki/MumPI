@@ -17,8 +17,13 @@ a:visited { color:white; }
 a[href^="http://"]:after { font-size:x-small; vertical-align:top; content:" (out)"; }
 a[href$=".pdf"]:after { content:"(PDF)"; }
 form table tr td.formitemname { text-align:right; padding:2px 6px 2px 2px; }
+.fullwidth, input[type=text], input[type=password], input[type=text], select { width:100%; }
+.alignl { text-align:left; }
+.alignc { text-align:center; }
+.alignr { text-align:right; }
+h1 {  }
 
-.helpicon { background-image:URL('images/help.png'); width:16px; height:16px; background-repeat:no-repeat; }
+.helpicon { background-image:URL('images/help.png'); min-width:16px; min-height:16px; background-repeat:no-repeat; }
 .error { color:red; }
 div.error { margin:20px; padding:20px; }
 div.error div.detail { margin-top:10px; color:white; }
@@ -49,4 +54,4 @@ div.error div.detail { margin-top:10px; color:white; }
 	text-align:center;
 }
 
-#content { margin:20px 20% 0px 20%; text-align:center; }
+#content { margin:20px 20% 0px 20%; }

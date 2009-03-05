@@ -73,6 +73,22 @@ class ServerInterface_ICE {
 	function getUser($srvid, $uid){
 		return $this->getServer($srvid)->getRegistration($uid);
 	}
+	/**
+	 * Get a user account by searching for a specific email.
+	 * This will only return the first user account found.
+	 * @param $srvid server id
+	 * @param $email email address
+	 * @return unknown_type registration or null
+	 */
+	function getUserByEmail($srvid, $email){
+		$regs = $this->getServer($srvid)->getRegisteredPlayers('');
+		foreach($regs AS $reg){
+			if($reg->email == $email){
+				return $reg;
+			}
+		}
+		return null;
+	}
 	function getUserName($srvid, $uid){
 		return $this->getUser($srvid,$uid)->name;
 	}

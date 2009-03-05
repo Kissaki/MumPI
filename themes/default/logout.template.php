@@ -5,3 +5,4 @@
 	header('Location: ./');
 ?>
 <p>You have been logged out.</p>
+<script type="text/javascript">location.replace("./")</script>

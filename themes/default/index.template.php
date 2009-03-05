@@ -1,3 +1,3 @@
 <div id="content">
-	<p>Welcome.</p>
+	<h1 style="text-align:center;">Welcome</h1>
 </div>

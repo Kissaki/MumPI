@@ -30,8 +30,9 @@
 ?>
 
 <div id="content">
-	<form action="./?section=register&amp;action=doregister" method="post">
-		<table>
+	<h1 style="text-align:center;">Registration Form</h1>
+	<form action="./?section=register&amp;action=doregister" method="post" style="margin:0 auto; width:400px;">
+		<table class="fullwidth">
 			<tr>
 				<td class="formitemname"><?php echo $txt['server']; ?>:</td>
 				<td>

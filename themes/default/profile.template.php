@@ -68,10 +68,13 @@ function checkMemoryLimit(){
 				case 'png':
 					checkMemoryLimit();
 					
-					if(!$texImg = imagecreatefrompng($_FILES['texture']['tmp_name']))
-						die('<div class="error">Error: Could not create image resource.</div>');
+					if(!$texImg = imagecreatefrompng($_FILES['texture']['tmp_name'])){
+						echo '<div class="error">Error: Could not create image resource.</div>';
+						break;
+					}
 					if( imagesx($texImg)!=600 || imagesy($texImg)!=60 ){
-						die('<div class="error">Error: Image size is not 600x60.</div>');
+						echo '<div class="error">Error: Image size is not 600x60.</div>';
+						break;
 					}
 					//TODO: check if we need those 2:
 					imagealphablending($texImg, true);		// enablealpha blending
@@ -81,29 +84,75 @@ function checkMemoryLimit(){
 					imagedestroy($texImg);
 					
 					if( strlen($tex)!=144000 ){
-						die('<div class="error">Error: The conversation from image to data string failed.</div>');
+						echo '<div class="error">Error: The conversation from image to data string failed.</div>';
+						break;
 					}
 					
 					$texArray = stringToByteArray($tex);
 					
-					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray ))
+					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )){
 						echo 'Texture has been uploaded and set<br/>';
-					
+					}else{
+						echo '<div class="error">Failed to set image.</div>';
+					}
 					break;
 				case 'jpg':
 				case 'jpeg':
 					checkMemoryLimit();
 					
-					if(!$texImg = imagecreatefromjpeg($_FILES['texture']['tmp_name']))
-						die('<div class="error">Error: Could not create image resource.</div>');
+					if(!$texImg = imagecreatefromjpeg($_FILES['texture']['tmp_name'])){
+						echo '<div class="error">Error: Could not create image resource.</div>';
+						break;
+					}
 					if( imagesx($texImg)!=600 || imagesy($texImg)!=60 ){
-						die('<div class="error">Error: Image size is not 600x60.</div>');
+						echo '<div class="error">Error: Image size is not 600x60.</div>';
+						break;
+					}
+					
+					$tex = imgToString($texImg);
+					imagedestroy($texImg);
+					
+					if( strlen($tex)!=144000 ){
+						echo '<div class="error">Error: The conversation from image to data string failed.</div>';
+						break;
+					}
+					
+					$texArray = unpack('C*', $tex);
+					
+					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )){
+						echo 'Texture has been uploaded and set<br/>';
+					}else{
+						echo '<div class="error">Failed to set image.</div>';
 					}
 					
 					break;
 				case 'gif':
 					checkMemoryLimit();
 					
+					if(!$texImg = imagecreatefromgif($_FILES['texture']['tmp_name'])){
+						echo '<div class="error">Error: Could not create image resource.</div>';
+						break;
+					}
+					if( imagesx($texImg)!=600 || imagesy($texImg)!=60 ){
+						echo '<div class="error">Error: Image size is not 600x60.</div>';
+						break;
+					}
+					
+					$tex = imgToString($texImg);
+					imagedestroy($texImg);
+					
+					if( strlen($tex)!=144000 ){
+						echo '<div class="error">Error: The conversation from image to data string failed.</div>';
+						break;
+					}
+					
+					$texArray = unpack('C*', $tex);
+					
+					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )){
+						echo 'Texture has been uploaded and set<br/>';
+					}else{
+						echo '<div class="error">Failed to set image.</div>';
+					}
 					break;
 				
 				// RAW RGBA Image Data
@@ -111,9 +160,16 @@ function checkMemoryLimit(){
 				case 'raw':
 					checkMemoryLimit();
 					
-					if(!$fd = fopen($_FILES['texture']['tmp_name'], 'r'))
-						die('<div class="error">opening temp file failed</div>'.$_FILES['texture']['tmp_name']);
-					$tex = fread($fd, $_FILES['texture']['size']);
+					if($_FILES['texture']['size'] != 144000){
+						echo '<div class="error">Your file could not be converted. Please check it.</div>';
+						break;
+					}
+					
+					if(!$fd = fopen($_FILES['texture']['tmp_name'], 'r')){
+						echo '<div class="error">opening temp file failed</div>';
+						break;
+					}
+					$tex = fread($fd, 144000);
 					fclose($fd);
 					
 					// RGBA to BGRA
@@ -128,8 +184,11 @@ function checkMemoryLimit(){
 					
 					$texArray = stringToByteArray($tex);
 					
-					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray ))
+					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )){
 						echo 'Texture has been uploaded and set<br/>';
+					}else{
+						echo '<div class="error">Failed to set image.</div>';
+					}
 					break;
 				default:
 					echo 'unknown file extension';
@@ -145,81 +204,83 @@ function checkMemoryLimit(){
 }
 
 ?>
-<h1>Edit Profile</h1>
-<form action="?section=profile&amp;action=doedit" <?php if(isset($_GET['action'])&&$_GET['action']=='edit_texture') echo 'enctype="multipart/form-data" '; ?>method="post">
-	<table>
-		<tr><?php // SERVER Information (not changeable) ?>
-			<td class="formitemname"><?php echo $txt['server']; ?>:</td>
-			<td>
-				<?php
-					echo SettingsManager::getInstance()->getServerName($_SESSION['serverid']);
-				?>
-			</td>
-			<td></td>
-		</tr>
-		<tr><?php // USERNAME ?>
-			<td class="formitemname"><?php echo $txt['username']; ?>:</td>
-			<td><?php
-				if(isset($_GET['action']) && $_GET['action']=='edit_uname'){
-					?><input type="text" name="name" value="<?php echo ServerInterface::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
-				}else{
-					echo ServerInterface::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']);
-				} ?></td>
-			<td>
-				<a href="?section=profile&amp;action=edit_uname" id="profile_uname_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_uname'){ echo 'class="hidden"'; } ?>>edit</a>
-				<?php if(isset($_GET['action']) && $_GET['action']=='edit_uname'){ echo '<input type="submit" value="update"/>'; } ?><a href="?section=profile&amp;action=doedit_uname" id="profile_uname_update" class="hidden">update</a>
-				<a href="?section=profile" id="profile_uname_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_uname'){ ?> class="hidden"<?php } ?>>cancel</a>
-			</td>
-		</tr>
-		<tr><?php // PASSWORD ?>
-			<td class="formitemname"><?php echo $txt['newpassword']; ?>:</td>
-			<td><?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?><input type="text" name="password" id="password" value="" /><?php }else{ echo '<span class="info" title="password is not displayed">*****</span>'; } ?></td>
-			<td>
-				<a href="?section=profile&amp;action=edit_pw" id="profile_pw_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?> class="hidden"<?php } ?>>edit</a>
-				<?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_pw_update" class="hidden">update</a>
-				<a href="?section=profile" id="profile_pw_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_pw'){ ?> class="hidden"<?php } ?>>cancel</a></td>
-		</tr>
-		<tr><?php // E-MAIL ?>
-			<td class="formitemname"><?php echo $txt['newemail']; ?>:</td>
-			<td><?php
-				if(isset($_GET['action']) && $_GET['action']=='edit_email'){
-					?><input type="text" name="email" id="email" value="<?php echo ServerInterface::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
-				}else{
-					echo ServerInterface::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']);
-				}
-			?></td>
-			<td>
-				<a href="?section=profile&amp;action=edit_email" id="profile_email_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_email'){ ?> class="hidden"<?php } ?>>edit</a>
-				<?php if(isset($_GET['action']) && $_GET['action']=='edit_email'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_email_update" class="hidden">update</a>
-				<a href="?section=profile" id="profile_email_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_email'){ ?> class="hidden"<?php } ?>>cancel</a></td>
-		</tr>
-		<tr><?php // Texture ?>
-			<td class="formitemname"><?php echo $txt['texture']; ?>:</td>
-			<td><?php
-				if(isset($_GET['action']) && $_GET['action']=='edit_texture'){
-					?><input type="file" name="texture" id="texture" value="<?php echo ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
-				}else{
-					$tex = ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']);
-					if(count($tex)==0){
-						echo 'no image';
+<div id="content">
+	<h1 style="text-align:center;">Edit Profile</h1>
+	<form action="?section=profile&amp;action=doedit" <?php if(isset($_GET['action'])&&$_GET['action']=='edit_texture') echo 'enctype="multipart/form-data" '; ?>method="post">
+		<table style="margin:0 auto; 400px;">
+			<tr><?php // SERVER Information (not changeable) ?>
+				<td class="formitemname"><?php echo $txt['server']; ?>:</td>
+				<td>
+					<?php
+						echo SettingsManager::getInstance()->getServerName($_SESSION['serverid']);
+					?>
+				</td>
+				<td></td>
+			</tr>
+			<tr><?php // USERNAME ?>
+				<td class="formitemname"><?php echo $txt['username']; ?>:</td>
+				<td><?php
+					if(isset($_GET['action']) && $_GET['action']=='edit_uname'){
+						?><input type="text" name="name" value="<?php echo ServerInterface::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
 					}else{
-						echo 'image set';
+						echo ServerInterface::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']);
+					} ?></td>
+				<td class="alignl">
+					<a href="?section=profile&amp;action=edit_uname" id="profile_uname_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_uname'){ echo 'class="hidden"'; } ?>>edit</a>
+					<?php if(isset($_GET['action']) && $_GET['action']=='edit_uname'){ echo '<input type="submit" value="update"/>'; } ?><a href="?section=profile&amp;action=doedit_uname" id="profile_uname_update" class="hidden">update</a>
+					<a href="?section=profile" id="profile_uname_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_uname'){ ?> class="hidden"<?php } ?>>cancel</a>
+				</td>
+			</tr>
+			<tr><?php // PASSWORD ?>
+				<td class="formitemname"><?php echo $txt['newpassword']; ?>:</td>
+				<td><?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?><input type="text" name="password" id="password" value="" /><?php }else{ echo '<span class="info" title="password is not displayed">*****</span>'; } ?></td>
+				<td class="alignl">
+					<a href="?section=profile&amp;action=edit_pw" id="profile_pw_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?> class="hidden"<?php } ?>>edit</a>
+					<?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_pw_update" class="hidden">update</a>
+					<a href="?section=profile" id="profile_pw_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_pw'){ ?> class="hidden"<?php } ?>>cancel</a></td>
+			</tr>
+			<tr><?php // E-MAIL ?>
+				<td class="formitemname"><?php echo $txt['newemail']; ?>:</td>
+				<td><?php
+					if(isset($_GET['action']) && $_GET['action']=='edit_email'){
+						?><input type="text" name="email" id="email" value="<?php echo ServerInterface::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
+					}else{
+						echo ServerInterface::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']);
 					}
-				}
-			?></td>
-			<td>
-				<a href="?section=profile&amp;action=edit_texture" id="profile_texture_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ ?> class="hidden"<?php } ?>>edit</a>
-				<a href="?section=profile&amp;action=doedit&amp;remove_texture" id="profile_texture_remove"<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ ?> class="hidden"<?php } ?>>remove</a>
-				<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_texture_update" class="hidden">update</a>
-				<a href="?section=profile" id="profile_texture_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>>cancel</a>
-			</td>
-		</tr>
-	</table>
-	
-	<script type="text/javascript">
-		$('#profile_uname_edit').click( function(event){
-			$('#profile_uname_*').toggle( function(){$(this).removeClass('hidden');}, function(){$(this).addClass('hidden');} );
-		} );
-	</script>
-</form>
-<p <?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>><b>Note:</b> Textures should be 600x60 px.</p>
+				?></td>
+				<td class="alignl">
+					<a href="?section=profile&amp;action=edit_email" id="profile_email_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_email'){ ?> class="hidden"<?php } ?>>edit</a>
+					<?php if(isset($_GET['action']) && $_GET['action']=='edit_email'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_email_update" class="hidden">update</a>
+					<a href="?section=profile" id="profile_email_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_email'){ ?> class="hidden"<?php } ?>>cancel</a></td>
+			</tr>
+			<tr><?php // Texture ?>
+				<td class="formitemname"><?php echo $txt['texture']; ?>:</td>
+				<td><?php
+					if(isset($_GET['action']) && $_GET['action']=='edit_texture'){
+						?><input type="file" name="texture" id="texture" value="<?php echo ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
+					}else{
+						$tex = ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']);
+						if(count($tex)==0){
+							echo 'no image';
+						}else{
+							echo 'image set';
+						}
+					}
+				?></td>
+				<td class="alignl">
+					<a href="?section=profile&amp;action=edit_texture" id="profile_texture_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ ?> class="hidden"<?php } ?>>edit</a>
+					<a href="?section=profile&amp;action=doedit&amp;remove_texture" id="profile_texture_remove"<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ ?> class="hidden"<?php } ?>>remove</a>
+					<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_texture_update" class="hidden">update</a>
+					<a href="?section=profile" id="profile_texture_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>>cancel</a>
+				</td>
+			</tr>
+		</table>
+		
+		<script type="text/javascript">
+			$('#profile_uname_edit').click( function(event){
+				$('#profile_uname_*').toggle( function(){$(this).removeClass('hidden');}, function(){$(this).addClass('hidden');} );
+			} );
+		</script>
+	</form>
+	<p <?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>><b>Note:</b> Textures should be 600x60 px. You can upload images of type: png, jpeg, gif, raw (RGBA)</p>
+</div>
