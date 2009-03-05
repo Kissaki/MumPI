@@ -31,6 +31,9 @@ class DBManager_filesystem{
 		if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat')){
 			fclose( fopen(SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat','w') );
 		}
+		if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data/log_register')){
+			fclose( fopen(SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat','w') );
+		}
 	}
 	
 	/**
@@ -107,6 +110,18 @@ class DBManager_filesystem{
 		$file = file_get_contents($filename);
 		$file = preg_replace('/'.$key.';;;(.+)\n/', '', $file);
 		file_put_contents($filename, $file);
+	}
+	
+	/**
+	 * Write a message to a specific file.
+	 * @param $filename
+	 * @param $msg
+	 * @return unknown_type
+	 */
+	public function append($field, $msg){
+		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/'.$field, 'a') OR die('could not open DB file');
+		fwrite($fd, $msg."\n");
+		fclose($fd);
 	}
 	
 }

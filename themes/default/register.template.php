@@ -1,4 +1,5 @@
 <?php
+	require_once(SettingsManager::getInstance()->getMainDir().'/classes/Captcha.php');
 	if( isset($_GET['action']) ){
 		if( $_GET['action']=='doregister' ){
 			if(!isset($_POST['serverid']) || empty($_POST['serverid']) ){
@@ -13,14 +14,25 @@
 			}elseif( SettingsManager::getInstance()->isForceEmail($_POST['serverid']) && empty($_POST['email']) ){
 				echo 'You did not enter an email address, however, this is required.<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
 			}elseif( SettingsManager::getInstance()->isAuthByMail($_POST['serverid']) ){
-				// Add unactivated account and send mail
-				if(ServerInterface::getInstance()->getServer(intval($_POST['serverid']))==null)
-					die('no such server');
-				DBManager::getInstance()->addAwaitingAccount($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
-				echo 'You have successfully registered, however, your account is not activated yet.<br/>You will receive an email soon with an activation link you have to click.';
+				if( Captcha::cap_isCorrect($_POST['spamcheck']) ){
+					// Add unactivated account and send mail
+					if(ServerInterface::getInstance()->getServer(intval($_POST['serverid']))==null)
+						die('no such server');
+					DBManager::getInstance()->addAwaitingAccount($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
+					echo 'You have successfully registered, however, your account is not activated yet.<br/>You will receive an email soon with an activation link you have to click.';
+					Logger::log_registration($_POST['name']);
+				}else{
+					echo '<div class="error">Captcha Incorrect.</div>';
+				}
 			}else{
-				// Input ok, now do try to register
-				ServerInterface::getInstance()->addUser($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
+				if( Captcha::cap_isCorrect($_POST['spamcheck']) ){
+					// Input ok, now do try to register
+					ServerInterface::getInstance()->addUser($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
+					echo 'You have successfully registered. You can now <a href="?section=login">log in</a> (also in mumble).';
+					Logger::log_registration($_POST['name']);
+				}else{
+					echo '<div class="error">Captcha Incorrect.</div>';
+				}
 			}
 		}elseif( $_GET['action']=='activate' && isset($_GET['key']) ){
 			DBManager::getInstance()->activateAccount($_GET['key']);
@@ -30,8 +42,8 @@
 ?>
 
 <div id="content">
-	<h1 style="text-align:center;">Registration Form</h1>
-	<form action="./?section=register&amp;action=doregister" method="post" style="margin:0 auto; width:400px;">
+	<h1>Registration Form</h1>
+	<form action="./?section=register&amp;action=doregister" method="post" style="width:400px;">
 		<table class="fullwidth">
 			<tr>
 				<td class="formitemname"><?php echo $txt['server']; ?>:</td>
@@ -68,9 +80,18 @@
 				<td class="formitemname"><?php echo $txt['password_repeat']; ?>:</td>
 				<td><input type="password" name="password2" id="password2" value="" /></td>
 				<td class="helpicon"></td>
+			</tr><tr>
+				<td class="formitemname">Anti-Spam:</td>
+				<td></td>
+				<td></td>
+			</tr><tr>
+				<td class="formitemname"><?php Captcha::cap_show(); ?> =</td>
+				<td><input type="text" name="spamcheck" value="" /></td>
+				<td class="helpicon" title="This field is to prevent spam.
+Calculate the result and enter it into the text box."></td>
 			</tr>
 		</table>
-		<input type="submit" value="register" />
+		<div class="alignc"><input type="submit" value="register" /></div>
 	</form>
 </div>
 <?php } ?>

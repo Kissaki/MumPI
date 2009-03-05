@@ -1,22 +1,26 @@
 <?php
 if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
-	$tmpUid = ServerInterface::getInstance()->verifyPassword($_POST['serverid'],$_POST['name'],$_POST['password']);
-	switch($tmpUid){
-		case -2:
-			echo 'Unknown username.<br/><a onclick="history.go(-1); return false;" href="?section=login">Go back</a> and check your input.<br/>'.
-				'If you forgot your login or password, <a href="?section=request">request it</a>.';
-			break;
-		case -1:
-			// TODO: forgot/reset pw link
-			echo 'wrong login information<br/><a onclick="history.go(-1); return false;" href="?section=login">go back</a><br/>'.
-				'If you forgot your login or password, <a href="?section=request">request it</a>.';
-			break;
-		default:	// login success
-			$_SESSION['serverid'] = $_POST['serverid'];
-			$_SESSION['userid'] = $tmpUid;
-			echo '<script type="text/javascript">location.replace("?section=profile")</script>';
-			echo 'Successfull login.<br/><a href="?section=profile">profile</a>';
-			break;
+	if(isset($_POST['serverid']) && isset($_POST['name']) && $_POST['password']){
+		$tmpUid = ServerInterface::getInstance()->verifyPassword($_POST['serverid'],$_POST['name'],$_POST['password']);
+		switch($tmpUid){
+			case -2:
+				echo 'Unknown username.<br/><a onclick="history.go(-1); return false;" href="?section=login">Go back</a> and check your input.<br/>'.
+					'If you forgot your login or password, <a href="?section=request">request it</a>.';
+					Logger::log_loginFail($_POST['serverid'], $_POST['name'], $_POST['password']);
+				break;
+			case -1:
+				// TODO: forgot/reset pw link
+				echo 'wrong login information<br/><a onclick="history.go(-1); return false;" href="?section=login">go back</a><br/>'.
+					'If you forgot your login or password, <a href="?section=request">request it</a>.';
+				break;
+			default:	// login success
+				$_SESSION['serverid'] = $_POST['serverid'];
+				$_SESSION['userid'] = $tmpUid;
+				echo '<script type="text/javascript">location.replace("?section=profile")</script>';
+				echo 'Login successfull.<br/>
+					Go on to the <a href="?section=profile">profile page</a>.';
+				break;
+		}
 	}
 }else{
 ?>
@@ -26,7 +30,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 	<form action="./?section=login&amp;action=dologin" method="post" style="width:400px;">
 		<table class="fullwidth">
 			<tr>
-				<td class="formitemname" style="width:1px;"><?php echo TranslationManager::getInstance()->getText('server'); ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getInstance()->getText('server'); ?>:</td>
 				<td>
 					<?php $servers = SettingsManager::getInstance()->getServers(); ?>
 					<select name="serverid">

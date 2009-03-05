@@ -11,6 +11,7 @@
 	require_once('classes/TranslationManager.php');
 	require_once('classes/ServerInterface.php');
 	require_once('classes/DBManager.php');
+	require_once('classes/Logger.php');
 	
 	if(SettingsManager::getInstance()->isDebugMode())
 		error_reporting(E_ALL);

@@ -205,9 +205,9 @@ function checkMemoryLimit(){
 
 ?>
 <div id="content">
-	<h1 style="text-align:center;">Edit Profile</h1>
-	<form action="?section=profile&amp;action=doedit" <?php if(isset($_GET['action'])&&$_GET['action']=='edit_texture') echo 'enctype="multipart/form-data" '; ?>method="post">
-		<table style="margin:0 auto; 400px;">
+	<h1>Edit Profile</h1>
+	<form action="?section=profile&amp;action=doedit" method="post" style="width:400px;"<?php if(isset($_GET['action'])&&$_GET['action']=='edit_texture') echo ' enctype="multipart/form-data"'; ?>>
+		<table class="fullwidth">
 			<tr><?php // SERVER Information (not changeable) ?>
 				<td class="formitemname"><?php echo $txt['server']; ?>:</td>
 				<td>

@@ -42,9 +42,9 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 		<h1 class="alignc">Data Sent</h1>
 		<p><?php echo $formProcessed; ?></p>
 	<?php }else{ ?>
-	<h1 class="alignc">Request Data</h1>
-	<form action="./?section=request&amp;action=dorequest" method="post" class="alignc" style="width:400px; margin:0 auto;">
-		<table class="fullwidth alignl" style="margin:auto;">
+	<h1>Request Data</h1>
+	<form action="./?section=request&amp;action=dorequest" method="post" class="alignc" style="width:400px;">
+		<table class="fullwidth alignl">
 			<tr>
 				<td class="formitemname"><?php echo TranslationManager::getInstance()->getText('server'); ?>:</td>
 				<td>
@@ -66,7 +66,8 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 			</tr><tr>
 				<td class="formitemname">email:</td>
 				<td><input type="text" name="email" value="" /></td>
-				<td></td>
+				<td class="helpicon" title="If there are more than 1 (active) accounts with that email, only one is returned.
+Change the mail addresses so each mail is only associated with one account."></td>
 			</tr><tr>
 				<td class="formitemname">Request:</td>
 				<td><input type="checkbox" name="password"/> Password</td>

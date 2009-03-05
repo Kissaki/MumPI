@@ -2,7 +2,7 @@
 	foreach($_SESSION AS $key=>$value){
 		unset($_SESSION[$key]);
 	}
-	header('Location: ./');
 ?>
-<p>You have been logged out.</p>
+<p>You have been logged out.<br/>
+<a href="./">Click here</a> to go back to the welcome page.</p>
 <script type="text/javascript">location.replace("./")</script>

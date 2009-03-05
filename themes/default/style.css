@@ -5,7 +5,7 @@ body {
 	background-color:black; color:white;
 }
 
-img { border:0px; }
+img { border:0px; vertical-align:middle; }
 p, ul, li, div, span, img { margin:0px; padding:0px; }
 p { margin-bottom:6px; }
 acronym, abbr, .info { cursor:help; border-bottom:1px dotted #aac; }
@@ -17,7 +17,8 @@ a:visited { color:white; }
 a[href^="http://"]:after { font-size:x-small; vertical-align:top; content:" (out)"; }
 a[href$=".pdf"]:after { content:"(PDF)"; }
 form table tr td.formitemname { text-align:right; padding:2px 6px 2px 2px; }
-.fullwidth, input[type=text], input[type=password], input[type=text], select { width:100%; }
+.fullwidth { width:100%; }
+input[type=text], input[type=password], input[type=text], select { width:100%; }
 .alignl { text-align:left; }
 .alignc { text-align:center; }
 .alignr { text-align:right; }
