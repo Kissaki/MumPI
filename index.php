@@ -1,4 +1,11 @@
 <?php
+/**
+ * Mumble PHP Interface by Kissaki
+ * Released under Creative Commons Attribution-Noncommercial License
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ * @author Kissaki
+ */
+
 	function microtime_float()
 	{
 		list($usec, $sec) = explode(" ", microtime());

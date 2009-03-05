@@ -1,5 +1,12 @@
 <?php
 /**
+ * Mumble PHP Interface by Kissaki
+ * Released under Creative Commons Attribution-Noncommercial License
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ * @author Kissaki
+ */
+
+/**
  * The SettingsManager class is an interface to the settings.
  * @author Jan Klass
  */
@@ -28,7 +35,9 @@ class SettingsManager {
 	function __construct(){
 		$settings = self::parseSettingsFile();
 		
-		$this->mainDir = $settings['localDir'];
+		if(!empty($settings['localDir']))
+			$this->mainDir = $settings['localDir'];
+		else{ $this->mainDir = dirname(dirname(__FILE__)); }
 		$this->mainUrl = $settings['url'];
 		$this->dbInterfaceType = $settings['dbInterface'];
 		$this->theme = $settings['theme'];

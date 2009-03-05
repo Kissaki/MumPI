@@ -1,5 +1,14 @@
 <?php
+/**
+ * Mumble PHP Interface by Kissaki
+ * Released under Creative Commons Attribution-Noncommercial License
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ * @author Kissaki
+ */
 
+/**
+ * Provides murmur server functionality
+ */
 class ServerInterface{
 	private static $instance;
 	public static function getInstance($obj=NULL){

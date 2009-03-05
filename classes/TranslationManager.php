@@ -1,5 +1,12 @@
 <?php
 /**
+ * Mumble PHP Interface by Kissaki
+ * Released under Creative Commons Attribution-Noncommercial License
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ * @author Kissaki
+ */
+
+/**
  * The TranslationManager class provides an interface to get translated text.
  * @author Jan Klass
  */
