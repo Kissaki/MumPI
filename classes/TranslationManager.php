@@ -5,7 +5,7 @@
  * http://creativecommons.org/licenses/by-nc/3.0/
  * @author Kissaki
  */
-
+//TODO language folder should be in templates, so they can have their own strings
 /**
  * The TranslationManager class provides an interface to get translated text.
  * @author Kissaki
@@ -25,6 +25,9 @@ class TranslationManager {		// To make calls shorter in code, the class _Instanc
 		if(!isset($txt))
 			return 'unknown string';
 		return $txt;
+	}
+	public static function echoText($textname){
+		echo self::getText($textname);
 	}
 	
 }

@@ -42,7 +42,7 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 		<h1 class="alignc">Data Sent</h1>
 		<p><?php echo $formProcessed; ?></p>
 	<?php }else{ ?>
-	<h1>Request Data</h1>
+	<h1><?php TranslationManager::echoText('request_head'); ?></h1>
 	<form action="./?section=request&amp;action=dorequest" method="post" class="alignc" style="width:400px;">
 		<table class="fullwidth alignl">
 			<tr>
@@ -62,13 +62,13 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 						?>
 					</select>
 				</td>
-				<td class="helpicon" title="Select the server your account is on."></td>
+				<td class="helpicon" title="<?php TranslationManager::echoText('help_request_selectmumbleserver'); ?>"></td>
 			</tr><tr>
 				<td class="formitemname"><?php echo TranslationManager::getText('email'); ?>:</td>
 				<td><input type="text" name="email" value="" /></td>
-				<td class="helpicon" title="<?php echo TranslationManager::getText('help_request_email'); ?>"></td>
+				<td class="helpicon" title="<?php TranslationManager::echoText('help_request_email'); ?>"></td>
 			</tr><tr>
-				<td class="formitemname"><?php echo TranslationManager::getText('request'); ?>:</td>
+				<td class="formitemname"><?php TranslationManager::echoText('request_selection'); ?>:</td>
 				<td><input type="checkbox" name="password"/> <?php echo TranslationManager::getText('password'); ?></td>
 				<td></td>
 			</tr><tr>
@@ -77,7 +77,7 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 				<td></td>
 			</tr>
 		</table><br/>
-		<input type="submit" value="<?php echo TranslationManager::getText('request'); ?>" />
+		<input type="submit" value="<?php TranslationManager::echoText('request_button'); ?>" />
 	</form>
 	<?php } ?>
 </div>

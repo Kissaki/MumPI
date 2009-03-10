@@ -3,39 +3,40 @@
 	if( isset($_GET['action']) ){
 		if( $_GET['action']=='doregister' ){
 			if(!isset($_POST['serverid']) || empty($_POST['serverid']) ){
-				echo 'no server specified!<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
+				TranslationManager::echoText('register_fail_noserver');
 			}elseif( !isset($_POST['name']) || empty($_POST['name']) ){
-				echo 'no name specified!<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
+				TranslationManager::echoText('register_fail_noNameFound');
 			}elseif( !isset($_POST['password']) || empty($_POST['password'] )
 				|| !isset($_POST['password2']) || empty($_POST['password2']) ){
-					echo 'no password specified!<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
+					TranslationManager::echoText('register_fail_noPasswordFound');
 			}elseif( $_POST['password'] != $_POST['password2'] ){
-				echo 'Your passwords did not match!<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
+				TranslationManager::echoText('register_fail_passwordMatch');
 			}elseif( SettingsManager::getInstance()->isForceEmail($_POST['serverid']) && empty($_POST['email']) ){
-				echo 'You did not enter an email address, however, this is required.<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
+				TranslationManager::echoText('register_fail_noEmail');
 			}elseif( SettingsManager::getInstance()->isAuthByMail($_POST['serverid']) ){
 				if( Captcha::cap_isCorrect($_POST['spamcheck']) ){
 					// Add unactivated account and send mail
 					if(ServerInterface::getInstance()->getServer(intval($_POST['serverid']))==null)
 						die('no such server');
 					DBManager::getInstance()->addAwaitingAccount($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
-					echo 'You have successfully registered, however, your account is not activated yet.<br/>You will receive an email soon with an activation link you have to click.';
+					TranslationManager::echoText('register_success_toActivate');
 					Logger::log_registration($_POST['name']);
 				}else{
-					echo '<div class="error">Captcha Incorrect.</div>';
+					TranslationManager::echoText('register_fail_wrongCaptcha');
 				}
 			}else{
 				if( Captcha::cap_isCorrect($_POST['spamcheck']) ){
 					// Input ok, now do try to register
 					ServerInterface::getInstance()->addUser($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
-					echo 'You have successfully registered. You can now <a href="?section=login">log in</a> (also in mumble).';
+					TranslationManager::echoText('register_success');
 					Logger::log_registration($_POST['name']);
 				}else{
-					echo '<div class="error">Captcha Incorrect.</div>';
+					TranslationManager::echoText('register_fail_wrongCaptcha');
 				}
 			}
 		}elseif( $_GET['action']=='activate' && isset($_GET['key']) ){
 			DBManager::getInstance()->activateAccount($_GET['key']);
+			TranslationManager::echoText('register_activate_success');
 		}
 		
 	}else{	// no form data received -> display registration form

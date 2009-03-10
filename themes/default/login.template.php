@@ -9,7 +9,6 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 					Logger::log_loginFail($_POST['serverid'], $_POST['name'], $_POST['password']);
 				break;
 			case -1:
-				// TODO: forgot/reset pw link
 				echo 'wrong login information<br/><a onclick="history.go(-1); return false;" href="?section=login">go back</a><br/>'.
 					'If you forgot your login or password, <a href="?section=request">request it</a>.';
 				break;
@@ -26,7 +25,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 ?>
 
 <div id="content">
-	<h1>Login Form</h1>
+	<h1><?php TranslationManager::echoText('login_head'); ?></h1>
 	<form action="./?section=login&amp;action=dologin" method="post" style="width:400px;">
 		<table class="fullwidth">
 			<tr>
@@ -58,8 +57,8 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 				<td class="helpicon" title="<?php echo TranslationManager::getText('help_login_password'); ?>"></td>
 			</tr>
 		</table>
-		<div class="alignc" style="margin-top:8px;"><input type="submit" value="login" /></div>
+		<div class="alignc" style="margin-top:8px;"><input type="submit" value="<?php TranslationManager::echoText('login_button'); ?>" /></div>
 	</form>
-	<p style="margin-top:20px;">If you forgot your login or password, you can <a href="?section=request">request it</a>.</p>
+	<p style="margin-top:20px;"><?php TranslationManager::echoText('login_requestnote'); ?></p>
 </div>
 <?php } ?>

@@ -204,7 +204,7 @@ function checkMemoryLimit(){
 
 ?>
 <div id="content">
-	<h1>Edit Profile</h1>
+	<h1><?php TranslationManager::echoText('profile_head'); ?></h1>
 	<form action="?section=profile&amp;action=doedit" method="post" style="width:400px;"<?php if(isset($_GET['action'])&&$_GET['action']=='edit_texture') echo ' enctype="multipart/form-data"'; ?>>
 		<table class="fullwidth">
 			<tr><?php // SERVER Information (not changeable) ?>
@@ -225,21 +225,21 @@ function checkMemoryLimit(){
 						echo ServerInterface::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']);
 					} ?></td>
 				<td class="alignl">
-					<a href="?section=profile&amp;action=edit_uname" id="profile_uname_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_uname'){ echo 'class="hidden"'; } ?>>edit</a>
-					<?php if(isset($_GET['action']) && $_GET['action']=='edit_uname'){ echo '<input type="submit" value="update"/>'; } ?><a href="?section=profile&amp;action=doedit_uname" id="profile_uname_update" class="hidden">update</a>
-					<a href="?section=profile" id="profile_uname_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_uname'){ ?> class="hidden"<?php } ?>>cancel</a>
+					<a href="?section=profile&amp;action=edit_uname" id="profile_uname_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_uname'){ echo 'class="hidden"'; } ?>><?php TranslationManager::echoText('edit'); ?></a>
+					<?php if(isset($_GET['action']) && $_GET['action']=='edit_uname'){ echo '<input type="submit" value="update"/>'; } ?><a href="?section=profile&amp;action=doedit_uname" id="profile_uname_update" class="hidden"><?php TranslationManager::echoText('update'); ?></a>
+					<a href="?section=profile" id="profile_uname_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_uname'){ ?> class="hidden"<?php } ?>><?php TranslationManager::echoText('cancel'); ?></a>
 				</td>
 			</tr>
 			<tr><?php // PASSWORD ?>
-				<td class="formitemname"><?php echo TranslationManager::getText('newpassword'); ?>:</td>
+				<td class="formitemname"><?php TranslationManager::echoText('password'); ?>:</td>
 				<td><?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?><input type="text" name="password" id="password" value="" /><?php }else{ echo '<span class="info" title="password is not displayed">*****</span>'; } ?></td>
 				<td class="alignl">
-					<a href="?section=profile&amp;action=edit_pw" id="profile_pw_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?> class="hidden"<?php } ?>>edit</a>
-					<?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_pw_update" class="hidden">update</a>
-					<a href="?section=profile" id="profile_pw_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_pw'){ ?> class="hidden"<?php } ?>>cancel</a></td>
+					<a href="?section=profile&amp;action=edit_pw" id="profile_pw_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?> class="hidden"<?php } ?>><?php TranslationManager::echoText('edit'); ?></a>
+					<?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_pw_update" class="hidden"><?php TranslationManager::echoText('update'); ?></a>
+					<a href="?section=profile" id="profile_pw_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_pw'){ ?> class="hidden"<?php } ?>><?php TranslationManager::echoText('cancel'); ?></a></td>
 			</tr>
 			<tr><?php // E-MAIL ?>
-				<td class="formitemname"><?php echo TranslationManager::getText('newemail'); ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('email'); ?>:</td>
 				<td><?php
 					if(isset($_GET['action']) && $_GET['action']=='edit_email'){
 						?><input type="text" name="email" id="email" value="<?php echo ServerInterface::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
@@ -248,9 +248,9 @@ function checkMemoryLimit(){
 					}
 				?></td>
 				<td class="alignl">
-					<a href="?section=profile&amp;action=edit_email" id="profile_email_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_email'){ ?> class="hidden"<?php } ?>>edit</a>
-					<?php if(isset($_GET['action']) && $_GET['action']=='edit_email'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_email_update" class="hidden">update</a>
-					<a href="?section=profile" id="profile_email_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_email'){ ?> class="hidden"<?php } ?>>cancel</a></td>
+					<a href="?section=profile&amp;action=edit_email" id="profile_email_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_email'){ ?> class="hidden"<?php } ?>><?php TranslationManager::echoText('edit'); ?></a>
+					<?php if(isset($_GET['action']) && $_GET['action']=='edit_email'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_email_update" class="hidden"><?php TranslationManager::echoText('update'); ?></a>
+					<a href="?section=profile" id="profile_email_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_email'){ ?> class="hidden"<?php } ?>><?php TranslationManager::echoText('cancel'); ?></a></td>
 			</tr>
 			<tr><?php // Texture ?>
 				<td class="formitemname"><?php echo TranslationManager::getText('texture'); ?>:</td>
@@ -260,17 +260,17 @@ function checkMemoryLimit(){
 					}else{
 						$tex = ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']);
 						if(count($tex)==0){
-							echo 'no image';
+							TranslationManager::echoText('texture_none');
 						}else{
-							echo 'image set';
+							TranslationManager::echoText('texture_set');
 						}
 					}
 				?></td>
 				<td class="alignl">
-					<a href="?section=profile&amp;action=edit_texture" id="profile_texture_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ ?> class="hidden"<?php } ?>>edit</a>
-					<a href="?section=profile&amp;action=doedit&amp;remove_texture" id="profile_texture_remove"<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ ?> class="hidden"<?php } ?>>remove</a>
-					<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_texture_update" class="hidden">update</a>
-					<a href="?section=profile" id="profile_texture_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>>cancel</a>
+					<a href="?section=profile&amp;action=edit_texture" id="profile_texture_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ ?> class="hidden"<?php } ?>><?php echo TranslationManager::getText('edit'); ?></a>
+					<a href="?section=profile&amp;action=doedit&amp;remove_texture" id="profile_texture_remove"<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ ?> class="hidden"<?php } ?>><?php echo TranslationManager::getText('remove'); ?></a>
+					<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_texture_update" class="hidden"><?php echo TranslationManager::getText('update'); ?></a>
+					<a href="?section=profile" id="profile_texture_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>><?php echo TranslationManager::getText('cancel'); ?></a>
 				</td>
 			</tr>
 		</table>
@@ -281,5 +281,5 @@ function checkMemoryLimit(){
 			} );
 		</script>
 	</form>
-	<p <?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>><b>Note:</b> Textures should be 600x60 px. You can upload images of type: png, jpeg, gif, raw (RGBA)</p>
+	<p <?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>><?php TranslationManager::getEcho('profile_note_texture'); ?>
 </div>
