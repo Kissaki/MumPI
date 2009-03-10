@@ -11,20 +11,25 @@ Structure:
   -<section>/
    -<page>.lang.php
 
--languages/
-+-<lang>/
-++-main.lang.php
-++-<section>.lang.php
-++-<section>/
-+++-<page>.lang.php
-
-This will likely be changed to:
--languages
- -<lang>
-  -main.lang.php
-  -<section>
-   -<page>.lang.php
 
 
+This will very likely be changed to be theme based (so themes can have their own strings, but don't have to):
+-themes/
+ -<theme>/
+  -languages/
+   -<lang>/
+    -main.lang.php
+    -<section>.lang.php
+    -<section>/
+     -<page>.lang.php
+ -default/
+  -languages/
+   -<lang>/
+    -main.lang.php
+    -<section>.lang.php
+    -<section>/
+     -<page>.lang.php
+
+Then, language files will not only be parsed hierarchical (main, section and page) but also active theme or default theme.
 
 

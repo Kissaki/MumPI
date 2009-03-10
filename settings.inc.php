@@ -9,7 +9,7 @@
 // on windows it should be something like: localDir=C:\htdocs\mumble
 localDir=
 // url to the main directory
-url=http://localhost/Mumble%20PHP%20Interface
+url=.
 theme=default
 defaultLanguage=en
 
