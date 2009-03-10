@@ -46,7 +46,7 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 	<form action="./?section=request&amp;action=dorequest" method="post" class="alignc" style="width:400px;">
 		<table class="fullwidth alignl">
 			<tr>
-				<td class="formitemname"><?php echo TranslationManager::getInstance()->getText('server'); ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('server'); ?>:</td>
 				<td>
 					<?php $servers = SettingsManager::getInstance()->getServers(); ?>
 					<select name="serverid" style="width:100%">
@@ -64,21 +64,20 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 				</td>
 				<td class="helpicon" title="Select the server your account is on."></td>
 			</tr><tr>
-				<td class="formitemname">email:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('email'); ?>:</td>
 				<td><input type="text" name="email" value="" /></td>
-				<td class="helpicon" title="If there are more than 1 (active) accounts with that email, only one is returned.
-Change the mail addresses so each mail is only associated with one account."></td>
+				<td class="helpicon" title="<?php echo TranslationManager::getText('help_request_email'); ?>"></td>
 			</tr><tr>
-				<td class="formitemname">Request:</td>
-				<td><input type="checkbox" name="password"/> Password</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('request'); ?>:</td>
+				<td><input type="checkbox" name="password"/> <?php echo TranslationManager::getText('password'); ?></td>
 				<td></td>
 			</tr><tr>
 				<td></td>
-				<td><input type="checkbox" name="username"/> Username</td>
+				<td><input type="checkbox" name="username"/> <?php echo TranslationManager::getText('username'); ?></td>
 				<td></td>
 			</tr>
 		</table><br/>
-		<input type="submit" value="request" />
+		<input type="submit" value="<?php echo TranslationManager::getText('request'); ?>" />
 	</form>
 	<?php } ?>
 </div>

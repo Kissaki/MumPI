@@ -30,7 +30,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 	<form action="./?section=login&amp;action=dologin" method="post" style="width:400px;">
 		<table class="fullwidth">
 			<tr>
-				<td class="formitemname"><?php echo TranslationManager::getInstance()->getText('server'); ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('server'); ?>:</td>
 				<td>
 					<?php $servers = SettingsManager::getInstance()->getServers(); ?>
 					<select name="serverid">
@@ -46,16 +46,16 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 						?>
 					</select>
 				</td>
-				<td class="helpicon" title="<?php echo $txt['help_login_server']; ?>"></td>
+				<td class="helpicon" title="<?php echo TranslationManager::getText('help_login_server'); ?>"></td>
 			</tr>
 			<tr>
-				<td class="formitemname"><?php echo $txt['username']; ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('username'); ?>:</td>
 				<td><input type="text" name="name" value="" /></td>
-				<td class="helpicon" title="<?php echo $txt['help_login_username']; ?>"></td>
+				<td class="helpicon" title="<?php echo TranslationManager::getText('help_login_username'); ?>"></td>
 			</tr><tr>
-				<td class="formitemname"><?php echo $txt['password']; ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('password'); ?>:</td>
 				<td><input type="password" name="password" id="password" value="" /></td>
-				<td class="helpicon" title="<?php echo $txt['help_login_password']; ?>"></td>
+				<td class="helpicon" title="<?php echo TranslationManager::getText('help_login_password'); ?>"></td>
 			</tr>
 		</table>
 		<div class="alignc" style="margin-top:8px;"><input type="submit" value="login" /></div>

@@ -6,104 +6,33 @@
  * @author Kissaki
  */
 
-	function microtime_float()
-	{
-		list($usec, $sec) = explode(" ", microtime());
-		return ((float)$usec + (float)$sec);
-	}
-	$m_scriptStart = microtime_float();
-	session_start();
+define('MUMPHPI_MAINDIR', '.');
+
+	// Start timer for execution time of script first
+	require_once(MUMPHPI_MAINDIR.'/classes/PHPStats.php');
+	PHPStats::scriptExecTimeStart();
 	
-	require_once('classes/SettingsManager.php');
-	require_once('classes/TranslationManager.php');
-	require_once('classes/ServerInterface.php');
-	require_once('classes/DBManager.php');
-	require_once('classes/Logger.php');
+	require_once(MUMPHPI_MAINDIR.'/classes/SettingsManager.php');
+	require_once(MUMPHPI_MAINDIR.'/classes/DBManager.php');
+	require_once(MUMPHPI_MAINDIR.'/classes/Logger.php');
+	require_once(MUMPHPI_MAINDIR.'/classes/SessionManager.php');
+	SessionManager::startSession();
+	
+	require_once(MUMPHPI_MAINDIR.'/classes/TranslationManager.php');
+	require_once(MUMPHPI_MAINDIR.'/classes/ServerInterface.php');
+	require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
 	
 	if(SettingsManager::getInstance()->isDebugMode())
 		error_reporting(E_ALL);
 	
 	if(isset($_GET['ajax'])){
-		switch($_GET['ajax']){
-			case 'getTexture':{
-				
-				if( isset($_GET['sid']) && isset($_GET['uid']) ){
-					$texCompressed = ServerInterface::getInstance()->getUserTexture($_GET['sid'], $_GET['uid']);
-					
-					$texCSize = count($texCompressed);
-					
-					$texStr = '';
-					foreach($texCompressed AS $val){
-						$texStr = $texStr.$val;
-					}
-//					for($px=0; $px<$texCSize; $px++){
-////						$texStr = $texStr.pack( 'C*', $texCompressed );
-//						$texStr = $texStr.$texCompressed[$px];
-//					}
-					
-					echo strlen($texStr).'<br/>';
-					
-					// TODO: this produces a data error
-//					$texStr = substr($texStr, 0, strlen($texStr)-4);
-					$texStr = gzuncompress($texStr);	// gzuncompress gzdecode
-					
-//					$file = tempnam('tmp', 'tmp');
-//					file_put_contents($file, $texStr);
-//					$tmpTex = gzfile($file);
-//					$texStr = '';
-//					foreach($tmpTex AS $val){
-//						$texStr = $texStr.$val;
-//					}
-					
-					echo strlen($texStr).'<br/>';
-					
-					// crc32 checksum instead of adler???
-//					$f = tempnam('/tmp', 'gz_fix');
-					
-					$tex = unpack('C*', $texStr);
-					
-//					foreach(ServerInterface::getInstance()->getUserTexture($_GET['sid'], $_GET['uid']) AS $key=>$val){
-//					}
-//					$tex = pack( 'C*', $tex );
-//					echo 'string length: '.strlen($tex).'<br/>';
-//					echo 'string: '.$tex.'<br/>';
-					
-					$img = imagecreatetruecolor(600,60);
-					$index = 1;
-					
-					if(imagesx($img)*imagesy($img)-count($tex) != 0)
-						die('failed<br/>size x: '.imagesx($img).'<br/>size y: '.imagesy($img).'<br/>array size: '.count($tex));
-					
-					for($x=0; $x<imagesx($img); $x++ ){
-						for($y=0; $y<imagesy($img); $y++ ){
-//							imagesetpixel($img, $x, $y, imagecolorallocatealpha($img, $tex[$index], $tex[$index+1], $tex[$index+2], $tex[$index+3]) );
-							$index += 4;
-						}
-					}
-					
-					header('Content-type: image/png');
-					imagepng($img);
-					
-					
-				}else{
-					echo 'no image';
-				}
-				
-				break;
-			}
-			
-		}
+		require_once(MUMPHPI_MAINDIR.'/ajax/index.ajax.php');
 		die();
 	}
 	
 	
-	//TODO: implement TranslationManager and remove this include
-//	require_once('languages/'.'en'.'.php');
 	
-//	require_once('include/dbFunctions.inc.php');
-	
-?>
-<?php	// TODO: implement login check and remove this php part
+// TODO: implement login check and remove this php part
 	$visitor['loggedIn'] = false;
 	if(isset($_GET['loggedIn']) && $_GET['loggedIn'] == 'true') $visitor['loggedIn'] = true;
 	$visitor['name'] = 'foobar-user';

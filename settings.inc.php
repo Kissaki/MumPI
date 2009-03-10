@@ -11,7 +11,7 @@ localDir=
 // url to the main directory
 url=http://localhost/Mumble%20PHP%20Interface
 theme=default
-language=en
+defaultLanguage=en
 
 // interface may be: ice, (dbus may be added at a later time)
 dbInterface	= ice

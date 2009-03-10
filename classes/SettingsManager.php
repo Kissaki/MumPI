@@ -12,7 +12,7 @@
  */
 class SettingsManager {
 	private static $instance;
-	public static function getInstance($obj=NULL){
+	public static function getInstance(){	// $obj=NULL){
 		if(!isset(self::$instance))
 			if(!isset($obj))
 				self::$instance = new SettingsManager();
@@ -24,7 +24,7 @@ class SettingsManager {
 	private $mainDir;
 	private $mainUrl;
 	private $theme;
-	private $language;
+	private $defaultLanguage;
 	private $site;
 	private $dbType;
 	private $dbInterfaceType;
@@ -41,11 +41,7 @@ class SettingsManager {
 		$this->mainUrl = $settings['url'];
 		$this->dbInterfaceType = $settings['dbInterface'];
 		$this->theme = $settings['theme'];
-		if(isset($_SESSION['language']) && file_exists($this->mainDir.'/languages/'.$_SESSION['language'].'.php') ){
-			$this->language = $settings['language'];
-		}else{
-			$this->language = $settings['language'];
-		}
+		$this->defaultLanguage = $settings['defaultLanguage'];
 		$this->dbType = $settings['dbType'];
 		
 		$this->site = array();
@@ -132,8 +128,12 @@ class SettingsManager {
 	function getThemeUrl(){
 		return $this->mainUrl.'/'.$this->getThemePath();
 	}
-	function getLanguage(){
-		return $this->language;
+	/**
+	 * Get default language
+	 * @return string default language (eg: en or de)
+	 */
+	function getDefaultLanguage(){
+		return $this->defaultLanguage;
 	}
 	function getDbInterfaceType(){
 		return $this->dbInterfaceType;

@@ -46,7 +46,7 @@
 	<form action="./?section=register&amp;action=doregister" method="post" style="width:400px;">
 		<table class="fullwidth">
 			<tr>
-				<td class="formitemname"><?php echo $txt['server']; ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('server'); ?>:</td>
 				<td>
 					<?php $servers = SettingsManager::getInstance()->getServers(); ?>
 					<select name="serverid" style="width:100%">
@@ -65,19 +65,19 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="formitemname"><?php echo $txt['username']; ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('username'); ?>:</td>
 				<td><input type="text" name="name" value="" /></td>
 				<td class="helpicon"></td>
 			</tr><tr>
-				<td class="formitemname"><?php echo $txt['email']; ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('email'); ?>:</td>
 				<td><input type="text" name="email" value="" /></td>
 				<td class="helpicon"></td>
 			</tr><tr>
-				<td class="formitemname"><?php echo $txt['password']; ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('password'); ?>:</td>
 				<td><input type="password" name="password" id="password" value="" /></td>
 				<td class="helpicon"></td>
 			</tr><tr>
-				<td class="formitemname"><?php echo $txt['password_repeat']; ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('password_repeat'); ?>:</td>
 				<td><input type="password" name="password2" id="password2" value="" /></td>
 				<td class="helpicon"></td>
 			</tr><tr>

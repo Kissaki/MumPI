@@ -22,7 +22,6 @@ if(isset($_GET['action']) && $_GET['action']=='doedit'){
 	}
 	// remove texture
 	if(isset($_GET['remove_texture'])){
-		//TODO: send empty texture
 		try{
 			ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], array());
 		}catch(Murmur_InvalidTextureException $exc){
@@ -209,7 +208,7 @@ function checkMemoryLimit(){
 	<form action="?section=profile&amp;action=doedit" method="post" style="width:400px;"<?php if(isset($_GET['action'])&&$_GET['action']=='edit_texture') echo ' enctype="multipart/form-data"'; ?>>
 		<table class="fullwidth">
 			<tr><?php // SERVER Information (not changeable) ?>
-				<td class="formitemname"><?php echo $txt['server']; ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('server'); ?>:</td>
 				<td>
 					<?php
 						echo SettingsManager::getInstance()->getServerName($_SESSION['serverid']);
@@ -218,7 +217,7 @@ function checkMemoryLimit(){
 				<td></td>
 			</tr>
 			<tr><?php // USERNAME ?>
-				<td class="formitemname"><?php echo $txt['username']; ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('username'); ?>:</td>
 				<td><?php
 					if(isset($_GET['action']) && $_GET['action']=='edit_uname'){
 						?><input type="text" name="name" value="<?php echo ServerInterface::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
@@ -232,7 +231,7 @@ function checkMemoryLimit(){
 				</td>
 			</tr>
 			<tr><?php // PASSWORD ?>
-				<td class="formitemname"><?php echo $txt['newpassword']; ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('newpassword'); ?>:</td>
 				<td><?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?><input type="text" name="password" id="password" value="" /><?php }else{ echo '<span class="info" title="password is not displayed">*****</span>'; } ?></td>
 				<td class="alignl">
 					<a href="?section=profile&amp;action=edit_pw" id="profile_pw_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?> class="hidden"<?php } ?>>edit</a>
@@ -240,7 +239,7 @@ function checkMemoryLimit(){
 					<a href="?section=profile" id="profile_pw_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_pw'){ ?> class="hidden"<?php } ?>>cancel</a></td>
 			</tr>
 			<tr><?php // E-MAIL ?>
-				<td class="formitemname"><?php echo $txt['newemail']; ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('newemail'); ?>:</td>
 				<td><?php
 					if(isset($_GET['action']) && $_GET['action']=='edit_email'){
 						?><input type="text" name="email" id="email" value="<?php echo ServerInterface::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
@@ -254,7 +253,7 @@ function checkMemoryLimit(){
 					<a href="?section=profile" id="profile_email_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_email'){ ?> class="hidden"<?php } ?>>cancel</a></td>
 			</tr>
 			<tr><?php // Texture ?>
-				<td class="formitemname"><?php echo $txt['texture']; ?>:</td>
+				<td class="formitemname"><?php echo TranslationManager::getText('texture'); ?>:</td>
 				<td><?php
 					if(isset($_GET['action']) && $_GET['action']=='edit_texture'){
 						?><input type="file" name="texture" id="texture" value="<?php echo ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
