@@ -27,8 +27,6 @@ class TranslationManager {		// To make calls shorter in code, the class _Instanc
 		return $txt;
 	}
 	
-	
-	
 }
 
 class TranslationManager_Instance{
@@ -82,10 +80,11 @@ class TranslationManager_Instance{
 	}
 	
 /**
-	 * Parse a specific language file.
+	 * Get a specific language file as a string for evaluation (eval()).
 	 * @param $language	The language to try to parse.
 	 * @param $section	the section to parse (if applicable)
 	 * @param $page		the page to parse for (if applicable)
+	 * @return string	String holding the anguage file information.
 	 */
 	private static function parseLanguageFile($language, $section=null, $page=null){
 		$langfile = '';

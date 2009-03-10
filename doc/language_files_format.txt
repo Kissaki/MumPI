@@ -1,0 +1,30 @@
+Language files have to immediately begin with "<?php" and end with "?>".
+The code will be eval()'d to get the $txt array.
+
+More specific language files (like for a specific section or page) may overwrite the strings of the more general language files.
+
+Structure:
+-languages/
+ -<lang>/
+  -main.lang.php
+  -<section>.lang.php
+  -<section>/
+   -<page>.lang.php
+
+-languages/
++-<lang>/
+++-main.lang.php
+++-<section>.lang.php
+++-<section>/
++++-<page>.lang.php
+
+This will likely be changed to:
+-languages
+ -<lang>
+  -main.lang.php
+  -<section>
+   -<page>.lang.php
+
+
+
+

@@ -21,6 +21,7 @@ define('MUMPHPI_MAINDIR', '.');
 	require_once(MUMPHPI_MAINDIR.'/classes/TranslationManager.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/ServerInterface.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
+	require_once(MUMPHPI_MAINDIR.'/classes/TemplateManager.php');
 	
 	if(SettingsManager::getInstance()->isDebugMode())
 		error_reporting(E_ALL);
@@ -31,20 +32,21 @@ define('MUMPHPI_MAINDIR', '.');
 	}
 	
 	
-	
 // TODO: implement login check and remove this php part
 	$visitor['loggedIn'] = false;
 	if(isset($_GET['loggedIn']) && $_GET['loggedIn'] == 'true') $visitor['loggedIn'] = true;
 	$visitor['name'] = 'foobar-user';
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	
+	<title><?php echo SettingsManager::getInstance()->getSiteTitle(); ?></title>
 	<meta name="description" content="<?php echo SettingsManager::getInstance()->getSiteDescription(); ?>" />
 	<meta name="keywords" content="<?php echo SettingsManager::getInstance()->getSiteKeywords(); ?>" />
-	<title><?php echo SettingsManager::getInstance()->getSiteTitle(); ?></title>
 	
-	<?php require_once(SettingsManager::getInstance()->getThemeDir().'/HTMLHead.template.php'); ?>
+	<?php TemplateManager::parseTemplate('HTMLHead');; ?>
 </head>
 <body>
 
@@ -95,9 +97,9 @@ define('MUMPHPI_MAINDIR', '.');
 	}
 	
 	// Parse Template
-	require_once(SettingsManager::getInstance()->getThemeDir().'/header.template.php');
-	require_once(SettingsManager::getInstance()->getThemeDir().'/'.$pageSection.'.template.php');
-	require_once(SettingsManager::getInstance()->getThemeDir().'/footer.template.php');
+	TemplateManager::parseTemplate('header');
+	TemplateManager::parseTemplate($pageSection);
+	TemplateManager::parseTemplate('footer');
 	
 ?>
 </body></html>
