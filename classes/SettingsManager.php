@@ -123,6 +123,16 @@ class SettingsManager {
 	 * @return theme directoy on server filesystem
 	 */
 	function getThemeDir(){
+		switch(HelperFunctions::getActiveSection()){
+			case 'user':
+				return $this->mainDir.'/user/'.$this->getThemePath();
+				break;
+				
+			case 'admin':
+				return $this->mainDir.'/admin/'.$this->getThemePath();
+				break;
+			
+		}
 		return $this->mainDir.'/'.$this->getThemePath();
 	}
 	function getThemeUrl(){
