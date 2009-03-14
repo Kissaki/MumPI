@@ -20,7 +20,7 @@
 	
 		// Login
 		$txt['login_head'] = 'Login Form';
-		$txt['login_requestnote'] = 'If you forgot your login or password, you can <a href="?section=request">request it</a>.';
+		$txt['login_requestnote'] = 'If you forgot your login or password, you can <a href="?page=request">request it</a>.';
 		$txt['login_button'] = 'Login';
 		
 		// Request

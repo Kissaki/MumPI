@@ -126,11 +126,11 @@ class ServerInterface_ICE {
 			$tmpReg = $tmpServer->updateregistration($tmpReg);
 			echo TranslationManager::getInstance()->getText('doregister_success').'<br/>';
 		}catch(InvalidServerException $exc){	// This is depreciated (murmur.ice)
-			echo 'Invalid server. Please check your server selection.<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a><br/>If the problem persists, please contact a server admin or webmaster.<br/>';
+			echo 'Invalid server. Please check your server selection.<br/><a onclick="history.go(-1); return false;" href="?page=register">go back</a><br/>If the problem persists, please contact a server admin or webmaster.<br/>';
 		}catch(ServerBootedException $exc){
 			echo 'Server is currently not running, but it has to to be able to register.<br/>Please contact a server admin';
 		}catch(InvalidPlayerException $exc){
-			echo 'The username you specified is probably already in use or invalid. Please try another one.<br/><a onclick="history.go(-1); return false;" href="?section=register">go back</a>';
+			echo 'The username you specified is probably already in use or invalid. Please try another one.<br/><a onclick="history.go(-1); return false;" href="?page=register">go back</a>';
 		}catch(Ice_UnknownUserException $exc){	// This should not be caught
 			echo $exc->unknown.'<br/>';
 //			echo '<pre>'; var_dump($exc); echo '</pre>';

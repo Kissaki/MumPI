@@ -35,10 +35,12 @@ class SettingsManager {
 	function __construct(){
 		$settings = self::parseSettingsFile();
 		
-		if(!empty($settings['localDir']))
+		/*if(!empty($settings['localDir']))
 			$this->mainDir = $settings['localDir'];
 		else{ $this->mainDir = dirname(dirname(__FILE__)); }
-		$this->mainUrl = $settings['url'];
+		$this->mainUrl = $settings['url'];	// TODO fix or remove*/
+		$this->mainDir = MUMPHPI_MAINDIR;
+		$this->mainUrl = MUMPHPI_MAINDIR;
 		$this->dbInterfaceType = $settings['dbInterface'];
 		$this->theme = $settings['theme'];
 		$this->defaultLanguage = $settings['defaultLanguage'];
@@ -116,25 +118,13 @@ class SettingsManager {
 	 * @return path to theme without trailing slash (theme/ + themename)
 	 */
 	function getThemePath(){
-		switch(HelperFunctions::getActiveSection()){
-			case 'user':
-				return 'themes/user/'.$this->theme;
-				break;
-				
-			case 'admin':
-				return 'themes/admin/'.$this->theme;
-				break;
-			
-		}
-		// This should not happen
-		return 'themes/'.$this->theme;
+		return 'themes/'.HelperFunctions::getActiveSection().'/'.$this->theme;
 	}
 	/**
 	 * 
 	 * @return theme directoy on server filesystem
 	 */
 	function getThemeDir(){
-		
 		return $this->mainDir.'/'.$this->getThemePath();
 	}
 	function getThemeUrl(){

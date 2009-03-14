@@ -2,13 +2,13 @@
 <div id="topline">
 <div id="menu">
 	<ul>
-		<li><a href="./"><?php echo TranslationManager::getInstance()->getText('home'); ?></a></li><?php
+		<li><a href="./"><?php echo TranslationManager::getText('home'); ?></a></li><?php
 			if(!isset($_SESSION['userid']))
-				echo '<li><a href="./?section=login">'.TranslationManager::getInstance()->getText('login').'</a></li>'.
-					'<li><a href="./?section=register">'.TranslationManager::getInstance()->getText('register').'</a></li>';
+				echo '<li><a href="./?page=login">'.TranslationManager::getText('login').'</a></li>'.
+					'<li><a href="./?page=register">'.TranslationManager::getText('register').'</a></li>';
 			else
-				echo '<li><a href="./?section=profile">'.TranslationManager::getInstance()->getText('profile').'</a></li>'.
-					'<li><a href="./?section=logout">'.TranslationManager::getInstance()->getText('logout').'</a></li>';
+				echo '<li><a href="./?page=profile">'.TranslationManager::getText('profile').'</a></li>'.
+					'<li><a href="./?page=logout">'.TranslationManager::getText('logout').'</a></li>';
 		?>
 	</ul>
 </div>

@@ -2,19 +2,16 @@
 class HelperFunctions{
 	// TODO rename "section" to "page"
 	public static function getActivePage(){
-		if(isset($_GET['section'])){
-			return $_GET['section'];
+		if(isset($_GET['page'])){
+			return $_GET['page'];
 		}else{
 			return 'index';
 		}
 		
 	}
 	public static function getActiveSection(){
-		switch(basename($_SERVER['SCRIPT_FILENAME'])){
-			case 'index.php':
-				return 'user';
-			case 'admin.php':
-				return 'admin';
+		if(defined('MUMPHPI_SECTION')){
+			return MUMPHPI_SECTION;
 		}
 		return null;
 	}

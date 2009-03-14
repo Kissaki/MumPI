@@ -68,7 +68,7 @@ class DBManager_filesystem{
 		mail($name.' <'.$email.'>', 'Account Activation', 'You tried to register an account on '.SettingsManager::getInstance()->getSiteTitle().' ('.
 			SettingsManager::getInstance()->getMainUrl().') on the server '.SettingsManager::getInstance()->getServerName($sid).
 			".\n".'To activate your account open the following link in your browser:'."\n".
-			SettingsManager::getInstance()->getMainUrl().'?section=register&action=activate&key='.$key."\n".
+			SettingsManager::getInstance()->getMainUrl().'?page=register&action=activate&key='.$key."\n".
 			'Then you may log in on the mumble server.');
 	}
 	

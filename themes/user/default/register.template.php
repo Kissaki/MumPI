@@ -44,7 +44,7 @@
 
 <div id="content">
 	<h1>Registration Form</h1>
-	<form action="./?section=register&amp;action=doregister" method="post" style="width:400px;">
+	<form action="./?page=register&amp;action=doregister" method="post" style="width:400px;">
 		<table class="fullwidth">
 			<tr>
 				<td class="formitemname"><?php echo TranslationManager::getText('server'); ?>:</td>
@@ -92,7 +92,7 @@
 Calculate the result and enter it into the text box."></td>
 			</tr>
 		</table>
-		<div class="alignc"><input type="submit" value="register" /></div>
+		<div class="alignc"><input type="submit" value="<?php TranslationManager::echoText('register'); ?>" /></div>
 	</form>
 </div>
 <?php } ?>

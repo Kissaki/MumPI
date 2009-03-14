@@ -4,20 +4,20 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 		$tmpUid = ServerInterface::getInstance()->verifyPassword($_POST['serverid'],$_POST['name'],$_POST['password']);
 		switch($tmpUid){
 			case -2:
-				echo 'Unknown username.<br/><a onclick="history.go(-1); return false;" href="?section=login">Go back</a> and check your input.<br/>'.
-					'If you forgot your login or password, <a href="?section=request">request it</a>.';
+				echo 'Unknown username.<br/><a onclick="history.go(-1); return false;" href="?page=login">Go back</a> and check your input.<br/>'.
+					'If you forgot your login or password, <a href="?page=request">request it</a>.';
 					Logger::log_loginFail($_POST['serverid'], $_POST['name'], $_POST['password']);
 				break;
 			case -1:
-				echo 'wrong login information<br/><a onclick="history.go(-1); return false;" href="?section=login">go back</a><br/>'.
-					'If you forgot your login or password, <a href="?section=request">request it</a>.';
+				echo 'wrong login information<br/><a onclick="history.go(-1); return false;" href="?page=login">go back</a><br/>'.
+					'If you forgot your login or password, <a href="?page=request">request it</a>.';
 				break;
 			default:	// login success
 				$_SESSION['serverid'] = $_POST['serverid'];
 				$_SESSION['userid'] = $tmpUid;
-				echo '<script type="text/javascript">location.replace("?section=profile")</script>';
+				echo '<script type="text/javascript">location.replace("?page=profile")</script>';
 				echo 'Login successfull.<br/>
-					Go on to the <a href="?section=profile">profile page</a>.';
+					Go on to the <a href="?page=profile">profile page</a>.';
 				break;
 		}
 	}
@@ -26,7 +26,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 
 <div id="content">
 	<h1><?php TranslationManager::echoText('login_head'); ?></h1>
-	<form action="./?section=login&amp;action=dologin" method="post" style="width:400px;">
+	<form action="./?page=login&amp;action=dologin" method="post" style="width:400px;">
 		<table class="fullwidth">
 			<tr>
 				<td class="formitemname"><?php echo TranslationManager::getText('server'); ?>:</td>

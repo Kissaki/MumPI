@@ -11,7 +11,7 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 				'New Password: '.$newPw);
 			$formProcessed = 'The information was just sent.<br/>Please Check your mails in a few minutes.<br/>Depending on your mail provider, it may take some time for the mail to arrive or may be put into a junk folder.<br/>MSN/Live may even block the mail entirely, so if it does not work, ask an admin about this.';
 		}else{
-			echo '<div class="error">No account with that email address was found on that server.<br/><a onclick="history.go(-1); return false;" href="?section=login">Go back</a> and check your input.</div>';
+			echo '<div class="error">No account with that email address was found on that server.<br/><a onclick="history.go(-1); return false;" href="?page=login">Go back</a> and check your input.</div>';
 		}
 		
 	}elseif( isset($_POST['password']) ){
@@ -23,7 +23,7 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 				'New Password: '.$newPw);
 			$formProcessed = 'The information was just sent.<br/>Please Check your mails in a few minutes.<br/>Depending on your mail provider, it may take some time for the mail to arrive or may be put into a junk folder.<br/>MSN/Live may even block the mail entirely, so if it does not work, ask an admin about this.';
 		}else{
-			echo '<div class="error">No account with that email address was found on that server.<br/><a onclick="history.go(-1); return false;" href="?section=login">Go back</a> and check your input.</div>';
+			echo '<div class="error">No account with that email address was found on that server.<br/><a onclick="history.go(-1); return false;" href="?page=login">Go back</a> and check your input.</div>';
 		}
 	}elseif( isset($_POST['username']) ){
 		$user = ServerInterface::getInstance()->getUserByEmail(intval($_POST['serverid']), $_POST['email']);
@@ -32,7 +32,7 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 				'Username: '.$user->name);
 			$formProcessed = 'The information was just sent.<br/>Please Check your mails in a few minutes.<br/>Depending on your mail provider, it may take some time for the mail to arrive or may be put into a junk folder.<br/>MSN/Live may even block the mail entirely, so if it does not work, ask an admin about this.';
 		}else{
-			echo '<div class="error">No account with that email address was found on that server.<br/><a onclick="history.go(-1); return false;" href="?section=login">Go back</a> and check your input.</div>';
+			echo '<div class="error">No account with that email address was found on that server.<br/><a onclick="history.go(-1); return false;" href="?page=login">Go back</a> and check your input.</div>';
 		}
 	}
 }
@@ -43,7 +43,7 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 		<p><?php echo $formProcessed; ?></p>
 	<?php }else{ ?>
 	<h1><?php TranslationManager::echoText('request_head'); ?></h1>
-	<form action="./?section=request&amp;action=dorequest" method="post" class="alignc" style="width:400px;">
+	<form action="./?page=request&amp;action=dorequest" method="post" class="alignc" style="width:400px;">
 		<table class="fullwidth alignl">
 			<tr>
 				<td class="formitemname"><?php echo TranslationManager::getText('server'); ?>:</td>

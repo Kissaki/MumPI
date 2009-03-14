@@ -7,6 +7,7 @@
  */
 
 define('MUMPHPI_MAINDIR', '.');
+define('MUMPHPI_SECTION', 'user');
 
 	// Start timer for execution time of script first
 	require_once(MUMPHPI_MAINDIR.'/classes/PHPStats.php');
@@ -32,10 +33,6 @@ define('MUMPHPI_MAINDIR', '.');
 	}
 	
 	
-// TODO: implement login check and remove this php part
-	$visitor['loggedIn'] = false;
-	if(isset($_GET['loggedIn']) && $_GET['loggedIn'] == 'true') $visitor['loggedIn'] = true;
-	$visitor['name'] = 'foobar-user';
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -51,8 +48,8 @@ define('MUMPHPI_MAINDIR', '.');
 <body>
 
 <?php
-	if(isset($_GET['section'])){
-		switch($_GET['section']){
+	if(isset($_GET['page'])){
+		switch($_GET['page']){
 			case 'register':
 				$pageSection = 'register';
 				break;

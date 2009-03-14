@@ -13,17 +13,21 @@ class SessionManager{
 	 */
 	public static function startSession(){
 		if(!isset(self::$instance)){
-			self::$instance = new SessionManager();
+			self::$instance = new SessionManager_obj();
 		}
 	}
 	public static function getInstance(){
 		if(self::$instance==null){
-			self::$instance = new SessionManager();
+			self::$instance = new SessionManager_obj();
 		}
 		return self::$instance;
 	}
 	
-	public function __construct(){
+	
+}
+
+class SessionManager_obj{
+public function __construct(){
 		session_start();
 	}
 	/**
