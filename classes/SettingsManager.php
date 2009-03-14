@@ -116,6 +116,17 @@ class SettingsManager {
 	 * @return path to theme without trailing slash (theme/ + themename)
 	 */
 	function getThemePath(){
+		switch(HelperFunctions::getActiveSection()){
+			case 'user':
+				return 'themes/user/'.$this->theme;
+				break;
+				
+			case 'admin':
+				return 'themes/admin/'.$this->theme;
+				break;
+			
+		}
+		// This should not happen
 		return 'themes/'.$this->theme;
 	}
 	/**
@@ -123,16 +134,7 @@ class SettingsManager {
 	 * @return theme directoy on server filesystem
 	 */
 	function getThemeDir(){
-		switch(HelperFunctions::getActiveSection()){
-			case 'user':
-				return $this->mainDir.'/user/'.$this->getThemePath();
-				break;
-				
-			case 'admin':
-				return $this->mainDir.'/admin/'.$this->getThemePath();
-				break;
-			
-		}
+		
 		return $this->mainDir.'/'.$this->getThemePath();
 	}
 	function getThemeUrl(){
