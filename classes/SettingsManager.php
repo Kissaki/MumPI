@@ -72,8 +72,8 @@ class SettingsManager {
 		$set = array();
 		
 		if(!isset($filename)){
-			if(! $fd = fopen('./settings.inc.php', 'r'))
-				 if(! $fd = fopen('../settings.inc.php', 'r'))
+			if(!file_exists('./settings.inc.php') || !$fd = fopen('./settings.inc.php', 'r'))
+				 if(!file_exists('../settings.inc.php') || !$fd = fopen('../settings.inc.php', 'r'))
 				 	die('could not find settings file');
 			
 		}else{
