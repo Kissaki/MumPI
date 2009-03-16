@@ -27,7 +27,10 @@ define('MUMPHPI_SECTION', 'admin');
 	if(SettingsManager::getInstance()->isDebugMode())
 		error_reporting(E_ALL);
 	
-	// TODO: add ajax functionality
+	if(isset($_GET['ajax'])){
+		require_once(MUMPHPI_MAINDIR.'/ajax/admin.ajax.php');
+		die();
+	}
 	
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

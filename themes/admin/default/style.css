@@ -29,21 +29,20 @@ h1 {  }
 div.error { margin:20px; padding:20px; }
 div.error div.detail { margin-top:10px; color:white; }
 .hidden { display:none; }
+.jqlink { cursor:pointer; }
 
-#topline {
-	border:1px solid grey; padding-right:6px; line-height:30px; text-align:right;
-}
 #menu {
-	float:left; margin-right:10px;
+	position:absolute; top:0px; left:0px;
+	border-right:1px solid grey; margin-right:10px;
 	background-color:darkblue; font-family:verdana;
 }
 #menu ul {
 	white-space:nowrap;
 	list-style-type:none;
 }
-#menu li { display:inline; font-size:120%; line-height:30px; }
+#menu li { font-size:120%; line-height:30px; }
 #menu li a {
-	display:block; float:left; border-right:1px solid orange;
+	display:block; border-right:1px solid orange;
 	padding:0px 10px; line-height:30px;
 	background-color:#08c; color:#ccc; text-decoration:none;
 }

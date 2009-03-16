@@ -26,6 +26,22 @@ class ServerInterface{
 		return self::$instance;
 	}
 	
+	public static function getVersion(){
+		self::getInstance()->getVersion();
+	}
+	public static function getServers(){
+		self::getInstance()->getServers();
+	}
+	public static function getServer($srvid){
+		self::getInstance()->getServer($srvid);
+	}
+	public static function createServer(){
+		return self::getInstance()->createServer();
+	}
+	public static function isRunning(){
+		return self::getInstance()->isRunning();
+	}
+	
 }
 
 class ServerInterface_ICE {
@@ -72,12 +88,17 @@ class ServerInterface_ICE {
 	}
 	
 	function getServers(){
-		
 		$servers = $this->meta->getAllServers();
 		return $servers;
 	}
 	function getServer($srvid){
 		return $this->meta->getServer(intval($srvid));
+	}
+	function createServer(){
+		return $this->meta->newServer()->id();
+	}
+	public function isRunning(){
+		return $this->meta->isRunning();
 	}
 	function getUser($srvid, $uid){
 		return $this->getServer($srvid)->getRegistration($uid);
