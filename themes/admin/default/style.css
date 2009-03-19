@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 
 body {
-	margin:0px; padding:0px; padding-bottom:20px;
+	position:absolute; margin:0px; padding:0px; padding-bottom:20px;
 	background-color:black; color:white;
 }
 

@@ -81,26 +81,140 @@ class ServerInterface_ICE {
 		
 	}
 	
+	//Meta
+	/**
+	 * Get servers version.
+	 * @return string version
+	 */
 	public function getVersion(){
 		unset($major); unset($minor); unset($patch); unset($text);
 		$this->meta->getVersion($major, $minor, $patch, $text);
 		return $major.'.'.$minor.'.'.$patch.' '.$text;
 	}
-	
-	function getServers(){
+	/**
+	 * @return "ConfigMap" array of key=>value
+	 */
+	public function getDefaultConf(){
+		return $this->meta->getDefaultConf();
+	}
+	/**
+	 * Get all virtual servers
+	 * @return unknown_type all virtual servers
+	 */
+	public function getServers(){
 		$servers = $this->meta->getAllServers();
 		return $servers;
 	}
-	function getServer($srvid){
+	/**
+	 * Get all running virtual servers
+	 * @return unknown_type all running virtual servers
+	 */
+	public function getRunningServers(){
+		$servers = $this->meta->getBootedServers();
+		return $servers;
+	}
+	/**
+	 * Get a specific virtual server
+	 * @param $srvid server id
+	 * @return unknown_type (virtual) server
+	 */
+	public function getServer($srvid){
 		return $this->meta->getServer(intval($srvid));
 	}
-	function createServer(){
+	/**
+	 * Create a new virtual server. Will return the created servers id.
+	 * @return int server id
+	 */
+	public function createServer(){
 		return $this->meta->newServer()->id();
 	}
-	public function isRunning(){
-		return $this->meta->isRunning();
+	
+	
+	
+	// Virtual Server
+	
+	/**
+	 * Is the virtual server currently running?
+	 * @param $sid server id
+	 * @return boolean
+	 */
+	public function isRunning($sid){
+		return self::getServer($sid)->isRunning();
 	}
-	function getUser($srvid, $uid){
+	/**
+	 * Start a specific virtual server
+	 * @param $sid server id
+	 */
+	public function startServer($sid){
+		self::getServer($sid)->start();
+	}
+	/**
+	 * Stop a specific running virtual server
+	 * @param $sid server id
+	 */
+	public function stopServer($sid){
+		self::getServer($sid)->stop();
+	}
+	/**
+	 * Delete a virtual server with all it's configuration settings
+	 * @param $sid server id
+	 */
+	public function deleteServer($sid){
+		$this->getServer($sid)->delete();
+	}
+	//TODO implement callbacks (add, remove)
+	//TODO setAuthenticator(ServerAuthenticator* auth)
+	
+	public function getServerConfigEntry($sid, $key){
+		return $this->getServer($sid)->getConf($key);
+	}
+	public function getServerConfig($sid){
+		return $this->getServer($sid)->getAllConf;
+	}
+	public function setServerConfigEntry($sid, $key, $newValue){
+		$this->getServer($sid)->setConf($key, $newValue);
+	}
+	
+	public function setServerSuperuserPassword($sid, $newPw){
+		$this->getServer($sid)->setSuperuserPassword($newPw);
+	}
+	
+	/**
+	 * 
+	 * @param $sid server id
+	 * @param $first Lowest numbered entry to fetch. 0 is the most recent item.
+	 * @param $last Last entry to fetch.
+	 * @return array(string) log entries
+	 */
+	public function getServerLog($sid, $first=25, $last=0){
+		return $this->getServer($sid)->getLog($first, $last);
+	}
+	
+	
+	/**
+	 * Get all user registrations of the virtual server
+	 * @param $sid
+	 * @param $filter a filter
+	 * @return sequence of registrations
+	 */
+	public function getServerRegistrations($sid, $filter=''){
+		return $this->getServer($sid)->getRegisteredPlayers($filter);
+	}
+	/**
+	 * Get connected users of a virtual server
+	 * @param $sid
+	 * @return array[pid] Array with user id as key and user name as value  
+	 */
+	public function getServerUsersConnected($sid){
+		return $this->getServer($sid)->getPlayers();
+	}
+	/**
+	 * Get a user registration from a virtual server
+	 * @param $srvid
+	 * @param $uid
+	 * @return unknown_type
+	 */
+	public function getServerUser($srvid, $uid){
 		return $this->getServer($srvid)->getRegistration($uid);
 	}
 	/**
@@ -120,13 +234,13 @@ class ServerInterface_ICE {
 		return null;
 	}
 	function getUserName($srvid, $uid){
-		return $this->getUser($srvid,$uid)->name;
+		return $this->getServerUser($srvid,$uid)->name;
 	}
 	function getUserEmail($srvid, $uid){
-		return $this->getUser($srvid,$uid)->email;
+		return $this->getServerUser($srvid,$uid)->email;
 	}
 	function getUserPw($srvid, $uid){
-		return $this->getUser($srvid,$uid)->pw;
+		return $this->getServerUser($srvid,$uid)->pw;
 	}
 	function getUserTexture($srvid, $uid){
 		return $this->getServer($srvid)->getTexture(intval($uid));
