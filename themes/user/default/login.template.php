@@ -15,6 +15,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 			default:	// login success
 				$_SESSION['serverid'] = $_POST['serverid'];
 				$_SESSION['userid'] = $tmpUid;
+				$_SESSION['userLoggedIn'] = true;
 				echo '<script type="text/javascript">location.replace("?page=profile")</script>';
 				echo 'Login successfull.<br/>
 					Go on to the <a href="?page=profile">profile page</a>.';

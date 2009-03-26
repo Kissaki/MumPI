@@ -1,8 +1,8 @@
 <div id="content">
 <?php
-	foreach($_SESSION AS $key=>$value){
-		unset($_SESSION[$key]);
-	}
+	unset($_SESSION['serverid']);
+	unset($_SESSION['userid']);
+	unset($_SESSION['userLoggedIn']);
 ?>
 	<?php TranslationManager::echoText('logout_success'); ?>
 	<script type="text/javascript">location.replace("./")</script>

@@ -30,6 +30,50 @@ class HelperFunctions{
 		return $_SERVER['REMOTE_HOST'];
 	}
 	
+	// This may/probably will be implemented so errors and warnings can be kept until it's time to throw/echo them (in a specific area, eg where the main content area is/should be).
+	public static function addError($txt){
+		self::echoError($txt);
+	}
+	public static function addWarning($txt){
+		self::echoWarning($txt);
+	}
+	public static function echoError($txt){
+		echo '<div class="error">'.$txt.'</div>';
+	}
+	public static function echoWarning($txt){
+		echo '<div class="warning">'.$txt.'</div>';
+	}
+	
+	public static function showChannelTree($tree, $level=0){
+		$indent = '';
+		for($i=0; $i<$level; $i++){
+			$indent = $indent.'+';
+		}
+		if(isset($tree->children)){
+			echo $indent.$tree->c->name.'<br/>';
+			foreach($tree->children AS $child){
+				self::showChannelTree($child, $level+1);
+			}
+		}
+	}
+	public static function showChannelTreePlayers($tree, $level=0){
+		$indent = '';
+		for($i=0; $i<$level; $i++){
+			$indent = $indent.'+';
+		}
+		echo $indent.$tree->c->name.'<br/>';
+		if(count($tree->children)>0){
+			foreach($tree->children AS $child){
+				self::showChannelTreePlayers($child, $level+1);
+			}
+		}
+		if(count($tree->players)>0){
+			foreach($tree->players AS $player){
+				echo $indent.$player->name.'<br/>';
+			}
+		}
+	}
+	
 	
 }
 ?>

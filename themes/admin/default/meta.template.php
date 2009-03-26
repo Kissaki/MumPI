@@ -1,10 +1,4 @@
-<?php
-	if(isset($_GET['action'])){
-		switch($_GET['action']){
-			
-		}
-	}
-?>
+
 	<h1>Server List</h1>
 	<table>
 		<thead>
@@ -43,18 +37,21 @@
 							<?php }else{ ?>
 								<a class="jqlink" onclick="jq_server_start(<?php echo $server->id(); ?>)">Start</a>
 							<?php } ?>
-							<a class="jqlink" onclick="jq_server_getRegistrations(<?php echo $server->id(); ?>); return false;" href="./?page=users">Show Users</a>
+							<a class="jqlink" onclick="jq_server_delete(<?php echo $server->id(); ?>); return false;">Delete</a>
+						</td>
+						<td style="padding-left:10px;">
+							<a href="?page=server&amp;sid=<?php echo $server->id(); ?>">Show Server Details</a> 
+							
 						</td>
 					</tr><?php
 				} ?>
 		</tbody>
 	</table>
 	
-	<a>Delete</a>
-	<a>Show Channels</a>
-	<a>Show ACLs</a>
 	
 	<a class="jqlink" id="server_create">Create a new Server</a>
+	<a class="jqlink" onclick="jq_meta_showDefaultConfig()">Show Default Config</a>
+	
 	<div id="jq_information" style="display:none;">
 		
 	</div>
@@ -68,7 +65,7 @@
 						$('#jq_information').show().html('Server created with ID: '+data);
 					}
 				);
-				jq_loadPage('servers');
+				jq_loadPage('meta');
 			});
 		function jq_loadPage(page){
 			$.get('./?ajax=getPage&page='+page, {},
@@ -77,6 +74,18 @@
 					}
 				);
 		}
+		function jq_server_delete(sid){
+			$.post("./?ajax=server_delete",
+					{ 'sid': sid },
+					function(data){
+						if(data!=''){
+							$('#jq_information').show().html(data);
+						}
+						$('#jq_information').show().html('stopped');
+					}
+				);
+			jq_loadPage('meta');
+		}
 		function jq_server_stop(sid){
 			$.post("./?ajax=server_stop",
 					{ 'sid': sid },
@@ -84,7 +93,7 @@
 						$('#jq_information').show().html('stopped');
 					}
 				);
-			jq_loadPage('servers');
+			jq_loadPage('meta');
 		}
 		function jq_server_start(sid){
 			$.post("./?ajax=server_start",
@@ -93,17 +102,19 @@
 						$('#jq_information').show().html('stopped');
 					}
 				);
-			jq_loadPage('servers');
+			jq_loadPage('meta');
 		}
-		function jq_server_getRegistrations(sid){
-			$.post("./?ajax=server_getRegistrations",
-					{ 'sid': sid },
+
+		function jq_meta_showDefaultConfig(){
+			$.post("./?ajax=meta_showDefaultConfig",
+					{  },
 					function(data){
-						$('body').append(data);
+						$('#jq_information').show().html('<h2>Default Config</h2>'+data);
 					}
 				);
-			
 		}
+		
+		
 		function center(object)
 		{
 			object.style.marginLeft = "-" + parseInt(object.offsetWidth / 2) + "px";

@@ -27,7 +27,7 @@ class SessionManager{
 }
 
 class SessionManager_obj{
-public function __construct(){
+	public function __construct(){
 		session_start();
 	}
 	/**

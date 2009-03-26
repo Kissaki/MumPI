@@ -11,7 +11,7 @@
  */
 class ServerInterface{
 	private static $instance;
-	public static function getInstance($obj=NULL){
+	public static function getInstance(){	// $obj=NULL
 		if(!isset(self::$instance)){
 			if(isset($obj)){
 				self::$instance = $obj;
@@ -24,22 +24,6 @@ class ServerInterface{
 			}
 		}
 		return self::$instance;
-	}
-	
-	public static function getVersion(){
-		self::getInstance()->getVersion();
-	}
-	public static function getServers(){
-		self::getInstance()->getServers();
-	}
-	public static function getServer($srvid){
-		self::getInstance()->getServer($srvid);
-	}
-	public static function createServer(){
-		return self::getInstance()->createServer();
-	}
-	public static function isRunning(){
-		return self::getInstance()->isRunning();
 	}
 	
 }
@@ -92,9 +76,10 @@ class ServerInterface_ICE {
 		return $major.'.'.$minor.'.'.$patch.' '.$text;
 	}
 	/**
-	 * @return "ConfigMap" array of key=>value
+	 * 
+	 * @return Array with name=>value
 	 */
-	public function getDefaultConf(){
+	public function getDefaultConfig(){
 		return $this->meta->getDefaultConf();
 	}
 	/**
@@ -160,6 +145,8 @@ class ServerInterface_ICE {
 	 * @param $sid server id
 	 */
 	public function deleteServer($sid){
+		if($this->isRunning($sid))
+			$this->stopServer($sid);
 		$this->getServer($sid)->delete();
 	}
 	//TODO implement callbacks (add, remove)
@@ -169,7 +156,7 @@ class ServerInterface_ICE {
 		return $this->getServer($sid)->getConf($key);
 	}
 	public function getServerConfig($sid){
-		return $this->getServer($sid)->getAllConf;
+		return $this->getServer($sid)->getAllConf();
 	}
 	public function setServerConfigEntry($sid, $key, $newValue){
 		$this->getServer($sid)->setConf($key, $newValue);
@@ -215,7 +202,7 @@ class ServerInterface_ICE {
 	 * @return unknown_type
 	 */
 	public function getServerUser($srvid, $uid){
-		return $this->getServer($srvid)->getRegistration($uid);
+		return $this->getServer(intval($srvid))->getRegistration(intval($uid));
 	}
 	/**
 	 * Get a user account by searching for a specific email.
@@ -246,9 +233,9 @@ class ServerInterface_ICE {
 		return $this->getServer($srvid)->getTexture(intval($uid));
 	}
 	
-	function addUser($serverid, $name, $password, $email=''){
+	function addUser($srvid, $name, $password, $email=''){
 		try{
-			$tmpServer = ServerInterface::getInstance()->getServer(intval($serverid));
+			$tmpServer = ServerInterface::getInstance()->getServer(intval($srvid));
 			if(empty($tmpServer)){
 				echo 'Server could not be found.<br/>';
 				die();
@@ -271,16 +258,19 @@ class ServerInterface_ICE {
 //			echo '<pre>'; var_dump($exc); echo '</pre>';
 		}
 	}
+	function removeRegistration($srvid, $uid){
+		ServerInterface::getInstance()->getServer(intval($srvid))->unregisterPlayer(intval($uid));
+	}
 	
 	function updateUserName($srvid, $uid, $newName){
 		$srv = $this->getServer($srvid);
-		$reg = $srv->getRegistration($uid);
+		$reg = $srv->getRegistration(intval($uid));
 		$reg->name = $newName;
 		$srv->updateregistration($reg);
 	}
 	function updateUserEmail($srvid, $uid, $newEmail){
 		$srv = $this->getServer($srvid);
-		$reg = $srv->getRegistration($uid);
+		$reg = $srv->getRegistration(intval($uid));
 		$reg->email = $newEmail;
 		$srv->updateregistration($reg);
 	}
@@ -303,6 +293,47 @@ class ServerInterface_ICE {
 			echo '<div class="error">failed: invalid texture</div>';
 			return false;
 		}
+	}
+	function muteUser($srvid, $sessid){
+		$srv = $this->meta->getServer(intval($srvid));
+		$player = $srv->getState(intval($sessid));
+		$player->mute = true;
+		$srv->setState($player);
+	}
+	function unmuteUser($srvid, $sessid){
+		$srv = $this->meta->getServer(intval($srvid));
+		$player = $srv->getState(intval($sessid));
+		$player->deaf = false;
+		$player->mute = false;
+		$srv->setState($player);
+	}
+	function deafUser($srvid, $sessid){
+		$srv = $this->meta->getServer(intval($srvid));
+		$player = $srv->getState(intval($sessid));
+		$player->deaf = true;
+		$srv->setState($player);
+	}
+	function undeafUser($srvid, $sessid){
+		$srv = $this->meta->getServer(intval($srvid));
+		$player = $srv->getState(intval($sessid));
+		$player->deaf = false;
+		$srv->setState($player);
+	}
+	function kickUser($srvid, $sessid, $reason=''){
+		$this->meta->getServer(intval($srvid))->kickPlayer(intval($sessid), $reason);
+	}
+	function banUser($srvid, $sessid, $reason=''){
+		//TODO implement ban
+		$srv = $this->meta->getServer(intval($srvid));
+		$bans = $srv->getBans();
+		$newBan['address'] = 255255255255;
+		$newBan['bits'] = 32;
+		$bans[] = $newBan;
+		$srv->setBans($bans);
+		kickPlayer(intval($sessid), $reason);
+	}
+	function getServerBans($srvid){
+		return $this->meta->getServer(intval($srvid))->getBans();
 	}
 	
 	function verifyPassword($serverid,$uname,$pw){

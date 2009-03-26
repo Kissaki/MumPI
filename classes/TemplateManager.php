@@ -15,7 +15,12 @@ class TemplateManager{
 	 * @param $name The name of the template to use.
 	 */
 	public static function parseTemplate($name){
-		require_once(SettingsManager::getInstance()->getThemeDir().'/'.$name.'.template.php');
+		$filepath = SettingsManager::getInstance()->getThemeDir().'/'.$name.'.template.php';
+		if(file_exists($filepath)){
+			require_once($filepath);
+		}else{
+			HelperFunctions::addError('Template file not found when trying to parse template: '.$name);
+		}
 	}
 }
 
