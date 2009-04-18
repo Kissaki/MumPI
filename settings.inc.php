@@ -17,7 +17,8 @@ defaultLanguage=en
 dbInterface	= ice
 
 // db type for Interface functionality
-// may be: filesystem, (TODO: add mysql, psql, sqlite)
+// may be: filesystem,
+// later, the following will be implemented: (TODO: add mysql, psql, sqlite)
 dbType		= filesystem
 
 // not necessary for filesystem, but for mysql, psql etc:
