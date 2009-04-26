@@ -198,6 +198,13 @@ switch($_GET['ajax']){
 		ServerInterface::getInstance()->updateUserEmail($_POST['sid'], $_POST['uid'], $_POST['newValue']);
 		break;
 	
+	case 'server_config_get':
+		ServerInterface::getInstance()->getServerConfig($_POST['sid']);
+		break;
+	
+	case 'meta_server_information_edit':
+		echo 'test';
+		break;
 }
 
 ?>

@@ -20,49 +20,43 @@ class SettingsManager {
 				self::$instance = $obj;
 		return self::$instance;
 	}
-	
+
+	private $isDebugMode;
 	private $mainDir;
 	private $mainUrl;
 	private $theme;
 	private $defaultLanguage;
 	private $site;
 	private $dbType;
-	private $dbInterfaceType;
+	private $dbInterface_type;
+	private $dbInterface_address;
 	private $numberOfServers;
 	private $servers;
-	private $isDebugMode;
 	
 	function __construct(){
-		$settings = self::parseSettingsFile();
+
+		eval(self::getSettingsFileContents());
 		
-		/*if(!empty($settings['localDir']))
-			$this->mainDir = $settings['localDir'];
-		else{ $this->mainDir = dirname(dirname(__FILE__)); }
-		$this->mainUrl = $settings['url'];	// TODO fix or remove*/
+		$this->isDebugMode = $debug;
 		$this->mainDir = MUMPHPI_MAINDIR;
 		$this->mainUrl = MUMPHPI_MAINDIR;
-		$this->dbInterfaceType = $settings['dbInterface'];
-		$this->theme = $settings['theme'];
-		$this->defaultLanguage = $settings['defaultLanguage'];
-		$this->dbType = $settings['dbType'];
+		$this->dbInterface_type = $dbInterface_type;
+		$this->dbInterface_address = $dbInterface_address;
+		$this->theme = $theme;
+		$this->defaultLanguage = $defaultLanguage;
+		$this->dbType = $dbType;
 		
 		$this->site = array();
-		$this->site['title'] = $settings['site_title'];
-		$this->site['description'] = $settings['site_description'];
-		$this->site['keywords'] = $settings['site_keywords'];
+		$this->site['title'] = $site_title;
+		$this->site['description'] = $site_description;
+		$this->site['keywords'] = $site_keywords;
 		
-		$this->servers = array();
+		$this->servers = $servers;
 		
-		$this->numberOfServers = $settings['server_numberOfServers'];
-		for($i=0; $i < $this->numberOfServers; $i++){
-			$this->servers[$i]['id']			=	intval($settings['server_'.($i+1).'_serverid']);
-			$this->servers[$i]['name']			=	$settings['server_'.($i+1).'_name'];
-			$this->servers[$i]['allowlogin']	=	(boolean)$settings['server_'.($i+1).'_allowlogin'];
-			$this->servers[$i]['allowregistration']=(boolean)$settings['server_'.($i+1).'_allowregistration'];
-			$this->servers[$i]['forcemail']		=	(boolean)$settings['server_'.($i+1).'_forcemail'];
-			$this->servers[$i]['authbymail']	=	(boolean)$settings['server_'.($i+1).'_authbymail'];
-			if($this->servers[$i]['authbymail'])
-				$this->servers[$i]['forcemail'] = true;
+		foreach($this->servers AS $server){
+			if($server['authbymail']){
+				$server['forcemail'] = true;
+			}
 		}
 	}
 	
@@ -70,32 +64,30 @@ class SettingsManager {
 	 * Parse a settings file to use the values it specifies
 	 * @return array with settingname=>value (key being the settingname and the value being its value)
 	 */
-	private static function parseSettingsFile($filename=null){
-		$set = array();
+	private static function getSettingsFileContents($filename=null){
+
+		if($filename==null)
+			$filename = 'settings.inc.php';
 		
-		if(!isset($filename)){
-			if(!file_exists('./settings.inc.php') || !$fd = fopen('./settings.inc.php', 'r'))
-				 if(!file_exists('../settings.inc.php') || !$fd = fopen('../settings.inc.php', 'r'))
-				 	die('could not find settings file');
-			
+		if(file_exists(MUMPHPI_MAINDIR.'/'.$filename)){
+			$settings = file_get_contents(MUMPHPI_MAINDIR.'/'.$filename);
 		}else{
-			$fd = fopen($filename, 'r') || die('could not find custom settings file');
+			$settings = file_gut_contents(MUMPHPI_MAINDIR.'/settings.inc.default.php');
+			self::setSettingsFileContents($settings);
+		}
+		$settings = substr($settings, 5, strlen($settings)-7);	// strip php tags;
+		return $settings;
+		
+	}
+	private static function setSettingsFileContents($settings_content, $filename=null)
+	{
+		if($filename==null)
+			$filename = 'settings.inc.php';
+		
+		if(file_exists(MUMPHPI_MAINDIR.'/'.$filename)){
+			$settings = file_put_contents(MUMPHPI_MAINDIR.'/'.$filename, $settings_content);
 		}
 		
-		fgets($fd);	// skip first line (die() against direct calls)
-		while( $line = fgets($fd) ){
-			$line = ltrim($line);
-			if( $line != '' && substr($line,0,2)!='//'){	// skip on: empty line, comment line
-				$lineArray = explode('=', $line, 2);
-				$lineArray[0] = rtrim($lineArray[0]);
-				$lineArray[1] = trim($lineArray[1]);
-				$set[$lineArray[0]] = $lineArray[1];
-			}
-		}
-		
-		fclose($fd);
-		
-		return $set;
 	}
 	
 	/**
@@ -138,7 +130,10 @@ class SettingsManager {
 		return $this->defaultLanguage;
 	}
 	function getDbInterfaceType(){
-		return $this->dbInterfaceType;
+		return $this->dbInterface_type;
+	}
+function getDbInterface_address(){
+		return $this->dbInterface_address;
 	}
 	function getDbType(){
 		return $this->dbType;
@@ -159,29 +154,53 @@ class SettingsManager {
 		return $this->servers;
 	}
 	function getServerName($serverid){
-		for($i=0; $i<$this->numberOfServers; $i++){
-			if( $this->servers[$i]['id'] == $serverid )
-				return $this->servers[$i]['name'];
+		if(!isset($this->servers[$serverid])){
+			return null;
 		}
-		return null;	// no such server
+		return $this->servers[$serverid]['name'];
 	}
 	
 	function isForceEmail($serverid){
 		for($i=0; $i<$this->numberOfServers; $i++){
-			if( $this->servers[$i]['id'] == $serverid )
+			if( $this->servers[$i]['id'] == $serverid ){
 				return $this->servers[$i]['forcemail'];
+			}
 		}
 		return null;	// no such server (TODO: implement exception?)
 	}
 	function isAuthByMail($serverid){
 		for($i=0; $i<$this->numberOfServers; $i++){
-			if($this->servers[$i]['id'] == $serverid)
+			if($this->servers[$i]['id'] == $serverid){
 				return $this->servers[$i]['authbymail'];
+			}
 		}
 		return null;	// no such server (TODO: implement exception?)
 	}
 	function isDebugMode(){
 		return $this->isDebugMode;
+	}
+	
+	
+	function setServerInformation($serverid, $name, $allowlogin=true, $allowregistration=true, $forcemail=true, $authbymail=true)
+	{
+		if(isset($this->servers[$serverid]))
+		{
+			
+		}else{
+			
+		}
+		/*
+		if($this->getServerName($serverid) == null){
+			//if server info does not exist yet, add it
+			$file = file_get_contents($this->getMainDir().'settings.inc.php');
+			$index_key = strstr($file, 'server_numberOfServers');
+			$file_part1 = substr($file, 0, $index_key);
+			$file_part2 = substr($file, $index_key);
+			$index_nl = strstr($file_part2, "\n");
+			$file_part2 = substr($file_part2, $index_nl);
+			$file = $file.'';
+			file_put_contents($this->getMainDir().'settings.inc.php', $file);
+		}*/
 	}
 }
 ?>

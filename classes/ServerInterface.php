@@ -54,7 +54,7 @@ class ServerInterface_ICE {
 	
 	private function connect(){
 		global $ICE;
-		$this->conn = $ICE->stringToProxy("Meta:tcp -h 127.0.0.1 -p 6502");
+		$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
 		try{
 			$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
 		}catch(Ice_UnknownLocalException $ex) {

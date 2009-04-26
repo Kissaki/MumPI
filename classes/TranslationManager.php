@@ -61,11 +61,6 @@ class TranslationManager_Instance{
 		$this->text = $txt;
 	}
 	
-	// TODO fix or remove autoload
-//	private function __autoload($class_name) {
-//		require_once $class_name.'.php';
-//	}
-	
 	public function getActiveLanguage(){
 		return $this->language;
 	}

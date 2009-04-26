@@ -17,10 +17,13 @@
 			?>
 					<tr class="jqserver" id="jq_server_<?php echo $server->id(); ?>">
 						<td><?php echo $server->id(); ?></td>
-						<td><?php
+						<td>
+							<div onclick="jq_meta_server_information_edit(<?php echo $server->id(); ?>)" style="float:right; color:grey; font-size:x-small; margin-right:4px;">edit</div>
+<?php
 							if(isset($servername)){
 								echo $servername;
-							} ?>
+							}
+?>
 						</td>
 						<td>
 							<?php
@@ -113,7 +116,16 @@
 					}
 				);
 		}
-		
+
+		function jq_meta_server_information_edit(serverid)
+		{
+			$.post(".?ajax=meta_server_information_edit",
+					{  },
+					function(data){
+						$('#jq_information').show().html(data);
+					}
+				);
+		}
 		
 		function center(object)
 		{
