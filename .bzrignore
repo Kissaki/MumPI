@@ -4,3 +4,4 @@ cmd.exe.lnk
 .settings
 tmp/cap_*
 bin
+data/log_register.log
