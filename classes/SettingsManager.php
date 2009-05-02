@@ -72,7 +72,9 @@ class SettingsManager {
 			$settings = file_get_contents(MUMPHPI_MAINDIR.'/'.$filename);
 		}else{
 			$settings = file_get_contents(MUMPHPI_MAINDIR.'/settings.inc.default.php');
+			$settings = substr($settings, 5, strlen($settings)-7);	// strip php tags;
 			self::setSettingsFileContents($settings);
+			$settings = file_get_contents(MUMPHPI_MAINDIR.'/'.$filename);
 		}
 		$settings = substr($settings, 5, strlen($settings)-7);	// strip php tags;
 		return $settings;
