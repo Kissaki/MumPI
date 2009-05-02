@@ -156,7 +156,14 @@ class ServerInterface_ICE {
 		return $this->getServer($sid)->getConf($key);
 	}
 	public function getServerConfig($sid){
-		return $this->getServer($sid)->getAllConf();
+		// As an unset config entry will fall back to the default config, we will get the default config and overwrite/add it with server specific settings
+		$conf = $this->getDefaultConfig();
+		$confS = $this->getServer($sid)->getAllConf();
+		foreach($confS AS $key=>$val)
+		{
+			$conf[$key] = $val;
+		}
+		return $conf;
 	}
 	public function setServerConfigEntry($sid, $key, $newValue){
 		$this->getServer($sid)->setConf($key, $newValue);

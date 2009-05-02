@@ -17,7 +17,7 @@ a:visited { color:white; }
 a[href^="http://"]:after { font-size:x-small; vertical-align:top; content:" (out)"; }
 a[href$=".pdf"]:after { content:"(PDF)"; }
 form table tr td.formitemname { text-align:right; padding:2px 6px 2px 2px; }
-td, th { text-align:left; padding-left:4px; }
+td, th { text-align:left; padding-left:4px; vertical-align:top; }
 .fullwidth { width:100%; }
 input[type=text], input[type=password], input[type=text], select { width:100%; }
 .alignl { text-align:left; }
@@ -29,6 +29,7 @@ h1 {  }
 .error { color:red; }
 div.error { margin:20px; padding:20px; }
 div.error div.detail { margin-top:10px; color:white; }
+div.js_link { color:grey; font-size:x-small; margin-left:4px; margin-right:4px; }
 .hidden { display:none; }
 .jqlink { cursor:pointer; }
 
@@ -58,3 +59,5 @@ div.error div.detail { margin-top:10px; color:white; }
 
 #content { margin:20px 130px 50px; }
 #jq_information { margin-top:10px; }
+
+.table_headline td { padding-top:12px; font-family:arial; font-weight:bold; text-decoration:underline; }

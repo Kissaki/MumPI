@@ -178,16 +178,47 @@ switch($_GET['ajax']){
 		break;
 		
 	case 'server_showConfig':
-		$config = ServerInterface::getInstance()->getServerConfig($_POST['sid']);
+		$conf = ServerInterface::getInstance()->getServerConfig($_POST['sid']);
+		function echoEditlink()
+		{
+			echo '<div class="js_link" style="float:left;"><a class="jqlink" onclick="server_config_value_edit();">edit</a></div>';
+		}
 ?>
 		<table><tbody>
+			<tr class="table_headline"><td colspan="2">General</td></tr>
+			<tr><td>Password</td>		<td><?php echoEditlink(); echo $conf['password']; unset($conf['password']); ?></td></tr>
+			<tr><td>Users</td>			<td><?php echoEditlink(); echo $conf['users'];    unset($conf['users']); ?></td></tr>
+			<tr><td>Timeout</td>		<td><?php echoEditlink(); echo $conf['timeout'];  unset($conf['timeout']); ?></td></tr>
+			<tr><td>Host</td>			<td><?php echoEditlink(); echo $conf['host'];     unset($conf['host']); ?></td></tr>
+			<tr><td>Port</td>			<td><?php echoEditlink(); echo $conf['port'];     unset($conf['port']); ?></td></tr>
+			<tr><td>Default Channel</td><td><?php echoEditlink(); echo $conf['defaultchannel']; unset($conf['defaultchannel']); ?></td></tr>
+			<tr><td>welcometext</td>	<td><?php echoEditlink(); echo $conf['welcometext']; unset($conf['welcometext']); ?></td></tr>
+			
+			<tr class="table_headline">	<td colspan="2"></td></tr>
+			<tr><td>bandwidth</td>		<td><?php echoEditlink(); echo $conf['bandwidth']; unset($conf['bandwidth']); ?></td></tr>
+			<tr><td>channelname</td>	<td><?php echoEditlink(); echo $conf['channelname']; unset($conf['channelname']); ?></td></tr>
+			<tr><td>playername</td>		<td><?php echoEditlink(); echo $conf['playername']; unset($conf['playername']); ?></td></tr>
+			<tr><td>obfuscate</td>		<td><?php echoEditlink(); echo $conf['obfuscate']; unset($conf['obfuscate']); ?></td></tr>
+			
+			<tr class="table_headline">	<td colspan="2">Server Registration</td></tr>
+			<tr><td>registerhostname</td><td><?php echoEditlink(); echo $conf['registerhostname']; unset($conf['registerhostname']); ?></td></tr>
+			<tr><td>registername</td>	<td><?php echoEditlink(); echo $conf['registername']; unset($conf['registername']); ?></td></tr>
+			<tr><td>registerpassword</td><td><?php echoEditlink(); echo $conf['registerpassword']; unset($conf['registerpassword']); ?></td></tr>
+			<tr><td>registerurl</td>	<td><?php echoEditlink(); echo $conf['registerurl']; unset($conf['registerurl']); ?></td></tr>
+			
+<?php
+		foreach($conf AS $key=>$val)
+		{
+?>
 			<tr>
-				<td>welcome text</td>
-				<td><?php echo ServerInterface::getInstance()->getServerConfigEntry($_POST['sid'], 'welcometext'); ?></td>
+				<td><?php echo $key; ?></td>
+				<td><?php echoEditlink(); echo $val; ?></td>
 			</tr>
+<?php
+		}
+?>
 		</tbody></table>
 <?php
-		echo '<pre>'; var_dump($config); echo '</pre>';
 		break;
 	
 		
@@ -203,8 +234,39 @@ switch($_GET['ajax']){
 		break;
 	
 	case 'meta_server_information_edit':
-		echo 'test';
+		$server = SettingsManager::getInstance()->getServerInformation($_POST['serverid']);
+
+		echo '<div>';
+		if($server === null)
+		{
+			echo 'new:<br/>';
+			$server['name']              = '';
+			$server['allowlogin']        = true;
+			$server['allowregistration'] = true;
+			$server['forcemail']         = true;
+			$server['authbymail']        = true;
+		}
+		echo	'<table>';
+		echo		'<tr><td>name</td>	<td><input type="text" id="meta_server_information_name" name="meta_server_information_name" value="'.$server['name'].'" /></td></tr>';
+		echo		'<tr><td>Allow Login</td>	<td><input type="checkbox" id="meta_server_information_allowlogin" name="meta_server_information_allowlogin" '.($server['allowlogin'] ? 'checked="checked"' : '').'" /></tr>';
+		echo		'<tr><td>Allow Registration</td>	<td><input type="checkbox" id="meta_server_information_allowregistration" name="meta_server_information_allowregistration" '.($server['allowregistration'] ? 'checked="checked"' : '').'" /></tr>';
+		echo		'<tr><td>Force eMail</td>	<td><input type="checkbox" id="meta_server_information_forcemail" name="meta_server_information_forcemail" '.($server['forcemail'] ? 'checked="checked"' : '').'" /></tr>';
+		echo		'<tr><td>Auth by Mail</td>	<td><input type="checkbox" id="meta_server_information_authbymail" name="meta_server_information_authbymail" '.($server['authbymail'] ? 'checked="checked"' : '').'" /></tr>';
+		echo	'</table>';
+		echo	'<input type="button" value="update" onclick="jq_meta_server_information_update('.$_POST['serverid'].');" />';
+		echo '</div>';
 		break;
+	
+	case 'meta_server_information_update':
+		if(isset($_POST['name']) && isset($_POST['allowlogin']) && isset($_POST['allowregistration']) && isset($_POST['forcemail']) && isset($_POST['authbymail']) )
+		{
+			SettingsManager::getInstance()->setServerInformation($_POST['serverid'], $_POST['name'], $_POST['allowlogin'], $_POST['allowregistration'], $_POST['forcemail'], $_POST['authbymail']);
+		}else{
+			echo '<div class="error">It seems not all necessary values have been specified.</div>';
+		}
+		break;
+		
+		
 }
 
 ?>

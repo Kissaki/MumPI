@@ -61,18 +61,18 @@ class SettingsManager {
 	}
 	
 	/**
-	 * Parse a settings file to use the values it specifies
-	 * @return array with settingname=>value (key being the settingname and the value being its value)
+	 * Get the content of a settings file (opening and closing php tags are stripped)
+	 * @return string whole settings file content, without opening and closing php tags are stripped
 	 */
-	private static function getSettingsFileContents($filename=null){
-
+	private static function getSettingsFileContents($filename=null)
+	{
 		if($filename==null)
 			$filename = 'settings.inc.php';
 		
 		if(file_exists(MUMPHPI_MAINDIR.'/'.$filename)){
 			$settings = file_get_contents(MUMPHPI_MAINDIR.'/'.$filename);
 		}else{
-			$settings = file_gut_contents(MUMPHPI_MAINDIR.'/settings.inc.default.php');
+			$settings = file_get_contents(MUMPHPI_MAINDIR.'/settings.inc.default.php');
 			self::setSettingsFileContents($settings);
 		}
 		$settings = substr($settings, 5, strlen($settings)-7);	// strip php tags;
@@ -84,10 +84,20 @@ class SettingsManager {
 		if($filename==null)
 			$filename = 'settings.inc.php';
 		
-		if(file_exists(MUMPHPI_MAINDIR.'/'.$filename)){
-			$settings = file_put_contents(MUMPHPI_MAINDIR.'/'.$filename, $settings_content);
-		}
+		$settings_content = '<?php'.$settings_content.'?>';
 		
+		file_put_contents(MUMPHPI_MAINDIR.'/'.$filename, $settings_content);
+	}
+	private static function appendToSettingsFile($append, $filename=null)
+	{
+		if($filename==null)
+			$filename = 'settings.inc.php';
+		
+		$settings_content = self::getSettingsFileContents($filename);
+		$settings_content = '<?php'.$settings_content.$append."\n".'?>';
+		if(file_exists(MUMPHPI_MAINDIR.'/'.$filename)){
+			file_put_contents(MUMPHPI_MAINDIR.'/'.$filename, $settings_content);
+		}
 	}
 	
 	/**
@@ -181,26 +191,41 @@ function getDbInterface_address(){
 	}
 	
 	
+	/**
+	 * Get the Server Information saved about it in the interface DB.
+	 * @param $serverid server id
+	 * @return unknown_type null if non existant, or a $server array
+	 */
+	function getServerInformation($serverid)
+	{
+		if(isset($this->servers[$serverid]))
+		{
+			return $this->servers[$serverid];
+		}
+		return null;
+	}
 	function setServerInformation($serverid, $name, $allowlogin=true, $allowregistration=true, $forcemail=true, $authbymail=true)
 	{
 		if(isset($this->servers[$serverid]))
 		{
+			// TODO: update server information
+			$settings = self::getSettingsFileContents();
 			
-		}else{
+			$settings = str_replace( '$servers['.$serverid.'][\'name\']              = \''.$this->servers[$serverid]['name'].'\';',
+				'$servers['.$serverid.'][\'name\']              = \''.$name.'\';',
+				$settings);
 			
+			//ereg_replace('$servers\['.$serverid.'\]\[\'name\'\]              = \'(.*)\';', '$servers\['.$serverid.'\][\'name\']              = \''.$name.'\';', $settings);
+			
+			self::setSettingsFileContents($settings);
+		}else{	// There was no server information before, add it to the settings file
+			self::appendToSettingsFile(
+				 '$servers['.$serverid.'][\'name\']              = \''.$name.'\';'."\n"
+				.'$servers['.$serverid.'][\'allowlogin\']        = \''.$allowlogin.'\';'."\n"
+				.'$servers['.$serverid.'][\'allowregistration\'] = \''.$allowregistration.'\';'."\n"
+				.'$servers['.$serverid.'][\'forcemail\']         = \''.$forcemail.'\';'."\n"
+				.'$servers['.$serverid.'][\'authbymail\']        = \''.$authbymail.'\';'."\n");
 		}
-		/*
-		if($this->getServerName($serverid) == null){
-			//if server info does not exist yet, add it
-			$file = file_get_contents($this->getMainDir().'settings.inc.php');
-			$index_key = strstr($file, 'server_numberOfServers');
-			$file_part1 = substr($file, 0, $index_key);
-			$file_part2 = substr($file, $index_key);
-			$index_nl = strstr($file_part2, "\n");
-			$file_part2 = substr($file_part2, $index_nl);
-			$file = $file.'';
-			file_put_contents($this->getMainDir().'settings.inc.php', $file);
-		}*/
 	}
 }
 ?>

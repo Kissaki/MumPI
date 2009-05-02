@@ -29,10 +29,10 @@ define('MUMPHPI_SECTION', 'admin');
 	
 	if(!SessionManager::getInstance()->isAdmin() && HelperFunctions::getActivePage()!='login'){
 		header('Location: ?page=login');
-		die();
-	}elseif(isset($_GET['ajax'])){
+		exit();
+	}elseif(SessionManager::getInstance()->isAdmin() && isset($_GET['ajax'])){
 		require_once(MUMPHPI_MAINDIR.'/ajax/admin.ajax.php');
-		die();
+		exit();
 	}
 	
 ?>

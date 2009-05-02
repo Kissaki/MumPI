@@ -18,7 +18,9 @@
 					<tr class="jqserver" id="jq_server_<?php echo $server->id(); ?>">
 						<td><?php echo $server->id(); ?></td>
 						<td>
-							<div onclick="jq_meta_server_information_edit(<?php echo $server->id(); ?>)" style="float:right; color:grey; font-size:x-small; margin-right:4px;">edit</div>
+							<div class="js_link" style="float:right;">
+								<a class="jqlink" onclick="jq_meta_server_information_edit(<?php echo $server->id(); ?>)">edit</a>
+							</div>
 <?php
 							if(isset($servername)){
 								echo $servername;
@@ -120,11 +122,28 @@
 		function jq_meta_server_information_edit(serverid)
 		{
 			$.post(".?ajax=meta_server_information_edit",
-					{  },
+					{ 'serverid': serverid },
 					function(data){
 						$('#jq_information').show().html(data);
 					}
 				);
+		}
+		function jq_meta_server_information_update(serverid)
+		{
+			$.post(".?ajax=meta_server_information_update",
+					{
+						'serverid'			: serverid,
+						'name'				: $('#meta_server_information_name').attr('value'),
+						'allowlogin'		: $('#meta_server_information_allowlogin').attr('checked')	=='checked',
+						'allowregistration' : $('#meta_server_information_allowregistration').attr('checked') =='checked',
+						'forcemail'			: $('#meta_server_information_forcemail').attr('checked')	=='checked',
+						'authbymail'		: $('#meta_server_information_authbymail').attr('checked')	=='checked'
+					},
+					function(data){
+						$('#jq_information').show().html(data);
+					}
+				);
+			jq_loadPage('meta');
 		}
 		
 		function center(object)

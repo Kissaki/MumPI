@@ -49,10 +49,28 @@ $servers[1]['allowregistration'] = true;
 $servers[1]['forcemail'] = false;
 $servers[1]['authbymail'] = false;
 
-$servers[2]['name'] = 'my private server';
-$servers[2]['allowlogin'] = true;
+$servers[2]['name']              = 'my private server';
+$servers[2]['allowlogin']        = true;
 $servers[2]['allowregistration'] = false;
-$servers[2]['forcemail'] = true;
-$servers[2]['authbymail'] = true;
+$servers[2]['forcemail']         = true;
+$servers[2]['authbymail']        = true;
+
+$servers[3]['name']              = 'dd';
+$servers[3]['allowlogin']        = 'false';
+$servers[3]['allowregistration'] = 'false';
+$servers[3]['forcemail']         = 'false';
+$servers[3]['authbymail']        = 'false';
+
+$servers[4]['name']              = 'ss';
+$servers[4]['allowlogin']        = 'false';
+$servers[4]['allowregistration'] = 'false';
+$servers[4]['forcemail']         = 'false';
+$servers[4]['authbymail']        = 'false';
+
+$servers[6]['name']              = '333';
+$servers[6]['allowlogin']        = 'false';
+$servers[6]['allowregistration'] = 'false';
+$servers[6]['forcemail']         = 'false';
+$servers[6]['authbymail']        = 'false';
 
 ?>
