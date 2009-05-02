@@ -8,7 +8,6 @@
 
 /**
  * The SettingsManager class is an interface to the settings.
- * @author Jan Klass
  */
 class SettingsManager {
 	private static $instance;

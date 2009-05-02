@@ -12,7 +12,7 @@ $url	= '.';
 $theme	= 'default';
 $defaultLanguage = 'en';
 
-// interface may be: ice, (dbus may be added at a later time)
+// interface may be: ice, (dbus may be added at a later time, or probably not)
 $dbInterface_type		= 'ice';
 $dbInterface_address	= 'Meta:tcp -h 127.0.0.1 -p 6502';
 

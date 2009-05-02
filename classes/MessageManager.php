@@ -1,4 +1,14 @@
 <?php
+/**
+ * Mumble PHP Interface by Kissaki
+ * Released under Creative Commons Attribution-Noncommercial License
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ * @author Kissaki
+ */
+
+/**
+ * Handle Messages that can be polled later, eg at the end of interpreting the page.
+ */
 class MessageManager
 {
 	private static $errors = array();
