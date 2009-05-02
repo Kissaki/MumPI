@@ -33,11 +33,6 @@ $site_description='Mumble Interface to register on a mumble server and edit your
 $site_keywords='mumble,murmur,web-interface,registration,account,management,voip';
 
 // For Each Server set:
-//   server_<serverid>_name              = 
-//   server_<serverid>_allowlogin        = 
-//   server_<serverid>_allowregistration = 
-//   server_<serverid>_forcemail         = 
-//   server_<serverid>_authbymail        = 
 // forceemail: force to enter a mail address. This is always true if authbymail is true.
 // authbymail: account has to be activated with a code sent to the mail address
 // The default virtual server has the id 1
@@ -45,9 +40,15 @@ $site_keywords='mumble,murmur,web-interface,registration,account,management,voip
 $servers = array();
 
 $servers[1]['name']              = 'my custom server';
-$servers[1]['allowlogin']        = false;
-$servers[1]['allowregistration'] = false;
-$servers[1]['forcemail']         = true;
-$servers[1]['authbymail']        = true;
+$servers[1]['allowlogin']        = true;
+$servers[1]['allowregistration'] = true;
+$servers[1]['forcemail']         = false;
+$servers[1]['authbymail']        = false;
+
+$servers[3]['name']              = 'tt';
+$servers[3]['allowlogin']        = true;
+$servers[3]['allowregistration'] = true;
+$servers[3]['forcemail']         = true;
+$servers[3]['authbymail']        = false;
 
 ?>

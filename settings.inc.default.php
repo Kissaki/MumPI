@@ -20,7 +20,7 @@ $dbInterface_address	= 'Meta:tcp -h 127.0.0.1 -p 6502';
 // later, the following will be implemented: (TODO: add mysql, psql, sqlite)
 $dbType		= 'filesystem';
 
-// not necessary for dbType filesystem, but for mysql, psql etc:
+// not necessary for dbType filesystem, but for mysql, psql etc (so not at all yet):
 $db_username    = '';
 $db_password    = '';
 $db_database    = '';
@@ -31,20 +31,21 @@ $site_description='Mumble Interface to register on a mumble server and edit your
 $site_keywords='mumble,murmur,web-interface,registration,account,management,voip';
 
 // For Each Server set:
-//   server_<serverid>_name              = 
-//   server_<serverid>_allowlogin        = 
-//   server_<serverid>_allowregistration = 
-//   server_<serverid>_forcemail         = 
-//   server_<serverid>_authbymail        = 
+//$servers[<serverid>]['name']              = '<server name in the interface>';
+//$servers[<serverid>]['allowlogin']        = true;
+//$servers[<serverid>]['allowregistration'] = true;
+//$servers[<serverid>]['forcemail']         = false;
+//$servers[<serverid>]['authbymail']        = false;
 // forceemail: force to enter a mail address. This is always true if authbymail is true.
 // authbymail: account has to be activated with a code sent to the mail address
 // The default virtual server has the id 1
 // Neither allowing login nor registration will hide it from the interface. You can then only see it from the admin section.
+$servers = array();
 
-$servers[1]['name'] = 'my custom server';
+$servers[1]['name'] = 'my server';
 $servers[1]['allowlogin'] = true;
 $servers[1]['allowregistration'] = true;
-$servers[1]['forcemail'] = false;
+$servers[1]['forcemail'] = true;
 $servers[1]['authbymail'] = false;
 
 $servers[2]['name'] = 'my private server';

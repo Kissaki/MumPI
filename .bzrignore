@@ -3,3 +3,4 @@ cmd.exe.lnk
 .project
 .settings
 tmp/cap_*
+bin

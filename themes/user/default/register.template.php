@@ -52,10 +52,10 @@
 					<?php $servers = SettingsManager::getInstance()->getServers(); ?>
 					<select name="serverid" style="width:100%">
 						<?php 
-							foreach($servers AS $server){
+							foreach($servers AS $sid=>$server){
 								// Check that server allows registration and does exist
-								if($server['allowregistration'] && ServerInterface::getInstance()->getServer($server['id'])!=null){
-									echo '<option value="'.$server['id'].'">';
+								if($server['allowregistration'] && ServerInterface::getInstance()->getServer($sid)!=null){
+									echo '<option value="'.$sid.'">';
 									echo $server['name'];
 									echo '</option>';
 								}

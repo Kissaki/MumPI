@@ -1,0 +1,17 @@
+
+make sure the following folders are writable:
+* tmp
+* data
+
+If you don't have a default Ice ip + port (localhost), you will have to specify it in the settings file.
+Otherwise it should work out of the box.
+
+
+The 0.3.0 includes a new settings file format, so it is not compatible with the old one.
+You should make a fresh install.
+
+For updates check the atom feed
+http://kissaki.clandooc.de/mumble/interfaces/PHP_Interface_atom.php
+(Add it to thunderbird or whatever)
+
+

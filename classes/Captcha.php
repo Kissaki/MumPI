@@ -16,7 +16,7 @@ class Captcha{
 		$op[1] = '-';
 		$cap_r1 = rand(0,99);
 		$cap_op = $op[rand(0,1)];
-		$cap_r2 = rand(0,99);
+		$cap_r2 = rand(0,22);
 		eval('$cap_result = '.$cap_r1.$cap_op.$cap_r2.';');
 		$_SESSION['captcha_result'] = md5($cap_result);
 		

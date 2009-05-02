@@ -1,6 +1,5 @@
 <?php
 class HelperFunctions{
-	// TODO rename "section" to "page"
 	public static function getActivePage(){
 		if(isset($_GET['page'])){
 			return $_GET['page'];
