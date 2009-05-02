@@ -20,6 +20,8 @@ form table tr td.formitemname { text-align:right; padding:2px 6px 2px 2px; }
 td, th { text-align:left; padding-left:4px; vertical-align:top; }
 .fullwidth { width:100%; }
 input[type=text], input[type=password], input[type=text], select { width:100%; }
+textarea { width:100%; min-height:100px; }
+textarea.heightInc { height:200px; }
 .alignl { text-align:left; }
 .alignc { text-align:center; }
 .alignr { text-align:right; }

@@ -57,7 +57,7 @@
 	<a class="jqlink" id="server_create">Create a new Server</a>
 	<a class="jqlink" onclick="jq_meta_showDefaultConfig()">Show Default Config</a>
 	
-	<div id="jq_information" style="display:none;">
+	<div id="jq_information">
 		
 	</div>
 	<script type="text/javascript">
@@ -67,26 +67,20 @@
 				$.post("./?ajax=server_create",
 					{ name: "John", time: "2pm" },
 					function(data){
-						$('#jq_information').show().html('Server created with ID: '+data);
+						$('#jq_information').html('Server created with ID: '+data);
 					}
 				);
 				jq_loadPage('meta');
 			});
-		function jq_loadPage(page){
-			$.get('./?ajax=getPage&page='+page, {},
-					function(data){
-						$('#content').html(data);
-					}
-				);
-		}
+		
 		function jq_server_delete(sid){
 			$.post("./?ajax=server_delete",
 					{ 'sid': sid },
 					function(data){
 						if(data!=''){
-							$('#jq_information').show().html(data);
+							$('#jq_information').html(data);
 						}
-						$('#jq_information').show().html('stopped');
+						$('#jq_information').html('stopped');
 					}
 				);
 			jq_loadPage('meta');
@@ -95,7 +89,7 @@
 			$.post("./?ajax=server_stop",
 					{ 'sid': sid },
 					function(data){
-						$('#jq_information').show().html('stopped');
+						$('#jq_information').html('stopped');
 					}
 				);
 			jq_loadPage('meta');
@@ -104,17 +98,17 @@
 			$.post("./?ajax=server_start",
 					{ 'sid': sid },
 					function(data){
-						$('#jq_information').show().html('stopped');
+						$('#jq_information').html('stopped');
 					}
 				);
 			jq_loadPage('meta');
 		}
-
+		
 		function jq_meta_showDefaultConfig(){
 			$.post("./?ajax=meta_showDefaultConfig",
 					{  },
 					function(data){
-						$('#jq_information').show().html('<h2>Default Config</h2>'+data);
+						$('#jq_information').html('<h2>Default Config</h2>'+data);
 					}
 				);
 		}
@@ -124,7 +118,7 @@
 			$.post(".?ajax=meta_server_information_edit",
 					{ 'serverid': serverid },
 					function(data){
-						$('#jq_information').show().html(data);
+						$('#jq_information').html(data);
 					}
 				);
 		}
@@ -134,13 +128,10 @@
 					{
 						'serverid'			: serverid,
 						'name'				: $('#meta_server_information_name').attr('value'),
-						'allowlogin'		: $('#meta_server_information_allowlogin').attr('checked')	=='checked',
-						'allowregistration' : $('#meta_server_information_allowregistration').attr('checked') =='checked',
-						'forcemail'			: $('#meta_server_information_forcemail').attr('checked')	=='checked',
-						'authbymail'		: $('#meta_server_information_authbymail').attr('checked')	=='checked'
-					},
-					function(data){
-						$('#jq_information').show().html(data);
+						'allowlogin'		: $('#meta_server_information_allowlogin').attr('checked'),
+						'allowregistration' : $('#meta_server_information_allowregistration').attr('checked'),
+						'forcemail'			: $('#meta_server_information_forcemail').attr('checked'),
+						'authbymail'		: $('#meta_server_information_authbymail').attr('checked')
 					}
 				);
 			jq_loadPage('meta');
@@ -151,5 +142,5 @@
 			object.style.marginLeft = "-" + parseInt(object.offsetWidth / 2) + "px";
 			object.style.marginTop = "-" + parseInt(object.offsetHeight / 2) + "px";
 		}
-		//$('#jq_information').show().html($(parent).id());
+		//$('#jq_information').html($(parent).id());
 	</script>

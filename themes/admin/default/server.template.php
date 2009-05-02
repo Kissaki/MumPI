@@ -19,7 +19,7 @@
 		<li><a class="jqlink" onclick="jq_server_getRegistrations(<?php echo $server->id(); ?>); return false;">Registrations</a></li>
 		<li><a class="jqlink" onclick="jq_server_getBans(<?php echo $server->id(); ?>); return false;">Bans</a></li>
 		<li><a class="jqlink" onclick="jq_server_showTree(<?php echo $server->id(); ?>); return false;">Channel-Tree</a></li>
-		<li><a class="jqlink" onclick="jq_server_showConfig(<?php echo $server->id(); ?>); return false;">Config</a></li>
+		<li><a class="jqlink" onclick="jq_server_config_show(<?php echo $server->id(); ?>); return false;">Config</a></li>
 	</ul>
 	
 	<hr/>
@@ -29,19 +29,10 @@
 	</div>
 	<script type="text/javascript">
 		
-		function jq_loadPage(page){
-			$.get('./?ajax=getPage&page='+page, {},
-					function(data){
-						$('#content').html(data);
-					}
-				);
-		}
-		
 		function jq_updateUsername(uid, newValue){
 			$.post('./?ajax=server_user_updateUsername',
 					{ 'sid': $_GET['sid'], 'uid': newValue }
 				);
-			//$('#jq_form').parent().html($('#jq_formitem').attr('value'));
 		}
 		function jq_server_getRegistrations(sid){
 			$.post("./?ajax=server_getRegistrations",
@@ -134,8 +125,8 @@
 					}
 				);
 		}
-		function jq_server_showConfig(sid){
-			$.post("./?ajax=server_showConfig",
+		function jq_server_config_show(sid){
+			$.post("./?ajax=server_config_show",
 					{ 'sid': sid },
 					function(data){
 						$('#jq_information').show().html(data);

@@ -23,6 +23,7 @@ define('MUMPHPI_SECTION', 'admin');
 	require_once(MUMPHPI_MAINDIR.'/classes/ServerInterface.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/TemplateManager.php');
+	require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
 	
 	if(SettingsManager::getInstance()->isDebugMode())
 		error_reporting(E_ALL);

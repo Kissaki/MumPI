@@ -176,35 +176,42 @@ switch($_GET['ajax']){
 	case 'show_acl':
 		
 		break;
-		
-	case 'server_showConfig':
+	
+	case 'server_config_get':
+		ServerInterface::getInstance()->getServerConfig($_POST['sid']);
+		break;
+	
+	case 'server_config_show':
+		if(!isset($_POST['sid'])) break;
+		$_POST['sid'] = intval($_POST['sid']);
 		$conf = ServerInterface::getInstance()->getServerConfig($_POST['sid']);
-		function echoEditlink()
-		{
-			echo '<div class="js_link" style="float:left;"><a class="jqlink" onclick="server_config_value_edit();">edit</a></div>';
-		}
 ?>
+		<h1>Server Config</h1>
+		<p>For documentation, see your murmur.ini file (or <a href="http://mumble.git.sourceforge.net/git/gitweb.cgi?p=mumble;a=blob_plain;f=scripts/murmur.ini;hb=HEAD" rel="external">this</a> one in the repository, which may however differ from your version)
+		<br/>
+		<br/>
+		<p style="font-size:x-small;">(Double-click entries to edit them)</p>
 		<table><tbody>
 			<tr class="table_headline"><td colspan="2">General</td></tr>
-			<tr><td>Password</td>		<td><?php echoEditlink(); echo $conf['password']; unset($conf['password']); ?></td></tr>
-			<tr><td>Users</td>			<td><?php echoEditlink(); echo $conf['users'];    unset($conf['users']); ?></td></tr>
-			<tr><td>Timeout</td>		<td><?php echoEditlink(); echo $conf['timeout'];  unset($conf['timeout']); ?></td></tr>
-			<tr><td>Host</td>			<td><?php echoEditlink(); echo $conf['host'];     unset($conf['host']); ?></td></tr>
-			<tr><td>Port</td>			<td><?php echoEditlink(); echo $conf['port'];     unset($conf['port']); ?></td></tr>
-			<tr><td>Default Channel</td><td><?php echoEditlink(); echo $conf['defaultchannel']; unset($conf['defaultchannel']); ?></td></tr>
-			<tr><td>welcometext</td>	<td><?php echoEditlink(); echo $conf['welcometext']; unset($conf['welcometext']); ?></td></tr>
+			<tr><td>Password</td>		<td class="jq_editable" id="jq_editable_server_conf_password"><?php echo $conf['password']; unset($conf['password']); ?></td></tr>
+			<tr><td>Users</td>			<td class="jq_editable" id="jq_editable_server_conf_users"><?php echo $conf['users'];    unset($conf['users']); ?></td></tr>
+			<tr><td>Timeout</td>		<td class="jq_editable" id="jq_editable_server_conf_timeout"><?php echo $conf['timeout'];  unset($conf['timeout']); ?></td></tr>
+			<tr><td>Host</td>			<td class="jq_editable" id="jq_editable_server_conf_host"><?php echo $conf['host'];     unset($conf['host']); ?></td></tr>
+			<tr><td>Port</td>			<td class="jq_editable" id="jq_editable_server_conf_port"><?php echo $conf['port'];     unset($conf['port']); ?></td></tr>
+			<tr><td>Default Channel</td><td class="jq_editable" id="jq_editable_server_conf_defaultchannel"><?php echo $conf['defaultchannel']; unset($conf['defaultchannel']); ?></td></tr>
+			<tr><td>welcometext</td>	<td class="jq_editable" id="jq_editable_server_conf_welcometext"><?php echo $conf['welcometext']; unset($conf['welcometext']); ?></td></tr>
 			
 			<tr class="table_headline">	<td colspan="2"></td></tr>
-			<tr><td>bandwidth</td>		<td><?php echoEditlink(); echo $conf['bandwidth']; unset($conf['bandwidth']); ?></td></tr>
-			<tr><td>channelname</td>	<td><?php echoEditlink(); echo $conf['channelname']; unset($conf['channelname']); ?></td></tr>
-			<tr><td>playername</td>		<td><?php echoEditlink(); echo $conf['playername']; unset($conf['playername']); ?></td></tr>
-			<tr><td>obfuscate</td>		<td><?php echoEditlink(); echo $conf['obfuscate']; unset($conf['obfuscate']); ?></td></tr>
+			<tr><td>bandwidth</td>		<td class="jq_editable" id="jq_editable_server_conf_bandwidth"><?php echo $conf['bandwidth']; unset($conf['bandwidth']); ?></td></tr>
+			<tr><td>channelname</td>	<td class="jq_editable" id="jq_editable_server_conf_channelname"><?php echo $conf['channelname']; unset($conf['channelname']); ?></td></tr>
+			<tr><td>playername</td>		<td class="jq_editable" id="jq_editable_server_conf_playername"><?php echo $conf['playername']; unset($conf['playername']); ?></td></tr>
+			<tr><td>obfuscate</td>		<td class="jq_editable" id="jq_editable_server_conf_obfuscate"><?php echo $conf['obfuscate']; unset($conf['obfuscate']); ?></td></tr>
 			
-			<tr class="table_headline">	<td colspan="2">Server Registration</td></tr>
-			<tr><td>registerhostname</td><td><?php echoEditlink(); echo $conf['registerhostname']; unset($conf['registerhostname']); ?></td></tr>
-			<tr><td>registername</td>	<td><?php echoEditlink(); echo $conf['registername']; unset($conf['registername']); ?></td></tr>
-			<tr><td>registerpassword</td><td><?php echoEditlink(); echo $conf['registerpassword']; unset($conf['registerpassword']); ?></td></tr>
-			<tr><td>registerurl</td>	<td><?php echoEditlink(); echo $conf['registerurl']; unset($conf['registerurl']); ?></td></tr>
+			<tr class="table_headline">	 <td colspan="2">Server Registration</td></tr>
+			<tr><td>registerhostname</td><td class="jq_editable" id="jq_editable_server_conf_registerhostname"><?php echo $conf['registerhostname']; unset($conf['registerhostname']); ?></td></tr>
+			<tr><td>registername</td>	 <td class="jq_editable" id="jq_editable_server_conf_registername"><?php echo $conf['registername']; unset($conf['registername']); ?></td></tr>
+			<tr><td>registerpassword</td><td class="jq_editable" id="jq_editable_server_conf_registerpassword"><?php echo $conf['registerpassword']; unset($conf['registerpassword']); ?></td></tr>
+			<tr><td>registerurl</td>	 <td class="jq_editable" id="jq_editable_server_conf_registerurl"><?php echo $conf['registerurl']; unset($conf['registerurl']); ?></td></tr>
 			
 <?php
 		foreach($conf AS $key=>$val)
@@ -212,13 +219,55 @@ switch($_GET['ajax']){
 ?>
 			<tr>
 				<td><?php echo $key; ?></td>
-				<td><?php echoEditlink(); echo $val; ?></td>
+				<td class="jq_editable" id="jq_editable_server_conf_<?php echo $key; ?>"><?php echo $val; ?></td>
 			</tr>
 <?php
 		}
 ?>
 		</tbody></table>
+		<script type="text/javascript">
+			function jq_editable_server_conf_onSubmit(obj, content)
+			{
+				var id = obj.attr('id');
+				var subId = id.substring(id.lastIndexOf('_')+1, id.length);
+				$.post('./?ajax=server_config_update',
+					{ 'sid': <?php echo $_POST['sid']; ?>, 'key': subId, 'value': content.current },
+					function(data)
+					{
+						jq_server_config_show(<?php echo $_POST['sid']; ?>);
+					}
+				);
+			}
+			function jq_editable_server_conf_text2textarea(key)
+			{
+				$('#jq_editable_server_conf_'+key).editable('destroy').editable({
+					'type': 'textarea',
+					'submit': 'save',
+					'cancel':'cancel',
+					'editBy': 'dblclick',
+					'onSubmit': function(content){ jq_editable_server_conf_onSubmit($(this), content); }
+				});
+			}
+			$('.jq_editable')
+				.editable({
+					'type': 'text',
+					'submit': 'save',
+					'cancel':'cancel',
+					'editBy': 'dblclick',
+					'onSubmit': function(content){ jq_editable_server_conf_onSubmit($(this), content); }
+				});
+			jq_editable_server_conf_text2textarea('welcometext');
+			jq_editable_server_conf_text2textarea('certificate');
+			jq_editable_server_conf_text2textarea('key');
+		</script>
 <?php
+		break;
+		
+	case 'server_config_update':
+		if(isset($_POST['sid']) && isset($_POST['key']) && isset($_POST['value']))
+		{
+			ServerInterface::getInstance()->setServerConfigEntry($_POST['sid'], $_POST['key'], $_POST['value']);
+		}
 		break;
 	
 		
@@ -227,10 +276,6 @@ switch($_GET['ajax']){
 		break;
 	case 'server_user_updateEmail':
 		ServerInterface::getInstance()->updateUserEmail($_POST['sid'], $_POST['uid'], $_POST['newValue']);
-		break;
-	
-	case 'server_config_get':
-		ServerInterface::getInstance()->getServerConfig($_POST['sid']);
 		break;
 	
 	case 'meta_server_information_edit':
@@ -244,16 +289,27 @@ switch($_GET['ajax']){
 			$server['allowlogin']        = true;
 			$server['allowregistration'] = true;
 			$server['forcemail']         = true;
-			$server['authbymail']        = true;
+			$server['authbymail']        = false;
 		}
 		echo	'<table>';
-		echo		'<tr><td>name</td>	<td><input type="text" id="meta_server_information_name" name="meta_server_information_name" value="'.$server['name'].'" /></td></tr>';
-		echo		'<tr><td>Allow Login</td>	<td><input type="checkbox" id="meta_server_information_allowlogin" name="meta_server_information_allowlogin" '.($server['allowlogin'] ? 'checked="checked"' : '').'" /></tr>';
-		echo		'<tr><td>Allow Registration</td>	<td><input type="checkbox" id="meta_server_information_allowregistration" name="meta_server_information_allowregistration" '.($server['allowregistration'] ? 'checked="checked"' : '').'" /></tr>';
-		echo		'<tr><td>Force eMail</td>	<td><input type="checkbox" id="meta_server_information_forcemail" name="meta_server_information_forcemail" '.($server['forcemail'] ? 'checked="checked"' : '').'" /></tr>';
-		echo		'<tr><td>Auth by Mail</td>	<td><input type="checkbox" id="meta_server_information_authbymail" name="meta_server_information_authbymail" '.($server['authbymail'] ? 'checked="checked"' : '').'" /></tr>';
+		echo		'<tr><td>name</td>'
+						.'<td><input type="text" id="meta_server_information_name" name="meta_server_information_name" value="'
+						.$server['name'].'" /></td></tr>';
+		echo		'<tr><td>Allow Login</td>'
+						.'<td><input type="checkbox" id="meta_server_information_allowlogin" name="meta_server_information_allowlogin"'
+						.($server['allowlogin'] ? ' checked="checked"' : '').'" /></tr>';
+		echo		'<tr><td>Allow Registration</td>'
+						.'<td><input type="checkbox" id="meta_server_information_allowregistration" name="meta_server_information_allowregistration"'
+						.($server['allowregistration'] ? ' checked="checked"' : '').'" /></tr>';
+		echo		'<tr><td>Force eMail</td>'
+						.'<td><input type="checkbox" id="meta_server_information_forcemail" name="meta_server_information_forcemail"'
+						.($server['forcemail'] ? ' checked="checked"' : '').'" /></tr>';
+		echo		'<tr><td>Auth by Mail</td>'
+						.'<td><input type="checkbox" id="meta_server_information_authbymail" name="meta_server_information_authbymail"'
+						.($server['authbymail'] ? ' checked="checked"' : '').'" /></tr>';
 		echo	'</table>';
 		echo	'<input type="button" value="update" onclick="jq_meta_server_information_update('.$_POST['serverid'].');" />';
+		echo	'<input type="button" value="cancel" onclick="$(\'#jq_information\').html(\'\');" />';
 		echo '</div>';
 		break;
 	
@@ -262,7 +318,7 @@ switch($_GET['ajax']){
 		{
 			SettingsManager::getInstance()->setServerInformation($_POST['serverid'], $_POST['name'], $_POST['allowlogin'], $_POST['allowregistration'], $_POST['forcemail'], $_POST['authbymail']);
 		}else{
-			echo '<div class="error">It seems not all necessary values have been specified.</div>';
+			MessageManager::addError(TranslationManager::getInstance()->getText('error_missing_values'));
 		}
 		break;
 		

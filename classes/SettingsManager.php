@@ -204,27 +204,63 @@ function getDbInterface_address(){
 		}
 		return null;
 	}
-	function setServerInformation($serverid, $name, $allowlogin=true, $allowregistration=true, $forcemail=true, $authbymail=true)
+	function setServerInformation($serverid, $name, $allowlogin=true, $allowregistration=true, $forcemail=true, $authbymail=false)
 	{
 		if(isset($this->servers[$serverid]))
 		{
-			// TODO: update server information
-			$settings = self::getSettingsFileContents();
+			$filename = 'settings.inc.php';
+			$filepath = MUMPHPI_MAINDIR.'/'.$filename;
+			if(file_exists($filepath)){
+				$lines = file($filepath);
+				$fh = fopen($filepath, 'w');
+				foreach($lines AS $line)
+				{
+					if( substr($line, 0, 11) == '$servers['.$serverid.']')
+					{
+						if( strncmp($line, '$servers['.$serverid.'][\'name\']', 19) === 0 )
+						{
+							fwrite($fh, '$servers['.$serverid.'][\'name\']              = \''.$name.'\';'."\n");
+						}
+						if( strncmp($line, '$servers['.$serverid.'][\'allowlogin\']', 25) === 0 )
+						{
+							fwrite($fh, '$servers['.$serverid.'][\'allowlogin\']        = '.$allowlogin.';'."\n");
+						}
+						if( strncmp($line, '$servers['.$serverid.'][\'allowregistration\']', 32) === 0 )
+						{
+							fwrite($fh, '$servers['.$serverid.'][\'allowregistration\'] = '.$allowregistration.';'."\n");
+						}
+						if( strncmp($line, '$servers['.$serverid.'][\'forcemail\']', 24) === 0 )
+						{
+							fwrite($fh, '$servers['.$serverid.'][\'forcemail\']         = '.$forcemail.';'."\n");
+						}
+						if( strncmp($line, '$servers['.$serverid.'][\'authbymail\']', 25) === 0 )
+						{
+							fwrite($fh, '$servers['.$serverid.'][\'authbymail\']        = '.$authbymail.';'."\n");
+						}
+					}else{
+						fwrite($fh, $line);
+					}
+				}
+				fclose($fh);
+			}
 			
-			$settings = str_replace( '$servers['.$serverid.'][\'name\']              = \''.$this->servers[$serverid]['name'].'\';',
-				'$servers['.$serverid.'][\'name\']              = \''.$name.'\';',
-				$settings);
+//			$settings = str_replace( '$servers['.$serverid.'][\'name\']              = \''.$this->servers[$serverid]['name'].'\';',
+//				'$servers['.$serverid.'][\'name\']              = \''.$name.'\';',
+//				$settings);
+//			$settings = str_replace( '$servers['.$serverid.'][\'allowlogin\']        = '.$this->servers[$serverid]['allowlogin'].';',
+//				'$servers['.$serverid.'][\'allowlogin\']        = '.$allowlogin.';',
+//				$settings);
 			
+			//$settings = self::getSettingsFileContents();
 			//ereg_replace('$servers\['.$serverid.'\]\[\'name\'\]              = \'(.*)\';', '$servers\['.$serverid.'\][\'name\']              = \''.$name.'\';', $settings);
-			
-			self::setSettingsFileContents($settings);
+			//self::setSettingsFileContents($settings);
 		}else{	// There was no server information before, add it to the settings file
 			self::appendToSettingsFile(
 				 '$servers['.$serverid.'][\'name\']              = \''.$name.'\';'."\n"
-				.'$servers['.$serverid.'][\'allowlogin\']        = \''.$allowlogin.'\';'."\n"
-				.'$servers['.$serverid.'][\'allowregistration\'] = \''.$allowregistration.'\';'."\n"
-				.'$servers['.$serverid.'][\'forcemail\']         = \''.$forcemail.'\';'."\n"
-				.'$servers['.$serverid.'][\'authbymail\']        = \''.$authbymail.'\';'."\n");
+				.'$servers['.$serverid.'][\'allowlogin\']        = '.$allowlogin.';'."\n"
+				.'$servers['.$serverid.'][\'allowregistration\'] = '.$allowregistration.';'."\n"
+				.'$servers['.$serverid.'][\'forcemail\']         = '.$forcemail.';'."\n"
+				.'$servers['.$serverid.'][\'authbymail\']        = '.$authbymail.';'."\n");
 		}
 	}
 }

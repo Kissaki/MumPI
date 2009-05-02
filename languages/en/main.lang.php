@@ -32,7 +32,7 @@
 	$txt['help_profile_textur'] = 'This user texture will be displayed in mumbles overlay instead of a nickname, if activated in the options.';
 	
 	//Errors
-	$txt['error_db_unknowninterface'] = 'Misconfiguration: Unknown <acronym title="database">DB</acronym> Interface Type!';
-	
+	$txt['error_db_unknowninterface']	= 'Misconfiguration: Unknown <acronym title="database">DB</acronym> Interface Type!';
+	$txt['error_missing_values']		= 'It seems not all necessary values have been specified.';
 
 ?>

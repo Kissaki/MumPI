@@ -1,6 +1,15 @@
 <?php
 	if(SessionManager::getInstance()->isAdmin()){
 ?>
+<script type="text/javascript">
+	function jq_loadPage(page){
+		$.get('./?ajax=getPage&page='+page, {},
+				function(data){
+					$('#content').html(data);
+				}
+			);
+	}
+</script>
 <div id="footer">
 	<?php
 		echo 'Server Version: '.ServerInterface::getInstance()->getVersion();

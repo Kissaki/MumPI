@@ -2,3 +2,4 @@ cmd.exe.lnk
 .buildpath
 .project
 .settings
+tmp/cap_*
