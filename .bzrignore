@@ -5,3 +5,4 @@ cmd.exe.lnk
 tmp/cap_*
 bin
 data/log_register.log
+data/admins.dat

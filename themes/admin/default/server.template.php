@@ -19,6 +19,7 @@
 		<li><a class="jqlink" onclick="jq_server_getRegistrations(<?php echo $server->id(); ?>); return false;">Registrations</a></li>
 		<li><a class="jqlink" onclick="jq_server_getBans(<?php echo $server->id(); ?>); return false;">Bans</a></li>
 		<li><a class="jqlink" onclick="jq_server_showTree(<?php echo $server->id(); ?>); return false;">Channel-Tree</a></li>
+		<li id="li_server_superuserpassword"><a class="jqlink" onclick="jq_server_setSuperuserPassword(<?php echo $server->id(); ?>); return false;">Generate new SuperuserPassword</a></li>
 		<li><a class="jqlink" onclick="jq_server_config_show(<?php echo $server->id(); ?>); return false;">Config</a></li>
 	</ul>
 	
@@ -28,10 +29,34 @@
 		
 	</div>
 	<script type="text/javascript">
-		
+		function randomString(length) {
+			var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz§$%&/()=?!{[]}";
+			var str = '';
+			for (var i=0; i<length; i++) {
+				var r = Math.floor(Math.random() * chars.length);
+				str += chars.substring(r,r+1);
+			}
+			return str;
+		}
+		function jq_server_setSuperuserPassword(sid)
+		{
+			var pw = randomString(6);
+			$.post('./?ajax=server_setSuperuserPassword',
+					{ 'sid': <?php echo $_GET['sid']; ?>, 'pw': pw },
+					function(data)
+					{
+						if(data=='')
+						{
+							$('#li_server_superuserpassword').append('<div>Password set to: '+pw+'</div>');
+						}else{
+							$('#li_server_superuserpassword').append(data);
+						}
+					}
+				);
+		}
 		function jq_updateUsername(uid, newValue){
 			$.post('./?ajax=server_user_updateUsername',
-					{ 'sid': $_GET['sid'], 'uid': newValue }
+					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': newValue }
 				);
 		}
 		function jq_server_getRegistrations(sid){

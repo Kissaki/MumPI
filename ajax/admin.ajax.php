@@ -32,6 +32,9 @@ switch($_GET['ajax']){
 	case 'server_stop':
 		ServerInterface::getInstance()->stopServer($_POST['sid']);
 		break;
+	case 'server_setSuperuserPassword':
+		ServerInterface::getInstance()->setServerSuperuserPassword($_POST['sid'], $_POST['pw']);
+		break;
 		
 	case 'server_getRegistrations':
 		$users = array();
