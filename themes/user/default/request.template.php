@@ -51,10 +51,10 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 					<?php $servers = SettingsManager::getInstance()->getServers(); ?>
 					<select name="serverid" style="width:100%">
 						<?php
-							foreach($servers AS $server){
+							foreach($servers AS $sid=>$server){
 								// Check that server allows login and does exist
-								if($server['allowlogin'] && ServerInterface::getInstance()->getServer($server['id'])!=null){
-									echo '<option value="'.$server['id'].'">';
+								if($server['allowlogin'] && ServerInterface::getInstance()->getServer($sid)!=null){
+									echo '<option value="'.$sid.'">';
 									echo $server['name'];
 									echo '</option>';
 								}
