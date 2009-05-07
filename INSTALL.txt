@@ -1,7 +1,14 @@
 
 make sure the following folders are writable:
-* tmp
-* data
+* Mumble_PHP_Interface/tmp
+* Mumble_PHP_Interface/data
+* Mumble_PHP_Interface
+(if you renamed Mumble_PHP_Interface, that one of course)
+
+Make sure ppl can not access the data folder or files in it from the web.
+A .htaccess file is included, but depending on your webservers configuration,
+it will not be read/used or you may want to specify it in your web servers virtual host configuration.
+
 
 If you don't have a default Ice ip + port (localhost), you will have to specify it in the settings file.
 Otherwise it should work out of the box.
