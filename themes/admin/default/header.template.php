@@ -11,9 +11,12 @@
 		}else{
 ?>
 		<li<?php if(HelperFunctions::getActivePage()=='index') echo ' class="active"';?>><a href="./"><?php echo TranslationManager::getText('home'); ?></a></li>
-		<li<?php if(HelperFunctions::getActivePage()=='meta') echo ' class="active"';?>><a href="./?page=meta">Meta</a></li>
-		<li<?php if(HelperFunctions::getActivePage()=='server') echo ' class="active"';?>><a href="./?page=server">Server</a></li>
-		<li<?php if(HelperFunctions::getActivePage()=='logout') echo ' class="active"';?>><a href="./?page=logout">Logout</a></li>
+<?php
+		HelperFunctions::echoMenuEntry('meta');
+		HelperFunctions::echoMenuEntry('server');
+		HelperFunctions::echoMenuEntry('admins');
+		HelperFunctions::echoMenuEntry('logout');
+?>
 	</ul>
 </div>
 <?php /*<div id="interface_update_status" style="background-color:darkgrey; float:right; position:absolute; top:0px; right:0px;">

@@ -41,6 +41,31 @@ class MessageManager
 	{
 		return self::$msgs;
 	}
+	public static function echoAll(){
+		echo '<ul class="log_list_errors">';
+		MessageManager::echoAllErrors('<li>', '</li>');
+		echo '</ul><ul class="log_list_warnings">';
+		MessageManager::echoAllWarnings('<li>', '</li>');
+		echo '</ul><ul class="log_list_messages">';
+		MessageManager::echoAllMessages('<li>', '</li>');
+		echo '</ul>';
+	}
+	public static function echoAllErrors($before='', $after='<br />'){
+		foreach(self::$errors AS $error){
+			echo $before.$error.$after;
+		}
+	}
+	public static function echoAllWarnings($before='', $after='<br />'){
+	foreach(self::$warnings AS $warning){
+			echo $before.$warning.$after;
+		}
+	}
+	public static function echoAllMessages($before='', $after='<br />'){
+	foreach(self::$msgs AS $msg){
+			echo $before.$msg.$after;
+		}
+	}
+	
 	
 }
 ?>

@@ -11,9 +11,9 @@
 	
 	// Main Menu
 	$txt['home'] = 'Home';
-	$txt['Servers'] = 'Login';
-	$txt['Users'] = 'Register';
-	$txt['Users'] = 'Register';
+	$txt['meta'] = 'Meta';
+	$txt['server'] = 'Server';
+	$txt['admins'] = 'Admins';
 	$txt['logout'] = 'Log Out';
 	
 ?>

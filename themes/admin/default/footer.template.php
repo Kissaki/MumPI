@@ -10,6 +10,9 @@
 			);
 	}
 </script>
+<div id="log_area">
+<?php MessageManager::echoAll(); ?>
+</div>
 <div id="footer">
 	<?php
 		echo 'Server Version: '.ServerInterface::getInstance()->getVersion();

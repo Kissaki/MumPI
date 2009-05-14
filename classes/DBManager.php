@@ -38,8 +38,8 @@ class DBManager_filesystem{
 			if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat')){
 				fclose( fopen(SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat','w') );
 			}
-			if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data/log_register')){
-				fclose( fopen(SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat','w') );
+			if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data/log_register.log')){
+				fclose( fopen(SettingsManager::getInstance()->getMainDir().'/data/log_register.log','w') );
 			}
 			
 		}
@@ -138,6 +138,23 @@ class DBManager_filesystem{
 		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat','w');
 		fwrite($fd, $username.';'.sha1($password)."\n");
 		fclose($fd);
+	}
+	public function getAdmins(){
+		if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data/admins.dat')){
+			$this->addAdminLogin($username, $password);
+			return true;
+		}
+		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat', 'r') OR die('could not open admins.dat file');
+		$password = sha1($password);
+		while($line = fgets($fd)){
+			$array = explode(';', $line);
+			if($array[0] == $username && $array[1] == $password."\n"){
+				fclose($fd);
+				return true;
+			}
+		}
+		fclose($fd);
+		return false;
 	}
 	public function checkAdminLogin($username, $password){
 		if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data/admins.dat')){

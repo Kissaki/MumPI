@@ -23,8 +23,6 @@ class TranslationManager {		// To make calls shorter in code, the class _Instanc
 	}
 	public static function getText($textname){
 		$txt = self::getInstance()->getText($textname);
-		if(!isset($txt))
-			return 'unknown string';
 		return $txt;
 	}
 	//TODO depreciated function
@@ -74,8 +72,10 @@ class TranslationManager_Instance{
 		return $this->defaultLanguage;
 	}
 	public function getText($textname){
-		if(!isset($this->text[$textname]))
+		if(!isset($this->text[$textname])){
+			MessageManager::addWarning('Translation for key "'.$textname.'" not found!');
 			return 'unknown string';
+		}
 		return $this->text[$textname];
 	}
 	

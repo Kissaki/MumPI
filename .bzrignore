@@ -1,0 +1,10 @@
+cmd.exe.lnk
+.buildpath
+.project
+.settings
+tmp/cap_*
+bin
+data/log_register.log
+data/admins.dat
+.bzrignore
+tests

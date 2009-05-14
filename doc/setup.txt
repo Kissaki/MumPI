@@ -1,5 +1,0 @@
-
-The settings.inc.php file currently has it's own format just key = value
-
-This will very likely be changed, so it's more familiar for our PHP Admins.
-I'd like to get some feedback there as well
