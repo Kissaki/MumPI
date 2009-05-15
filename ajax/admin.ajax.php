@@ -11,6 +11,21 @@ switch($_GET['ajax']){
 		TemplateManager::parseTemplate($_GET['page']);
 		break;
 		
+	case 'db_admins_echo':
+		echo '<table><thead><tr><th>Username</th><th>Actions</th></tr>';
+		$admins = DBManager::getInstance()->getAdmins();
+		foreach($admins AS $admin){
+			echo '<tr id="admin_list_'.$admin['id'].'"><td>'.$admin['name'].'</td><td><a class="jqlink" onclick="$(this).hide(); jq_admin_list_edit('.$admin['id'].');">edit</a> <a class="jqlink">delete</a></td></tr>';
+		}
+		echo '</thead></table>';
+		break;
+	case 'db_admin_update_name':
+		DBManager::getInstance()->updateAdminName($_POST('name'), $_POST['pw']);
+		break;
+	case 'db_admin_add':
+		DBManager::getInstance()->addAdmin($_POST('name'), $_POST['pw']);
+		break;
+		
 	case 'meta_showDefaultConfig':
 		$config = ServerInterface::getInstance()->getDefaultConfig();
 		echo '<table>';

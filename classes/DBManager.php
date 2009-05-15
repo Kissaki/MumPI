@@ -41,6 +41,9 @@ class DBManager_filesystem{
 			if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data/log_register.log')){
 				fclose( fopen(SettingsManager::getInstance()->getMainDir().'/data/log_register.log','w') );
 			}
+			if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data/admins.dat')){
+				fclose( fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat','w') );
+			}
 			
 		}
 		
@@ -134,43 +137,49 @@ class DBManager_filesystem{
 		fclose($fd);
 	}
 	
+	// TODO add admin IDs
 	public function addAdminLogin($username, $password){
-		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat','w');
+		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat','a');
 		fwrite($fd, $username.';'.sha1($password)."\n");
 		fclose($fd);
 	}
 	public function getAdmins(){
-		if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data/admins.dat')){
-			$this->addAdminLogin($username, $password);
-			return true;
-		}
-		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat', 'r') OR die('could not open admins.dat file');
-		$password = sha1($password);
+		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat', 'r') OR MessageManager::addError('could not open admins.dat file');
+		$admins = array();
+		$id = 0;
 		while($line = fgets($fd)){
 			$array = explode(';', $line);
-			if($array[0] == $username && $array[1] == $password."\n"){
+			$array[1] = substr($array[1], 0, strlen($array[1]-1));
+			$admin['id'] = $id;
+			$admin['name'] = $array[0];
+			$admin['pw'] = $array[1];
+			$admins[] = $admin;
+		}
+		$id++;
+		fclose($fd);
+		return $admins;
+	}
+	public function getAdminByName($username){
+		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat', 'r') OR MessageManager::addError('could not open admins.dat file');
+		while($line = fgets($fd)){
+			$array = explode(';', $line);
+			if( $array[0] == $username )
+			{
+				$array[1] = substr($array[1], 0, strlen($array[1])-1);
+				$admin['name'] = $array[0];
+				$admin['pw'] = $array[1];
 				fclose($fd);
-				return true;
+				return $admin;
 			}
 		}
-		fclose($fd);
-		return false;
+		return null;
 	}
 	public function checkAdminLogin($username, $password){
-		if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data/admins.dat')){
-			$this->addAdminLogin($username, $password);
+		$admin = $this->getAdminByName($username);
+		$password = sha1($password);
+		if( $admin != null && $admin['pw'] == $password ){
 			return true;
 		}
-		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat', 'r') OR die('could not open admins.dat file');
-		$password = sha1($password);
-		while($line = fgets($fd)){
-			$array = explode(';', $line);
-			if($array[0] == $username && $array[1] == $password."\n"){
-				fclose($fd);
-				return true;
-			}
-		}
-		fclose($fd);
 		return false;
 	}
 	

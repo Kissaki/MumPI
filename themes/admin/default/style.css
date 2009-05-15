@@ -7,6 +7,7 @@ body {
 
 img { border:0px; vertical-align:middle; }
 p, ul, li, div, span, img { margin:0px; padding:0px; }
+ul { white-space:nowrap; list-style-type:none; margin-left:10px; }
 p { margin-bottom:6px; }
 acronym, abbr, .info { cursor:help; border-bottom:1px dotted #aac; }
 hr { clear:both; }
@@ -33,16 +34,15 @@ div.error { margin:20px; padding:20px; }
 div.error div.detail { margin-top:10px; color:white; }
 div.js_link { color:grey; font-size:x-small; margin-left:4px; margin-right:4px; }
 .hidden { display:none; }
-.jqlink { cursor:pointer; }
+.jslink, .jqlink { cursor:pointer; }
 
 #menu {
 	position:fixed; top:0px; left:0px; width:100px;
 	border-right:1px solid grey;
 	background-color:darkblue; font-family:verdana;
 }
-#menu ul {
-	white-space:nowrap;
-	list-style-type:none;
+#menu ul { margin:0px;
+	white-space:nowrap; list-style-type:none;
 }
 #menu li { font-size:120%; line-height:30px; }
 #menu li.active a { background-color:#4be; color:white; }

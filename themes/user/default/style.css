@@ -7,6 +7,7 @@ body {
 
 img { border:0px; vertical-align:middle; }
 p, ul, li, div, span, img { margin:0px; padding:0px; }
+ul { white-space:nowrap; list-style-type:none; }
 p { margin-bottom:6px; }
 acronym, abbr, .info { cursor:help; border-bottom:1px dotted #aac; }
 hr { clear:both; }

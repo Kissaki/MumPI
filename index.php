@@ -29,7 +29,7 @@ define('MUMPHPI_SECTION', 'user');
 		error_reporting(E_ALL);
 	
 	if(isset($_GET['ajax'])){
-		require_once(MUMPHPI_MAINDIR.'/ajax/index.ajax.php');
+		require_once(MUMPHPI_MAINDIR.'/ajax/user.ajax.php');
 		die();
 	}
 	
