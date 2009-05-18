@@ -10,17 +10,17 @@
  * Provides murmur server functionality
  */
 class ServerInterface{
-	private static $instance;
-	public static function getInstance(){	// $obj=NULL
-		if(!isset(self::$instance)){
-			if(isset($obj)){
-				self::$instance = $obj;
+	private static $instance = null;
+	public static function getInstance()
+	{
+		if(!isset(self::$instance))
+		{
+			$dbType = SettingsManager::getInstance()->getDbInterfaceType();
+			if( class_exists('ServerInterface_'.$dbType) )
+			{
+				eval('self::$instance = new ServerInterface_'.$dbType.'();');
 			}else{
-				$dbType = SettingsManager::getInstance()->getDbInterfaceType();
-				if( class_exists('ServerInterface_'.$dbType) )
-					eval('self::$instance = new ServerInterface_'.$dbType.'();');
-				else
-					echo TranslationManager::getInstance()->getText('error_db_unknowninterface');
+				MessageManager::addError(tr('error_unknowninterface'));
 			}
 		}
 		return self::$instance;
@@ -28,18 +28,8 @@ class ServerInterface{
 	
 }
 
-class ServerInterface_ICE {
-	// mockable singleton
-	private static $dbObj;
-	public static function getDb($obj=NULL){
-		if(!isset($obj))
-			if(isset($dbObj)) return $dbObj;
-			else{
-				$dbObj = new ServerInterface_ICE();
-				return $dbObj;
-			}
-	}
-	
+class ServerInterface_ice
+{
 	private $conn;
 	private $meta;
 	
@@ -47,7 +37,13 @@ class ServerInterface_ICE {
 		try{
 			Ice_loadProfile();
 		}catch(Ice_ProfileAlreadyLoadedException $exc){
-			echo 'ICE Profile Already Loaded!';
+			MessageManager::addWarning(tr('iceprofilealreadyloaded'));
+			//unset($this);
+			//__destruct();
+			//trigger_error(tr('iceprofilealreadyloaded'));
+			//return null;
+			unset($this);
+			return false;
 		}
 		$this->connect();
 	}
@@ -58,7 +54,7 @@ class ServerInterface_ICE {
 		try{
 			$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
 		}catch(Ice_UnknownLocalException $ex) {
-			MessageManager::addError(TranslationManager::getText('error_noIce'));
+			MessageManager::addError(tr('error_noIce'));
   		}
 		
 	}

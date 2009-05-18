@@ -12,11 +12,6 @@
 	?>
 </div>
 <script type="text/javascript">
-	var helpicons = $('.helpicon');
-	for( var val in helpicons )
-	{
-		
-	}
 	$('.helpicon').each(function(i,c){
 		var val = $(this).attr('title');
 		if( val != undefined && val != '' ){

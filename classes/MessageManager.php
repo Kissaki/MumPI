@@ -23,6 +23,7 @@ class MessageManager
 	public static function addWarning($text)
 	{
 		self::$warnings[] = $text;
+		if(SettingsManager::getInstance()->isDebugMode()) echo '<div class="warning">'.$text.'</div>';
 	}
 	public static function addMessage($text)
 	{
