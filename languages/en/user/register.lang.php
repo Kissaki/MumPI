@@ -11,6 +11,7 @@
 
 	// Register
 	$txt['password_repeat'] = 'retype password';
+	$txt['antispam'] = 'Anti-Spam';
 	
 	$txt['doregister_try'] = 'Trying to register on selected server...';
 	$txt['doregister_success'] = 'You successfully registered.';	
@@ -23,5 +24,7 @@
 	$txt['register_fail_noEmail'] = 'You did not enter an email address, however, this is required.<br/><a onclick="history.go(-1); return false;" href="?page=register">go back</a>';
 	$txt['register_fail_wrongCaptcha'] = '<div class="error">Captcha Incorrect.</div>';
 	$txt['register_activate_success'] = 'Your account should now be activated. Try to log in.';
+	
+	$txt['register_help_captcha'] = 'This field is to prevent spam.\\nCalculate the result and enter it into the text box.';
 
 ?>

@@ -29,13 +29,13 @@ class MessageManager
 		self::$msgs[] = $text;
 	}
 	public static function getNumberOfErrors(){
-		return count(self::errors);
+		return count(self::$errors);
 	}
 	/*
 	 * Returns the sum of messages (errors, warnings and messages)
 	 */
 	public static function getNumberOfMessages(){
-		return ( count(self::errors)+count(self::warnings)+count(self::msgs) );
+		return ( count(self::$errors)+count(self::warnings)+count(self::msgs) );
 	}
 	
 	
@@ -52,13 +52,24 @@ class MessageManager
 		return self::$msgs;
 	}
 	public static function echoAll(){
-		echo '<ul class="log_list_errors">';
-		MessageManager::echoAllErrors('<li>', '</li>');
-		echo '</ul><ul class="log_list_warnings">';
-		MessageManager::echoAllWarnings('<li>', '</li>');
-		echo '</ul><ul class="log_list_messages">';
-		MessageManager::echoAllMessages('<li>', '</li>');
-		echo '</ul>';
+		if(count(self::$errors))
+		{
+			echo '<ul class="log_list_errors">';
+			MessageManager::echoAllErrors('<li>', '</li>');
+			echo '</ul>';
+		}
+		if(count(self::$warnings))
+		{
+			echo '<ul class="log_list_warnings">';
+			MessageManager::echoAllWarnings('<li>', '</li>');
+			echo '</ul>';
+		}
+		if(count(self::$msgs))
+		{
+			echo'<ul class="log_list_messages">';
+			MessageManager::echoAllMessages('<li>', '</li>');
+			echo '</ul>';
+		}
 	}
 	public static function echoAllErrors($before='', $after='<br />'){
 		foreach(self::$errors AS $error){

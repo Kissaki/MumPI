@@ -13,6 +13,9 @@ it will not be read/used or you may want to specify it in your web servers virtu
 If you don't have a default Ice ip + port (localhost), you will have to specify it in the settings file.
 Otherwise it should work out of the box.
 
+For registration to work with captchas, you will need the gd php extension loaded.
+Otherwise it will not work!
+
 
 The 0.3.0 includes a new settings file format, so it is not compatible with the old one.
 You should make a fresh install.

@@ -1,38 +1,45 @@
 <?php
+/**
+ * Mumble PHP Interface by Kissaki
+ * Released under Creative Commons Attribution-Noncommercial License
+ * http://creativecommons.org/licenses/by-nc/3.0/
+ * @author Kissaki
+ */
+// TODO: make mail etc localized strings
 if( isset($_POST['email']) && !empty($_POST['email']) ){
 	$_POST['email'] = trim($_POST['email']);
 	if( isset($_POST['password']) && isset($_POST['username']) ){
+		// Send username and new password
 		$user = ServerInterface::getInstance()->getUserByEmail(intval($_POST['serverid']), $_POST['email']);
 		if($user != null){
 			$newPw = substr(md5(rand()), 4, 8);
 			ServerInterface::getInstance()->updateUserPw(intval($_POST['serverid']), $user->playerid, $newPw);
-			mail($_POST['email'], 'Login Information', 'You have requested your login and a new password.'."\n\n".
-				'Username: '.$user->name."\n".
-				'New Password: '.$newPw);
-			$formProcessed = 'The information was just sent.<br/>Please Check your mails in a few minutes.<br/>Depending on your mail provider, it may take some time for the mail to arrive or may be put into a junk folder.<br/>MSN/Live may even block the mail entirely, so if it does not work, ask an admin about this.';
+			mail($_POST['email'], tr('request_mail_up_subj'), sprintf(tr('request_mail_up_body'), $user->name, $newPw) );
+			$formProcessed = tr('request_mail_sent');
+			
 		}else{
-			echo '<div class="error">No account with that email address was found on that server.<br/><a onclick="history.go(-1); return false;" href="?page=login">Go back</a> and check your input.</div>';
+			MessageManager::addWarning(tr('request_nosuchaccount'));
 		}
 		
 	}elseif( isset($_POST['password']) ){
+		// send new password
 		$user = ServerInterface::getInstance()->getUserByEmail(intval($_POST['serverid']), $_POST['email']);
 		if($user != null){
 			$newPw = substr(md5(rand()), 4, 8);
 			ServerInterface::getInstance()->updateUserPw(intval($_POST['serverid']), $user->playerid, $newPw);
-			mail($_POST['email'], 'New Mumble Password', 'You have requested a new password.'."\n\n".
-				'New Password: '.$newPw);
-			$formProcessed = 'The information was just sent.<br/>Please Check your mails in a few minutes.<br/>Depending on your mail provider, it may take some time for the mail to arrive or may be put into a junk folder.<br/>MSN/Live may even block the mail entirely, so if it does not work, ask an admin about this.';
+			mail($_POST['email'], tr('request_mail_p_subj'), sprintf(tr('request_mail_p_body'), $newPw) );
+			$formProcessed = tr('request_mail_sent');
 		}else{
-			echo '<div class="error">No account with that email address was found on that server.<br/><a onclick="history.go(-1); return false;" href="?page=login">Go back</a> and check your input.</div>';
+			MessageManager::addWarning(tr('request_nosuchaccount'));
 		}
 	}elseif( isset($_POST['username']) ){
+		// send username
 		$user = ServerInterface::getInstance()->getUserByEmail(intval($_POST['serverid']), $_POST['email']);
 		if($user != null){
-			mail($_POST['email'], 'Mumble Login Information', 'You have requested your login name.'."\n\n".
-				'Username: '.$user->name);
-			$formProcessed = 'The information was just sent.<br/>Please Check your mails in a few minutes.<br/>Depending on your mail provider, it may take some time for the mail to arrive or may be put into a junk folder.<br/>MSN/Live may even block the mail entirely, so if it does not work, ask an admin about this.';
+			mail($_POST['email'], tr('request_mail_u_subj'), sprintf(tr('request_mail_u_body'), $user->name) );
+			$formProcessed = tr('request_mail_sent');
 		}else{
-			echo '<div class="error">No account with that email address was found on that server.<br/><a onclick="history.go(-1); return false;" href="?page=login">Go back</a> and check your input.</div>';
+			MessageManager::addWarning(tr('request_nosuchaccount'));
 		}
 	}
 }
@@ -42,11 +49,11 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 		<h1 class="alignc">Data Sent</h1>
 		<p><?php echo $formProcessed; ?></p>
 	<?php }else{ ?>
-	<h1><?php TranslationManager::echoText('request_head'); ?></h1>
+	<h1><?php echo tr('request_head'); ?></h1>
 	<form action="./?page=request&amp;action=dorequest" method="post" class="alignc" style="width:400px;">
 		<table class="fullwidth alignl">
 			<tr>
-				<td class="formitemname"><?php echo TranslationManager::getText('server'); ?>:</td>
+				<td class="formitemname"><?php echo tr('server'); ?>:</td>
 				<td>
 					<?php $servers = SettingsManager::getInstance()->getServers(); ?>
 					<select name="serverid" style="width:100%">
@@ -62,22 +69,22 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 						?>
 					</select>
 				</td>
-				<td class="helpicon" title="<?php TranslationManager::echoText('help_request_selectmumbleserver'); ?>"></td>
+				<td class="helpicon" title="<?php echo tr('help_request_selectmumbleserver'); ?>"></td>
 			</tr><tr>
-				<td class="formitemname"><?php echo TranslationManager::getText('email'); ?>:</td>
+				<td class="formitemname"><?php echo tr('email'); ?>:</td>
 				<td><input type="text" name="email" value="" /></td>
-				<td class="helpicon" title="<?php TranslationManager::echoText('help_request_email'); ?>"></td>
+				<td class="helpicon" title="<?php echo tr('help_request_email'); ?>"></td>
 			</tr><tr>
-				<td class="formitemname"><?php TranslationManager::echoText('request_selection'); ?>:</td>
-				<td><input type="checkbox" name="password"/> <?php echo TranslationManager::getText('password'); ?></td>
+				<td class="formitemname"><?php echo tr('request_selection'); ?>:</td>
+				<td><input type="checkbox" name="password"/> <?php echo tr('password'); ?></td>
 				<td></td>
 			</tr><tr>
 				<td></td>
-				<td><input type="checkbox" name="username"/> <?php echo TranslationManager::getText('username'); ?></td>
+				<td><input type="checkbox" name="username"/> <?php echo tr('username'); ?></td>
 				<td></td>
 			</tr>
 		</table><br/>
-		<input type="submit" value="<?php TranslationManager::echoText('request_button'); ?>" />
+		<input type="submit" value="<?php echo tr('request_button'); ?>" />
 	</form>
 	<?php } ?>
 </div>
