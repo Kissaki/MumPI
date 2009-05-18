@@ -13,6 +13,7 @@ define('MUMPHPI_SECTION', 'user');
 	require_once(MUMPHPI_MAINDIR.'/classes/PHPStats.php');
 	PHPStats::scriptExecTimeStart();
 	
+	require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/SettingsManager.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/DBManager.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/Logger.php');
@@ -23,8 +24,7 @@ define('MUMPHPI_SECTION', 'user');
 	require_once(MUMPHPI_MAINDIR.'/classes/ServerInterface.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/TemplateManager.php');
-	require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
-	
+		
 	if(SettingsManager::getInstance()->isDebugMode())
 		error_reporting(E_ALL);
 	

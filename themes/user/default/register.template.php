@@ -14,10 +14,15 @@
 			}elseif( SettingsManager::getInstance()->isForceEmail($_POST['serverid']) && empty($_POST['email']) ){
 				echo tr('register_fail_noEmail');
 			}elseif( SettingsManager::getInstance()->isAuthByMail($_POST['serverid']) ){
-				if( Captcha::cap_isCorrect($_POST['spamcheck']) ){
+				// Everything ok, Auth by mail (send activation mail)
+				if( SettingsManager::isUseCaptcha() && Captcha::cap_isCorrect($_POST['spamcheck']) ){
 					// Add unactivated account and send mail
 					if(ServerInterface::getInstance()->getServer(intval($_POST['serverid']))==null)
-						die('no such server');
+					{
+						// TODO: make this a message
+						echo tr('unknownserver');
+						exit();
+					}
 					DBManager::getInstance()->addAwaitingAccount($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
 					echo tr('register_success_toActivate');
 					Logger::log_registration($_POST['name']);
@@ -25,7 +30,8 @@
 					echo tr('register_fail_wrongCaptcha');
 				}
 			}else{
-				if( Captcha::cap_isCorrect($_POST['spamcheck']) ){
+				// Everything ok, register account
+				if( SettingsManager::getInstance()->isUseCaptcha() && Captcha::cap_isCorrect($_POST['spamcheck']) ){
 					// Input ok, now do try to register
 					ServerInterface::getInstance()->addUser($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
 					echo tr('register_success');
@@ -35,6 +41,7 @@
 				}
 			}
 		}elseif( $_GET['action']=='activate' && isset($_GET['key']) ){
+			// Activate account
 			DBManager::getInstance()->activateAccount($_GET['key']);
 			echo tr('register_activate_success');
 		}
@@ -49,7 +56,7 @@
 			<tr>
 				<td class="formitemname"><?php echo tr('server'); ?>:</td>
 				<td>
-					<?php $servers = SettingsManager::getInstance()->getServers(); ?>
+					<?php $servers = SettingsManager::getInstance()->getInstance()->getServers(); ?>
 					<select name="serverid" style="width:100%">
 						<?php 
 							foreach($servers AS $sid=>$server){
@@ -81,6 +88,10 @@
 				<td class="formitemname"><?php echo tr('password_repeat'); ?>:</td>
 				<td><input type="password" name="password2" id="password2" value="" /></td>
 				<td class="helpicon"></td>
+<?php
+			if( SettingsManager::getInstance()->isUseCaptcha() )
+			{
+?>
 			</tr><tr>
 				<td class="formitemname"><?php echo tr('antispam'); ?>:</td>
 				<td></td>
@@ -89,6 +100,9 @@
 				<td class="formitemname"><?php Captcha::cap_show(); ?> =</td>
 				<td><input type="text" name="spamcheck" value="" /></td>
 				<td class="helpicon" title="<?php echo tr('register_help_captcha'); ?>"></td>
+<?php
+			}
+?>
 			</tr>
 		</table>
 		<div class="alignc"><input type="submit" value="<?php echo tr('register'); ?>" /></div>

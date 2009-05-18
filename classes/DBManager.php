@@ -10,19 +10,20 @@
  * Provides database functionality for the interface
  * @author Kissaki
  */
-class DBManager{
+require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
+
+class DBManager
+{
 	private static $instance;
-	public static function getInstance($obj=NULL){
-		if(!isset(self::$instance)){
-			if(isset($obj)){
-				self::$instance = $obj;
-			}else{
-				$dbType = SettingsManager::getInstance()->getDBType();
-				if( class_exists('DBManager_'.$dbType) )
-					eval('self::$instance = new DBManager_'.$dbType.'();');
-				else
-					echo TranslationManager::getInstance()->getText('error_db_unknowntype');	// TODO: add this error msg to lang
-			}
+	public static function getInstance()
+	{
+		if(!isset(self::$instance))
+		{
+			$dbType = SettingsManager::getInstance()->getDBType();
+			if( class_exists('DBManager_'.$dbType) )
+				eval('self::$instance = new DBManager_'.$dbType.'();');
+			else
+				MessageManager::addError(tr('error_db_unknowntype'));
 		}
 		return self::$instance;
 	}

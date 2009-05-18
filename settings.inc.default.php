@@ -9,6 +9,7 @@ $debug = false;
 
 $theme	= 'default';
 $defaultLanguage = 'en';
+$useCaptcha = true;		// This is recommended to be true to prevent spam/abuse by bots etc. This requires the php gd extension (image manipulation).
 
 // interface may be: ice, (dbus may be added at a later time, or probably not)
 $dbInterface_type		= 'ice';

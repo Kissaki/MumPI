@@ -36,7 +36,9 @@
 	
 	//Errors
 	$txt['error_db_unknowninterface']	= 'Misconfiguration: Unknown <acronym title="database">DB</acronym> Interface Type!';
+	$txt['unknownserver']				= 'No such server found.';
 	$txt['error_missing_values']		= 'It seems not all necessary values have been specified.';
 	$txt['error_noIce']					= 'Could not connect to ICE.<br/>Either your server is not running or it is not running with ICE. Check your configuration.';
+	$txt['error_db_unknowntype']		= 'The Database type you specified (in your settings) is not available/defined.';
 
 ?>

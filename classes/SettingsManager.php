@@ -26,6 +26,7 @@ class SettingsManager {
 	private $theme;
 	private $defaultLanguage;
 	private $site;
+	private $useCaptcha;
 	private $dbType;
 	private $dbInterface_type;
 	private $dbInterface_address;
@@ -43,6 +44,7 @@ class SettingsManager {
 		$this->dbInterface_address = $dbInterface_address;
 		$this->theme = $theme;
 		$this->defaultLanguage = $defaultLanguage;
+		$this->useCaptcha = $useCaptcha;
 		$this->dbType = $dbType;
 		
 		$this->site = array();
@@ -143,8 +145,11 @@ class SettingsManager {
 	function getDbInterfaceType(){
 		return $this->dbInterface_type;
 	}
-function getDbInterface_address(){
+	function getDbInterface_address(){
 		return $this->dbInterface_address;
+	}
+	function isUseCaptcha(){
+		return $this->useCaptcha;
 	}
 	function getDbType(){
 		return $this->dbType;
