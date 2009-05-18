@@ -55,5 +55,9 @@ div.error div.detail { margin-top:10px; color:white; }
 	position:fixed; bottom:0px; width:100%;
 	text-align:center;
 }
+#log_area ul { background-color:darkgrey; }
+#log_area ul.log_list_errors { color:#FF0000; }
+#log_area ul.log_list_warnings { color:#DD0000; }
+#log_area ul.log_list_messages { color:#BB0000; }
 
 #content { margin:20px 20% 0px 20%; }

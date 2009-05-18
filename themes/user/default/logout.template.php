@@ -4,6 +4,6 @@
 	unset($_SESSION['userid']);
 	unset($_SESSION['userLoggedIn']);
 ?>
-	<?php TranslationManager::echoText('logout_success'); ?>
+	<?php echo tr('logout_success'); ?>
 	<script type="text/javascript">location.replace("./")</script>
 </div>

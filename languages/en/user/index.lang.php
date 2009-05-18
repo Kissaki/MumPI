@@ -6,6 +6,5 @@
  * @author Kissaki
  */
 
-	$txt['index_welcome_header'] = 'Welcome';
-	$txt['index_welcome_body_html'] = '';
+	$txt['index_welcome'] = '<h1>Welcome</h1>';
 ?>

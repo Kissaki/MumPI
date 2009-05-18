@@ -58,9 +58,7 @@ class ServerInterface_ICE {
 		try{
 			$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
 		}catch(Ice_UnknownLocalException $ex) {
-		    echo '<div class="error"><b>Error</b>: Could not connect to ICE.<br/>Is your server running with ICE? Check your config';
-		    //echo '<div class="detail">'.$ex.'</div></div>';
-		    die();
+			MessageManager::addError(TranslationManager::getText('error_noIce'));
   		}
 		
 	}

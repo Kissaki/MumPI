@@ -28,6 +28,16 @@ class MessageManager
 	{
 		self::$msgs[] = $text;
 	}
+	public static function getNumberOfErrors(){
+		return count(self::errors);
+	}
+	/*
+	 * Returns the sum of messages (errors, warnings and messages)
+	 */
+	public static function getNumberOfMessages(){
+		return ( count(self::errors)+count(self::warnings)+count(self::msgs) );
+	}
+	
 	
 	public static function getErrors()
 	{
@@ -56,12 +66,12 @@ class MessageManager
 		}
 	}
 	public static function echoAllWarnings($before='', $after='<br />'){
-	foreach(self::$warnings AS $warning){
+		foreach(self::$warnings AS $warning){
 			echo $before.$warning.$after;
 		}
 	}
 	public static function echoAllMessages($before='', $after='<br />'){
-	foreach(self::$msgs AS $msg){
+		foreach(self::$msgs AS $msg){
 			echo $before.$msg.$after;
 		}
 	}

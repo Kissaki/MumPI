@@ -1,6 +1,12 @@
+<div id="logarea">
+<?php
+	MessageManager::echoAll();
+?>
+</div>
 <div id="footer">
 	<?php
-		echo 'Server Version: '.ServerInterface::getInstance()->getVersion();
-		echo '<br/>Script execution time: '.sprintf('%6.3f', PHPStats::scriptExecTimeGet()).'ms | memory peak: '.(memory_get_peak_usage()/1000).' kByte';
+		printf( tr('info_serverversion'), ServerInterface::getInstance()->getVersion() );
+		echo '<br/>';
+		printf( tr('info_scriptexecutiontime'), PHPStats::scriptExecTimeGet(), ceil(memory_get_peak_usage()/1000) );
 	?>
 </div>

@@ -5,6 +5,17 @@
  * http://creativecommons.org/licenses/by-nc/3.0/
  * @author Kissaki
  */
+
+/**
+ * Global function for easier access
+ * @param $key Language Translation key
+ * @return string text value (translated)
+ */
+function tr($key)
+{
+	return TranslationManager::getText($key);
+}
+
 //TODO language folder should be in templates, so they can have their own strings
 //TODO don't need 2 classes
 /**
@@ -21,6 +32,7 @@ class TranslationManager {		// To make calls shorter in code, the class _Instanc
 				self::$instance = $obj;
 		return self::$instance;
 	}
+	
 	public static function getText($textname){
 		$txt = self::getInstance()->getText($textname);
 		return $txt;

@@ -17,6 +17,9 @@
 	
 	// General
 	$txt['server'] = 'Server';		// Mumble Server
+	$txt['info_serverversion'] = 'Server Version: %s';
+	$txt['info_scriptexecutiontime'] = 'Script execution time: %6.3fms | memory peak: ~%s kByte';
+	$txt['failed'] = 'failed';
 	
 	// Account Information
 	$txt['email'] = 'Email';
@@ -34,5 +37,6 @@
 	//Errors
 	$txt['error_db_unknowninterface']	= 'Misconfiguration: Unknown <acronym title="database">DB</acronym> Interface Type!';
 	$txt['error_missing_values']		= 'It seems not all necessary values have been specified.';
+	$txt['error_noIce']					= 'Could not connect to ICE.<br/>Either your server is not running or it is not running with ICE. Check your configuration.';
 
 ?>

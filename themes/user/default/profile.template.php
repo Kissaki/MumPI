@@ -8,7 +8,7 @@ if(isset($_GET['action']) && $_GET['action']=='doedit'){
 	// new password
 	if(isset($_POST['password'])){
 		if(empty($_POST['password']))
-			echo 'Password field was empty. Sending you back...<br/>';
+			MessageManager::addWarning(tr('profile_emptypassword'));
 		else
 			ServerInterface::getInstance()->updateUserPw($_SESSION['serverid'], $_SESSION['userid'], $_POST['password']);
 	}
@@ -25,15 +25,14 @@ if(isset($_GET['action']) && $_GET['action']=='doedit'){
 		try{
 			ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], array());
 		}catch(Murmur_InvalidTextureException $exc){
-			echo 'failed';
+			MessageManager::addWarning(tr('profile_removetexturefailed'));
 		}
 	}
 	// new texture
 	if(isset($_FILES['texture'])){
 		if(!file_exists($_FILES['texture']['tmp_name'])){
-			echo '<div class="error">Temp file does not exist.</div>';
+			MessageManager::addWarning(tr('profile_texture_notempfile'));
 		}else{
-			
 			$fileExtension = pathinfo($_FILES['texture']['name']);
 			$fileExtension = isset($fileExtension['extension']) ? $fileExtension['extension'] : '';
 			

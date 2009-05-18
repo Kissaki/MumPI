@@ -4,21 +4,18 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 		$tmpUid = ServerInterface::getInstance()->verifyPassword($_POST['serverid'],$_POST['name'],$_POST['password']);
 		switch($tmpUid){
 			case -2:
-				echo 'Unknown username.<br/><a onclick="history.go(-1); return false;" href="?page=login">Go back</a> and check your input.<br/>'.
-					'If you forgot your login or password, <a href="?page=request">request it</a>.';
-					Logger::log_loginFail($_POST['serverid'], $_POST['name'], $_POST['password']);
+				MessageManager::addWarning(tr('login_unknownusername'));
+				Logger::log_loginFail($_POST['serverid'], $_POST['name'], $_POST['password']);
 				break;
 			case -1:
-				echo 'wrong login information<br/><a onclick="history.go(-1); return false;" href="?page=login">go back</a><br/>'.
-					'If you forgot your login or password, <a href="?page=request">request it</a>.';
+				MessageManager::addWarning(tr('login_wronglogininformation'));
 				break;
 			default:	// login success
 				$_SESSION['serverid'] = $_POST['serverid'];
 				$_SESSION['userid'] = $tmpUid;
 				$_SESSION['userLoggedIn'] = true;
 				echo '<script type="text/javascript">location.replace("?page=profile")</script>';
-				echo 'Login successfull.<br/>
-					Go on to the <a href="?page=profile">profile page</a>.';
+				echo tr('login_success');
 				break;
 		}
 	}
@@ -26,11 +23,11 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 ?>
 
 <div id="content">
-	<h1><?php TranslationManager::echoText('login_head'); ?></h1>
+	<h1><?php echo tr('login_head'); ?></h1>
 	<form action="./?page=login&amp;action=dologin" method="post" style="width:400px;">
 		<table class="fullwidth">
 			<tr>
-				<td class="formitemname"><?php echo TranslationManager::getText('server'); ?>:</td>
+				<td class="formitemname"><?php echo tr('server'); ?>:</td>
 				<td>
 					<?php $servers = SettingsManager::getInstance()->getServers(); ?>
 					<select name="serverid">
@@ -46,20 +43,20 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 						?>
 					</select>
 				</td>
-				<td class="helpicon" title="<?php echo TranslationManager::getText('help_login_server'); ?>"></td>
+				<td class="helpicon" title="<?php echo tr('help_login_server'); ?>"></td>
 			</tr>
 			<tr>
-				<td class="formitemname"><?php echo TranslationManager::getText('username'); ?>:</td>
+				<td class="formitemname"><?php echo tr('username'); ?>:</td>
 				<td><input type="text" name="name" value="" /></td>
-				<td class="helpicon" title="<?php echo TranslationManager::getText('help_login_username'); ?>"></td>
+				<td class="helpicon" title="<?php echo tr('help_login_username'); ?>"></td>
 			</tr><tr>
-				<td class="formitemname"><?php echo TranslationManager::getText('password'); ?>:</td>
+				<td class="formitemname"><?php echo tr('password'); ?>:</td>
 				<td><input type="password" name="password" id="password" value="" /></td>
-				<td class="helpicon" title="<?php echo TranslationManager::getText('help_login_password'); ?>"></td>
+				<td class="helpicon" title="<?php echo tr('help_login_password'); ?>"></td>
 			</tr>
 		</table>
-		<div class="alignc" style="margin-top:8px;"><input type="submit" value="<?php TranslationManager::echoText('login_button'); ?>" /></div>
+		<div class="alignc" style="margin-top:8px;"><input type="submit" value="<?php echo tr('login_button'); ?>" /></div>
 	</form>
-	<p style="margin-top:20px;"><?php TranslationManager::echoText('login_requestnote'); ?></p>
+	<p style="margin-top:20px;"><?php echo tr('login_requestnote'); ?></p>
 </div>
 <?php } ?>
