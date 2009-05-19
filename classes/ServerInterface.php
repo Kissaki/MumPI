@@ -38,25 +38,15 @@ class ServerInterface_ice
 			Ice_loadProfile();
 		}catch(Ice_ProfileAlreadyLoadedException $exc){
 			MessageManager::addWarning(tr('iceprofilealreadyloaded'));
-			//unset($this);
-			//__destruct();
-			//trigger_error(tr('iceprofilealreadyloaded'));
-			//return null;
-			unset($this);
-			return false;
 		}
 		$this->connect();
 	}
 	
-	private function connect(){
+	private function connect()
+	{
 		global $ICE;
 		$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
-		try{
-			$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
-		}catch(Ice_UnknownLocalException $ex) {
-			MessageManager::addError(tr('error_noIce'));
-  		}
-		
+		$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");	// May throw exception
 	}
 	
 	//Meta

@@ -69,25 +69,25 @@
 							}
 						?>
 					</select>
-				</td><td class="helpicon">
 				</td>
+				<td class="helpicon" title="<?php echo tr('register_help_server'); ?>"></td>
 			</tr>
 			<tr>
 				<td class="formitemname"><?php echo tr('username'); ?>:</td>
 				<td><input type="text" name="name" value="" /></td>
-				<td class="helpicon"></td>
+				<td class="helpicon" title="<?php echo tr('register_help_username'); ?>"></td>
 			</tr><tr>
 				<td class="formitemname"><?php echo tr('email'); ?>:</td>
 				<td><input type="text" name="email" value="" /></td>
-				<td class="helpicon"></td>
+				<td class="helpicon" title="<?php echo tr('register_help_email'); ?>"></td>
 			</tr><tr>
 				<td class="formitemname"><?php echo tr('password'); ?>:</td>
 				<td><input type="password" name="password" id="password" value="" /></td>
-				<td class="helpicon"></td>
+				<td class="helpicon" title="<?php echo tr('register_help_password'); ?>"></td>
 			</tr><tr>
 				<td class="formitemname"><?php echo tr('password_repeat'); ?>:</td>
 				<td><input type="password" name="password2" id="password2" value="" /></td>
-				<td class="helpicon"></td>
+				<td class="helpicon" title="<?php echo tr('register_help_password2'); ?>"></td>
 <?php
 			if( SettingsManager::getInstance()->isUseCaptcha() )
 			{

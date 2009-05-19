@@ -1,6 +1,3 @@
-<?php
-	print_r(ServerInterface::getInstance());
-?>
 <div id="topline">
 <div id="menu">
 	<ul>

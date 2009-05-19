@@ -15,8 +15,9 @@
 	$('.helpicon').each(function(i,c){
 		var val = $(this).attr('title');
 		if( val != undefined && val != '' ){
-			$(this).hover(function(){
-					$(this).append('<div style="position:absolute; border:1px solid #844; background-color:#444; margin-left:24px; margin-top:4px;">'+val+'</div>');
+			$(this).attr('title','')
+				.hover(function(){
+					$(this).append('<div style="position:absolute; border:1px solid #844; background-color:#444; margin-left:24px; margin-top:4px;">'+val+'&lt;/div>');
 				}, function(){
 					$(this).html('');
 				});

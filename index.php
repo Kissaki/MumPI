@@ -18,15 +18,22 @@ define('MUMPHPI_SECTION', 'user');
 	require_once(MUMPHPI_MAINDIR.'/classes/DBManager.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/Logger.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/SessionManager.php');
-	SessionManager::startSession();
-	
 	require_once(MUMPHPI_MAINDIR.'/classes/TranslationManager.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/ServerInterface.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/TemplateManager.php');
-		
+	
 	if(SettingsManager::getInstance()->isDebugMode())
 		error_reporting(E_ALL);
+	
+	// Check for running Ice with Murmur
+	try{
+		ServerInterface::getInstance();
+	}catch(Ice_UnknownLocalException $ex) {
+		MessageManager::addError(tr('error_noIce'));
+		MessageManager::echoAll();
+		exit();
+  	}
 	
 	if(isset($_GET['ajax'])){
 		require_once(MUMPHPI_MAINDIR.'/ajax/user.ajax.php');

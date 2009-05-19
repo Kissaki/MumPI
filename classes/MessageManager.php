@@ -15,6 +15,10 @@ class MessageManager
 	private static $warnings = array();
 	private static $msgs = array();
 	
+	public static function error_handler(int $errno, string $errstr, string $errfile=null, int $errline=null, array $errcontext=null)
+	{
+		self::addError('Error in '.$errfile.' on line '.$errline.":\n(".$errno.'): '.$errstr);
+	}
 	public static function addError($text)
 	{
 		self::$errors[] = $text;

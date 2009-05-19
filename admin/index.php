@@ -28,6 +28,15 @@ define('MUMPHPI_SECTION', 'admin');
 	if(SettingsManager::getInstance()->isDebugMode())
 		error_reporting(E_ALL);
 	
+	// Check for running Ice with Murmur
+	try{
+		ServerInterface::getInstance();
+	}catch(Ice_UnknownLocalException $ex) {
+		MessageManager::addError(tr('error_noIce'));
+		MessageManager::echoAll();
+		exit();
+  	}
+	
 	if(!SessionManager::getInstance()->isAdmin() && HelperFunctions::getActivePage()!='login'){
 		header('Location: ?page=login');
 		exit();
