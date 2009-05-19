@@ -15,7 +15,9 @@ switch($_GET['ajax']){
 		echo '<table><thead><tr><th>Username</th><th>Actions</th></tr>';
 		$admins = DBManager::getInstance()->getAdmins();
 		foreach($admins AS $admin){
-			echo '<tr id="admin_list_item_'.$admin['name'].'"><td>'.$admin['name'].'</td><td><a class="jqlink" onclick="$(this).hide(); jq_admin_list_edit(\''.$admin['name'].'\');">edit</a> <a class="jqlink" onclick="jq_admin_remove(\''.$admin['name'].'\')">delete</a></td></tr>';
+			echo '<tr id="admin_list_item_'.$admin['name'].'"><td>'.$admin['name'].'</td>';
+			echo '<td><!--<a class="jqlink" onclick="$(this).hide(); jq_admin_list_edit(\''.$admin['name'].'\');">edit</a> --><a class="jqlink" onclick="jq_admin_remove(\''.$admin['name'].'\')">delete</a>';
+			echo '</td></tr>';
 		}
 		echo '</thead></table>';
 		break;
