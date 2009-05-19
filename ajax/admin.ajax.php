@@ -20,10 +20,10 @@ switch($_GET['ajax']){
 		echo '</thead></table>';
 		break;
 	case 'db_admin_update_name':
-		DBManager::getInstance()->updateAdminName($_POST('name'), $_POST['pw']);
+		DBManager::getInstance()->updateAdminName($_POST['name'], $_POST['pw']);
 		break;
 	case 'db_admin_add':
-		DBManager::getInstance()->addAdmin($_POST('name'), $_POST['pw']);
+		DBManager::getInstance()->addAdminLogin($_POST['name'], $_POST['pw']);
 		break;
 		
 	case 'meta_showDefaultConfig':

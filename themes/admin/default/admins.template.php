@@ -1,14 +1,18 @@
 <?php
 	echo '<h1>Admins</h1>';
-	echo '<div id="admins_list"><div style="border-bottom:1px dotted grey;"><a class="jqlink" onclick="jq_admins_list_toggle($(this));" style="display:block;">+</a></div><div>';
+	echo '<div id="admins_list">';
+	echo '<div style="border-bottom:1px dotted grey;">';
+	echo 	'<a class="jqlink" onclick="jq_admins_list_toggle($(this));" style="display:block;">+</a>';
+	echo '</div>';
+	echo '<div>';
 	echo '</div></div>';
 ?>
 	<br />
-	<a>Add Admin</a>
+	<a class="jqlink" onclick="jq_admin_add_display();">Add Admin</a>
 	
 	<hr/>
 	
-	<div id="jq_information" style="display:none;">
+	<div id="jq_information">
 		
 	</div>
 	<script type="text/javascript">
@@ -49,11 +53,20 @@
 				);
 			
 		}
-		function jq_admin_add(id){
+		function jq_admin_add_display(){
+			$('#jq_information').html('Name: <input type="text" name="name"/>Pass: <input type="text" name="pw"/><input type="submit" onclick="jq_admin_add()" value="add"/>');
+		}
+		function jq_admin_add(){
+			var name = $('input[name=\'name\']').val();
+			var pw = $('input[name=\'pw\']').val();
 			$.post("./?ajax=db_admin_add",
-					{ 'name': $('#admin_list_'+id+' > td:first > input').attr(), 'pw': pw },
+					{ 'name': name, 'pw': pw },
 					function(data){
-						if(data.length>0){ alert('failed: '+data); }
+						if(data.length>0){
+							$('#jq_information').html('Failed: '+data);
+						}else{
+							$('#jq_information').html('Admin account created:<br/>Name: '+name+'<br/>Pass: '+pw);
+						}
 					}
 				);
 			
