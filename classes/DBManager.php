@@ -17,7 +17,7 @@ class DBManager
 	private static $instance;
 	public static function getInstance()
 	{
-		if(!isset(self::$instance))
+		if(!isset(self::$instance) || self::$instance == null)
 		{
 			$dbType = SettingsManager::getInstance()->getDBType();
 			if( class_exists('DBManager_'.$dbType) )
@@ -30,20 +30,27 @@ class DBManager
 }
 
 class DBManager_filesystem{
+	private $filepath_admins;
+	private $filepath_awaiting;
+	private $filepath_log_register;
 	function __construct(){
+		$this->filepath_admins = SettingsManager::getInstance()->getMainDir().'/data/admins.dat';
+		$this->filepath_awaiting = SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat';
+		$this->filepath_log_register = SettingsManager::getInstance()->getMainDir().'/data/log_register.log';
+		
 		// if data dir does not exist yet, create it
 		if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data')){
 			mkdir(SettingsManager::getInstance()->getMainDir().'/data');
 
 			// if data files do not exist yet, create them
-			if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat')){
-				fclose( fopen(SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat','w') );
+			if(!file_exists($this->filepath_awaiting)){
+				fclose( fopen($this->filepath_awaiting,'w') );
 			}
-			if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data/log_register.log')){
-				fclose( fopen(SettingsManager::getInstance()->getMainDir().'/data/log_register.log','w') );
+			if(!file_exists($this->filepath_log_register)){
+				fclose( fopen($this->filepath_log_register,'w') );
 			}
-			if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data/admins.dat')){
-				fclose( fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat','w') );
+			if(!file_exists($this->filepath_admins)){
+				fclose( fopen($this->filepath_admins,'w') );
 			}
 			
 		}
@@ -140,9 +147,25 @@ class DBManager_filesystem{
 	
 	// TODO add admin IDs
 	public function addAdminLogin($username, $password){
-		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat','a');
-		fwrite($fd, $username.';'.sha1($password)."\n");
+		if($this->getAdminByName($username)==null)
+		{
+			$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat','a');
+			fwrite($fd, $username.';'.sha1($password)."\n");
+			fclose($fd);
+		}else{
+			throw AccountnameAlreadyExistsException();
+		}
+	}
+	public function removeAdminLogin($id)
+	{
+		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat', 'r') OR MessageManager::addError(tr('error_dbmanager_couldnotopenadmins'));
+		$file = '';
+		while($line = fgets($fd)){
+			$array = explode(';', $line);
+			if($array[0]!=$id) $file += $line;
+		}
 		fclose($fd);
+		file_put_contents(SettingsManager::getInstance()->getMainDir().'/data/admins.dat', $file);
 	}
 	public function getAdmins(){
 		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat', 'r') OR MessageManager::addError('could not open admins.dat file');
@@ -161,16 +184,19 @@ class DBManager_filesystem{
 		return $admins;
 	}
 	public function getAdminByName($username){
-		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat', 'r') OR MessageManager::addError('could not open admins.dat file');
-		while($line = fgets($fd)){
-			$array = explode(';', $line);
-			if( $array[0] == $username )
-			{
-				$array[1] = substr($array[1], 0, strlen($array[1])-1);
-				$admin['name'] = $array[0];
-				$admin['pw'] = $array[1];
-				fclose($fd);
-				return $admin;
+		if(file_exists($this->filepath_admins))
+		{
+			$fd = fopen($this->filepath_admins, 'r') OR MessageManager::addError('could not open admins.dat file');
+			while($line = fgets($fd)){
+				$array = explode(';', $line);
+				if( $array[0] == $username )
+				{
+					$array[1] = substr($array[1], 0, strlen($array[1])-1);
+					$admin['name'] = $array[0];
+					$admin['pw'] = $array[1];
+					fclose($fd);
+					return $admin;
+				}
 			}
 		}
 		return null;
@@ -178,8 +204,12 @@ class DBManager_filesystem{
 	public function checkAdminLogin($username, $password){
 		$admin = $this->getAdminByName($username);
 		$password = sha1($password);
-		if( $admin != null && $admin['pw'] == $password ){
+		if( $admin != null && ( $admin['pw'] == $password || $admin['pw'] == sha1($password) )){
 			return true;
+		}
+		if(!file_exists($this->filepath_admins))
+		{
+			$this->addAdminLogin($username, $password);
 		}
 		return false;
 	}

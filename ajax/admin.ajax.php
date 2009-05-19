@@ -15,7 +15,7 @@ switch($_GET['ajax']){
 		echo '<table><thead><tr><th>Username</th><th>Actions</th></tr>';
 		$admins = DBManager::getInstance()->getAdmins();
 		foreach($admins AS $admin){
-			echo '<tr id="admin_list_'.$admin['id'].'"><td>'.$admin['name'].'</td><td><a class="jqlink" onclick="$(this).hide(); jq_admin_list_edit('.$admin['id'].');">edit</a> <a class="jqlink">delete</a></td></tr>';
+			echo '<tr id="admin_list_item_'.$admin['name'].'"><td>'.$admin['name'].'</td><td><a class="jqlink" onclick="$(this).hide(); jq_admin_list_edit(\''.$admin['name'].'\');">edit</a> <a class="jqlink" onclick="jq_admin_remove(\''.$admin['name'].'\')">delete</a></td></tr>';
 		}
 		echo '</thead></table>';
 		break;
@@ -23,7 +23,14 @@ switch($_GET['ajax']){
 		DBManager::getInstance()->updateAdminName($_POST['name'], $_POST['pw']);
 		break;
 	case 'db_admin_add':
-		DBManager::getInstance()->addAdminLogin($_POST['name'], $_POST['pw']);
+		try{
+			DBManager::getInstance()->addAdminLogin($_POST['name'], $_POST['pw']);
+		}catch(AccountnameAlreadyExistsException $exc){
+			echo 'Accountname already exists.';
+		}
+		break;
+	case 'db_admin_remove':
+		DBManager::getInstance()->removeAdminLogin($_POST['name']);
 		break;
 		
 	case 'meta_showDefaultConfig':

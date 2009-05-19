@@ -41,5 +41,6 @@
 	$txt['error_noIce']					= 'Could not connect to ICE.<br/>Either your server is not running or it is not running with ICE. Check your configuration.';
 	$txt['error_db_unknowntype']		= 'The Database type you specified (in your settings) is not available/defined.';
 	$txt['iceprofilealreadyloaded'] = 'ICE Profile Already Loaded!';
+	$txt['error_dbmanager_couldnotopenadmins'] = 'could not open admins.dat file';
 
 ?>

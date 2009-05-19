@@ -69,7 +69,18 @@
 						}
 					}
 				);
-			
+		}
+		function jq_admin_remove(id){
+			$.post("./?ajax=db_admin_remove",
+					{ 'name': id },
+					function(data){
+						if(data.length>0){
+							$('#jq_information').html('Failed: '+data);
+						}else{
+							$('#jq_information').html('Admin account removed.');
+						}
+					}
+				);
 		}
 		
 	</script>
