@@ -27,7 +27,7 @@ switch($_GET['ajax']){
 	case 'db_admin_add':
 		try{
 			DBManager::getInstance()->addAdminLogin($_POST['name'], $_POST['pw']);
-		}catch(AccountnameAlreadyExistsException $exc){
+		}catch(Exception $exc){
 			echo 'Accountname already exists.';
 		}
 		break;

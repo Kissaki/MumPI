@@ -69,6 +69,12 @@
 						}
 					}
 				);
+			$.post("./?ajax=db_admins_echo",
+					{  },
+					function(data){
+						$('#admins_list > div:last').html(data);
+					}
+				);
 		}
 		function jq_admin_remove(id){
 			$.post("./?ajax=db_admin_remove",
@@ -79,6 +85,12 @@
 						}else{
 							$('#jq_information').html('Admin account removed.');
 						}
+					}
+				);
+			$.post("./?ajax=db_admins_echo",
+					{  },
+					function(data){
+						$('#admins_list > div:last').html(data);
 					}
 				);
 		}

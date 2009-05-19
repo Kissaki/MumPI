@@ -153,19 +153,21 @@ class DBManager_filesystem{
 			fwrite($fd, $username.';'.sha1($password)."\n");
 			fclose($fd);
 		}else{
-			throw AccountnameAlreadyExistsException();
+			throw new Exception('Account does already exist.');
 		}
 	}
 	public function removeAdminLogin($id)
 	{
-		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat', 'r') OR MessageManager::addError(tr('error_dbmanager_couldnotopenadmins'));
-		$file = '';
-		while($line = fgets($fd)){
-			$array = explode(';', $line);
-			if($array[0]!=$id) $file += $line;
+		$data = file($this->filepath_admins);
+		$fd = fopen($this->filepath_admins, 'w');
+		$size = count($data);
+		
+		for($line=0; $line<$size; $line++)
+		{
+			$array = explode(';', $data[$line]);
+			if( $array[0] != $id ){ fputs($fd, $data[$line]); }
 		}
 		fclose($fd);
-		file_put_contents(SettingsManager::getInstance()->getMainDir().'/data/admins.dat', $file);
 	}
 	public function getAdmins(){
 		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat', 'r') OR MessageManager::addError('could not open admins.dat file');
@@ -203,13 +205,13 @@ class DBManager_filesystem{
 	}
 	public function checkAdminLogin($username, $password){
 		$admin = $this->getAdminByName($username);
-		$password = sha1($password);
-		if( $admin != null && ( $admin['pw'] == $password || $admin['pw'] == sha1($password) )){
+		if( $admin != null && ( $admin['pw'] == $password || $admin['pw'] == sha1($password)) ){
 			return true;
 		}
 		if(!file_exists($this->filepath_admins))
 		{
 			$this->addAdminLogin($username, $password);
+			return true;
 		}
 		return false;
 	}
