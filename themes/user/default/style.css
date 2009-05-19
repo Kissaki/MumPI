@@ -25,7 +25,9 @@ input[type=text], input[type=password], input[type=text], select { width:100%; }
 .alignr { text-align:right; }
 h1 {  }
 
-.helpicon { background-image:URL('images/help.png'); min-width:16px; min-height:16px; background-repeat:no-repeat; }
+.helpicon { background-image:URL('images/help.png'); min-width:16px; min-height:16px; background-repeat:no-repeat;
+	cursor:help; }
+.helpicon_detail { position:absolute; border:1px solid #844; background-color:#444; margin-left:32px; margin-top:4px; }
 .error { color:red; }
 div.error { margin:20px; padding:20px; }
 div.error div.detail { margin-top:10px; color:white; }

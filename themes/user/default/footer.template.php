@@ -17,7 +17,8 @@
 		if( val != undefined && val != '' ){
 			$(this).attr('title','')
 				.hover(function(){
-					$(this).append('<div style="position:absolute; border:1px solid #844; background-color:#444; margin-left:24px; margin-top:4px;">'+val+'&lt;/div>');
+					$(this).html('<div class="helpicon_detail">'+val+'<\/div>');
+					$(this).a
 				}, function(){
 					$(this).html('');
 				});
