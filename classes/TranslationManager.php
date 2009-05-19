@@ -88,9 +88,9 @@ class TranslationManager_Instance{
 			MessageManager::addWarning('Translation for key "'.$textname.'" not found!');
 			return 'unknown string';
 		}
-		//return $this->text[$textname];
+		return $this->text[$textname];
 		// w3c validator doesn't like html (tags) in javascript areas. maybe, or not:
-		return htmlspecialchars($this->text[$textname]);
+		//return htmlspecialchars($this->text[$textname]);
 	}
 	
 /**
