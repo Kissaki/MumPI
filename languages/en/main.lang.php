@@ -38,9 +38,9 @@
 	$txt['error_unknowninterface']	= 'Misconfiguration: Unknown <acronym title="database">DB</acronym> Interface Type!';
 	$txt['unknownserver']				= 'No such server found.';
 	$txt['error_missing_values']		= 'It seems not all necessary values have been specified.';
-	$txt['error_noIce']					= 'Could not connect to ICE.<br/>Either your server is not running or it is not running with ICE. Check your configuration.';
+	$txt['error_noIce']					= 'Could not connect to Ice.<br/>Either your server is not running or it is not running with Ice. Check your configuration.';
 	$txt['error_db_unknowntype']		= 'The Database type you specified (in your settings) is not available/defined.';
-	$txt['iceprofilealreadyloaded'] = 'ICE Profile Already Loaded!';
-	$txt['error_dbmanager_couldnotopenadmins'] = 'could not open admins.dat file';
+	$txt['iceprofilealreadyloaded'] = 'Ice Profile has already been loaded!';
+	$txt['error_dbmanager_couldnotopenadmins'] = 'Could not open admins.dat file.';
 
 ?>
