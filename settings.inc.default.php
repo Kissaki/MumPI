@@ -8,10 +8,10 @@
 $debug = false;
 
 $theme	= 'default';
-$defaultLanguage = 'en';
+$defaultLanguage = 'en';	// currently available: en, de
 $useCaptcha = true;		// This is recommended to be true to prevent spam/abuse by bots etc. This requires the php gd extension (image manipulation).
 
-// interface may be: ice, (dbus may be added at a later time, or probably not)
+// Interface to use. Currently available: ice
 $dbInterface_type		= 'ice';
 $dbInterface_address	= 'Meta:tcp -h 127.0.0.1 -p 6502';
 
@@ -29,7 +29,7 @@ $db_tableprefix = '';
 
 $site_title = 'Mumble Interface';
 $site_description='Mumble Interface to register on a mumble server and edit your account as well as upload a user-texture for the overlay.';
-$site_keywords='mumble,murmur,web-interface,registration,account,management,voip';
+$site_keywords='mumble,murmur,web-interface,registration,account,management,voip,kcode';
 
 // For Each Server set:
 //$servers[<serverid>]['name']              = '<server name in the interface>';
