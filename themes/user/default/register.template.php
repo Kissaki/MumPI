@@ -31,74 +31,36 @@
 			{
 				MessageManager::addWarning( tr('register_fail_emailinvalid'));
 			}
+			elseif( SettingsManager::getInstance()->isUseCaptcha()
+				&& !Captcha::cap_isCorrect($_POST['spamcheck']) )
+			{
+				MessageManager::addWarning(tr('register_fail_wrongCaptcha'));
+			}
 			// Everything ok, check if auth by mail
 			elseif( SettingsManager::getInstance()->isAuthByMail($_POST['serverid']) )
 			{
-				// Everything ok, Auth by mail (send activation mail)
-				if( SettingsManager::isUseCaptcha() )
+				// Everything ok, create Auth by mail (send activation mail)
+				// Add unactivated account and send mail
+				if( ServerInterface::getInstance()->getServer(intval($_POST['serverid'])) != null )
 				{
-					if( Captcha::cap_isCorrect($_POST['spamcheck']) )
-					{
-						// Add unactivated account and send mail
-						if( ServerInterface::getInstance()->getServer(intval($_POST['serverid'])) != null )
-						{
-							// Server does exist
-							DBManager::getInstance()->addAwaitingAccount($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
-							echo tr('register_success_toActivate');
-							Logger::log_registration($_POST['name']);
-						}
-						else
-						{
-							// Server does not exist, add warning
-							MessageManager::addWarning(tr('unknownserver'));
-						}
-					}
-					else
-					{
-						MessageManager::addWarning(tr('register_fail_wrongCaptcha'));
-					}
+					// Server does exist
+					DBManager::getInstance()->addAwaitingAccount($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
+					echo tr('register_success_toActivate');
+					Logger::log_registration($_POST['name']);
 				}
 				else
 				{
-					// Don't check captcha
-					// Add unactivated account and send mail
-					if( ServerInterface::getInstance()->getServer(intval($_POST['serverid'])) != null )
-					{	// Server does exist
-						DBManager::getInstance()->addAwaitingAccount($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
-						echo tr('register_success_toActivate');
-						Logger::log_registration($_POST['name']);
-					}
-					else
-					{
-						// Server does not exist, add warning
-						MessageManager::addWarning(tr('unknownserver'));
-					}
+					// Server does not exist, add warning
+					MessageManager::addWarning(tr('unknownserver'));
 				}
 			}
 			else
 			{
 				// Everything ok, register account
-				if( SettingsManager::isUseCaptcha() )
-				{
-					if( Captcha::cap_isCorrect($_POST['spamcheck']) )
-					{
-						// Input ok, now do try to register
-						ServerInterface::getInstance()->addUser($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
-						echo tr('register_success');
-						Logger::log_registration($_POST['name']);
-					}
-					else
-					{
-						MessageManager::addWarning(tr('register_fail_wrongCaptcha'));
-					}
-				}
-				else
-				{
-					// Don't check captcha
-					ServerInterface::getInstance()->addUser($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
-					echo tr('register_success');
-					Logger::log_registration($_POST['name']);
-				}
+				// Input ok, now do try to register
+				ServerInterface::getInstance()->addUser($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
+				echo tr('register_success');
+				Logger::log_registration($_POST['name']);
 			}
 		}
 		elseif( $_GET['action']=='activate' && isset($_GET['key']) )
