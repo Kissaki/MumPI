@@ -10,7 +10,7 @@
  */
 
 	// General
-	$txt['welcome_guest'] = 'Willkommen. Du möchtest vielleicht einen Benutzeraccount auf einem Mumble Server registrieren oder dich auf einem bereits erstellten einloggen, um dein Profil zu ändern.';
+	$txt['welcome_guest'] = 'Willkommen. Du kannst dich hier registrieren und dein Profil ändern.';
 	$txt['welcome_user'] = 'Willkommen %s.';
 
 	// Main Menu
