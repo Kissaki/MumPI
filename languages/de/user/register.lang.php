@@ -13,6 +13,12 @@
 	$txt['password_repeat'] = 'Passwort (erneut)';
 	$txt['antispam'] = 'Anti-Spam';
 	
+	$txt['register_mail_auth_subj'] = 'Account Activation';
+	$txt['register_mail_auth_body'] = 'You tried to register an account on %s (%s) on the server %s.'."\n"
+			.'To activate your account open the following link in your webbrowser:'."\n"
+			.'%s?page=register&action=activate&key=%s'."\n"
+			.'Then you should be able to log in on the interface and on the mumble server.';
+	
 	$txt['doregister_try']		= 'Registriere auf dem Server...';
 	$txt['doregister_success']	= 'Du hast dich erfolgreich registriert.';	
 	$txt['register_success']	=  'Du hast dich erfolgreich registriert. Du kannst dich nun <a href="?page=login">einloggen</a> (auch in Mumble).';
