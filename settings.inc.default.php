@@ -31,16 +31,30 @@ $site_title = 'Mumble Interface';
 $site_description='Mumble Interface to register on a mumble server and edit your account as well as upload a user-texture for the overlay.';
 $site_keywords='mumble,murmur,web-interface,registration,account,management,voip,kcode';
 
+// For the interface to be able to send emails, make sure your php is set up
+//   to be able to send mails correctly. If it does not work or you want to use
+//   different settings from the default ones for this interface,
+//   set the corresponding following values (uncomment them):
+// Windows:
+//ini_set('SMTP', '');				// e.g. localhost or smtp.sample.com	// Windows only setting
+//ini_set('smtp_port', '');			// 										// Windows only
+//ini_set('sendmail_from', '');		// e.g. admin@yourdomain.com			// Windows only
+// Linux/Unix:
+//ini_set('sendmail_path', '');		// Path to sendmail program, see http://php.net/manual/en/mail.configuration.php#ini.sendmail-path
+
+// The server configuration can also be done from the Admin Section of the interface.
+//   No need to do it here.
+// If you disallow login and registration, the server will only be viewable in the admin section of the interface.
+//   Allowing one of them will display it on the corresponding page.
 // For Each Server set:
 //$servers[<serverid>]['name']              = '<server name in the interface>';
 //$servers[<serverid>]['allowlogin']        = true;
 //$servers[<serverid>]['allowregistration'] = true;
 //$servers[<serverid>]['forcemail']         = false;
 //$servers[<serverid>]['authbymail']        = false;
+// <serverid> is the virtual servers ID, the default server ID (first server of process) is 1
 // forceemail: force to enter a mail address. This is always true if authbymail is true.
 // authbymail: account has to be activated with a code sent to the mail address
-// The default virtual server has the id 1
-// Neither allowing login nor registration will hide it from the interface. You can then only see it from the admin section.
 $servers = array();
 
 $servers[1]['name'] = 'my server';
