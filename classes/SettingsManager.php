@@ -177,19 +177,13 @@ class SettingsManager {
 	}
 	
 	function isForceEmail($serverid){
-		for($i=0; $i<$this->numberOfServers; $i++){
-			if( $this->servers[$i]['id'] == $serverid ){
-				return $this->servers[$i]['forcemail'];
-			}
-		}
+		if(isset($this->servers[$serverid]))
+			return $this->servers[$i]['forcemail'];
 		return null;	// no such server (TODO: implement exception?)
 	}
 	function isAuthByMail($serverid){
-		for($i=0; $i<$this->numberOfServers; $i++){
-			if($this->servers[$i]['id'] == $serverid){
-				return $this->servers[$i]['authbymail'];
-			}
-		}
+		if(isset($this->servers[$serverid]))
+			return $this->servers[$serverid]['authbymail'];
 		return null;	// no such server (TODO: implement exception?)
 	}
 	function isDebugMode(){
