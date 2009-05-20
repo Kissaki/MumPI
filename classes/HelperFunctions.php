@@ -84,6 +84,9 @@ class HelperFunctions{
 			return true;
 		return false;
 	}
+	public static function getBaseURL(){
+		return dirname($_SERVER['SCRIPT_URI']).'/';
+	}
 	
 	
 }

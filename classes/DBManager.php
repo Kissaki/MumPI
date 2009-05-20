@@ -78,12 +78,22 @@ class DBManager_filesystem{
 		$line = $key.';;;'.$sid.';;;'.$name.';;;'.$pw.';;;'.$email."\n";
 		fwrite($fd, $line);
 		fclose($fd);
-		// TODO: add localisation strings
-		mail($name.' <'.$email.'>', 'Account Activation', 'You tried to register an account on '.SettingsManager::getInstance()->getSiteTitle().' ('.
-			SettingsManager::getInstance()->getMainUrl().') on the server '.SettingsManager::getInstance()->getServerName($sid).
-			".\n".'To activate your account open the following link in your browser:'."\n".
-			SettingsManager::getInstance()->getMainUrl().'?page=register&action=activate&key='.$key."\n".
-			'Then you may log in on the mumble server.');
+		
+		// send mail
+		sendActivationMail($email, $name, $sid, $key);
+	}
+	public function sendActivationMail($email, $name, $sid, $key){
+		mail($name.' <'.$email.'>',								// to
+			tr('register_mail_auth_subj'),						// subject
+			sprintf( tr('register_mail_auth_body'),				// body...
+				SettingsManager::getInstance()->getSiteTitle(),
+				HelperFunctions::getBaseURL(),
+				SettingsManager::getInstance()->getServerName($sid),
+				HelperFunctions::getBaseURL(),
+				$key
+				),												// ...body
+			'Content-Type: text/plain; charset="UTF-8"'			// +header
+			);
 	}
 	
 	/**
