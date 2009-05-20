@@ -80,7 +80,7 @@ class DBManager_filesystem{
 		fclose($fd);
 		
 		// send mail
-		sendActivationMail($email, $name, $sid, $key);
+		$this->sendActivationMail($email, $name, $sid, $key);
 	}
 	public function sendActivationMail($email, $name, $sid, $key){
 		mail($name.' <'.$email.'>',								// to
