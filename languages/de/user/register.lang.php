@@ -22,6 +22,7 @@
 	$txt['register_fail_noPasswordFound'] = 'Kein Passwort angegeben!<br/><a onclick="history.go(-1); return false;" href="?page=register">Zurück</a>';
 	$txt['register_fail_passwordMatch']	= 'Deine Passwörter haben nicht überein gestimmt!<br/><a onclick="history.go(-1); return false;" href="?page=register">Zurück</a>';
 	$txt['register_fail_noEmail']		= 'Du hast keine E-Mail Adresse eingegeben, was aber notwendig ist.<br/><a onclick="history.go(-1); return false;" href="?page=register">Zurück</a>';
+	$txt['register_fail_emailinvalid']	= 'Du hast eine nicht korrekte E-Mail Adresse eingegeben.<br/><a onclick="history.go(-1); return false;" href="?page=register">Zurück</a>';
 	$txt['register_fail_wrongCaptcha']	= '<div class="error">Captcha falsch.</div>';
 	$txt['register_activate_success']	= 'Dein Benutzeraccount sollte jetzt aktiviert sein. Versuch dich einzuloggen.';
 	
