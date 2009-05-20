@@ -75,6 +75,15 @@ class HelperFunctions{
 	public static function echoMenuEntry($page){
 		echo '<li'; if(HelperFunctions::getActivePage()=='$page') echo ' class="active"'; echo '><a href="./?page='.$page.'">'. TranslationManager::getText($page) .'</a></li>';
 	}
+	public static function isValidEmail($mail)
+	{
+		$mailpattern = '/^([a-z0-9._\-])*\@'
+			.  '([a-z0-9])(([a-z0-9_\-])*([a-z0-9]))+'
+			.'(\.([a-z0-9_\-])*([a-z0-9])+)+$/i';
+		if( preg_match($mailpattern, $mail) > 0 )
+			return true;
+		return false;
+	}
 	
 	
 }

@@ -178,7 +178,7 @@ class SettingsManager {
 	
 	function isForceEmail($serverid){
 		if(isset($this->servers[$serverid]))
-			return $this->servers[$i]['forcemail'];
+			return $this->servers[$serverid]['forcemail'];
 		return null;	// no such server (TODO: implement exception?)
 	}
 	function isAuthByMail($serverid){
