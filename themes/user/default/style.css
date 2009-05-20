@@ -58,9 +58,9 @@ div.error div.detail { margin-top:10px; color:white; }
 	text-align:center;
 }
 #logarea { position:absolute; }
-#log_area ul { background-color:darkgrey; }
-#log_area ul.log_list_errors { color:#FF0000; }
-#log_area ul.log_list_warnings { color:#DD0000; }
-#log_area ul.log_list_messages { color:#BB0000; }
+#logarea ul { background-color:#444; margin:6px; padding:6px; border:1px solid darkorange; }
+#logarea ul.log_list_errors { color:#FF0000; }
+#logarea ul.log_list_warnings { color:#CC2222; }
+#logarea ul.log_list_messages { color:#BB4444; }
 
 #content { margin:20px 20% 0px 20%; }
