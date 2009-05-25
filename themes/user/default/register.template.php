@@ -74,7 +74,7 @@
 ?>
 
 <div id="content">
-	<h1>Registration Form</h1>
+	<h1><?php echo tr('register_title'); ?></h1>
 	<form action="./?page=register&amp;action=doregister" method="post" style="width:400px;">
 		<table class="fullwidth">
 			<tr>

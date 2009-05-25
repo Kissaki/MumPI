@@ -10,6 +10,7 @@
  */
 
 	// Register
+	$txt['register_title'] = 'Registration Form';
 	$txt['password_repeat'] = 'retype password';
 	$txt['antispam'] = 'Anti-Spam';
 	
