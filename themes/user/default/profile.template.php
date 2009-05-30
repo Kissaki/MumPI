@@ -2,6 +2,7 @@
 //TODO: implement javascript version of form
 
 if(isset($_GET['action']) && $_GET['action']=='doedit'){
+	
 	// login check
 	if(!isset($_SESSION['userid'])) die();
 	
@@ -12,14 +13,17 @@ if(isset($_GET['action']) && $_GET['action']=='doedit'){
 		else
 			ServerInterface::getInstance()->updateUserPw($_SESSION['serverid'], $_SESSION['userid'], $_POST['password']);
 	}
+	
 	// new username
 	if(isset($_POST['name'])){
 		ServerInterface::getInstance()->updateUserName($_SESSION['serverid'], $_SESSION['userid'], $_POST['name']);
 	}
+	
 	// new email
 	if(isset($_POST['email'])){
 		ServerInterface::getInstance()->updateUserEmail($_SESSION['serverid'], $_SESSION['userid'], $_POST['email']);
 	}
+	
 	// remove texture
 	if(isset($_GET['remove_texture'])){
 		try{
@@ -28,6 +32,7 @@ if(isset($_GET['action']) && $_GET['action']=='doedit'){
 			MessageManager::addWarning(tr('profile_removetexturefailed'));
 		}
 	}
+	
 	// new texture
 	if(isset($_FILES['texture'])){
 		if(!file_exists($_FILES['texture']['tmp_name'])){
@@ -57,7 +62,7 @@ function imgToString($imgRes){
  */
 function checkMemoryLimit(){
 	// 40M should be enough, use 60M to be sure
-	$tmp_memLim = ini_get('memoty_limit');
+	$tmp_memLim = ini_get('memory_limit');
 	if( intval(substr($tmp_memLim, 0, strlen($tmp_memLim)-1)) < 60 )
 		ini_set('memory_limit', '60M');
 }
@@ -67,11 +72,11 @@ function checkMemoryLimit(){
 					checkMemoryLimit();
 					
 					if(!$texImg = imagecreatefrompng($_FILES['texture']['tmp_name'])){
-						MessageManager::addWarning('profile_texture_imgresfail');
+						MessageManager::addWarning(tr('profile_texture_imgresfail'));
 						break;
 					}
 					if( imagesx($texImg)!=600 || imagesy($texImg)!=60 ){
-						MessageManager::addWarning('profile_texture_wrongresolution');
+						MessageManager::addWarning(tr('profile_texture_wrongresolution'));
 						break;
 					}
 					//TODO: check if we even need those 2:
@@ -82,16 +87,16 @@ function checkMemoryLimit(){
 					imagedestroy($texImg);
 					
 					if( strlen($tex)!=144000 ){
-						MessageManager::addWarning('profile_texture_conversionfail');
+						MessageManager::addWarning(tr('profile_texture_conversionfail'));
 						break;
 					}
 					
 					$texArray = stringToByteArray($tex);
 					
 					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )){
-						MessageManager::addWarning('profile_texture_success');
+						MessageManager::addWarning(tr('profile_texture_success'));
 					}else{
-						MessageManager::addWarning('profile_texture_fail');
+						MessageManager::addWarning(tr('profile_texture_fail'));
 					}
 					break;
 				case 'jpg':
@@ -99,11 +104,11 @@ function checkMemoryLimit(){
 					checkMemoryLimit();
 					
 					if(!$texImg = imagecreatefromjpeg($_FILES['texture']['tmp_name'])){
-						MessageManager::addWarning('profile_texture_imgresfail');
+						MessageManager::addWarning(tr('profile_texture_imgresfail'));
 						break;
 					}
 					if( imagesx($texImg)!=600 || imagesy($texImg)!=60 ){
-						MessageManager::addWarning('profile_texture_wrongresolution');
+						MessageManager::addWarning(tr('profile_texture_wrongresolution'));
 						break;
 					}
 					
@@ -111,16 +116,16 @@ function checkMemoryLimit(){
 					imagedestroy($texImg);
 					
 					if( strlen($tex)!=144000 ){
-						MessageManager::addWarning('profile_texture_conversionfail');
+						MessageManager::addWarning(tr('profile_texture_conversionfail'));
 						break;
 					}
 					
 					$texArray = unpack('C*', $tex);
 					
 					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )){
-						MessageManager::addWarning('profile_texture_success');
+						MessageManager::addWarning(tr('profile_texture_success'));
 					}else{
-						MessageManager::addWarning('profile_texture_fail');
+						MessageManager::addWarning(tr('profile_texture_fail'));
 					}
 					
 					break;
@@ -128,11 +133,11 @@ function checkMemoryLimit(){
 					checkMemoryLimit();
 					
 					if(!$texImg = imagecreatefromgif($_FILES['texture']['tmp_name'])){
-						MessageManager::addWarning('profile_texture_imgresfail');
+						MessageManager::addWarning(tr('profile_texture_imgresfail'));
 						break;
 					}
 					if( imagesx($texImg)!=600 || imagesy($texImg)!=60 ){
-						MessageManager::addWarning('profile_texture_wrongresolution');
+						MessageManager::addWarning(tr('profile_texture_wrongresolution'));
 						break;
 					}
 					
@@ -140,16 +145,16 @@ function checkMemoryLimit(){
 					imagedestroy($texImg);
 					
 					if( strlen($tex)!=144000 ){
-						MessageManager::addWarning('profile_texture_conversionfail');
+						MessageManager::addWarning(tr('profile_texture_conversionfail'));
 						break;
 					}
 					
 					$texArray = unpack('C*', $tex);
 					
 					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )){
-						MessageManager::addWarning('profile_texture_success');
+						MessageManager::addWarning(tr('profile_texture_success'));
 					}else{
-						MessageManager::addWarning('profile_texture_fail');
+						MessageManager::addWarning(tr('profile_texture_fail'));
 					}
 					break;
 				
@@ -159,7 +164,7 @@ function checkMemoryLimit(){
 					checkMemoryLimit();
 					
 					if($_FILES['texture']['size'] != 144000){
-						MessageManager::addWarning('profile_texture_conversionfail');
+						MessageManager::addWarning(tr('profile_texture_conversionfail'));
 						break;
 					}
 					
@@ -183,13 +188,13 @@ function checkMemoryLimit(){
 					$texArray = stringToByteArray($tex);
 					
 					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )){
-						MessageManager::addWarning('profile_texture_success');
+						MessageManager::addWarning(tr('profile_texture_success'));
 					}else{
-						MessageManager::addWarning('profile_texture_fail');
+						MessageManager::addWarning(tr('profile_texture_fail'));
 					}
 					break;
 				default:
-					MessageManager::addWarning('profile_texture_unknownext');
+					MessageManager::addWarning(tr('profile_texture_unknownext'));
 					break;
 			}
 			

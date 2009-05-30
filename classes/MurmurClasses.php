@@ -35,7 +35,7 @@ interface Server {
 		function getConf($key);
 		function getAllConf();
 		function setConf($key, $value);
-		function setSuperuserPasssword($password);
+		function setSuperuserPassword($password);
 		function getLog($intMin, $intMax);
 
 		function getPlayers();
