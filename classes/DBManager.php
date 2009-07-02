@@ -83,7 +83,8 @@ class DBManager_filesystem{
 		$this->sendActivationMail($email, $name, $sid, $key);
 	}
 	public function sendActivationMail($email, $name, $sid, $key){
-		mail($name.' <'.$email.'>',								// to
+		mail(
+			$email,											// to
 			tr('register_mail_auth_subj'),						// subject
 			sprintf( tr('register_mail_auth_body'),				// body...
 				SettingsManager::getInstance()->getSiteTitle(),
