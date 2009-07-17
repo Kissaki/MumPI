@@ -8,6 +8,7 @@
 			else
 				echo '<li><a href="./?page=profile">'.tr('profile').'</a></li>'.
 					'<li><a href="./?page=logout">'.tr('logout').'</a></li>';
+			echo '<li><a href="./admin/">Admin</a></li>';
 		?>
 	</ul>
 </div>

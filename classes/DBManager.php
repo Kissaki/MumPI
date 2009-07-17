@@ -30,11 +30,14 @@ class DBManager
 }
 
 class DBManager_filesystem{
+	private static $filename_admins = 'admins2.dat';
+	
 	private $filepath_admins;
 	private $filepath_awaiting;
 	private $filepath_log_register;
+	
 	function __construct(){
-		$this->filepath_admins = SettingsManager::getInstance()->getMainDir().'/data/admins.dat';
+		$this->filepath_admins = SettingsManager::getInstance()->getMainDir().'/data/'.self::$filename_admins;
 		$this->filepath_awaiting = SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat';
 		$this->filepath_log_register = SettingsManager::getInstance()->getMainDir().'/data/log_register.log';
 		
@@ -160,15 +163,14 @@ class DBManager_filesystem{
 	public function addAdminLogin($username, $password){
 		if($this->getAdminByName($username)==null)
 		{
-			$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat','a');
-			fwrite($fd, $username.';'.sha1($password)."\n");
+			$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/'.self::$filename_admins, 'a');
+			fwrite($fd, sprintf("%s;%s;%s\n", $this->getNextAdminID(), $username, sha1($password)));
 			fclose($fd);
 		}else{
 			throw new Exception('Account does already exist.');
 		}
 	}
-	public function removeAdminLogin($id)
-	{
+	public function removeAdminLogin($id){
 		$data = file($this->filepath_admins);
 		$fd = fopen($this->filepath_admins, 'w');
 		$size = count($data);
@@ -180,16 +182,21 @@ class DBManager_filesystem{
 		}
 		fclose($fd);
 	}
+	/**
+	 * 
+	 * @return array of admins, with id, name, pw
+	 */
 	public function getAdmins(){
-		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/admins.dat', 'r') OR MessageManager::addError('could not open admins.dat file');
+		$fd = fopen($this->filepath_admins, 'r') OR MessageManager::addError('could not open '.self::$filename_admins.' file');
 		$admins = array();
 		$id = 0;
 		while($line = fgets($fd)){
 			$array = explode(';', $line);
-			$array[1] = substr($array[1], 0, strlen($array[1]-1));
-			$admin['id'] = $id;
-			$admin['name'] = $array[0];
-			$admin['pw'] = $array[1];
+			$lastindex = count($array)-1;
+			$array[$lastindex] = substr($array[$lastindex], 0, strlen($array[$lastindex])-1);
+			$admin['id'] = $array[0];
+			$admin['name'] = $array[1];
+			$admin['pw'] = $array[2];
 			$admins[] = $admin;
 		}
 		$id++;
@@ -199,20 +206,37 @@ class DBManager_filesystem{
 	public function getAdminByName($username){
 		if(file_exists($this->filepath_admins))
 		{
-			$fd = fopen($this->filepath_admins, 'r') OR MessageManager::addError('could not open admins.dat file');
+			$fd = fopen($this->filepath_admins, 'r') OR MessageManager::addError('could not open '.self::$filename_admins.' file');
 			while($line = fgets($fd)){
 				$array = explode(';', $line);
-				if( $array[0] == $username )
+				if( $array[1] == $username )
 				{
-					$array[1] = substr($array[1], 0, strlen($array[1])-1);
-					$admin['name'] = $array[0];
-					$admin['pw'] = $array[1];
+					$lastindex = count($array)-1;
+					$array[$lastindex] = substr($array[$lastindex], 0, strlen($array[$lastindex])-1);
+					$admin['id'] = $array[0];
+					$admin['name'] = $array[1];
+					$admin['pw'] = $array[2];
 					fclose($fd);
 					return $admin;
 				}
 			}
 		}
 		return null;
+	}
+	/**
+	 * Get the next free ID for an admin
+	 * @return int
+	 */
+	public function getNextAdminID(){
+		$admins = $this->getAdmins();
+		// Get the maximum ID in use
+		$maxid = 0;
+		foreach($admins AS $admin)
+		{
+			$maxid < $admin['id'] ? $maxid = $admin['id'] : void ; 
+		}
+		// The next free ID is the maximum one +1
+		return $maxid+1;
 	}
 	public function checkAdminLogin($username, $password){
 		$admin = $this->getAdminByName($username);
@@ -234,5 +258,8 @@ class DBManager_filesystem{
 
 // TODO: implement PostgreSQL
 //class DBManager_psql{
+
+// TODO: implement sqlite
+//class DBManager_sqlite{
 
 ?>
