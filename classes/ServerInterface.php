@@ -34,19 +34,28 @@ class ServerInterface_ice
 	private $meta;
 	
 	function __construct(){
-		try{
-			Ice_loadProfile();
-		}catch(Ice_ProfileAlreadyLoadedException $exc){
-			MessageManager::addWarning(tr('iceprofilealreadyloaded'));
+		// Check that the PHP Ice extension is loaded.
+		if(!extension_loaded('ice'))
+		{
+			MessageManager::addError(tr('error_noIceExtensionLoaded'));
+		}else{
+			try{
+				Ice_loadProfile();
+				$this->connect();
+			}catch(Ice_ProfileAlreadyLoadedException $exc){
+				MessageManager::addError(tr('iceprofilealreadyloaded'));
+			}
 		}
-		$this->connect();
 	}
 	
 	private function connect()
 	{
 		global $ICE;
 		$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
+		// it would be good to be able to add a check if slice file is loaded
+		//MessageManager::addError(tr('error_noIceSliceLoaded'));
 		$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");	// May throw exception
+		$this->meta = $this->meta->ice_timeout(10000);
 	}
 	
 	//Meta

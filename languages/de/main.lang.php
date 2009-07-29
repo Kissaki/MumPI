@@ -36,10 +36,14 @@
 	
 	//Errors
 	$txt['error_unknowninterface']		= 'Falsche Konfiguration: unbekannter <acronym title="Datenbank">DB</acronym> Interface Typ!';
+	$txt['error_db_unknowntype']		= 'Der Datenbanktyp, den du spezifiziert hast (in der Einstellungs- "settings"-Datei) ist nicht verfügbar.';
+	//TODO de
+	$txt['error_noIceExtensionLoaded']	= 'It seems your PHP configuration is not running with the Ice extension.<br/>Please set up your PHP to load the Ice extension.<br/><br/>Ice is the middleware between <acronym title="Mumble Server">Murmur</acronym> and PHP/the Interface allowing PHP to call Murmur functions. Thus, this is necessary.';
+	//TODO de
+	$txt['error_noIceSliceLoaded']		= 'no slice';
+	$txt['error_noIce']					= 'Konnte keine Verbindung zu Ice herstellen.<br/>Entweder läuft dein Server nicht oder ohne Ice, weil er falsch eingestellt wurde. Prüfe deine Konfiguration.';
 	$txt['unknownserver']				= 'Kein solcher Server gefunden.';
 	$txt['error_missing_values']		= 'Es scheint, als seien nicht alle notwendigen Felder ausgefüllt/Werte definiert worden.';
-	$txt['error_noIce']					= 'Konnte keine Verbindung zu Ice herstellen.<br/>Entweder läuft dein Server nicht oder ohne Ice, weil er falsch eingestellt wurde. Prüfe deine Konfiguration.';
-	$txt['error_db_unknowntype']		= 'Der Datenbanktyp, den du spezifiziert hast (in der Einstellungs- "settings"-Datei) ist nicht verfügbar.';
 	$txt['iceprofilealreadyloaded'] 	= 'Ice Profil ist bereits geladen!';
 	$txt['error_dbmanager_couldnotopenadmins'] = 'Konnte die admins.dat Datei nicht öffnen.';
 

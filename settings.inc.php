@@ -53,4 +53,10 @@ $servers[3]['allowregistration'] = true;
 $servers[3]['forcemail']         = true;
 $servers[3]['authbymail']        = false;
 
+$servers[2]['name']              = 'two';
+$servers[2]['allowlogin']        = true;
+$servers[2]['allowregistration'] = true;
+$servers[2]['forcemail']         = true;
+$servers[2]['authbymail']        = false;
+
 ?>
