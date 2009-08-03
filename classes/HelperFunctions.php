@@ -73,7 +73,7 @@ class HelperFunctions{
 		}
 	}
 	public static function echoMenuEntry($page){
-		echo '<li'; if(HelperFunctions::getActivePage()=='$page') echo ' class="active"'; echo '><a href="./?page='.$page.'">'. TranslationManager::getText($page) .'</a></li>';
+		echo '<li'; if(HelperFunctions::getActivePage()==$page) echo ' class="active"'; echo '><a href="./?page='.$page.'">'. TranslationManager::getText($page) .'</a></li>';
 	}
 	public static function isValidEmail($mail)
 	{

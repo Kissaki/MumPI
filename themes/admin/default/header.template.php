@@ -9,13 +9,10 @@
 </div>
 <?php
 		}else{
-?>
-		<li<?php if(HelperFunctions::getActivePage()=='index') echo ' class="active"';?>><a href="./"><?php echo TranslationManager::getText('home'); ?></a></li>
-<?php
-		HelperFunctions::echoMenuEntry('meta');
-		HelperFunctions::echoMenuEntry('server');
-		HelperFunctions::echoMenuEntry('admins');
-		HelperFunctions::echoMenuEntry('logout');
+			HelperFunctions::echoMenuEntry('meta');
+			HelperFunctions::echoMenuEntry('server');
+			HelperFunctions::echoMenuEntry('admins');
+			HelperFunctions::echoMenuEntry('logout');
 ?>
 	</ul>
 </div>

@@ -60,7 +60,7 @@ define('MUMPHPI_SECTION', 'admin');
 <body>
 
 <?php
-	$pageSection = 'index';
+	$pageSection = 'meta';
 	if( isset($_GET['page']) && !empty($_GET['page']) )
 		$pageSection = $_GET['page'];
 	

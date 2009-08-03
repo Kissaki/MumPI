@@ -159,7 +159,6 @@ class DBManager_filesystem{
 		fclose($fd);
 	}
 	
-	// TODO add admin IDs -check if works
 	public function addAdminLogin($username, $password){
 		if($this->getAdminByName($username)==null)
 		{
