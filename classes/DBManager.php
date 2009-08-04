@@ -77,8 +77,9 @@ class DBManager_filesystem{
 			$key = (string)md5(rand());
 		}while( $this->getAwaitingAccount($key)!=null );
 		
-		// TODO: is this even allowed? ";" in name or pw
+		// TODO: is this even allowed? ";" in name?
 		$name = str_replace(';', '/;/', $name);
+		// TODO: pw should be saved as hash here as well
 		$pw = str_replace(';', '/;/', $pw);
 		$line = $key.';;;'.$sid.';;;'.$name.';;;'.$pw.';;;'.$email."\n";
 		fwrite($fd, $line);

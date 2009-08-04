@@ -5,7 +5,6 @@
  * http://creativecommons.org/licenses/by-nc/3.0/
  * @author Kissaki
  */
-// TODO: make mail etc localized strings
 if( isset($_POST['email']) && !empty($_POST['email']) ){
 	$_POST['email'] = trim($_POST['email']);
 	if( isset($_POST['password']) && isset($_POST['username']) ){
@@ -16,11 +15,9 @@ if( isset($_POST['email']) && !empty($_POST['email']) ){
 			ServerInterface::getInstance()->updateUserPw(intval($_POST['serverid']), $user->playerid, $newPw);
 			mail($_POST['email'], tr('request_mail_up_subj'), sprintf(tr('request_mail_up_body'), $user->name, $newPw) );
 			$formProcessed = tr('request_mail_sent');
-			
 		}else{
 			MessageManager::addWarning(tr('request_nosuchaccount'));
 		}
-		
 	}elseif( isset($_POST['password']) ){
 		// send new password
 		$user = ServerInterface::getInstance()->getUserByEmail(intval($_POST['serverid']), $_POST['email']);
