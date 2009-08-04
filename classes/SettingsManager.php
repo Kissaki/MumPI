@@ -6,6 +6,8 @@
  * @author Kissaki
  */
 
+require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
+
 /**
  * The SettingsManager class is an interface to the settings.
  */
@@ -74,11 +76,13 @@ class SettingsManager {
 			$settings = file_get_contents(MUMPHPI_MAINDIR.'/'.$filename);
 		}else{
 			$settings = file_get_contents(MUMPHPI_MAINDIR.'/settings.inc.default.php');
-			$settings = substr($settings, 5, strlen($settings)-7);	// strip php tags;
+			// strip php tags
+			$settings = substr($settings, 5, strlen($settings)-7);
 			self::setSettingsFileContents($settings);
 			$settings = file_get_contents(MUMPHPI_MAINDIR.'/'.$filename);
 		}
-		$settings = substr($settings, 5, strlen($settings)-7);	// strip php tags;
+		// strip php tags
+		$settings = substr($settings, 5, strlen($settings)-7);
 		return $settings;
 		
 	}
@@ -123,7 +127,7 @@ class SettingsManager {
 	 * @return path to theme without trailing slash (theme/ + themename)
 	 */
 	function getThemePath(){
-		return 'themes/'.HelperFunctions::getActiveSection().'/'.$this->theme;
+		return 'themes/' . HelperFunctions::getActiveSection() . '/'.$this->theme;
 	}
 	/**
 	 * 

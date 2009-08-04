@@ -16,4 +16,6 @@
 	$txt['admins'] = 'Admins';
 	$txt['logout'] = 'Log Out';
 	
+	$txt['error_AdminAccountAlreadyExists'] = 'Could not add the admin account because one with that loginname already exists. Please try again with a different login.';
+	
 ?>

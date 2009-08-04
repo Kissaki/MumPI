@@ -16,4 +16,6 @@
 	$txt['admins'] = 'Admins';
 	$txt['logout'] = 'Ausloggen';
 	
+	$txt['error_AdminAccountAlreadyExists'] = 'Ein Administrationsaccount mit einem solchen Loginnamen existiert bereits. Bitte versuchen Sie es mit einem anderen Login erneut.';
+	
 ?>

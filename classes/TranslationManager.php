@@ -6,6 +6,8 @@
  * @author Kissaki
  */
 
+require_once(MUMPHPI_MAINDIR.'/classes/SessionManager.php');
+
 /**
  * Global function for easier access
  * @param $key Language Translation key
@@ -17,7 +19,6 @@ function tr($key)
 }
 
 //TODO language folder should be in templates, so they can have their own strings
-//TODO don't need 2 classes
 /**
  * The TranslationManager class provides an interface to get translated text.
  * @author Kissaki
@@ -36,10 +37,6 @@ class TranslationManager {		// To make calls shorter in code, the class _Instanc
 	public static function getText($textname){
 		$txt = self::getInstance()->getText($textname);
 		return $txt;
-	}
-	//TODO depreciated function
-	public static function echoText($textname){
-		echo self::getText($textname);
 	}
 	
 }

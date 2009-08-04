@@ -6,12 +6,14 @@
  * @author Kissaki
  */
 
+require_once(MUMPHPI_MAINDIR.'/classes/SettingsManager.php');
+require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
+require_once(MUMPHPI_MAINDIR.'/classes/TranslationManager.php');
+
 /**
  * Provides database functionality for the interface
  * @author Kissaki
  */
-require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
-
 class DBManager
 {
 	private static $instance;
@@ -159,14 +161,14 @@ class DBManager_filesystem{
 		fclose($fd);
 	}
 	
-	public function addAdminLogin($username, $password){
+	public function addAdminLogin($username, $password, $isGlobalAdmin=false){
 		if($this->getAdminByName($username)==null)
 		{
 			$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/'.self::$filename_admins, 'a');
-			fwrite($fd, sprintf("%s;%s;%s\n", $this->getNextAdminID(), $username, sha1($password)));
+			fwrite($fd, sprintf("%s;%s;%s;%s\n", $this->getNextAdminID(), $username, sha1($password), $isGlobalAdmin));
 			fclose($fd);
 		}else{
-			throw new Exception('Account does already exist.');
+			MessageManager::addError(tr('error_AdminAccountAlreadyExists'));
 		}
 	}
 	public function removeAdminLogin($id){
