@@ -44,5 +44,6 @@
 	$txt['error_db_unknowntype']		= 'The Database type you specified (in your settings) is not available/defined.';
 	$txt['iceprofilealreadyloaded'] 	= 'Ice Profile has already been loaded!';
 	$txt['error_dbmanager_couldnotopenadmins'] = 'Could not open admins.dat file.';
+	$txt['error_invalidTexture']		= 'Invalid image data. Please check your image file.';
 
 ?>

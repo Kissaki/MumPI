@@ -153,7 +153,6 @@ class DBManager_filesystem{
 	 * Write a message to a specific file.
 	 * @param $filename
 	 * @param $msg
-	 * @return unknown_type
 	 */
 	public function append($field, $msg){
 		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/'.$field, 'a') OR die('could not open DB file');

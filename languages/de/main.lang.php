@@ -44,5 +44,6 @@
 	$txt['error_missing_values']		= 'Es scheint, als seien nicht alle notwendigen Felder ausgefüllt/Werte definiert worden.';
 	$txt['iceprofilealreadyloaded'] 	= 'Ice Profil ist bereits geladen!';
 	$txt['error_dbmanager_couldnotopenadmins'] = 'Konnte die admins.dat Datei nicht öffnen.';
+	$txt['error_invalidTexture']		= 'Ungültige Bilddaten. Bitte überprüfen Sie ihre Bilddatei.';
 
 ?>

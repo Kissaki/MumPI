@@ -283,14 +283,13 @@ class ServerInterface_ice
 	function updateUserTexture($srvid, $uid, $newTexture){
 		try{
 			if(is_string($newTexture)){
-				// TODO: implement conversation string -> byte array
-				
-			}else{
-				$this->getServer($srvid)->setTexture($uid, $newTexture);
+				// conversation string -> byte array (PHP5)
+				$newTexture = str_split($newTexture);
 			}
-		return true;
+			$this->getServer($srvid)->setTexture($uid, $newTexture);
+			return true;
 		}catch(Murmur_InvalidTextureException $exc){
-			echo '<div class="error">failed: invalid texture</div>';
+			MessageManager::addError(tr('error_invalidTexture'));
 			return false;
 		}
 	}
