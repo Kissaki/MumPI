@@ -31,8 +31,8 @@ class DBManager
 	}
 }
 
-class DBManager_filesystem{
-	private static $filename_admins = 'admins2.dat';
+class DBManager_filesystem {
+	private static $filename_admins = 'admins.dat';
 	
 	private $filepath_admins;
 	private $filepath_awaiting;
@@ -217,6 +217,7 @@ class DBManager_filesystem{
 					$admin['id'] = $array[0];
 					$admin['name'] = $array[1];
 					$admin['pw'] = $array[2];
+					$admin['isGlobal'] = $array[3];
 					fclose($fd);
 					return $admin;
 				}
