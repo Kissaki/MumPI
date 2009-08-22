@@ -19,42 +19,44 @@ class DBManager
 	private static $instance;
 	public static function getInstance()
 	{
-		if(!isset(self::$instance) || self::$instance == null)
-		{
+		if(!isset(self::$instance) || self::$instance == null) {
 			$dbType = SettingsManager::getInstance()->getDBType();
-			if( class_exists('DBManager_'.$dbType) )
+			if( class_exists('DBManager_'.$dbType) ) {
 				eval('self::$instance = new DBManager_'.$dbType.'();');
-			else
+			} else {
 				MessageManager::addError(tr('error_db_unknowntype'));
+			}
 		}
 		return self::$instance;
 	}
 }
 
-class DBManager_filesystem {
+class DBManager_filesystem
+{
 	private static $filename_admins = 'admins.dat';
 	
 	private $filepath_admins;
 	private $filepath_awaiting;
 	private $filepath_log_register;
 	
-	function __construct(){
+	function __construct()
+	{
 		$this->filepath_admins = SettingsManager::getInstance()->getMainDir().'/data/'.self::$filename_admins;
 		$this->filepath_awaiting = SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat';
 		$this->filepath_log_register = SettingsManager::getInstance()->getMainDir().'/data/log_register.log';
 		
 		// if data dir does not exist yet, create it
-		if(!file_exists(SettingsManager::getInstance()->getMainDir().'/data')){
+		if (!file_exists(SettingsManager::getInstance()->getMainDir().'/data')) {
 			mkdir(SettingsManager::getInstance()->getMainDir().'/data');
 
 			// if data files do not exist yet, create them
-			if(!file_exists($this->filepath_awaiting)){
+			if (!file_exists($this->filepath_awaiting)) {
 				fclose( fopen($this->filepath_awaiting,'w') );
 			}
-			if(!file_exists($this->filepath_log_register)){
+			if (!file_exists($this->filepath_log_register)) {
 				fclose( fopen($this->filepath_log_register,'w') );
 			}
-			if(!file_exists($this->filepath_admins)){
+			if (!file_exists($this->filepath_admins)) {
 				fclose( fopen($this->filepath_admins,'w') );
 			}
 			
@@ -69,13 +71,14 @@ class DBManager_filesystem {
 	 * @param $pw	Password
 	 * @param $email email address
 	 */
-	public function addAwaitingAccount($sid, $name, $pw, $email){
+	public function addAwaitingAccount($sid, $name, $pw, $email)
+	{
 		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat', 'a') OR die('could not open DB file');
 		
 		// Make sure the activation code is explicit
-		do{
+		do {
 			$key = (string)md5(rand());
-		}while( $this->getAwaitingAccount($key)!=null );
+		} while ( $this->getAwaitingAccount($key)!=null );
 		
 		// TODO: is this even allowed? ";" in name?
 		$name = str_replace(';', '/;/', $name);
@@ -88,7 +91,8 @@ class DBManager_filesystem {
 		// send mail
 		$this->sendActivationMail($email, $name, $sid, $key);
 	}
-	public function sendActivationMail($email, $name, $sid, $key){
+	public function sendActivationMail($email, $name, $sid, $key)
+	{
 		mail(
 			$email,											// to
 			tr('register_mail_auth_subj'),						// subject
@@ -107,34 +111,36 @@ class DBManager_filesystem {
 	 * Try to activate an account with the given activation key
 	 * @param $key
 	 */
-	function activateAccount($key){
+	function activateAccount($key)
+	{
 		$acc = $this->getAwaitingAccount($key);
-		if($acc!=null){
-			try{
+		if ($acc!=null) {
+			try {
 				ServerInterface::getInstance()->addUser($acc['sid'], $acc['name'], $acc['pw'], $acc['email']);
 				$this->removeAwaitingAccount($key);
-			}catch(Exception $exc){
+			} catch(Exception $exc) {
 				
 			}
-		}else{
+		} else {
 			echo '<div class="error">unknown activation key</div>';
 		}
 	}
-	function getAwaitingAccount($key){
+	function getAwaitingAccount($key)
+	{
 		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat', 'r') OR die('could not open DB file');
-		while($line = fgets($fd)){
-			if(substr($line, 0, 32)==$key){
+		while ($line = fgets($fd)) {
+			if (substr($line, 0, 32)==$key) {
 				$line = explode(';;;', $line);
-				foreach($line as $key=>$val){
+				foreach ($line as $key=>$val) {
 					$line[$key] = str_replace('/;/', ';', $val);
 				}
 				
 				$acc = array();
-				$acc['key'] =	$line[0];
-				$acc['sid'] =	$line[1];
-				$acc['name'] =	$line[2];
-				$acc['pw']	=	$line[3];
-				$acc['email'] =	str_replace("\n", '', $line[4]);
+				$acc['key']   = $line[0];
+				$acc['sid']   = $line[1];
+				$acc['name']  = $line[2];
+				$acc['pw']	  = $line[3];
+				$acc['email'] = str_replace("\n", '', $line[4]);
 				
 				fclose($fd);
 				return $acc;
@@ -143,7 +149,8 @@ class DBManager_filesystem {
 		fclose($fd);
 		return null;
 	}
-	public function removeAwaitingAccount($key){
+	public function removeAwaitingAccount($key)
+	{
 		$filename = SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat';
 		$file = file_get_contents($filename);
 		$file = preg_replace('/'.$key.';;;(.+)\n/', '', $file);
@@ -155,29 +162,30 @@ class DBManager_filesystem {
 	 * @param $filename
 	 * @param $msg
 	 */
-	public function append($field, $msg){
+	public function append($field, $msg)
+	{
 		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/'.$field, 'a') OR die('could not open DB file');
 		fwrite($fd, $msg."\n");
 		fclose($fd);
 	}
 	
-	public function addAdminLogin($username, $password, $isGlobalAdmin=false){
-		if($this->getAdminByName($username)==null)
-		{
+	public function addAdminLogin($username, $password, $isGlobalAdmin='false')
+	{
+		if ($this->getAdminByName($username) == null) {
 			$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/'.self::$filename_admins, 'a');
-			fwrite($fd, sprintf("%s;%s;%s;%s\n", $this->getNextAdminID(), $username, sha1($password), $isGlobalAdmin));
+			fwrite($fd, sprintf("%s;%s;%s;%d\n", $this->getNextAdminID(), $username, sha1($password), ($isGlobalAdmin == 'true' ? 1 : 0)));
 			fclose($fd);
-		}else{
+		} else {
 			MessageManager::addError(tr('error_AdminAccountAlreadyExists'));
 		}
 	}
-	public function removeAdminLogin($id){
+	public function removeAdminLogin($id)
+	{
 		$data = file($this->filepath_admins);
 		$fd = fopen($this->filepath_admins, 'w');
 		$size = count($data);
 		
-		for($line=0; $line<$size; $line++)
-		{
+		for ($line = 0; $line < $size; $line++) {
 			$array = explode(';', $data[$line]);
 			if( $array[0] != $id ){ fputs($fd, $data[$line]); }
 		}
@@ -187,31 +195,37 @@ class DBManager_filesystem {
 	 * 
 	 * @return array of admins, with id, name, pw
 	 */
-	public function getAdmins(){
+	public function getAdmins()
+	{
 		$fd = fopen($this->filepath_admins, 'r') OR MessageManager::addError('could not open '.self::$filename_admins.' file');
 		$admins = array();
 		$id = 0;
-		while($line = fgets($fd)){
+		while ($line = fgets($fd)) {
 			$array = explode(';', $line);
+			
+			// remove newline character from last value
 			$lastindex = count($array)-1;
-			$array[$lastindex] = substr($array[$lastindex], 0, strlen($array[$lastindex])-1);
+			preg_replace("/\r\n/", '', $array[$lastindex]);
+			preg_replace("/\n/", '', $array[$lastindex]);
+			
 			$admin['id'] = $array[0];
 			$admin['name'] = $array[1];
 			$admin['pw'] = $array[2];
+			$admin['isGlobalAdmin'] = ($array[3] == 1 ? true : false);
+			
 			$admins[] = $admin;
 		}
 		$id++;
 		fclose($fd);
 		return $admins;
 	}
-	public function getAdminByName($username){
-		if(file_exists($this->filepath_admins))
-		{
+	public function getAdminByName($username)
+	{
+		if(file_exists($this->filepath_admins)) {
 			$fd = fopen($this->filepath_admins, 'r') OR MessageManager::addError('could not open '.self::$filename_admins.' file');
-			while($line = fgets($fd)){
+			while ($line = fgets($fd)) {
 				$array = explode(';', $line);
-				if( $array[1] == $username )
-				{
+				if ( $array[1] == $username ) {
 					$lastindex = count($array)-1;
 					$array[$lastindex] = substr($array[$lastindex], 0, strlen($array[$lastindex])-1);
 					$admin['id'] = $array[0];
@@ -229,12 +243,11 @@ class DBManager_filesystem {
 	 * Get the next free ID for an admin
 	 * @return int
 	 */
-	public function getNextAdminID(){
+	public function getNextAdminID() {
 		$admins = $this->getAdmins();
 		// Get the maximum ID in use
 		$maxid = 0;
-		foreach($admins AS $admin)
-		{
+		foreach ($admins AS $admin) {
 			$maxid < $admin['id'] ? $maxid = $admin['id'] : void ; 
 		}
 		// The next free ID is the maximum one +1
@@ -242,12 +255,11 @@ class DBManager_filesystem {
 	}
 	public function checkAdminLogin($username, $password){
 		$admin = $this->getAdminByName($username);
-		if( $admin != null && ( $admin['pw'] == $password || $admin['pw'] == sha1($password)) ){
+		if ($admin != null && ( $admin['pw'] == $password || $admin['pw'] == sha1($password))) {
 			return true;
 		}
-		if(!file_exists($this->filepath_admins))
-		{
-			$this->addAdminLogin($username, $password);
+		if (!file_exists($this->filepath_admins)) {
+			$this->addAdminLogin($username, $password, true);
 			return true;
 		}
 		return false;

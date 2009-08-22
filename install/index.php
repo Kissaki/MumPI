@@ -59,7 +59,7 @@ define('MUMPHPI_SECTION', 'install');
 	
 	// handle admins.dat file
 	if (file_exists('../data/admins.dat')) {
-		$fh = fopen('../data/admins.dat', 'w+');
+		$fh = fopen('../data/admins.dat', 'r+');
 		$line = fgets($fh);
 		
 		if (count(split(';', $line)) == 2) {
@@ -70,13 +70,16 @@ define('MUMPHPI_SECTION', 'install');
 			
 			do {
 				$admin = split(';', $line);
-				$newfile .= $id . ';' . $admin[0] . ';' . $admin[1] . ';' . '1';
+				$newfile .= $id . ';' . $admin[0] . ';' . substr($admin[1], 0, strlen($admin[1])-1) . ';' . '1' . "\n";
+				$id++;
 			} while ($line = fgets($fh));
+			fclose($fh);
+			file_put_contents('../data/admins.dat', $newfile);
 			echo '<i>admins.dat</i> has been converted to the new format.<br/>';
 		} else {
+			fclose($fh);
 			echo '<i>admins.dat</i> does not have to be converted.';
 		}
-		fclose($fh);
 	} else {
 		echo '<i>admins.dat</i> does not have to be converted.';
 	}

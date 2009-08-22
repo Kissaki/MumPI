@@ -11,29 +11,38 @@ switch($_GET['ajax']){
 		TemplateManager::parseTemplate($_GET['page']);
 		break;
 		
+		
 	case 'db_admins_echo':
-		echo '<table><thead><tr><th>Username</th><th>Actions</th></tr>';
+		echo '<table><thead><tr><th>Username</th><th>global Admin</th><th>Actions</th></tr></thead>';
+		echo '<tbody>';
 		$admins = DBManager::getInstance()->getAdmins();
 		foreach($admins AS $admin){
-			echo '<tr id="admin_list_item_'.$admin['name'].'"><td>'.$admin['name'].'</td>';
-			echo '<td><!--<a class="jqlink" onclick="$(this).hide(); jq_admin_list_edit(\''.$admin['name'].'\');">edit</a> --><a class="jqlink" onclick="jq_admin_remove(\''.$admin['name'].'\')">delete</a>';
-			echo '</td></tr>';
+			echo '<tr id="admin_list_item_'.$admin['id'].'">';
+			echo 	'<td>'.$admin['name'].'</td>';
+			echo	'<td>' . ($admin['isGlobalAdmin'] ? 'yes' : 'no') . '</td>';
+			echo 	'<td>';
+			//echo		'<!--<a class="jqlink" onclick="$(this).hide(); jq_admin_list_edit(\''.$admin['name'].'\');">edit</a> -->';
+			echo		'<a class="jqlink" onclick="jq_admin_remove('.$admin['id'].')">delete</a>';
+			echo 	'</td>';
+			echo '</tr>';
 		}
-		echo '</thead></table>';
+		echo 	'</tbody>';
+		echo '</table>';
 		break;
+		
 	case 'db_admin_update_name':
 		DBManager::getInstance()->updateAdminName($_POST['name'], $_POST['pw']);
 		break;
+		
 	case 'db_admin_add':
-		try{
-			DBManager::getInstance()->addAdminLogin($_POST['name'], $_POST['pw']);
-		}catch(Exception $exc){
-			echo 'Accountname already exists.';
-		}
+		DBManager::getInstance()->addAdminLogin($_POST['name'], $_POST['pw'], $_POST['isGlobalAdmin']);
+		MessageManager::echoAllErrors();
 		break;
+		
 	case 'db_admin_remove':
-		DBManager::getInstance()->removeAdminLogin($_POST['name']);
+		DBManager::getInstance()->removeAdminLogin($_POST['id']);
 		break;
+		
 		
 	case 'meta_showDefaultConfig':
 		$config = ServerInterface::getInstance()->getDefaultConfig();

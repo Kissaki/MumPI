@@ -14,6 +14,8 @@
 			HelperFunctions::echoMenuEntry('admins');
 			HelperFunctions::echoMenuEntry('logout');
 ?>
+		<li style="height:10px; font-size:10px; line-height:10px; margin-top:10px; border-bottom:black;">Back to…</li>
+		<li><a href="../user/"><-- User</a></li>
 	</ul>
 </div>
 <?php /*<div id="interface_update_status" style="background-color:darkgrey; float:right; position:absolute; top:0px; right:0px;">

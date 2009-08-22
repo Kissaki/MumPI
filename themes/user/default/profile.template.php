@@ -208,7 +208,7 @@ function checkMemoryLimit(){
 
 ?>
 <div id="content">
-	<h1><?php TranslationManager::echoText('profile_head'); ?></h1>
+	<h1><?php echo TranslationManager::getText('profile_head'); ?></h1>
 	<form action="?page=profile&amp;action=doedit" method="post" style="width:420px;"<?php if(isset($_GET['action'])&&$_GET['action']=='edit_texture') echo ' enctype="multipart/form-data"'; ?>>
 		<table class="fullwidth">
 			<tr><?php // SERVER Information (not changeable) ?>
