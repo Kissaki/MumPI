@@ -87,7 +87,7 @@ define('MUMPHPI_SECTION', 'install');
 	
 ?>
 	<p>
-		You’re done.<br/>
+		<b>You’re done.</b><br/>
 		You may now want to further configure your server(s) and the interface in the <a href="../admin/">admin section</a>,<br/>
 		or go straight to the <a href="../user/">user section</a>.
 	</p>
