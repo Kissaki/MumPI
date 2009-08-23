@@ -197,46 +197,53 @@ class DBManager_filesystem
 	 */
 	public function getAdmins()
 	{
-		$fd = fopen($this->filepath_admins, 'r') OR MessageManager::addError('could not open '.self::$filename_admins.' file');
+		$fh = fopen($this->filepath_admins, 'r') OR MessageManager::addError('could not open '.self::$filename_admins.' file');
 		$admins = array();
-		$id = 0;
-		while ($line = fgets($fd)) {
-			$array = explode(';', $line);
-			
-			// remove newline character from last value
-			$lastindex = count($array)-1;
-			preg_replace("/\r\n/", '', $array[$lastindex]);
-			preg_replace("/\n/", '', $array[$lastindex]);
-			
-			$admin['id'] = $array[0];
-			$admin['name'] = $array[1];
-			$admin['pw'] = $array[2];
-			$admin['isGlobalAdmin'] = ($array[3] == 1 ? true : false);
-			
-			$admins[] = $admin;
+		while ($line = fgets($fh)) {
+			$admins[] = createAdminFromString($line);
 		}
-		$id++;
-		fclose($fd);
+		fclose($fh);
 		return $admins;
 	}
+	
+	/**
+	 * Get admin object by (account-)name.
+	 * @param $username
+	 * @return unknown_type
+	 */
 	public function getAdminByName($username)
 	{
 		if(file_exists($this->filepath_admins)) {
 			$fd = fopen($this->filepath_admins, 'r') OR MessageManager::addError('could not open '.self::$filename_admins.' file');
 			while ($line = fgets($fd)) {
-				$array = explode(';', $line);
-				if ( $array[1] == $username ) {
-					$lastindex = count($array)-1;
-					$array[$lastindex] = substr($array[$lastindex], 0, strlen($array[$lastindex])-1);
-					$admin['id'] = $array[0];
-					$admin['name'] = $array[1];
-					$admin['pw'] = $array[2];
-					$admin['isGlobal'] = $array[3];
+				$admin = createAdminFromString($line);
+				if ($admin['name'] == $username) {
 					fclose($fd);
 					return $admin;
 				}
 			}
 		}
+		return null;
+	}
+	
+	/**
+	 * Get an admin object by ID
+	 * @param $aid admin ID
+	 * @return array admin object
+	 */
+	public function getAdmin($aid)
+	{
+		$fh = fopen($this->filepath_admins, 'r');
+		$admin = null;
+		$line = null;
+		while ($line = fgets($fh)) {
+			$admin = createAdminFromString($line);
+			if ($admin['id'] == $aid) {
+				fclose($fh);
+				return $admin;
+			}
+		}
+		fclose($fh);
 		return null;
 	}
 	/**
@@ -255,14 +262,39 @@ class DBManager_filesystem
 	}
 	public function checkAdminLogin($username, $password){
 		$admin = $this->getAdminByName($username);
+		// correct login?
 		if ($admin != null && ( $admin['pw'] == $password || $admin['pw'] == sha1($password))) {
 			return true;
 		}
-		if (!file_exists($this->filepath_admins)) {
+		// no admins yet?
+		if (file_size($this->filepath_admins) == 0) {
 			$this->addAdminLogin($username, $password, true);
 			return true;
 		}
+		// login failed
 		return false;
+	}
+	
+	/**
+	 * Create an admin object from a db-line
+	 * @param $line
+	 * @return unknown_type
+	 */
+	private function createAdminFromString($line)
+	{
+		$array = explode(';', $line);
+		
+		// remove newline character from last value
+		$lastindex = count($array)-1;
+		preg_replace("/\r\n/", '', $array[$lastindex]);
+		preg_replace("/\n/", '', $array[$lastindex]);
+		
+		$admin = array();
+		$admin['id'] = $array[0];
+		$admin['name'] = $array[1];
+		$admin['pw'] = $array[2];
+		$admin['isGlobal'] = $array[3];
+		return $admin;
 	}
 	
 }

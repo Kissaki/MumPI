@@ -18,7 +18,8 @@
 		<li><a href="../user/"><-- User</a></li>
 	</ul>
 </div>
-<?php /*<div id="interface_update_status" style="background-color:darkgrey; float:right; position:absolute; top:0px; right:0px;">
+<?php /* TODO: check for interface updates
+<div id="interface_update_status" style="background-color:darkgrey; float:right; position:absolute; top:0px; right:0px;">
 y
 </div>
 <script type="text/javascript">

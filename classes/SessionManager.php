@@ -6,18 +6,23 @@
  * @author Kissaki
  */
 
-class SessionManager{
+class SessionManager
+{
 	private static $instance;
+	
 	/**
 	 * starts a php session
 	 */
-	public static function startSession(){
-		if(!isset(self::$instance)){
+	public static function startSession()
+	{
+		if(!isset(self::$instance)) {
 			self::$instance = new SessionManager_obj();
 		}
 	}
-	public static function getInstance(){
-		if(self::$instance==null){
+	
+	public static function getInstance()
+	{
+		if(self::$instance == null){
 			self::$instance = new SessionManager_obj();
 		}
 		return self::$instance;
@@ -26,38 +31,60 @@ class SessionManager{
 	
 }
 
-class SessionManager_obj{
-	public function __construct(){
+class SessionManager_obj
+{
+	public function __construct()
+	{
 		session_start();
 	}
+	
 	/**
 	 * Checks if the visitor is logged in to a mumble user account (on a specific server)
 	 * @return boolean
 	 */
-	public function isUser(){
-		if(isset($_SESSION['userLoggedIn'])){
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * Check if the visitor is logged in as an interface admin
-	 * @return boolean
-	 */
-	public function isAdmin(){
-		if(isset($_SESSION['adminLoggedIn'])){
+	public function isUser()
+	{
+		if(isset($_SESSION['userLoggedIn'])) {
 			return true;
 		}
 		return false;
 	}
 	
-	public function getLanguage(){
-		if(isset($_SESSION['language'])){
+	/**
+	 * Check if the visitor is logged in as an interface admin
+	 * @return boolean
+	 */
+	public function isAdmin()
+	{
+		if(isset($_SESSION['adminLoggedIn'])) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * get language to use
+	 * @return string 
+	 */
+	public function getLanguage()
+	{
+		if (isset($_SESSION['language'])) {
 			return $_SESSION['language'];
-		}else{
+		} else {
 			return null;
 		}
 	}
+	
+	public function loginAsAdmin($name, $pw)
+	{
+		if (DBManager::getInstance()->checkAdminLogin($_POST['username'], $_POST['password'])) {
+			$_SESSION['adminLoggedIn'] = true;
+			$_SESSION['adminLoggedInAs'] = DBManager::getInstance()->getAdminByName($name)['id'];
+		}else{
+			throw new Exception();
+		}
+	}
+	
 }
 
 ?>
