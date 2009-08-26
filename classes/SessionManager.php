@@ -79,7 +79,8 @@ class SessionManager_obj
 	{
 		if (DBManager::getInstance()->checkAdminLogin($_POST['username'], $_POST['password'])) {
 			$_SESSION['adminLoggedIn'] = true;
-			$_SESSION['adminLoggedInAs'] = DBManager::getInstance()->getAdminByName($name)['id'];
+			$admin = DBManager::getInstance()->getAdminByName($name);
+			$_SESSION['adminLoggedInAs'] = $admin['id'];
 		}else{
 			throw new Exception();
 		}

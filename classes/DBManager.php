@@ -200,7 +200,7 @@ class DBManager_filesystem
 		$fh = fopen($this->filepath_admins, 'r') OR MessageManager::addError('could not open '.self::$filename_admins.' file');
 		$admins = array();
 		while ($line = fgets($fh)) {
-			$admins[] = createAdminFromString($line);
+			$admins[] = $this->createAdminFromString($line);
 		}
 		fclose($fh);
 		return $admins;
@@ -216,7 +216,7 @@ class DBManager_filesystem
 		if(file_exists($this->filepath_admins)) {
 			$fd = fopen($this->filepath_admins, 'r') OR MessageManager::addError('could not open '.self::$filename_admins.' file');
 			while ($line = fgets($fd)) {
-				$admin = createAdminFromString($line);
+				$admin = $this->createAdminFromString($line);
 				if ($admin['name'] == $username) {
 					fclose($fd);
 					return $admin;
@@ -266,7 +266,7 @@ class DBManager_filesystem
 		if ($admin != null && ( $admin['pw'] == $password || $admin['pw'] == sha1($password))) {
 			return true;
 		}
-		// no admins yet?
+		// no admins yet? // put this second so it won’t be called each time, on successful logins
 		if (file_size($this->filepath_admins) == 0) {
 			$this->addAdminLogin($username, $password, true);
 			return true;
@@ -277,8 +277,8 @@ class DBManager_filesystem
 	
 	/**
 	 * Create an admin object from a db-line
-	 * @param $line
-	 * @return unknown_type
+	 * @param $line string with admin account data
+	 * @return array admin object
 	 */
 	private function createAdminFromString($line)
 	{
@@ -293,7 +293,7 @@ class DBManager_filesystem
 		$admin['id'] = $array[0];
 		$admin['name'] = $array[1];
 		$admin['pw'] = $array[2];
-		$admin['isGlobal'] = $array[3];
+		$admin['isGlobalAdmin'] = ($array[3] == 1 ? true : false);
 		return $admin;
 	}
 	
