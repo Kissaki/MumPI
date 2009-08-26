@@ -5,6 +5,7 @@
  */
 //TODO secure this with $_SERVER['HTTP_REFERER']
 //TODO secure this, preferably session data
+//TODO: make this a class, probably static, and access functions after checking if function exists with function_exists() with eval()
 
 switch($_GET['ajax']){
 	case 'getPage':
@@ -12,16 +13,54 @@ switch($_GET['ajax']){
 		break;
 		
 		
+	case 'db_admins_groups_get':
+		$groups = DBManager::getInstance()->getAdminGroups();
+		echo json_encode($groups);
+		break;
+		
+	case 'db_adminGroupHeads_get':
+		$groups = DBManager::getInstance()->getAdminGroupHeads();
+		echo json_encode($groups);
+		break;
+		
+	case 'db_admingroups_echo':
+?>
+		<table>
+			<thead><tr><th>ID</th><th>name</th><th>permissions</th></tr></thead>
+			<tbody>
+<?php
+				$groups = DBManager::getInstance()->getAdminGroups();
+				foreach ($groups AS $group) {
+					echo '<tr><td>' . $group['id'] . '</td><td>' . $group['name']
+						. '</td><td>';
+					$tmp = '';
+					foreach ($group['perms'] AS $key=>$perms) {
+						$tmp .= $key . ', ';
+					}
+					$tmp = substr($tmp, 0, strlen($tmp)-2);
+					echo '</td></tr>';
+				}
+?>
+			</tbody>
+		</table>
+<?php
+		break;
+		
 	case 'db_admins_echo':
-		echo '<table><thead><tr><th>Username</th><th>global Admin</th><th>Actions</th></tr></thead>';
+		echo '<table><thead><tr><th>Username</th><th>global Admin</th><th>Groups</th><th>Actions</th></tr></thead>';
 		echo '<tbody>';
 		$admins = DBManager::getInstance()->getAdmins();
 		foreach($admins AS $admin){
 			echo '<tr id="admin_list_item_'.$admin['id'].'">';
 			echo 	'<td>'.$admin['name'].'</td>';
 			echo	'<td>' . ($admin['isGlobalAdmin'] ? 'yes' : 'no') . '</td>';
+			echo	'<td>';
+			$groups = DBManager::getInstance()->getAdminGroups($admin['id']);
+			foreach ($groups AS $group) {
+				$group['name'];
+			}
+			echo	'</td>';
 			echo 	'<td>';
-			//echo		'<!--<a class="jqlink" onclick="$(this).hide(); jq_admin_list_edit(\''.$admin['name'].'\');">edit</a> -->';
 			echo		'<a class="jqlink" onclick="jq_admin_remove('.$admin['id'].')">delete</a>';
 			echo 	'</td>';
 			echo '</tr>';

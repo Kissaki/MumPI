@@ -34,32 +34,33 @@ class DBManager
 class DBManager_filesystem
 {
 	private static $filename_admins = 'admins.dat';
+	private static $filename_adminGroups = 'admin_groups.dat';
+	private static $filename_adminGroupPermissions = 'admin_group_permissions.dat';
+	private static $filename_admin_group_assoc = 'admin_group_assoc.dat';
 	
 	private $filepath_admins;
 	private $filepath_awaiting;
 	private $filepath_log_register;
+	private $filepath_adminGroups;
+	private $filepath_adminGroupPermissions;
+	
 	
 	function __construct()
 	{
-		$this->filepath_admins = SettingsManager::getInstance()->getMainDir().'/data/'.self::$filename_admins;
-		$this->filepath_awaiting = SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat';
-		$this->filepath_log_register = SettingsManager::getInstance()->getMainDir().'/data/log_register.log';
+		$datapath = SettingsManager::getInstance()->getMainDir() . '/data/';
+		$this->filepath_admins					= $datapath . self::$filename_admins;
+		$this->filepath_awaiting				= $datapath . 'awaiting.dat';
+		$this->filepath_log_register			= $datapath . 'log_register.log';
+		$this->filepath_adminGroups				= $datapath . self::$filename_adminGroups;
+		$this->filepath_adminGroupPermissions	= $datapath . self::$filename_adminGroupPermissions;
+		$this->filepath_adminGroupAssoc			= $datapath . self::$filename_admin_group_assoc;
 		
 		// if data dir does not exist yet, create it
-		if (!file_exists(SettingsManager::getInstance()->getMainDir().'/data')) {
-			mkdir(SettingsManager::getInstance()->getMainDir().'/data');
-
-			// if data files do not exist yet, create them
-			if (!file_exists($this->filepath_awaiting)) {
-				fclose( fopen($this->filepath_awaiting,'w') );
-			}
-			if (!file_exists($this->filepath_log_register)) {
-				fclose( fopen($this->filepath_log_register,'w') );
-			}
-			if (!file_exists($this->filepath_admins)) {
-				fclose( fopen($this->filepath_admins,'w') );
-			}
-			
+		if (
+			!is_writable(SettingsManager::getInstance()->getMainDir() . '/data')
+			|| !is_writable(SettingsManager::getInstance()->getMainDir() . '/data/admins.dat')
+			) {
+			header('Location: ../install/');
 		}
 		
 	}
@@ -260,6 +261,13 @@ class DBManager_filesystem
 		// The next free ID is the maximum one +1
 		return $maxid+1;
 	}
+	
+	/**
+	 * check login
+	 * @param $username
+	 * @param $password plain or sha1-hashed password
+	 * @return bool login details correct?
+	 */
 	public function checkAdminLogin($username, $password){
 		$admin = $this->getAdminByName($username);
 		// correct login?
@@ -267,7 +275,7 @@ class DBManager_filesystem
 			return true;
 		}
 		// no admins yet? // put this second so it won’t be called each time, on successful logins
-		if (file_size($this->filepath_admins) == 0) {
+		if (filesize($this->filepath_admins) == 0) {
 			$this->addAdminLogin($username, $password, true);
 			return true;
 		}
@@ -286,8 +294,7 @@ class DBManager_filesystem
 		
 		// remove newline character from last value
 		$lastindex = count($array)-1;
-		preg_replace("/\r\n/", '', $array[$lastindex]);
-		preg_replace("/\n/", '', $array[$lastindex]);
+		$array[$lastindex] = HelperFunctions::stripNewline($array[$lastindex]);
 		
 		$admin = array();
 		$admin['id'] = $array[0];
@@ -297,15 +304,105 @@ class DBManager_filesystem
 		return $admin;
 	}
 	
+	public function getAdminGroups()
+	{
+		$fh = fopen($this->filepath_adminGroups, 'r');
+		$groups = array();
+		while ($line = fgets($fh)) {
+			$groups[] = $this->createAdminGroupFromString($line);
+		}
+		fclose($fh);
+		return $groups;
+	}
+	
+	public function getAdminGroupHeads()
+	{
+		$fh = fopen($this->filepath_adminGroups, 'r');
+		$groups = array();
+		
+		while ($line = fgets($fh)) {
+			$groups[] = $this->createAdminGroupHeadFromString($line);
+		}
+		
+		fclose($fh);
+		return $groups;
+	}
+	
+	private function createAdminGroupFromString($line)
+	{
+		$group = $this->createAdminGroupHeadFromString($line);
+		$group = $this->createAdminGroupFromAdminGroupHead($group);
+		return $group;
+	}
+	
+	private function createAdminGroupHeadFromString($line)
+	{
+		$array = explode(';', $line);
+		
+		// remove newline character from last value
+		$lastindex = count($array)-1;
+		$array[$lastindex] = HelperFunctions::stripNewline($array[$lastindex]);
+		
+		$group = array();
+		$group['id'] = $array[0];
+		$group['name'] = $array[1];
+		return $group;
+	}
+	
+	private function createAdminGroupFromAdminGroupHead($group)
+	{
+		$perms = $this->getAdminGroupPermissions($group['id']);
+		$group['perms'] = $perms;
+		return $group;
+	}
+	
+	private function createAdminGroupPermissionsFromString($line)
+	{
+		$array = explode(';', $line);
+		
+		// remove newline character from last value
+		$lastindex = count($array)-1;
+		$array[$lastindex] = HelperFunctions::stripNewline($array[$lastindex]);
+		
+		$perms = array();
+		$perms['startStop'] = $array[2];
+		$perms['editConf'] = $array[3];
+		$perms['genSuUsPW'] = $array[4];
+		$perms['viewRegistrations'] = $array[5];
+		$perms['editRegistrations'] = $array[6];
+		$perms['moderate'] = $array[7];
+		$perms['kick'] = $array[8];
+		$perms['ban'] = $array[9];
+		$perms[$array[1]] = $perms;
+		
+		return $perms;
+	}
+	
+	/**
+	 * 
+	 * @param $id admin group ID
+	 * @return object admin group permissions
+	 */
+	public function getAdminGroupPermissions($id)
+	{
+		$fh = fopen($this->filepath_adminGroupPermissions, 'r');
+		$perms = array();
+		while ($line = fgets($fh)) {
+			$perms[] = $this->createAdminGroupPermissionsFromString($line);
+		}
+		fclose($fh);
+		return $perms;
+	}
+	
 }
 
 // TODO: implement MySQL
-//class DBManager_mysql{
+//class DBManager_mysql
 
 // TODO: implement PostgreSQL
-//class DBManager_psql{
+//class DBManager_psql
 
 // TODO: implement sqlite
-//class DBManager_sqlite{
+//class DBManager_sqlite
 
 ?>

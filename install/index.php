@@ -85,6 +85,19 @@ define('MUMPHPI_SECTION', 'install');
 	}
 	echo '<br/>';
 	
+	if (!file_exists('../data/admin_groups.dat')) {
+		echo 'creating admin groups file…<br/>';
+		fclose(fopen('../data/admin_groups.dat', 'w'));
+	}
+	if (!file_exists('../data/admin_group_permissions.dat')) {
+		echo 'creating admin group permissions file…<br/>';
+		fclose(fopen('../data/admin_group_permissions.dat', 'w'));
+	}
+	if (!file_exists('../data/admin_group_assoc.dat')) {
+		echo 'creating admin group assoc file…<br/>';
+		fclose(fopen('../data/admin_group_assoc.dat', 'w'));
+	}
+	
 ?>
 	<p>
 		<b>You’re done.</b><br/>

@@ -22,6 +22,16 @@ class TemplateManager{
 			HelperFunctions::addError('Template file not found when trying to parse template: '.$name);
 		}
 	}
+	
+	public static function getTemplate($name)
+	{
+		$filepath = SettingsManager::getInstance()->getThemeDir().'/'.$name.'.template.php';
+		if(file_exists($filepath)){
+			$template = file_get_contents($filepath);
+		}else{
+			HelperFunctions::addError('Template file not found when trying to parse template: '.$name);
+		}
+	}
 }
 
 

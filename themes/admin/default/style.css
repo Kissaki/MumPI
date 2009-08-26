@@ -67,3 +67,8 @@ div.js_link { color:grey; font-size:x-small; margin-left:4px; margin-right:4px; 
 #jq_information { margin-top:10px; }
 
 .table_headline td { padding-top:12px; font-family:arial; font-weight:bold; text-decoration:underline; }
+
+.datalist a { text-decoration:none; }
+.datalist > .head { background-color:#444; padding:2px 4px 0px; border-bottom:1px dotted grey; }
+.datalist > .head .indicator { width:20px; height:20px; text-align:center; }
+.datalist > .content { background-color:#333; }

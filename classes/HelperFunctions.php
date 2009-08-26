@@ -88,6 +88,18 @@ class HelperFunctions{
 		return 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['REQUEST_URI']);
 	}
 	
+	/**
+	 * remove newline characters from string
+	 * @param $str
+	 * @return string
+	 */
+	public static function stripNewline($str)
+	{
+		$str = preg_replace("/\r\n/", '', $str);
+		$str = preg_replace("/\n/", '', $str);
+		return $str;
+	}
+	
 	
 }
 ?>
