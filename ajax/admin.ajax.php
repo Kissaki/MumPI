@@ -3,30 +3,38 @@
  * Ajax functionality
  * @author Kissaki
  */
-//TODO secure this with $_SERVER['HTTP_REFERER']
+//TODO secure this with $_SERVER['HTTP_REFERER'] or sth
 //TODO secure this, preferably session data
 //TODO: make this a class, probably static, and access functions after checking if function exists with function_exists() with eval()
 
-switch($_GET['ajax']){
-	case 'getPage':
+/**
+ * ajax functionality, functions for the admin section
+ * @author Kissaki
+ */
+class Ajax_Admin
+{
+	public static function getPage()
+	{
 		TemplateManager::parseTemplate($_GET['page']);
-		break;
-		
-		
-	case 'db_admins_groups_get':
+	}
+	
+	public static function db_admins_groups_get()
+	{
 		$groups = DBManager::getInstance()->getAdminGroups();
 		echo json_encode($groups);
-		break;
-		
-	case 'db_adminGroupHeads_get':
+	}
+	
+	public static function db_adminGroupHeads_get()
+	{
 		$groups = DBManager::getInstance()->getAdminGroupHeads();
 		echo json_encode($groups);
-		break;
-		
-	case 'db_admingroups_echo':
+	}
+	
+	public static function db_admingroups_echo()
+	{
 ?>
 		<table>
-			<thead><tr><th>ID</th><th>name</th><th>permissions</th></tr></thead>
+			<thead><tr><th>ID</th><th>name</th><th>permissions</th><th>actions</th></tr></thead>
 			<tbody>
 <?php
 				$groups = DBManager::getInstance()->getAdminGroups();
@@ -38,15 +46,32 @@ switch($_GET['ajax']){
 						$tmp .= $key . ', ';
 					}
 					$tmp = substr($tmp, 0, strlen($tmp)-2);
-					echo '</td></tr>';
+					echo '</td>';
+					echo '<td>';
+					echo 	'<a class="jqlink" onclick="jq_admingroup_remove(' . $group['id'] . ')">delete</a>';
+					echo '</td>';
+					echo '</tr>';
 				}
 ?>
 			</tbody>
 		</table>
 <?php
-		break;
-		
-	case 'db_admins_echo':
+	}
+	
+	public static function db_adminGroup_add()
+	{
+		DBManager::getInstance()->addAdminGroup($_POST['name']);
+		MessageManager::echoAll();
+	}
+	
+	public static function db_adminGroup_remove()
+	{
+		DBManager::getInstance()->removeAdminGroup($_POST['id']);
+		MessageManager::echoAll();
+	}
+	
+	public static function db_admins_echo()
+	{
 		echo '<table><thead><tr><th>Username</th><th>global Admin</th><th>Groups</th><th>Actions</th></tr></thead>';
 		echo '<tbody>';
 		$admins = DBManager::getInstance()->getAdmins();
@@ -55,7 +80,7 @@ switch($_GET['ajax']){
 			echo 	'<td>'.$admin['name'].'</td>';
 			echo	'<td>' . ($admin['isGlobalAdmin'] ? 'yes' : 'no') . '</td>';
 			echo	'<td>';
-			$groups = DBManager::getInstance()->getAdminGroups($admin['id']);
+			$groups = DBManager::getInstance()->getAdminGroupsByAdminID($admin['id']);
 			foreach ($groups AS $group) {
 				$group['name'];
 			}
@@ -67,48 +92,63 @@ switch($_GET['ajax']){
 		}
 		echo 	'</tbody>';
 		echo '</table>';
-		break;
-		
-	case 'db_admin_update_name':
+	}
+	
+	public static function db_admin_update_name()
+	{
 		DBManager::getInstance()->updateAdminName($_POST['name'], $_POST['pw']);
-		break;
-		
-	case 'db_admin_add':
+	}
+	
+	public static function db_admin_add()
+	{
 		DBManager::getInstance()->addAdminLogin($_POST['name'], $_POST['pw'], $_POST['isGlobalAdmin']);
 		MessageManager::echoAllErrors();
-		break;
-		
-	case 'db_admin_remove':
+	}
+	
+	public static function db_admin_remove()
+	{
 		DBManager::getInstance()->removeAdminLogin($_POST['id']);
-		break;
-		
-		
-	case 'meta_showDefaultConfig':
+		MessageManager::echoAllErrors();
+	}
+	
+	public static function meta_showDefaultConfig()
+	{
 		$config = ServerInterface::getInstance()->getDefaultConfig();
 		echo '<table>';
 		foreach($config AS $key=>$value){
 			echo '<tr><td>'.$key.':</td><td>'.$value.'</td></tr>';
 		}
 		echo '</table>';
-		break;
-		
-	case 'server_create':
+		MessageManager::echoAllErrors();
+	}
+	
+	public static function server_create()
+	{
 		echo ServerInterface::getInstance()->createServer();
-		break;
-	case 'server_delete':
+	}
+	
+	public static function server_delete()
+	{
 		ServerInterface::getInstance()->deleteServer($_POST['sid']);
-		break;
-	case 'server_start':
+	}
+	
+	public static function server_start()
+	{
 		ServerInterface::getInstance()->startServer($_POST['sid']);
-		break;
-	case 'server_stop':
+	}
+	
+	public static function server_stop()
+	{
 		ServerInterface::getInstance()->stopServer($_POST['sid']);
-		break;
-	case 'server_setSuperuserPassword':
+	}
+	
+	public static function server_setSuperuserPassword()
+	{
 		ServerInterface::getInstance()->setServerSuperuserPassword($_POST['sid'], $_POST['pw']);
-		break;
-		
-	case 'server_getRegistrations':
+	}
+	
+	public static function server_getRegistrations()
+	{
 		$users = array();
 		try{
 			$users = ServerInterface::getInstance()->getServerRegistrations($_POST['sid']);
@@ -116,7 +156,7 @@ switch($_GET['ajax']){
 			echo '<div class="error">Server is not running</div>';
 			break;
 		}
-		?>
+?>
 			<h2>Registrations</h2>
 			<table>
 				<thead>
@@ -138,10 +178,11 @@ switch($_GET['ajax']){
 <?php				}	?>
 				</tbody>
 			</table>
-		<?php
-		break;
+<?php
+	}
 	
-	case 'show_onlineUsers':
+	public static function show_onlineUsers()
+	{
 		$users = array();
 		try{
 			$users = ServerInterface::getInstance()->getServerUsersConnected($_POST['sid']);
@@ -205,31 +246,46 @@ switch($_GET['ajax']){
 					);
 			</script>
 <?php
-		break;
-		
-	case 'server_regstration_remove':
+	}
+	
+	public static function server_regstration_remove()
+	{
 		ServerInterface::getInstance()->removeRegistration($_POST['sid'], $_POST['uid']);
-		break;
-	case 'server_user_mute':
+	}
+	
+	public static function server_user_mute()
+	{
 		ServerInterface::getInstance()->muteUser($_POST['sid'], $_POST['sessid']);
-		break;
-	case 'server_user_unmute':
+	}
+	
+	public static function server_user_unmute()
+	{
 		ServerInterface::getInstance()->unmuteUser($_POST['sid'], $_POST['sessid']);
-		break;
-	case 'server_user_deaf':
+	}
+	
+	public static function server_user_deaf()
+	{
 		ServerInterface::getInstance()->deafUser($_POST['sid'], $_POST['sessid']);
-		break;
-	case 'server_user_undeaf':
+	}
+	
+	public static function server_user_undeaf()
+	{
 		ServerInterface::getInstance()->undeafUser($_POST['sid'], $_POST['sessid']);
-		break;
-	case 'server_user_kick':
+	}
+	
+	public static function server_user_kick()
+	{
 		ServerInterface::getInstance()->kickUser($_POST['sid'], $_POST['sessid']);
-		break;
-	case 'server_user_ban':
+	}
+	
+	public static function server_user_ban()
+	{
 		ServerInterface::getInstance()->banUser($_POST['sid'], $_POST['sessid']);
-		break;
-	case 'show_server_bans':
-		$bans = ServerInterface::getInstance()->getServerBans($_POST['sid']);
+	}
+	
+	public static function show_server_bans()
+	{
+	$bans = ServerInterface::getInstance()->getServerBans($_POST['sid']);
 		echo '<h2>Bans</h2>';
 		echo '<p><a>add</a></p>';
 		if(count($bans)==0){
@@ -241,22 +297,26 @@ switch($_GET['ajax']){
 			}
 			echo '</ul>';
 		}
-		break;
-		
-	case 'show_tree':
+	}
+	
+	public static function show_tree()
+	{
 		$tree = ServerInterface::getInstance()->getServer($_POST['sid'])->getTree();
 		HelperFunctions::showChannelTree($tree);
-		break;
-		
-	case 'show_acl':
-		
-		break;
+	}
 	
-	case 'server_config_get':
+	public static function show_acl()
+	{
+		//TODO: implement
+	}
+	
+	public static function server_config_get()
+	{
 		ServerInterface::getInstance()->getServerConfig($_POST['sid']);
-		break;
+	}
 	
-	case 'server_config_show':
+	public static function server_config_show()
+	{
 		if(!isset($_POST['sid'])) break;
 		$_POST['sid'] = intval($_POST['sid']);
 		$conf = ServerInterface::getInstance()->getServerConfig($_POST['sid']);
@@ -336,24 +396,28 @@ switch($_GET['ajax']){
 			jq_editable_server_conf_text2textarea('key');
 		</script>
 <?php
-		break;
-		
-	case 'server_config_update':
+	}
+	
+	public static function server_config_update()
+	{
 		if(isset($_POST['sid']) && isset($_POST['key']) && isset($_POST['value']))
 		{
 			ServerInterface::getInstance()->setServerConfigEntry($_POST['sid'], $_POST['key'], $_POST['value']);
 		}
-		break;
+	}
 	
-		
-	case 'server_user_updateUsername':
+	public static function server_user_updateUsername()
+	{
 		ServerInterface::getInstance()->updateUserName($_POST['sid'], $_POST['uid'], $_POST['newValue']);
-		break;
-	case 'server_user_updateEmail':
-		ServerInterface::getInstance()->updateUserEmail($_POST['sid'], $_POST['uid'], $_POST['newValue']);
-		break;
+	}
 	
-	case 'meta_server_information_edit':
+	public static function server_user_updateEmail()
+	{
+		ServerInterface::getInstance()->updateUserEmail($_POST['sid'], $_POST['uid'], $_POST['newValue']);
+	}
+	
+	public static function meta_server_information_edit()
+	{
 		$server = SettingsManager::getInstance()->getServerInformation($_POST['serverid']);
 
 		echo '<div>';
@@ -386,18 +450,18 @@ switch($_GET['ajax']){
 		echo	'<input type="button" value="update" onclick="jq_meta_server_information_update('.$_POST['serverid'].');" />';
 		echo	'<input type="button" value="cancel" onclick="$(\'#jq_information\').html(\'\');" />';
 		echo '</div>';
-		break;
+	}
 	
-	case 'meta_server_information_update':
+	public static function meta_server_information_update()
+	{
 		if(isset($_POST['name']) && isset($_POST['allowlogin']) && isset($_POST['allowregistration']) && isset($_POST['forcemail']) && isset($_POST['authbymail']) )
 		{
 			SettingsManager::getInstance()->setServerInformation($_POST['serverid'], $_POST['name'], $_POST['allowlogin'], $_POST['allowregistration'], $_POST['forcemail'], $_POST['authbymail']);
 		}else{
 			MessageManager::addError(TranslationManager::getInstance()->getText('error_missing_values'));
 		}
-		break;
-		
-		
+	}
+	
 }
 
 ?>

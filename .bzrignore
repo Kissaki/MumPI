@@ -1,4 +1,6 @@
 cmd.exe.lnk
+bzr qci.bat
+bzr_log.log
 .buildpath
 .project
 .settings
@@ -8,3 +10,5 @@ data/log_register.log
 data/admins.dat
 .bzrignore
 tests
+libs
+settings.inc.php

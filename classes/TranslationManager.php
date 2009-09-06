@@ -23,9 +23,18 @@ function tr($key)
  * The TranslationManager class provides an interface to get translated text.
  * @author Kissaki
  */
-class TranslationManager {		// To make calls shorter in code, the class _Instance was created so static functions with the same name can be used
+class TranslationManager
+{
+	// To make calls shorter in code, the class _Instance was created so static functions with the same name can be used
 	private static $instance;
-	public static function getInstance(){	// $obj=null){
+	
+	/**
+	 * Get the TranslationManager instance
+	 * create it if necessary
+	 * @return TranslationManager
+	 */
+	public static function getInstance()
+	{	// $obj=null){
 		if(!isset(self::$instance))
 			if(!isset($obj))
 				self::$instance = new TranslationManager_Instance();
@@ -41,12 +50,18 @@ class TranslationManager {		// To make calls shorter in code, the class _Instanc
 	
 }
 
-class TranslationManager_Instance{
+/**
+ * Translationmanager Instance
+ * @author Kissaki
+ */
+class TranslationManager_Instance
+{
 	private $language;
 	private $defaultLanguage;
 	private $text;
 	
-	public function __construct(){
+	public function __construct()
+	{
 		$this->defaultLanguage = SettingsManager::getInstance()->getDefaultLanguage();
 		if( isset($_GET['lang']) && !empty($_GET['lang']) ){
 			$this->language = $_GET['lang'];
@@ -70,20 +85,33 @@ class TranslationManager_Instance{
 		$this->text = $txt;
 	}
 	
-	public function getActiveLanguage(){
+	/**
+	 * Get the currently active language
+	 * @return string language
+	 */
+	public function getActiveLanguage()
+	{
 		return $this->language;
 	}
 	/**
 	 * Get the default language of the interface.
-	 * @return unknown_type
+	 * @return string language
 	 */
-	public function getDefaultLanguage(){
+	public function getDefaultLanguage()
+	{
 		return $this->defaultLanguage;
 	}
-	public function getText($textname){
-		if(!isset($this->text[$textname])){
+	
+	/**
+	 * Get the (translated/local) text for the ID / text index
+	 * @param $textname text index
+	 * @return string localized text
+	 */
+	public function getText($textname)
+	{
+		if (!isset($this->text[$textname])) {
 			MessageManager::addWarning('Translation for key "'.$textname.'" not found!');
-			return 'unknown string';
+			return '???';
 		}
 		return $this->text[$textname];
 		// w3c validator doesn't like html (tags) in javascript areas. maybe, or not:
@@ -97,14 +125,15 @@ class TranslationManager_Instance{
 	 * @param $page		the page to parse for (if applicable)
 	 * @return string	String holding the anguage file information.
 	 */
-	private static function parseLanguageFile($language, $section=null, $page=null){
+	private static function parseLanguageFile($language, $section=null, $page=null)
+	{
 		$langfile = '';
 		$filename = SettingsManager::getInstance()->getMainDir().'/languages/'.$language;
 		$fallback = SettingsManager::getInstance()->getMainDir().'/languages/'.SettingsManager::getInstance()->getDefaultLanguage();
-		if($section==null){
+		if ($section==null) {
 			$filename = $filename.'/main.lang.php';
 			$fallback = $fallback.'/main.lang.php';
-		}elseif($page==null){
+		}elseif($page==null) {
 			$filename = $filename.'/'.$section.'.lang.php';
 			$fallback = $fallback.'/'.$section.'.lang.php';
 		}else{
@@ -112,10 +141,10 @@ class TranslationManager_Instance{
 			$fallback = $fallback.'/'.$section.'/'.$page.'.lang.php';
 		}
 		// Parse file
-		if(file_exists($filename)){
+		if(file_exists($filename)) {
 			$langfile = file_get_contents($filename);
 			$langfile = substr($langfile, 5, strlen($langfile)-7);	// strip php tags
-		}elseif(file_exists($fallback)){
+		}elseif(file_exists($fallback)) {
 			$langfile = file_get_contents($fallback);
 			$langfile = substr($langfile, 5, strlen($langfile)-7);	// strip php tags
 		}

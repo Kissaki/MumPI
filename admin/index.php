@@ -42,6 +42,10 @@ define('MUMPHPI_SECTION', 'admin');
 		exit();
 	}elseif(SessionManager::getInstance()->isAdmin() && isset($_GET['ajax'])){
 		require_once(MUMPHPI_MAINDIR.'/ajax/admin.ajax.php');
+		// TODO: this should probably have a check, whether the function exists
+		
+		if (is_callable('Ajax_Admin::' . $_GET['ajax']))
+			eval('Ajax_Admin::' . $_GET['ajax'] . '();');
 		exit();
 	}
 	
