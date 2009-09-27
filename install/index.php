@@ -9,7 +9,7 @@
 define('MUMPHPI_MAINDIR', '..');
 define('MUMPHPI_SECTION', 'install');
 
-	
+	// TODO: admins.dat 2 admins2.dat conversion
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

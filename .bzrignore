@@ -8,7 +8,9 @@ tmp/cap_*
 bin
 data/log_register.log
 data/admins.dat
+data/*
 .bzrignore
 tests
 libs
 settings.inc.php
+testing
