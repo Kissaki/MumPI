@@ -1,34 +1,40 @@
 
-	<h1>Admins and Groups</h1>
+	<h1>Admins, Groups and Permissions</h1>
+
+<?php /* TODO: tab-ize page */ ?>
+	
 	<div id="admin_area">
 		<div id="admins_list" class="datalist">
+			<h2>Admin Accounts</h2>
 		 	<div class="head">
 				<a class="jqlink" onclick="jq_admins_list_toggle();" style="display:block;">
 					<div class="indicator" style="float:left; width:16px; text-decoration:none;">+</div> Admins
 				</a>
 			</div>
-			<div class="content">
-			</div>
+			<div class="content"></div>
 		</div>
 		<p><a class="jqlink" onclick="jq_admin_add_display();">Add Admin</a></p>
-		<div class="content">
-		</div>
-	</div>
-	<br/>
-	<div id="adminGroups" class="datalist">
-		<div class="head">
-			<a class="jqlink" onclick="jq_adminGroups_list_toggle();" style="display:block;">
-				<span class="indicator">+</span> Admin Groups
-			</a>
-		</div>
 		<div class="content"></div>
 	</div>
-	<p><a class="jqlink" onclick="jq_admingroup_add_display();">Add Admin Group</a></p>
 	<br/>
+	
+	<div id="adminGroups">
+		<h2>Admin Groups</h2>
+		<div class="datalist">
+			<div class="head">
+				<a class="jqlink" onclick="jq_adminGroups_list_toggle();" style="display:block;">
+					<span class="indicator">+</span> Admin Groups
+				</a>
+			</div>
+			<div class="content"></div>
+		</div>
+		<p><a class="jqlink" onclick="jq_admingroup_add_display();">Add Admin Group</a></p>
+	</div>
+	<br/>
+	
 	<hr/>
 	
-	<div id="jq_information">
-	</div>
+	<div id="jq_information"></div>
 	
 	<script type="text/javascript">
 		//<![CDATA[
@@ -148,7 +154,7 @@
 			$.post("./?ajax=db_admingroups_echo",
 					{  },
 					function(data){
-						$('#adminGroups > div.content').html(data);
+						$('#adminGroups > div.datalist > div.content').html(data);
 					}
 				);
 		}
@@ -157,7 +163,7 @@
 		{
 			if (!adminGroups_list_expanded) {
 				window.location.hash = 'showAdminGroups';
-				$('#adminGroups > div.head > a > .indicator').html('-');
+				$('#adminGroups > div.datalist > div.head > a > .indicator').html('-');
 				jq_adminGroups_list_display();
 				/*$.getJSON("./?ajax=db_adminGroupHeads_get",
 						function(data){
@@ -173,8 +179,8 @@
 				adminGroups_list_expanded = true;
 			}else{
 				window.location.hash = '';
-				$('#adminGroups > div.head > a > .indicator').html('+');
-				$('#adminGroups > div.content').html('');
+				$('#adminGroups > div.datalist > div.head > a > .indicator').html('+');
+				$('#adminGroups > div.datalist > div.content').html('');
 				adminGroups_list_expanded = false;
 			}
 		}
@@ -252,7 +258,7 @@
 
 
 		/********************************************************************
-		/* Init
+		/*** Init
 		/********************************************************************/
 		$('document').ready(function(){
 				if (window.location.hash == '#admins') {
@@ -261,6 +267,7 @@
 				if (window.location.hash == '#showAdminGroups') {
 					jq_adminGroups_list_toggle();
 				}
+				$('#tabs').tabs();
 			});
 		//]]>
 	</script>

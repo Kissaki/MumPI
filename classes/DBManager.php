@@ -53,6 +53,10 @@ class DBManager_filesystem
 	private $filepath_adminGroupAssoc;
 	
 	
+	/**
+	 * constructor of DBManager filesystem
+	 * @return DBManager_filesystem
+	 */
 	function __construct()
 	{
 		$datapath = SettingsManager::getInstance()->getMainDir() . '/data/';
@@ -74,10 +78,25 @@ class DBManager_filesystem
 	}
 	
 	/**
+	 * Write a message to a specific file.
+	 * @param $filename
+	 * @param $msg
+	 */
+	public function append($field, $msg)
+	{
+		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/'.$field, 'a') OR die('could not open DB file');
+		fwrite($fd, $msg."\n");
+		fclose($fd);
+	}
+	
+	/**************************************************************************
+	 *** Admin Account Activation ***
+	 *************************************************************************/
+	/**
 	 * Add an account awaiting activation/authentification.
 	 * @param $sid	ServerID
-	 * @param $name	Username
-	 * @param $pw	Password
+	 * @param $name	account name
+	 * @param $pw	password
 	 * @param $email email address
 	 */
 	public function addAwaitingAccount($sid, $name, $pw, $email)
@@ -100,6 +119,13 @@ class DBManager_filesystem
 		// send mail
 		$this->sendActivationMail($email, $name, $sid, $key);
 	}
+	/**
+	 * send an email with the account activation key
+	 * @param $email email address
+	 * @param $name account name
+	 * @param $sid server ID
+	 * @param $key activation key
+	 */
 	public function sendActivationMail($email, $name, $sid, $key)
 	{
 		mail(
@@ -134,6 +160,11 @@ class DBManager_filesystem
 			echo '<div class="error">unknown activation key</div>';
 		}
 	}
+	/**
+	 * get account information by activation key
+	 * @param $key activation key (string)
+	 * @return array account information array (indices: key, sid, name, pw, email)
+	 */
 	function getAwaitingAccount($key)
 	{
 		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat', 'r') OR die('could not open DB file');
@@ -158,6 +189,10 @@ class DBManager_filesystem
 		fclose($fd);
 		return null;
 	}
+	/**
+	 * remove an account awaiting activation by its activation key
+	 * @param unknown_type $key
+	 */
 	public function removeAwaitingAccount($key)
 	{
 		$filename = SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat';
@@ -166,19 +201,16 @@ class DBManager_filesystem
 		file_put_contents($filename, $file);
 	}
 	
+	/**************************************************************************
+	 *** Admin Accounts ***
+	 *************************************************************************/
 	/**
-	 * Write a message to a specific file.
-	 * @param $filename
-	 * @param $msg
+	 * add an admin account
+	 * @param unknown_type $username account name
+	 * @param unknown_type $password password
+	 * @param bool $isGlobalAdmin is the admin a global admin, with all privileges/permissions
 	 */
-	public function append($field, $msg)
-	{
-		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/'.$field, 'a') OR die('could not open DB file');
-		fwrite($fd, $msg."\n");
-		fclose($fd);
-	}
-	
-	public function addAdminLogin($username, $password, $isGlobalAdmin='false')
+	public function addAdmin($username, $password, $isGlobalAdmin='false')
 	{
 		if ($this->getAdminByName($username) == null) {
 			$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/'.self::$filename_admins, 'a');
@@ -187,6 +219,18 @@ class DBManager_filesystem
 		} else {
 			MessageManager::addError(tr('error_AdminAccountAlreadyExists'));
 		}
+	}
+	
+	/**
+	 * obsolete function
+	 * TODO: code: (obsolete) change all calls to addAdmin(…)
+	 * @param unknown_type $username account name
+	 * @param unknown_type $password password
+	 * @param bool $isGlobalAdmin is the admin a global admin, with all privileges/permissions
+	 */
+	public function addAdminLogin($username, $password, $isGlobalAdmin='false')
+	{
+		$this->addAdminLogin($username, $password, $isGlobalAdmin);
 	}
 	
 	/**
@@ -230,65 +274,33 @@ class DBManager_filesystem
 	
 	/**
 	 * Remove an admin account
-	 * @param $id admin account ID
+	 * @param $aid admin account ID
 	 */
-	public function removeAdminLogin($id)
+	public function removeAdmin($aid)
 	{
+		// for database consistency, also remove admins group associations
+		$this->removeAdminFromGroup($aid, null);
+		
 		$data = file($this->filepath_admins);
 		$fd = fopen($this->filepath_admins, 'w');
 		$size = count($data);
 		
 		for ($line = 0; $line < $size; $line++) {
 			$array = explode(';', $data[$line]);
-			if( $array[0] != $id ){ fputs($fd, $data[$line]); }
+			if( $array[0] != $aid ){ fputs($fd, $data[$line]); }
 		}
 		fclose($fd);
 	}
-	
 	/**
-	 * Remove an adminGroup
-	 * @param $id admingroup ID
+	 * obsolete
+	 * TODO: code: (obsolete) change calls to removeAdmin(…) 
+	 * @param $aid admin account ID
 	 */
-	public function removeAdminGroup($gid)
+	public function removeAdminLogin($aid)
 	{
-		// first, make sure integrity is kept by removing assoc table data associating admins to the group
-		$this->removeAdminFromGroup(null, $gid);
-		
-		$data = file($this->filepath_adminGroups);
-		$fd = fopen($this->filepath_adminGroups, 'w');
-		$size = count($data);
-		
-		for ($line = 0; $line < $size; $line++) {
-			$g = $this->createAdminGroupFromString($data[$line]);
-			if ($g['id'] != $gid) {
-				fputs($fd, $data[$line]);
-			}
-		}
-		fclose($fd);
+		$this->removeAdmin($aid);
 	}
 	
-	/**
-	 * Remove an admin from an admin group
-	 * @param $aid admin ID or null for all
-	 * @param $gid group ID
-	 */
-	public function removeAdminFromGroup($aid, $gid)
-	{
-		$data = file($this->filepath_adminGroupAssoc);
-		$fh = fopen($this->filepath_adminGroupAssoc, 'w');
-		$lines = count($data);
-		
-		for ($line = 0; $line < $lines; $line++) {
-			$assoc = $this->createAdminGroupAssocFromString($data[$line]);
-			if ($assoc['adminGroupID'] != $gid) {
-				fputs($fh, $data[$line]);
-			}elseif ($aid != null && $aid != $assoc['adminID']) {
-				fputs($fh, $data[$line]);
-			}
-		}
-		fclose($fh);
-	}
-
 	
 	/**
 	 * Get admin accounts
@@ -361,22 +373,6 @@ class DBManager_filesystem
 	}
 	
 	/**
-	 * Get the next free ID for an admin group
-	 * @return int
-	 */
-	private function getNextAdminGroupID()
-	{
-		$adminGroups = $this->getAdminGroupHeads();
-		// Get the maximum ID in use
-		$maxid = 0;
-		foreach ($adminGroups AS $ag) {
-			$maxid < $ag['id'] ? $maxid = $ag['id'] : void ; 
-		}
-		// The next free ID is the current maximum one +1
-		return $maxid+1;
-	}
-	
-	/**
 	 * check login
 	 * @param $username
 	 * @param $password plain or sha1-hashed password
@@ -416,6 +412,83 @@ class DBManager_filesystem
 		$admin['pw'] = $array[2];
 		$admin['isGlobalAdmin'] = ($array[3] == 1 ? true : false);
 		return $admin;
+	}
+	
+	/**************************************************************************
+	 *** Admin Groups ***
+	 *************************************************************************/
+	
+	/**
+	 * Get the next free ID for an admin group
+	 * @return int
+	 */
+	private function getNextAdminGroupID()
+	{
+		$adminGroups = $this->getAdminGroupHeads();
+		// Get the maximum ID in use
+		$maxid = 0;
+		foreach ($adminGroups AS $ag) {
+			$maxid < $ag['id'] ? $maxid = $ag['id'] : void ; 
+		}
+		// The next free ID is the current maximum one +1
+		return $maxid+1;
+	}
+	
+	/**
+	 * Remove an adminGroup
+	 * @param $id admingroup ID
+	 */
+	public function removeAdminGroup($gid)
+	{
+		// first, make sure integrity is kept by removing obsolete assoc data
+		$this->removeAdminFromGroup(null, $gid);
+		$this->removeAdminGroupPermissions($gid);
+		
+		$data = file($this->filepath_adminGroups);
+		$fd = fopen($this->filepath_adminGroups, 'w');
+		$size = count($data);
+		
+		for ($line = 0; $line < $size; $line++) {
+			$g = $this->createAdminGroupFromString($data[$line]);
+			if ($g['id'] != $gid) {
+				fputs($fd, $data[$line]);
+			}
+		}
+		fclose($fd);
+	}
+	
+	/**
+	 * Remove an admin from an admin group or
+	 * remove all admin or all group associations.
+	 * 
+	 * If both $aid and $gid are null, it will have no effect.
+	 * 
+	 * @param $aid admin ID or null for all
+	 * @param $gid group ID or null for all
+	 */
+	public function removeAdminFromGroup($aid, $gid)
+	{
+		$data = file($this->filepath_adminGroupAssoc);
+		$fh = fopen($this->filepath_adminGroupAssoc, 'w');
+		$lines = count($data);
+		
+		for ($line = 0; $line < $lines; $line++) {
+			$assoc = $this->createAdminGroupAssocFromString($data[$line]);
+			if ($aid == null) {
+				// remove all assocs of group
+				if ($assoc['adminGroupID'] != $gid) {
+					fputs($fh, $data[$line]);
+				}
+			}elseif ($gid == null) {
+				// remove all assocs of admin
+				if ($assoc['adminID'] != $aid)
+					fputs($fh, $data[$line]);
+			}elseif ($aid != $assoc['adminID'] || $gid != $assoc['adminGroupID']) {
+				// add all others than not the one to remove
+				fputs($fh, $data[$line]);
+			}
+		}
+		fclose($fh);
 	}
 	
 	
@@ -553,6 +626,15 @@ class DBManager_filesystem
 		return $group;
 	}
 	
+	/**************************************************************************
+	 *** Admin Group Permissions ***
+	 *************************************************************************/
+	
+	/**
+	 * create an array of permissions from a database-line/-row
+	 * @param string $line
+	 * @return array array of permissions (index: group ID => array with indices: startStop, editConf, genSuUsPW, viewRegistrations, editRegistrations, moderate, kick, ban)
+	 */
 	private function createAdminGroupPermissionsFromString($line)
 	{
 		$array = explode(';', $line);
@@ -590,6 +672,26 @@ class DBManager_filesystem
 		}
 		fclose($fh);
 		return $perms;
+	}
+	
+	/**
+	 * remove group permissions for group
+	 * @param unknown_type $gid group ID
+	 */
+	public function removeAdminGroupPermissions($gid)
+	{
+		$data = file($this->filepath_adminGroupPermissions);
+		$fd = fopen($this->filepath_adminGroupPermissions, 'w');
+		$size = count($data);
+		
+		for ($line = 0; $line < $size; $line++) {
+			$perms = $this->createAdminGroupPermissionsFromString($data[$line]);
+			
+			if (!$perms[$gid]) {
+				fputs($fd, $data[$line]);
+			}
+		}
+		fclose($fd);
 	}
 	
 }
