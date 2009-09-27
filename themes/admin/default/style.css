@@ -1,8 +1,7 @@
 @CHARSET "UTF-8";
 
-body {
-	padding:0px;
-	background-color:black; color:white;
+html, body {
+	background-color:#000000; color:#ffffff;
 }
 
 img { border:0px; vertical-align:middle; }
@@ -73,3 +72,20 @@ div.js_link { color:grey; font-size:x-small; margin-left:4px; margin-right:4px; 
 .datalist > .head { background-color:#444; padding:2px 4px 0px; border-bottom:1px dotted grey; }
 .datalist > .head .indicator { width:20px; height:20px; text-align:center; }
 .datalist > .content { background-color:#333; }
+
+table.list_admins { border:1px solid #000000; margin:4px; }
+
+table.list_admins td {
+	padding:0px 8px;
+}
+
+table.list_admins tr.head {
+	border-bottom:1px solid #555555;
+	margin-bottom:2px;
+}
+
+table.list_admins .list_admins_item {
+	border-bottom:1px solid #555555;
+}
+
+.list_admins .list_groups { font-size:10px; line-height:10px; }

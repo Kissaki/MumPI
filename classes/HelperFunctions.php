@@ -95,9 +95,21 @@ class HelperFunctions{
 	 */
 	public static function stripNewline($str)
 	{
-		$str = preg_replace("/\r\n/", '', $str);
+		//$str = preg_replace("/\r\n/", '', $str);	// win
+		//$str = preg_replace("/\n/", '', $str);		// nix
+		//$str = preg_replace("/\r/", '', $str);		// mac
+		$str = preg_replace("/\r/", '', $str);
 		$str = preg_replace("/\n/", '', $str);
 		return $str;
+	}
+	
+	/**
+	 * javascript-alert some text
+	 * @param $str text to alert
+	 */
+	public static function js_alert($str)
+	{
+		echo '<script type="text/javascript">alert(\'' . $str . '\');</script>';
 	}
 	
 	

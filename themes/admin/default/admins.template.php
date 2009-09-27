@@ -69,6 +69,7 @@
 				admins_list_expanded = true;
 			}else{
 				window.location.hash = '';
+				<?php // TODO: a refresh link would be useful ?>
 				$('#admins_list > div.head > a > .indicator').html('+');
 				$('#admins_list > div.content').html('');
 				admins_list_expanded = false;
@@ -209,10 +210,43 @@
 			jq_adminGroups_list_display();
 		}
 
-		function jq_admingroup_remove(id)
+		function jq_admingroup_remove(gid)
 		{
-			$.post('./?ajax=db_adminGroup_remove', { 'id': id });
+			$.post('./?ajax=db_adminGroup_remove', { 'id': gid });
 			jq_adminGroups_list_display();
+			if(admins_list_expanded) {
+				jq_admins_list_display();
+			}
+		}
+
+		function jq_admin_addToGroup_display(aid)
+		{
+			$.post(
+					'./?ajax=db_admin_addToGroup_display',
+					{ 'aid' : aid },
+					function(data)
+					{
+						$('#admin_area > .content').html(data);
+					}
+				);
+		}
+
+		function jq_admin_addToGroup(aid, gid)
+		{
+			$.post("./?ajax=db_admin_addToGroup",
+					{ 'aid': aid, 'gid': gid },
+					function(data)
+					{
+						if (data.length>0) {
+							$('#jq_information').html('Failed: '+ data);
+						} else {
+							$('#jq_information').html(
+									'Added admin to group.'
+								);
+						}
+					}
+				);
+			jq_admins_list_display();
 		}
 		
 

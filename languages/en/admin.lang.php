@@ -18,5 +18,6 @@
 	
 	$txt['error_AdminAccountAlreadyExists'] = 'Could not add the admin account because one with that loginname already exists. Please try again with a different login.';
 	$txt['db_admingroup_namealreadyexists'] = 'An admin group with that name already exists.';
+	$txt['db_error_admingroupassoc_alreadyexists'] = 'That admin already seems to be in that group.';
 	
 ?>

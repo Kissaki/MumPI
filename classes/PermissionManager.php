@@ -74,7 +74,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanStartStop($sid)
 	{
-		// TODO
+		// TODO: IMPLEMENT
 	}
 	
 	/**
@@ -84,7 +84,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanEditConf($sid)
 	{
-		// TODO
+		// TODO: IMPLEMENT
 	}
 	
 	/**
@@ -94,7 +94,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanGenSuUsPW($sid)
 	{
-		// TODO
+		// TODO: IMPLEMENT
 	}
 	
 	/**
@@ -104,7 +104,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanViewRegistrations($sid)
 	{
-		// TODO
+		// TODO: IMPLEMENT
 	}
 	
 	/**
@@ -114,7 +114,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanEditRegistrations($sid)
 	{
-		// TODO
+		// TODO: IMPLEMENT
 	}
 	
 	/**
@@ -123,7 +123,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanModerate($sid)
 	{
-		// TODO
+		// TODO: IMPLEMENT
 	}
 	
 	/**
@@ -133,7 +133,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanKick($sid)
 	{
-		// TODO
+		// TODO: IMPLEMENT
 	}
 	
 	/**
@@ -143,7 +143,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanBan($sid)
 	{
-		// TODO
+		// TODO: IMPLEMENT
 	}
 }
 

@@ -17,8 +17,8 @@ class DBManager
 {
 	private static $instance;
 	/**
-	 * 
-	 * @return DBManager
+	 * TODO: make this interface and mark returns interface
+	 * @return DBManager_filesystem
 	 */
 	public static function getInstance()
 	{
@@ -43,13 +43,14 @@ class DBManager_filesystem
 	private static $filename_admins					= 'admins.dat';
 	private static $filename_adminGroups			= 'admin_groups.dat';
 	private static $filename_adminGroupPermissions	= 'admin_group_permissions.dat';
-	private static $filename_admin_group_assoc		= 'admin_group_assoc.dat';
+	private static $filename_adminGroupAssoc		= 'admin_group_assoc.dat';
 	
 	private $filepath_admins;
 	private $filepath_awaiting;
 	private $filepath_log_register;
 	private $filepath_adminGroups;
 	private $filepath_adminGroupPermissions;
+	private $filepath_adminGroupAssoc;
 	
 	
 	function __construct()
@@ -60,9 +61,9 @@ class DBManager_filesystem
 		$this->filepath_log_register			= $datapath . 'log_register.log';
 		$this->filepath_adminGroups				= $datapath . self::$filename_adminGroups;
 		$this->filepath_adminGroupPermissions	= $datapath . self::$filename_adminGroupPermissions;
-		$this->filepath_adminGroupAssoc			= $datapath . self::$filename_admin_group_assoc;
+		$this->filepath_adminGroupAssoc			= $datapath . self::$filename_adminGroupAssoc;
 		
-		// if data dir does not exist yet, create it
+		// if data dir does not exist yet, redirect to installer
 		if (
 			!is_writable(SettingsManager::getInstance()->getMainDir() . '/data')
 			|| !is_writable(SettingsManager::getInstance()->getMainDir() . '/data/admins.dat')
@@ -188,6 +189,10 @@ class DBManager_filesystem
 		}
 	}
 	
+	/**
+	 * add an admin group
+	 * @param $name group name
+	 */
 	public function addAdminGroup($name)
 	{
 		if($this->getAdminGroupByName($name)===null)
@@ -198,6 +203,29 @@ class DBManager_filesystem
 		}else{
 			MessageManager::addError(tr('db_admingroup_namealreadyexists'));
 		}
+	}
+	
+	/**
+	 * @param $aid admin ID
+	 * @param $gid group id
+	 */
+	public function addAdminToGroup($aid, $gid)
+	{
+		// check that admin is not already member of that group
+		$groups = $this->getAdminGroupsByAdminID($aid);
+		foreach($groups AS $group)
+		{
+			if($group['id'] == $gid)
+			{
+				MessageManager::addError(tr('db_error_admingroupassoc_alreadyexists'));
+				return ;
+			}
+		}
+		
+		// add admin
+		$fh = fopen($this->filepath_adminGroupAssoc, 'a');
+		fwrite($fh, sprintf("%d;%d\n", $aid, $gid));
+		fclose($fh);
 	}
 	
 	/**
@@ -221,19 +249,44 @@ class DBManager_filesystem
 	 * Remove an adminGroup
 	 * @param $id admingroup ID
 	 */
-	public function removeAdminGroup($id)
+	public function removeAdminGroup($gid)
 	{
+		// first, make sure integrity is kept by removing assoc table data associating admins to the group
+		$this->removeAdminFromGroup(null, $gid);
+		
 		$data = file($this->filepath_adminGroups);
 		$fd = fopen($this->filepath_adminGroups, 'w');
 		$size = count($data);
 		
 		for ($line = 0; $line < $size; $line++) {
 			$g = $this->createAdminGroupFromString($data[$line]);
-			if ($g['id'] != $id) {
+			if ($g['id'] != $gid) {
 				fputs($fd, $data[$line]);
 			}
 		}
 		fclose($fd);
+	}
+	
+	/**
+	 * Remove an admin from an admin group
+	 * @param $aid admin ID or null for all
+	 * @param $gid group ID
+	 */
+	public function removeAdminFromGroup($aid, $gid)
+	{
+		$data = file($this->filepath_adminGroupAssoc);
+		$fh = fopen($this->filepath_adminGroupAssoc, 'w');
+		$lines = count($data);
+		
+		for ($line = 0; $line < $lines; $line++) {
+			$assoc = $this->createAdminGroupAssocFromString($data[$line]);
+			if ($assoc['adminGroupID'] != $gid) {
+				fputs($fh, $data[$line]);
+			}elseif ($aid != null && $aid != $assoc['adminID']) {
+				fputs($fh, $data[$line]);
+			}
+		}
+		fclose($fh);
 	}
 
 	
@@ -275,7 +328,7 @@ class DBManager_filesystem
 	/**
 	 * Get an admin object by ID
 	 * @param $aid admin ID
-	 * @return array admin object
+	 * @return array admin object or null if not found
 	 */
 	public function getAdmin($aid)
 	{
@@ -283,7 +336,7 @@ class DBManager_filesystem
 		$admin = null;
 		$line = null;
 		while ($line = fgets($fh)) {
-			$admin = createAdminFromString($line);
+			$admin = $this->createAdminFromString($line);
 			if ($admin['id'] == $aid) {
 				fclose($fh);
 				return $admin;
@@ -408,6 +461,7 @@ class DBManager_filesystem
 	public function getAdminGroup($id)
 	{
 		$fh = fopen($this->filepath_adminGroups, 'r');
+		$groups=array();
 		while ($line = fgets($fh)) {
 			$group = $this->createAdminGroupFromString($line);
 			if ($group['id'] == $id) {
@@ -441,15 +495,15 @@ class DBManager_filesystem
 	/**
 	 * Get admin groups an admin is associated to by the admins ID
 	 * @param $id admin ID
-	 * @return array array of adminGroups
+	 * @return array array of adminGroups, empty array if none
 	 */
-	public function getAdminGroupsByAdminID($id)
+	public function getAdminGroupsByAdminID($aid)
 	{
-		$fh = fopen($this->filepath_adminGroupPermissions, 'r');
+		$fh = fopen($this->filepath_adminGroupAssoc, 'r');
 		$groups = array();
 		while ($line = fgets($fh)) {
 			$assoc = $this->createAdminGroupAssocFromString($line);
-			if ($assoc['adminID'] == $id) {
+			if ($assoc['adminID'] == $aid) {
 				$groups[] = $this->getAdminGroup($assoc['adminGroupID']);
 			}
 		}

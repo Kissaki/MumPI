@@ -72,21 +72,29 @@ class Ajax_Admin
 	
 	public static function db_admins_echo()
 	{
-		echo '<table><thead><tr><th>Username</th><th>global Admin</th><th>Groups</th><th>Actions</th></tr></thead>';
+		echo '<table class="list_admins"><thead><tr class="head"><th>Username</th><th>global Admin</th><th>Groups</th><th>Actions</th></tr></thead>';
 		echo '<tbody>';
 		$admins = DBManager::getInstance()->getAdmins();
 		foreach($admins AS $admin){
-			echo '<tr id="admin_list_item_'.$admin['id'].'">';
-			echo 	'<td>'.$admin['name'].'</td>';
-			echo	'<td>' . ($admin['isGlobalAdmin'] ? 'yes' : 'no') . '</td>';
-			echo	'<td>';
 			$groups = DBManager::getInstance()->getAdminGroupsByAdminID($admin['id']);
-			foreach ($groups AS $group) {
-				$group['name'];
-			}
-			echo	'</td>';
+			
+			echo '<tr id="admin_list_item_'.$admin['id'].'" class="list_admins_item">';
+			echo 	'<td>'.$admin['name'].'</td>';
+			echo 	'<td>' . ($admin['isGlobalAdmin'] ? 'yes' : 'no') . '</td>';
 			echo 	'<td>';
-			echo		'<a class="jqlink" onclick="jq_admin_remove('.$admin['id'].')">delete</a>';
+			
+			echo 		'<ul class="list_groups">';
+			foreach ($groups AS $group) {
+				echo 		'<li>' . $group['name'] . '</li>';
+			}
+			echo 		'</ul>';
+			
+			echo 	'</td>';
+			echo 	'<td>';
+			echo 		'<ul>';
+			echo 			'<li><a title="add" class="jqlink" onclick="jq_admin_addToGroup_display(' . $admin['id'] . ');">addGroup</a></li>';
+			echo 			'<li><a class="jqlink" onclick="jq_admin_remove('.$admin['id'].')">delete</a></li>';
+			echo 		'</ul>';
 			echo 	'</td>';
 			echo '</tr>';
 		}
@@ -109,6 +117,34 @@ class Ajax_Admin
 	{
 		DBManager::getInstance()->removeAdminLogin($_POST['id']);
 		MessageManager::echoAllErrors();
+	}
+	
+	/**
+	 * requires admin id 'aid' and group id 'gid' as _POST
+	 */
+	public static function db_admin_addToGroup()
+	{
+		DBManager::getInstance()->addAdminToGroup($_POST['aid'], $_POST['gid']);
+		MessageManager::echoAllErrors();
+	}
+	
+	/**
+	 * requires group id 'aid' as _POST
+	 */
+	public static function db_admin_addToGroup_display()
+	{
+		$aid = intval($_POST['aid']);
+		
+		$admin = DBManager::getInstance()->getAdmin($aid);
+		$groups = DBManager::getInstance()->getAdminGroups();
+		
+		echo 'Add ' . $admin['name'] . ' to group:<br/>';
+		echo '<ul>';
+		foreach($groups AS $group)
+		{
+			echo '<li><a class="jqlink" onclick="jq_admin_addToGroup(' . $aid . ', ' . $group['id'] . ');">' . $group['name'] . '</a></li>';
+		}
+		echo '</ul>';
 	}
 	
 	public static function meta_showDefaultConfig()

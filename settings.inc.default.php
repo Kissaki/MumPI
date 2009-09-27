@@ -11,6 +11,8 @@ $theme	= 'default';
 $defaultLanguage = 'en';	// currently available: en, de
 $useCaptcha = true;		// This is recommended to be true to prevent spam/abuse by bots etc. This requires the php gd extension (image manipulation).
 
+// TODO: allow disabling admin-section link in user area
+
 // Interface to use. Currently available: ice
 $dbInterface_type		= 'ice';
 $dbInterface_address	= 'Meta:tcp -h 127.0.0.1 -p 6502';
