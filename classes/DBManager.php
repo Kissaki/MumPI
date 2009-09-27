@@ -528,16 +528,16 @@ class DBManager_filesystem
 	
 	/**
 	 * Get adminGroup by ID
-	 * @param $id ID
+	 * @param $gid ID
 	 * @return array adminGroup array/object
 	 */
-	public function getAdminGroup($id)
+	public function getAdminGroup($gid)
 	{
 		$fh = fopen($this->filepath_adminGroups, 'r');
 		$groups=array();
 		while ($line = fgets($fh)) {
 			$group = $this->createAdminGroupFromString($line);
-			if ($group['id'] == $id) {
+			if ($group['id'] == $gid) {
 				fclose($fh);
 				return $group;
 			}
@@ -644,6 +644,7 @@ class DBManager_filesystem
 		$array[$lastindex] = HelperFunctions::stripNewline($array[$lastindex]);
 		
 		$perms = array();
+		$perms['groupID'] = $array[1];
 		$perms['startStop'] = $array[2];
 		$perms['editConf'] = $array[3];
 		$perms['genSuUsPW'] = $array[4];
@@ -652,26 +653,63 @@ class DBManager_filesystem
 		$perms['moderate'] = $array[7];
 		$perms['kick'] = $array[8];
 		$perms['ban'] = $array[9];
-		$perms[$array[1]] = $perms;
 		
 		return $perms;
 	}
 	
 	/**
 	 * 
-	 * @param $id admin group ID
+	 * @param $gid admin group ID
 	 * @return object admin group permissions
 	 */
-	public function getAdminGroupPermissions($id)
+	public function getAdminGroupPermissions($gid=null)
 	{
-		//TODO
+		//TODO: IMPLEMENT
 		$fh = fopen($this->filepath_adminGroupPermissions, 'r');
 		$perms = array();
-		while ($line = fgets($fh)) {
-			$perms[] = $this->createAdminGroupPermissionsFromString($line);
+		
+		if ($gid == null) {
+			// get group permissions for all groups
+			while ($line = fgets($fh)) {
+				//$perms[] = $this->createAdminGroupPermissionsFromString($line);
+				$singleperms = $this->createAdminGroupPermissionsFromString($line);
+				$perms[$singleperms['groupID']] = $singleperms;
+			}
+		} else {
+			// get group permissions
+			while ($line = fgets($fh)) {
+				$perms = $this->createAdminGroupPermissionsFromString($line);
+				if ($perms['groupID'] == $gid) {
+					fclose($fh);
+					return $perms;
+				}
+			}
 		}
 		fclose($fh);
 		return $perms;
+	}
+	
+	/**
+	 * add permissions for admin group
+	 * @param int $gid group ID
+	 * @param array $perms array of permissions (indices: startStop, editConf, genSuUsPW, viewRegistrations, editRegistrations, moderate, kick, ban)
+	 */
+	public function addAdminGroupPermissions($gid=null, $perms)
+	{
+		// check that permissions for that group
+		if ($this->getAdminGroupPermissions($gid) != null) {
+			return ;
+		}
+		
+		$perms = array();
+		
+		if (!$perms['groupID'] || $perms['groupID'] != $gid && $gid != null) {
+			$perms['groupID'] = $gid;
+		}
+		
+		$fh = fopen($this->filepath_adminGroupPermissions, 'a');
+		fwrite($fh, fprintf('%s;%s;%s;%s;%s;%s;%s;%s', $perms['startStop'], $perms['editConf'], $perms['genSuUsPW'], $perms['viewRegistrations'], $perms['editRegistrations'], $perms['moderate'], $perms['kick'], $perms['ban']));
+		fclose($fh);
 	}
 	
 	/**
@@ -687,7 +725,7 @@ class DBManager_filesystem
 		for ($line = 0; $line < $size; $line++) {
 			$perms = $this->createAdminGroupPermissionsFromString($data[$line]);
 			
-			if (!$perms[$gid]) {
+			if ($perms['groupID'] != $gid) {
 				fputs($fd, $data[$line]);
 			}
 		}
@@ -696,13 +734,13 @@ class DBManager_filesystem
 	
 }
 
-// TODO: implement MySQL
+// TODO: implement MySQL (?)
 //class DBManager_mysql
 
-// TODO: implement PostgreSQL
+// TODO: implement PostgreSQL (?)
 //class DBManager_psql
 
-// TODO: implement sqlite
+// TODO: implement SQLite (?)
 //class DBManager_sqlite
 
 ?>

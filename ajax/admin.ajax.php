@@ -41,11 +41,17 @@ class Ajax_Admin
 				foreach ($groups AS $group) {
 					echo '<tr><td>' . $group['id'] . '</td><td>' . $group['name']
 						. '</td><td>';
-					$tmp = '';
+					
+					// create permissions string
+					$tmp = ', ';
 					foreach ($group['perms'] AS $key=>$perms) {
-						$tmp .= $key . ', ';
+						if ($perms) {
+							$tmp .= $key . ', ';
+						}
 					}
-					$tmp = substr($tmp, 0, strlen($tmp)-2);
+					// strip leading comma
+					$tmp = substr($tmp, 2);
+					
 					echo '</td>';
 					echo '<td>';
 					echo 	'<a class="jqlink" onclick="jq_admingroup_remove(' . $group['id'] . ')">delete</a>';
