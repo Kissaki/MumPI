@@ -236,6 +236,36 @@
 				);
 		}
 
+		function jq_admingroup_perm_update(gid, perm, val)
+		{
+			$.post('./?ajax=db_adminGroup_perm_update', { 'gid': gid, 'perm': perm, 'newval': val },
+					function(data)
+					{
+						if (data.length>0) {
+							$('#jq_information').html('Failed: '+ data);
+						}
+						jq_adminGroups_list_display();
+					}
+				);
+		}
+
+		function jq_admingroup_perms_edit(gid, perms)
+		{
+			$.post('./?ajax=db_adminGroup_perms_edit', { 'gid': gid, 'perms': perms },
+					function(data)
+					{
+						if (data.length>0) {
+							$('#jq_information').html('Failed: '+ data);
+						} else {
+							$('#jq_information').html(
+									'Permissions updated.'
+								);
+						}
+						jq_adminGroups_list_display();
+					}
+				);
+		}
+
 		function jq_admin_addToGroup_display(aid)
 		{
 			$.post(

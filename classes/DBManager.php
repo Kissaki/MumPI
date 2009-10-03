@@ -37,7 +37,7 @@ class DBManager
 	 * default adminGroupPerms array structure with default values (no perms)
 	 * @var array
 	 */
-	public static $defaultAdminGroupPerms = array('groupID'=>false, 'startStop'=>false, 'editConf'=>false, 'genSuUsPW'=>false, 'viewRegistrations'=>false, 'editRegistrations'=>false, 'moderate'=>false, 'kick'=>false, 'ban'=>false);
+	public static $defaultAdminGroupPerms = array('groupID'=>null, 'startStop'=>false, 'editConf'=>false, 'genSuUsPW'=>false, 'viewRegistrations'=>false, 'editRegistrations'=>false, 'moderate'=>false, 'kick'=>false, 'ban'=>false);
 }
 
 /**
@@ -650,49 +650,40 @@ class DBManager_filesystem
 		$array[$lastindex] = HelperFunctions::stripNewline($array[$lastindex]);
 		
 		$perms = DBManager::$defaultAdminGroupPerms;
-		$perms['groupID'] = $array[1];
-		$perms['startStop'] = $array[2];
-		$perms['editConf'] = $array[3];
-		$perms['genSuUsPW'] = $array[4];
-		$perms['viewRegistrations'] = $array[5];
-		$perms['editRegistrations'] = $array[6];
-		$perms['moderate'] = $array[7];
-		$perms['kick'] = $array[8];
-		$perms['ban'] = $array[9];
+		$perms['groupID'] = $array[0];
+		$perms['startStop'] = $array[1];
+		$perms['editConf'] = $array[2];
+		$perms['genSuUsPW'] = $array[3];
+		$perms['viewRegistrations'] = $array[4];
+		$perms['editRegistrations'] = $array[5];
+		$perms['moderate'] = $array[6];
+		$perms['kick'] = $array[7];
+		$perms['ban'] = $array[8];
 		
 		return $perms;
 	}
 	
 	/**
-	 * 
+	 * get permissions for a specific group
 	 * @param $gid admin group ID
 	 * @return object admin group permissions
 	 */
-	public function getAdminGroupPermissions($gid=null)
+	public function getAdminGroupPermissions($gid)
 	{
-		//TODO: IMPLEMENT
 		$fh = fopen($this->filepath_adminGroupPermissions, 'r');
-		$perms = DBManager::$defaultAdminGroupPerms;
-		
-		if ($gid == null) {
-			// get group permissions for all groups
-			while ($line = fgets($fh)) {
-				//$perms[] = $this->createAdminGroupPermissionsFromString($line);
-				$singleperms = $this->createAdminGroupPermissionsFromString($line);
-				$perms[$singleperms['groupID']] = $singleperms;
-			}
-		} else {
-			// get group permissions for specific group
-			while (false !== ($line = fgets($fh))) {
-				$perms = $this->createAdminGroupPermissionsFromString($line);
-				if ($perms['groupID'] == $gid) {
-					fclose($fh);
-					return $perms;
-				}
+	
+		while (false !== ($line = fgets($fh))) {
+			$tmpPerms = $this->createAdminGroupPermissionsFromString($line);
+			if ($tmpPerms['groupID'] == $gid) {
+				fclose($fh);
+				return $tmpPerms;
 			}
 		}
 		fclose($fh);
-		return $perms;
+		
+		$defPerms = DBManager::$defaultAdminGroupPerms;
+		$defPerms['groupID'] = $gid;
+		return $defPerms;
 	}
 	
 	/**
@@ -702,19 +693,20 @@ class DBManager_filesystem
 	 */
 	public function addAdminGroupPermissions($gid=null, $perms)
 	{
-		// check that permissions for that group
-		if ($this->getAdminGroupPermissions($gid) != null) {
-			return ;
-		}
+		$perms = array_merge(DBManager::$defaultAdminGroupPerms, $perms);
 		
-		$perms = array();
-		
-		if (!$perms['groupID'] || $perms['groupID'] != $gid && $gid != null) {
+		if (!$perms['groupID'] || $gid != null && $perms['groupID'] != $gid) {
 			$perms['groupID'] = $gid;
 		}
 		
+		$this->removeAdminGroupPermissions($perms['groupID']);
+		
 		$fh = fopen($this->filepath_adminGroupPermissions, 'a');
-		fwrite($fh, fprintf('%s;%s;%s;%s;%s;%s;%s;%s', $perms['startStop'], $perms['editConf'], $perms['genSuUsPW'], $perms['viewRegistrations'], $perms['editRegistrations'], $perms['moderate'], $perms['kick'], $perms['ban']));
+		fwrite($fh, sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+				$perms['groupID'],
+				$perms['startStop']?1:0, $perms['editConf']?1:0, $perms['genSuUsPW']?1:0, $perms['viewRegistrations']?1:0,
+				$perms['editRegistrations']?1:0, $perms['moderate']?1:0, $perms['kick']?1:0, $perms['ban']?1:0)
+			);
 		fclose($fh);
 	}
 	
@@ -736,6 +728,46 @@ class DBManager_filesystem
 			}
 		}
 		fclose($fd);
+	}
+	
+	/**
+	 * update a single permission
+	 * @param $gid group id
+	 * @param $perm permission key/name
+	 * @param $newval new value
+	 */
+	public function updateAdminGroupPermission($gid, $perm, $newval)
+	{
+		$old=$this->getAdminGroupPermissions($gid);
+		
+		if (isset($old[$perm])) {
+			$old[$perm] = $newval;
+		}
+		
+		if (!$old['groupID'] || $old['groupID'] != $gid && $gid != null) {
+			$old['groupID'] = $gid;
+		}
+		$this->removeAdminGroupPermissions($gid);
+		$this->addAdminGroupPermissions($gid, $old);
+	}
+	/**
+	 * set permissions for admin group
+	 * @param int $gid group ID
+	 * @param array $perms array of permissions (indices: startStop, editConf, genSuUsPW, viewRegistrations, editRegistrations, moderate, kick, ban)
+	 */
+	public function updateAdminGroupPermissions($gid, $perms)
+	{
+		$old=$this->getAdminGroupPermissions($gid);
+		
+		foreach ($old AS $key=>$val) {
+			$old[$key] = $perms[$key];
+		}
+		
+		if (!$old['groupID'] || $old['groupID'] != $gid && $gid != null) {
+			$old['groupID'] = $gid;
+		}
+		$this->removeAdminGroupPermissions($gid);
+		$this->addAdminGroupPermissions($gid, $old);
 	}
 	
 }

@@ -40,21 +40,23 @@ class Ajax_Admin
 				$groups = DBManager::getInstance()->getAdminGroups();
 				foreach ($groups AS $group) {
 					echo '<tr><td>' . $group['id'] . '</td><td>' . $group['name']
-						. '</td><td>';
+						. '</td><td style="font-size:0.6em;">';
 					
 					// create permissions string
-					$tmp = ', ';
-					foreach ($group['perms'] AS $key=>$perms) {
-						if ($perms) {
-							$tmp .= $key . ', ';
+					$tmp = '';
+					foreach ($group['perms'] AS $key=>$val) {
+						if ($key != 'groupID' && $val) {
+							$tmp .= ', ' . $key;
 						}
 					}
 					// strip leading comma
-					$tmp = substr($tmp, 2);
+					if(!empty($tmp))
+						$tmp = substr($tmp, 2);
+					echo $tmp;
 					
 					echo '</td>';
 					echo '<td>';
-					echo 	'<a class="jqlink" onclick="jq_admingroup_perms_edit_display(' . $group['id'] . ')">edit perms</a>';
+					echo 	'<a class="jqlink" onclick="jq_admingroup_perms_edit_display(' . $group['id'] . ')">edit perms</a>, ';
 					echo 	'<a class="jqlink" onclick="jq_admingroup_remove(' . $group['id'] . ')">delete</a>';
 					echo '</td>';
 					echo '</tr>';
@@ -79,16 +81,31 @@ class Ajax_Admin
 	
 	public static function db_adminGroup_perms_edit_display()
 	{
-		$group = DBManager::getInstance()->getAdminGroup(intval($_POST['gid']));
+		$_POST['gid'] = intval($_POST['gid']);
+		$group = DBManager::getInstance()->getAdminGroup($_POST['gid']);
 		$perms = $group['perms'];
 		
-		echo '<ul>';
+		echo '<ul class="form_group_permissions">';
 		foreach ($perms AS $key=>$val) {
-			echo sprintf('<li><input type="checkbox" name="%s"%s/> %s</li>', $key, $val==true?' checked="checked"':'', $key); 
+			if ($key != 'groupID')
+				echo sprintf('<li><input type="checkbox" name="%s"%s onclick="jq_admingroup_perm_update(%d, \'%s\', %s);"/> %s</li>',
+						$key, $val==true?' checked="checked"':'', $_POST['gid'], $key, "$('input[name=".$key."]').attr('checked')", $key
+					); 
 		}
 		echo '</ul>';
-		// TODO: I18N
-		echo '<input type="submit" value="Update"/>';
+	}
+	
+	public static function db_adminGroup_perm_update()
+	{
+		$group = DBManager::getInstance()->updateAdminGroupPermission(intval($_POST['gid']), $_POST['perm'], $_POST['newval']?true:false);
+		MessageManager::echoAll();
+	}
+	
+	public static function db_adminGroup_perms_edit()
+	{
+		// TODO: [security] perms should only hold the correct keys and boolean vals
+		$group = DBManager::getInstance()->updateAdminGroupPermissions(intval($_POST['gid']), $_POST['perms']);
+		MessageManager::echoAll();
 	}
 	
 	public static function db_admins_echo()
@@ -113,7 +130,9 @@ class Ajax_Admin
 			echo 	'</td>';
 			echo 	'<td>';
 			echo 		'<ul>';
-			echo 			'<li><a title="add" class="jqlink" onclick="jq_admin_addToGroup_display(' . $admin['id'] . ');">addGroup</a></li>';
+			// TODO: I18N
+			echo 			'<li><a title="add" class="jqlink" onclick="jq_admin_addToGroup_display(' . $admin['id'] . ');">addToGroup</a></li>';
+			// TODO: I18N
 			echo 			'<li><a class="jqlink" onclick="jq_admin_remove('.$admin['id'].')">delete</a></li>';
 			echo 		'</ul>';
 			echo 	'</td>';
