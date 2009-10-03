@@ -90,7 +90,6 @@
 						if(data.length>0){ alert('failed: '+data); }
 					}
 				);
-			
 		}
 		
 		function jq_admin_add_display()
@@ -123,9 +122,9 @@
 									+ '.'
 								);
 						}
+						jq_admins_list_display();
 					}
 				);
-			jq_admins_list_display();
 		}
 		
 		function jq_admin_remove(id)
@@ -139,9 +138,9 @@
 						} else {
 							$('#jq_information').html('Admin account removed.');
 						}
+						jq_admins_list_display();
 					}
 				);
-			jq_admins_list_display();
 		}
 
 		
@@ -211,18 +210,30 @@
 									'AdminGroup ' + name + ' created.'
 								);
 						}
+						jq_adminGroups_list_display();
 					}
 				);
-			jq_adminGroups_list_display();
+			
 		}
 
 		function jq_admingroup_remove(gid)
 		{
-			$.post('./?ajax=db_adminGroup_remove', { 'id': gid });
-			jq_adminGroups_list_display();
-			if(admins_list_expanded) {
-				jq_admins_list_display();
-			}
+			$.post('./?ajax=db_adminGroup_remove',
+					{ 'id': gid },
+					function(){
+						jq_adminGroups_list_display();
+						if(admins_list_expanded) {
+							jq_admins_list_display();
+						}
+					}
+				);
+		}
+
+		function jq_admingroup_perms_edit_display(gid)
+		{
+			$.post('./?ajax=db_adminGroup_perms_edit_display', { 'gid': gid },
+					function(data){$('#jq_information').html(data);}
+				);
 		}
 
 		function jq_admin_addToGroup_display(aid)
@@ -250,9 +261,9 @@
 									'Added admin to group.'
 								);
 						}
+						jq_admins_list_display();
 					}
 				);
-			jq_admins_list_display();
 		}
 		
 

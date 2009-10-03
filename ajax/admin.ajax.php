@@ -54,6 +54,7 @@ class Ajax_Admin
 					
 					echo '</td>';
 					echo '<td>';
+					echo 	'<a class="jqlink" onclick="jq_admingroup_perms_edit_display(' . $group['id'] . ')">edit perms</a>';
 					echo 	'<a class="jqlink" onclick="jq_admingroup_remove(' . $group['id'] . ')">delete</a>';
 					echo '</td>';
 					echo '</tr>';
@@ -72,8 +73,22 @@ class Ajax_Admin
 	
 	public static function db_adminGroup_remove()
 	{
-		DBManager::getInstance()->removeAdminGroup($_POST['id']);
+		DBManager::getInstance()->removeAdminGroup(intval($_POST['id']));
 		MessageManager::echoAll();
+	}
+	
+	public static function db_adminGroup_perms_edit_display()
+	{
+		$group = DBManager::getInstance()->getAdminGroup(intval($_POST['gid']));
+		$perms = $group['perms'];
+		
+		echo '<ul>';
+		foreach ($perms AS $key=>$val) {
+			echo sprintf('<li><input type="checkbox" name="%s"%s/> %s</li>', $key, $val==true?' checked="checked"':'', $key); 
+		}
+		echo '</ul>';
+		// TODO: I18N
+		echo '<input type="submit" value="Update"/>';
 	}
 	
 	public static function db_admins_echo()

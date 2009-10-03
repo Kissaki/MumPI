@@ -41,12 +41,13 @@ class PermissionManager
  */
 class PermissionManager_admin
 {
+	private $perms;
 	private $isGlobalAdmin;
 	
 	public function __construct()
 	{
 		if (SessionManager::getInstance()->isAdmin()) {
-			
+			//TODO: IMPLEMENT, set $perms = 
 		} else {
 			$this->isGlobalAdmin = false;
 		}

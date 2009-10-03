@@ -25,7 +25,8 @@ textarea.heightInc { height:200px; }
 .alignl { text-align:left; }
 .alignc { text-align:center; }
 .alignr { text-align:right; }
-h1 {  }
+h1 { font-size:1.8em; font-weight:bold; margin:12px 0px 6px; }
+h2 { font-size:1.4em; margin:12px 0px 6px; }
 
 .helpicon { background-image:URL('images/help.png'); min-width:16px; min-height:16px; background-repeat:no-repeat; }
 .error { color:red; }

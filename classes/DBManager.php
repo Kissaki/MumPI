@@ -32,6 +32,12 @@ class DBManager
 		}
 		return self::$instance;
 	}
+	
+	/**
+	 * default adminGroupPerms array structure with default values (no perms)
+	 * @var array
+	 */
+	public static $defaultAdminGroupPerms = array('groupID'=>false, 'startStop'=>false, 'editConf'=>false, 'genSuUsPW'=>false, 'viewRegistrations'=>false, 'editRegistrations'=>false, 'moderate'=>false, 'kick'=>false, 'ban'=>false);
 }
 
 /**
@@ -643,7 +649,7 @@ class DBManager_filesystem
 		$lastindex = count($array)-1;
 		$array[$lastindex] = HelperFunctions::stripNewline($array[$lastindex]);
 		
-		$perms = array();
+		$perms = DBManager::$defaultAdminGroupPerms;
 		$perms['groupID'] = $array[1];
 		$perms['startStop'] = $array[2];
 		$perms['editConf'] = $array[3];
@@ -666,7 +672,7 @@ class DBManager_filesystem
 	{
 		//TODO: IMPLEMENT
 		$fh = fopen($this->filepath_adminGroupPermissions, 'r');
-		$perms = array();
+		$perms = DBManager::$defaultAdminGroupPerms;
 		
 		if ($gid == null) {
 			// get group permissions for all groups
@@ -676,8 +682,8 @@ class DBManager_filesystem
 				$perms[$singleperms['groupID']] = $singleperms;
 			}
 		} else {
-			// get group permissions
-			while ($line = fgets($fh)) {
+			// get group permissions for specific group
+			while (false !== ($line = fgets($fh))) {
 				$perms = $this->createAdminGroupPermissionsFromString($line);
 				if ($perms['groupID'] == $gid) {
 					fclose($fh);

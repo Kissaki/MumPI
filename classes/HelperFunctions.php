@@ -112,6 +112,11 @@ class HelperFunctions{
 		echo '<script type="text/javascript">alert(\'' . $str . '\');</script>';
 	}
 	
+	public static function print_r_pre($var)
+	{
+		echo'<pre>';print_r($var);echo'</pre>';
+	}
+	
 	
 }
 ?>

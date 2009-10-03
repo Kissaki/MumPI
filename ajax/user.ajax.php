@@ -3,7 +3,7 @@
  * Ajax functionality
  * @author Kissaki
  */
-//TODO secure this with $_SERVER['HTTP_REFERER']
+//TODO secure this with $_SERVER['HTTP_REFERER'] or sth
 
 // TODO getTexture does not work (yet). Remove or fix.
 //		This seems to be a problem with decompressing the string, gzuncompress() does not work, gzdecode() is PHP 6
