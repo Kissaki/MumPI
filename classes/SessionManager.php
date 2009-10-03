@@ -12,6 +12,7 @@ class SessionManager
 	
 	/**
 	 * starts a php session
+	 * @return void
 	 */
 	public static function startSession()
 	{
@@ -20,6 +21,9 @@ class SessionManager
 		}
 	}
 	
+	/**
+	 * @return SessionManager_obj
+	 */
 	public static function getInstance()
 	{
 		if(self::$instance == null){
@@ -84,6 +88,17 @@ class SessionManager_obj
 		}else{
 			throw new Exception();
 		}
+	}
+	
+	public function adminLogOut()
+	{
+		unset($_SESSION['adminLoggedIn']);
+		unset($_SESSION['adminLoggedInAs']);
+	}
+	
+	public function getAdminID()
+	{
+		return $_SESSION['adminLoggedInAs'];
 	}
 	
 }

@@ -24,6 +24,7 @@ define('MUMPHPI_SECTION', 'admin');
 	require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/TemplateManager.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
+	require_once(MUMPHPI_MAINDIR.'/classes/PermissionManager.php');
 	
 	if(SettingsManager::getInstance()->isDebugMode())
 		error_reporting(E_ALL);
@@ -42,8 +43,8 @@ define('MUMPHPI_SECTION', 'admin');
 		exit();
 	}elseif(SessionManager::getInstance()->isAdmin() && isset($_GET['ajax'])){
 		require_once(MUMPHPI_MAINDIR.'/ajax/admin.ajax.php');
-		// TODO: this should probably have a check, whether the function exists
 		
+		// TODO: this should probably have a check, whether the function exists
 		if (is_callable('Ajax_Admin::' . $_GET['ajax']))
 			eval('Ajax_Admin::' . $_GET['ajax'] . '();');
 		exit();

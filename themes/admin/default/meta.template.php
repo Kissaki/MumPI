@@ -18,9 +18,11 @@
 					<tr class="jqserver" id="jq_server_<?php echo $server->id(); ?>">
 						<td><?php echo $server->id(); ?></td>
 						<td>
-							<div class="js_link" style="float:right;">
-								<a class="jqlink" onclick="jq_meta_server_information_edit(<?php echo $server->id(); ?>)">edit</a>
-							</div>
+							<?php if (PermissionManager::getInstance()->serverCanEditConf($server->id())) { ?>
+								<div class="js_link" style="float:right;">
+									<a class="jqlink" onclick="jq_meta_server_information_edit(<?php echo $server->id(); ?>)">edit</a>
+								</div>
+							<?php } ?>
 <?php
 							if(isset($servername)){
 								echo $servername;
@@ -37,15 +39,19 @@
 							?>
 						</td>
 						<td>
-							<?php if($server_isRunning){?>
-								<a class="jqlink" onclick="jq_server_stop(<?php echo $server->id(); ?>)">Stop</a>
-							<?php }else{ ?>
-								<a class="jqlink" onclick="jq_server_start(<?php echo $server->id(); ?>)">Start</a>
+							<?php if (PermissionManager::getInstance()->serverCanStartStop($server->id())) { ?>
+								<?php if($server_isRunning){?>
+									<a class="jqlink" onclick="jq_server_stop(<?php echo $server->id(); ?>)">Stop</a>
+								<?php }else{ ?>
+									<a class="jqlink" onclick="jq_server_start(<?php echo $server->id(); ?>)">Start</a>
+								<?php } ?>
 							<?php } ?>
-							<a class="jqlink" onclick="jq_server_delete(<?php echo $server->id(); ?>); return false;">Delete</a>
+							<?php if (PermissionManager::getInstance()->isGlobalAdmin()) { ?>
+								<a class="jqlink" onclick="jq_server_delete(<?php echo $server->id(); ?>); return false;">Delete</a>
+							<?php } ?>
 						</td>
 						<td style="padding-left:10px;">
-							<a href="?page=server&amp;sid=<?php echo $server->id(); ?>">Show Server Details</a> 
+							<a href="?page=server&amp;sid=<?php echo $server->id(); ?>">Show Server Details</a>
 							
 						</td>
 					</tr><?php
@@ -53,9 +59,10 @@
 		</tbody>
 	</table>
 	
-	
-	<a class="jqlink" id="server_create">Create a new Server</a>
-	<a class="jqlink" onclick="jq_meta_showDefaultConfig()">Show Default Config</a>
+	<?php if (PermissionManager::getInstance()->isGlobalAdmin()) { ?>
+		<a class="jqlink" id="server_create">Create a new Server</a>
+		<a class="jqlink" onclick="jq_meta_showDefaultConfig()">Show Default Config</a>
+	<?php } ?>
 	
 	<div id="jq_information">
 		

@@ -20,18 +20,26 @@ class Ajax_Admin
 	
 	public static function db_admins_groups_get()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		$groups = DBManager::getInstance()->getAdminGroups();
 		echo json_encode($groups);
 	}
 	
 	public static function db_adminGroupHeads_get()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		$groups = DBManager::getInstance()->getAdminGroupHeads();
 		echo json_encode($groups);
 	}
 	
 	public static function db_admingroups_echo()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
 ?>
 		<table>
 			<thead><tr><th>ID</th><th>name</th><th>permissions</th><th>actions</th></tr></thead>
@@ -69,18 +77,27 @@ class Ajax_Admin
 	
 	public static function db_adminGroup_add()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		DBManager::getInstance()->addAdminGroup($_POST['name']);
 		MessageManager::echoAll();
 	}
 	
 	public static function db_adminGroup_remove()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		DBManager::getInstance()->removeAdminGroup(intval($_POST['id']));
 		MessageManager::echoAll();
 	}
 	
 	public static function db_adminGroup_perms_edit_display()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		$_POST['gid'] = intval($_POST['gid']);
 		$group = DBManager::getInstance()->getAdminGroup($_POST['gid']);
 		$perms = $group['perms'];
@@ -97,12 +114,18 @@ class Ajax_Admin
 	
 	public static function db_adminGroup_perm_update()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		$group = DBManager::getInstance()->updateAdminGroupPermission(intval($_POST['gid']), $_POST['perm'], $_POST['newval']?true:false);
 		MessageManager::echoAll();
 	}
 	
 	public static function db_adminGroup_perms_edit()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		// TODO: [security] perms should only hold the correct keys and boolean vals
 		$group = DBManager::getInstance()->updateAdminGroupPermissions(intval($_POST['gid']), $_POST['perms']);
 		MessageManager::echoAll();
@@ -110,6 +133,9 @@ class Ajax_Admin
 	
 	public static function db_admins_echo()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		echo '<table class="list_admins"><thead><tr class="head"><th>Username</th><th>global Admin</th><th>Groups</th><th>Actions</th></tr></thead>';
 		echo '<tbody>';
 		$admins = DBManager::getInstance()->getAdmins();
@@ -144,17 +170,26 @@ class Ajax_Admin
 	
 	public static function db_admin_update_name()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		DBManager::getInstance()->updateAdminName($_POST['name'], $_POST['pw']);
 	}
 	
 	public static function db_admin_add()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		DBManager::getInstance()->addAdminLogin($_POST['name'], $_POST['pw'], $_POST['isGlobalAdmin']);
 		MessageManager::echoAllErrors();
 	}
 	
 	public static function db_admin_remove()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		DBManager::getInstance()->removeAdminLogin($_POST['id']);
 		MessageManager::echoAllErrors();
 	}
@@ -164,6 +199,9 @@ class Ajax_Admin
 	 */
 	public static function db_admin_addToGroup()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		DBManager::getInstance()->addAdminToGroup($_POST['aid'], $_POST['gid']);
 		MessageManager::echoAllErrors();
 	}
@@ -173,6 +211,9 @@ class Ajax_Admin
 	 */
 	public static function db_admin_addToGroup_display()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		$aid = intval($_POST['aid']);
 		
 		$admin = DBManager::getInstance()->getAdmin($aid);
@@ -200,31 +241,53 @@ class Ajax_Admin
 	
 	public static function server_create()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		echo ServerInterface::getInstance()->createServer();
 	}
 	
 	public static function server_delete()
 	{
+		if (!PermissionManager::getInstance()->isGlobalAdmin())
+			return ;
+		
 		ServerInterface::getInstance()->deleteServer($_POST['sid']);
 	}
 	
 	public static function server_start()
 	{
+		$_POST['sid'] = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->serverCanStartStop($_POST['sid']))
+			return ;
+		
 		ServerInterface::getInstance()->startServer($_POST['sid']);
 	}
 	
 	public static function server_stop()
 	{
+		$_POST['sid'] = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->serverCanStartStop($_POST['sid']))
+			return ;
+		
 		ServerInterface::getInstance()->stopServer($_POST['sid']);
 	}
 	
 	public static function server_setSuperuserPassword()
 	{
+		$_POST['sid'] = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->serverCanGenSuUsPW($_POST['sid']))
+			return ;
+		
 		ServerInterface::getInstance()->setServerSuperuserPassword($_POST['sid'], $_POST['pw']);
 	}
 	
 	public static function server_getRegistrations()
 	{
+		$_POST['sid'] = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->serverCanViewRegistrations($_POST['sid']))
+			return ;
+		
 		$users = array();
 		try{
 			$users = ServerInterface::getInstance()->getServerRegistrations($_POST['sid']);
@@ -259,6 +322,9 @@ class Ajax_Admin
 	
 	public static function show_onlineUsers()
 	{
+		$_POST['sid'] = intval($_POST['sid']);
+		$canModerate = PermissionManager::getInstance()->serverCanModerate($_POST['sid']);
+		
 		$users = array();
 		try{
 			$users = ServerInterface::getInstance()->getServerUsersConnected($_POST['sid']);
@@ -286,15 +352,24 @@ class Ajax_Admin
 						<td><?php echo $user->session; ?></td>
 						<td><?php if($user->playerid > 0) echo $user->playerid; ?></td>
 						<td id="user_name_<?php echo $user->session; ?>" class="jq_editable"><?php echo $user->name; ?></td>
-						<td><input id="user_mute_<?php echo $user->session; ?>" class="jq_toggleable" type="checkbox" <?php if($user->mute) echo 'checked=""' ; ?>/></td>
-						<td><input id="user_deaf_<?php echo $user->session; ?>" class="jq_toggleable" type="checkbox" <?php if($user->deaf) echo 'checked=""' ; ?>/></td>
+						<td><input id="user_mute_<?php echo $user->session; ?>" class="jq_toggleable" type="checkbox" <?php if($user->mute) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
+						<td><input id="user_deaf_<?php echo $user->session; ?>" class="jq_toggleable" type="checkbox" <?php if($user->deaf) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
 						<td id="user_email_<?php echo $user->session; ?>" class="jq_editable"><?php $on = $user->onlinesecs; if($on > 59){ echo sprintf('%.0f', $on/60).'m'; }else{ echo $on.'s'; } ?></td>
-						<td><a class="jqlink" onclick="jq_server_user_kick(<?php echo $user->session; ?>)">kick</a></td>
-<?php						// <a class="jqlink" onclick="jq_server_user_ban(<?php echo $user->session; ?\>)">ban</a>	?>
+						<td>
+<?php
+						if (PermissionManager::getInstance()->serverCanModerate($_POST['sid']))
+							echo '<a class="jqlink" onclick="jq_server_user_kick(' . $user->session . ')">kick</a>';
+						// TODO: ban link
+						// <a class="jqlink" onclick="jq_server_user_ban(<?php echo $user->session; ?\>)">ban</a>
+?>
+						</td>
 					</tr>
 <?php				}	?>
 				</tbody>
 			</table>
+<?php
+		if ($canModerate) {
+?>
 			<script type="text/javascript">
 				$('.jq_toggleable').click(
 						function(event){
@@ -322,86 +397,119 @@ class Ajax_Admin
 					);
 			</script>
 <?php
-	}
+		} // permission check: moderate
+	} // show_onlineUsers()
 	
 	public static function server_regstration_remove()
 	{
+		$_POST['sid'] = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
+			return ;
+		
 		ServerInterface::getInstance()->removeRegistration($_POST['sid'], $_POST['uid']);
 	}
 	
 	public static function server_user_mute()
 	{
+		$_POST['sid'] = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->serverCanModerate($_POST['sid']))
+			return ;
+		
 		ServerInterface::getInstance()->muteUser($_POST['sid'], $_POST['sessid']);
 	}
 	
 	public static function server_user_unmute()
 	{
+		$_POST['sid'] = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->serverCanModerate($_POST['sid']))
+			return ;
+		
 		ServerInterface::getInstance()->unmuteUser($_POST['sid'], $_POST['sessid']);
 	}
 	
 	public static function server_user_deaf()
 	{
+		$_POST['sid'] = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->serverCanModerate($_POST['sid']))
+			return ;
+		
 		ServerInterface::getInstance()->deafUser($_POST['sid'], $_POST['sessid']);
 	}
 	
 	public static function server_user_undeaf()
 	{
+		$_POST['sid'] = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->serverCanModerate($_POST['sid']))
+			return ;
+		
 		ServerInterface::getInstance()->undeafUser($_POST['sid'], $_POST['sessid']);
 	}
 	
 	public static function server_user_kick()
 	{
-		ServerInterface::getInstance()->kickUser($_POST['sid'], $_POST['sessid']);
+		$_POST['sid'] = intval($_POST['sid']);
+		if (PermissionManager::getInstance()->serverCanKick($_POST['sid']))
+			ServerInterface::getInstance()->kickUser($_POST['sid'], $_POST['sessid']);
 	}
 	
 	public static function server_user_ban()
 	{
-		ServerInterface::getInstance()->banUser($_POST['sid'], $_POST['sessid']);
+		$_POST['sid'] = intval($_POST['sid']);
+		if (PermissionManager::getInstance()->serverCanBan($_POST['sid']))
+			ServerInterface::getInstance()->banUser($_POST['sid'], $_POST['sessid']);
 	}
 	
 	public static function show_server_bans()
 	{
-	$bans = ServerInterface::getInstance()->getServerBans($_POST['sid']);
-		echo '<h2>Bans</h2>';
-		echo '<p><a>add</a></p>';
-		if(count($bans)==0){
-			echo 'no bans on this virtual server';
-		}else{
-			echo '<ul>';
-			foreach($bans AS $ban){
-				echo '<li>'.$ban->address.'</li>';
+		$_POST['sid'] = intval($_POST['sid']);
+		if (PermissionManager::getInstance()->serverCanModerate($_POST['sid']) || PermissionManager::getInstance()->serverCanBan($_POST['sid'])) {
+			$bans = ServerInterface::getInstance()->getServerBans($_POST['sid']);
+			echo '<h2>Bans</h2>';
+			echo '<p><a>add</a></p>';
+			if(count($bans)==0){
+				echo 'no bans on this virtual server';
+			}else{
+				echo '<ul>';
+				foreach($bans AS $ban){
+					echo '<li>'.$ban->address.'</li>';
+				}
+				echo '</ul>';
 			}
-			echo '</ul>';
 		}
 	}
 	
 	public static function show_tree()
 	{
+		$_POST['sid'] = intval($_POST['sid']);
 		$tree = ServerInterface::getInstance()->getServer($_POST['sid'])->getTree();
 		HelperFunctions::showChannelTree($tree);
 	}
 	
 	public static function show_acl()
 	{
-		//TODO: implement
+		//TODO: IMPLEMENT show_acl()
 	}
 	
 	public static function server_config_get()
 	{
+		$_POST['sid'] = intval($_POST['sid']);
 		ServerInterface::getInstance()->getServerConfig($_POST['sid']);
 	}
 	
 	public static function server_config_show()
 	{
-		if(!isset($_POST['sid'])) break;
+		if(!isset($_POST['sid'])) return;
 		$_POST['sid'] = intval($_POST['sid']);
 		$conf = ServerInterface::getInstance()->getServerConfig($_POST['sid']);
 ?>
 		<h1>Server Config</h1>
-		<p>For documentation, see your murmur.ini file (or <a href="http://mumble.git.sourceforge.net/git/gitweb.cgi?p=mumble;a=blob_plain;f=scripts/murmur.ini;hb=HEAD" rel="external">this</a> one in the repository, which may however differ from your version)
+		<p>For documentation, see your murmur.ini file (or <a href="http://mumble.git.sourceforge.net/git/gitweb.cgi?p=mumble;a=blob_plain;f=scripts/murmur.ini;hb=HEAD" rel="external">this</a> one in the repository, which may however differ from your version)</p>
 		<br/>
 		<br/>
-		<p style="font-size:x-small;">(Double-click entries to edit them)</p>
+		<?php $canEdit = PermissionManager::getInstance()->serverCanEditConf($_POST['sid']);
+			if ($canEdit) { ?>
+			<p style="font-size:x-small;">(Double-click entries to edit them)</p>
+		<?php } ?>
 		<table><tbody>
 			<tr class="table_headline"><td colspan="2">General</td></tr>
 			<tr><td>Password</td>		<td class="jq_editable" id="jq_editable_server_conf_password"><?php echo $conf['password']; unset($conf['password']); ?></td></tr>
@@ -436,69 +544,83 @@ class Ajax_Admin
 		}
 ?>
 		</tbody></table>
-		<script type="text/javascript">
-			function jq_editable_server_conf_onSubmit(obj, content)
-			{
-				var id = obj.attr('id');
-				var subId = id.substring(id.lastIndexOf('_')+1, id.length);
-				$.post('./?ajax=server_config_update',
-					{ 'sid': <?php echo $_POST['sid']; ?>, 'key': subId, 'value': content.current },
-					function(data)
-					{
-						jq_server_config_show(<?php echo $_POST['sid']; ?>);
-					}
-				);
-			}
-			function jq_editable_server_conf_text2textarea(key)
-			{
-				$('#jq_editable_server_conf_'+key).editable('destroy').editable({
-					'type': 'textarea',
-					'submit': 'save',
-					'cancel':'cancel',
-					'editBy': 'dblclick',
-					'onSubmit': function(content){ jq_editable_server_conf_onSubmit($(this), content); }
-				});
-			}
-			$('.jq_editable')
-				.editable({
-					'type': 'text',
-					'submit': 'save',
-					'cancel':'cancel',
-					'editBy': 'dblclick',
-					'onSubmit': function(content){ jq_editable_server_conf_onSubmit($(this), content); }
-				});
-			jq_editable_server_conf_text2textarea('welcometext');
-			jq_editable_server_conf_text2textarea('certificate');
-			jq_editable_server_conf_text2textarea('key');
-		</script>
 <?php
+		if ($canEdit) {
+?>
+			<script type="text/javascript">
+				function jq_editable_server_conf_onSubmit(obj, content)
+				{
+					var id = obj.attr('id');
+					var subId = id.substring(id.lastIndexOf('_')+1, id.length);
+					$.post('./?ajax=server_config_update',
+						{ 'sid': <?php echo $_POST['sid']; ?>, 'key': subId, 'value': content.current },
+						function(data)
+						{
+							jq_server_config_show(<?php echo $_POST['sid']; ?>);
+						}
+					);
+				}
+				function jq_editable_server_conf_text2textarea(key)
+				{
+					$('#jq_editable_server_conf_'+key).editable('destroy').editable({
+						'type': 'textarea',
+						'submit': 'save',
+						'cancel':'cancel',
+						'editBy': 'dblclick',
+						'onSubmit': function(content){ jq_editable_server_conf_onSubmit($(this), content); }
+					});
+				}
+				$('.jq_editable')
+					.editable({
+						'type': 'text',
+						'submit': 'save',
+						'cancel':'cancel',
+						'editBy': 'dblclick',
+						'onSubmit': function(content){ jq_editable_server_conf_onSubmit($(this), content); }
+					});
+				jq_editable_server_conf_text2textarea('welcometext');
+				jq_editable_server_conf_text2textarea('certificate');
+				jq_editable_server_conf_text2textarea('key');
+			</script>
+<?php
+		}
 	}
 	
 	public static function server_config_update()
 	{
-		if(isset($_POST['sid']) && isset($_POST['key']) && isset($_POST['value']))
-		{
-			ServerInterface::getInstance()->setServerConfigEntry($_POST['sid'], $_POST['key'], $_POST['value']);
+		$_POST['sid'] = intval($_POST['sid']);
+		if (PermissionManager::getInstance()->serverCanEditConf($_POST['sid'])) {
+			if (isset($_POST['sid']) && isset($_POST['key']) && isset($_POST['value']))
+			{
+				ServerInterface::getInstance()->setServerConfigEntry($_POST['sid'], $_POST['key'], $_POST['value']);
+			}
 		}
 	}
 	
 	public static function server_user_updateUsername()
 	{
-		ServerInterface::getInstance()->updateUserName($_POST['sid'], $_POST['uid'], $_POST['newValue']);
+		$_POST['sid'] = intval($_POST['sid']);
+		if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
+			ServerInterface::getInstance()->updateUserName($_POST['sid'], $_POST['uid'], $_POST['newValue']);
 	}
 	
 	public static function server_user_updateEmail()
 	{
-		ServerInterface::getInstance()->updateUserEmail($_POST['sid'], $_POST['uid'], $_POST['newValue']);
+		$_POST['sid'] = intval($_POST['sid']);
+		if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
+			ServerInterface::getInstance()->updateUserEmail($_POST['sid'], $_POST['uid'], $_POST['newValue']);
 	}
 	
 	public static function meta_server_information_edit()
 	{
+		$_POST['sid'] = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->serverCanEditConf($_POST['sid']))
+			return ;
+		
 		$server = SettingsManager::getInstance()->getServerInformation($_POST['serverid']);
 
 		echo '<div>';
-		if($server === null)
-		{
+		if ($server === null) {
 			echo 'new:<br/>';
 			$server['name']              = '';
 			$server['allowlogin']        = true;
@@ -530,11 +652,13 @@ class Ajax_Admin
 	
 	public static function meta_server_information_update()
 	{
-		if(isset($_POST['name']) && isset($_POST['allowlogin']) && isset($_POST['allowregistration']) && isset($_POST['forcemail']) && isset($_POST['authbymail']) )
-		{
-			SettingsManager::getInstance()->setServerInformation($_POST['serverid'], $_POST['name'], $_POST['allowlogin'], $_POST['allowregistration'], $_POST['forcemail'], $_POST['authbymail']);
-		}else{
-			MessageManager::addError(TranslationManager::getInstance()->getText('error_missing_values'));
+		$_POST['sid'] = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->serverCanEditConf($_POST['sid'])) {
+			if (isset($_POST['name']) && isset($_POST['allowlogin']) && isset($_POST['allowregistration']) && isset($_POST['forcemail']) && isset($_POST['authbymail']) ) {
+				SettingsManager::getInstance()->setServerInformation($_POST['serverid'], $_POST['name'], $_POST['allowlogin'], $_POST['allowregistration'], $_POST['forcemail'], $_POST['authbymail']);
+			} else {
+				MessageManager::addError(TranslationManager::getInstance()->getText('error_missing_values'));
+			}
 		}
 	}
 	

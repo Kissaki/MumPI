@@ -2,13 +2,13 @@
 <div id="menu">
 	<ul>
 <?php
-		if(!SessionManager::getInstance()->isAdmin()){
+		if (!SessionManager::getInstance()->isAdmin()) {
 ?>
 			<li<?php if(HelperFunctions::getActivePage()=='login') echo ' class="active"';?>><a href="./?page=login">Login</a></li>
 	</ul>
 </div>
 <?php
-		}else{
+		} else {
 			HelperFunctions::echoMenuEntry('meta');
 			HelperFunctions::echoMenuEntry('server');
 			HelperFunctions::echoMenuEntry('admins');

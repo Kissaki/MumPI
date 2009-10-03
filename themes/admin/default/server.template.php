@@ -15,12 +15,16 @@
 ?>
 	<h1>Server Details: <?php echo SettingsManager::getInstance()->getServerName($_GET['sid']); ?></h1>
 	<ul>
-		<li><a class="jqlink" onclick="jq_server_getOnlineUsers(<?php echo $server->id(); ?>); return false;">Online Users</a></li>
-		<li><a class="jqlink" onclick="jq_server_getRegistrations(<?php echo $server->id(); ?>); return false;">Registrations</a></li>
-		<li><a class="jqlink" onclick="jq_server_getBans(<?php echo $server->id(); ?>); return false;">Bans</a></li>
-		<li><a class="jqlink" onclick="jq_server_showTree(<?php echo $server->id(); ?>); return false;">Channel-Tree</a></li>
-		<li id="li_server_superuserpassword"><a class="jqlink" onclick="jq_server_setSuperuserPassword(<?php echo $server->id(); ?>); return false;">Generate new SuperuserPassword</a></li>
-		<li><a class="jqlink" onclick="jq_server_config_show(<?php echo $server->id(); ?>); return false;">Config</a></li>
+<?php
+		echo sprintf('<li><a class="jqlink" onclick="jq_server_getOnlineUsers(%d); return false;">Online Users</a></li>', $server->id());
+		if (PermissionManager::getInstance()->serverCanViewRegistrations($server->id()))
+			echo sprintf('<li><a class="jqlink" onclick="jq_server_getRegistrations(%d); return false;">Registrations</a></li>', $server->id());
+		echo sprintf('<li><a class="jqlink" onclick="jq_server_getBans(%d); return false;">Bans</a></li>', $server->id());
+		echo sprintf('<li><a class="jqlink" onclick="jq_server_showTree(%d); return false;">Channel-Tree</a></li>', $server->id());
+		if (PermissionManager::getInstance()->serverCanGenSuUsPW($server->id()))
+			echo sprintf('<li id="li_server_superuserpassword"><a class="jqlink" onclick="jq_server_setSuperuserPassword(%d); return false;">Generate new SuperuserPassword</a></li>', $server->id());
+		echo sprintf('<li><a class="jqlink" onclick="jq_server_config_show(%d); return false;">Config</a></li>', $server->id());
+?>
 	</ul>
 	
 	<hr/>

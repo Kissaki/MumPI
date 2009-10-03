@@ -50,6 +50,7 @@ class DBManager_filesystem
 	private static $filename_adminGroups			= 'admin_groups.dat';
 	private static $filename_adminGroupPermissions	= 'admin_group_permissions.dat';
 	private static $filename_adminGroupAssoc		= 'admin_group_assoc.dat';
+	private static $filename_adminGroupServerAssoc	= 'admin_group_server_assoc.dat';
 	
 	private $filepath_admins;
 	private $filepath_awaiting;
@@ -57,6 +58,7 @@ class DBManager_filesystem
 	private $filepath_adminGroups;
 	private $filepath_adminGroupPermissions;
 	private $filepath_adminGroupAssoc;
+	private $filepath_adminGroupServerAssoc;
 	
 	
 	/**
@@ -72,6 +74,7 @@ class DBManager_filesystem
 		$this->filepath_adminGroups				= $datapath . self::$filename_adminGroups;
 		$this->filepath_adminGroupPermissions	= $datapath . self::$filename_adminGroupPermissions;
 		$this->filepath_adminGroupAssoc			= $datapath . self::$filename_adminGroupAssoc;
+		$this->filepath_adminGroupServerAssoc	= $datapath . self::$filename_adminGroupServerAssoc;
 		
 		// if data dir does not exist yet, redirect to installer
 		if (
@@ -708,6 +711,24 @@ class DBManager_filesystem
 				$perms['editRegistrations']?1:0, $perms['moderate']?1:0, $perms['kick']?1:0, $perms['ban']?1:0)
 			);
 		fclose($fh);
+	}
+	
+	/**
+	 * @param int $aid admin ID
+	 * @return array permissions
+	 */
+	public function getAdminGroupPermissionsByAdminID($aid)
+	{
+		$groups = $this->getAdminGroupsByAdminID($aid);
+		$perms = DBManager::$defaultAdminGroupPerms;
+		foreach ($groups AS $group) {
+			$tmpPerms = DBManager::getInstance()->getAdminGroupPermissions($group['id']);
+			foreach ($perms AS $key=>$val) {
+				if(!$val)
+					$perms[$key] = $tmpPerms[$key];
+			}
+		}
+		return $perms;
 	}
 	
 	/**

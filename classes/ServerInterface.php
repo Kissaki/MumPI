@@ -11,6 +11,10 @@
  */
 class ServerInterface{
 	private static $instance = null;
+	
+	/**
+	 * @return ServerInterface_ice
+	 */
 	public static function getInstance()
 	{
 		if(!isset(self::$instance))
