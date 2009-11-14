@@ -11,7 +11,8 @@
 		} else {
 			HelperFunctions::echoMenuEntry('meta');
 			HelperFunctions::echoMenuEntry('server');
-			HelperFunctions::echoMenuEntry('admins');
+			if (PermissionManager::getInstance()->isGlobalAdmin())
+				HelperFunctions::echoMenuEntry('admins');
 			HelperFunctions::echoMenuEntry('logout');
 ?>
 		<li style="height:10px; font-size:10px; line-height:10px; margin-top:10px; border-bottom:black;">Back to…</li>
