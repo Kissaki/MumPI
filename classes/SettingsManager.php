@@ -13,6 +13,9 @@ require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
  */
 class SettingsManager {
 	private static $instance;
+	/**
+	 * @return SettingsManager
+	 */
 	public static function getInstance(){	// $obj=NULL){
 		if(!isset(self::$instance))
 			if(!isset($obj))

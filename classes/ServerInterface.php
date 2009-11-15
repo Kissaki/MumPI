@@ -84,8 +84,7 @@ class ServerInterface_ice
 	 * @return unknown_type all virtual servers
 	 */
 	public function getServers(){
-		$servers = $this->meta->getAllServers();
-		return $servers;
+		return $this->meta->getAllServers();
 	}
 	/**
 	 * Get all running virtual servers

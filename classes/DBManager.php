@@ -37,7 +37,8 @@ class DBManager
 	 * default adminGroupPerms array structure with default values (no perms)
 	 * @var array
 	 */
-	public static $defaultAdminGroupPerms = array('groupID'=>null, 'startStop'=>false, 'editConf'=>false, 'genSuUsPW'=>false, 'viewRegistrations'=>false, 'editRegistrations'=>false, 'moderate'=>false, 'kick'=>false, 'ban'=>false);
+	public static $defaultAdminGroupPerms = array('groupID'=>null, 'serverID'=>null, 'startStop'=>false, 'editConf'=>false, 'genSuUsPW'=>false, 'viewRegistrations'=>false, 'editRegistrations'=>false, 'moderate'=>false, 'kick'=>false, 'ban'=>false, 'channels'=>false, 'acls'=>false, 'admins'=>false);
+//	public static $defaultAdminGroupPerms = new Server_Admin_Group_Permissions(false, false, false, false, false, false, false, false, false, false, false);
 }
 
 /**
@@ -632,6 +633,7 @@ class DBManager_filesystem
 	{
 		$perms = $this->getAdminGroupPermissions($group['id']);
 		$group['perms'] = $perms;
+		$group['adminOnServers'] = $this->getAdminGroupServers($group['id']);
 		return $group;
 	}
 	
@@ -653,15 +655,19 @@ class DBManager_filesystem
 		$array[$lastindex] = HelperFunctions::stripNewline($array[$lastindex]);
 		
 		$perms = DBManager::$defaultAdminGroupPerms;
-		$perms['groupID'] = $array[0];
-		$perms['startStop'] = $array[1];
-		$perms['editConf'] = $array[2];
-		$perms['genSuUsPW'] = $array[3];
-		$perms['viewRegistrations'] = $array[4];
-		$perms['editRegistrations'] = $array[5];
-		$perms['moderate'] = $array[6];
-		$perms['kick'] = $array[7];
-		$perms['ban'] = $array[8];
+		$perms['groupID']   = $array[0];
+		$perms['serverID']  = $array[1];
+		$perms['startStop'] = $array[2];
+		$perms['editConf']  = $array[3];
+		$perms['genSuUsPW'] = $array[4];
+		$perms['viewRegistrations'] = $array[5];
+		$perms['editRegistrations'] = $array[6];
+		$perms['moderate']  = $array[7];
+		$perms['kick']      = $array[8];
+		$perms['ban']       = $array[9];
+		$perms['channels']  = $array[10];
+		$perms['acls']      = $array[11];
+		$perms['admins']    = $array[12];
 		
 		return $perms;
 	}
@@ -671,19 +677,25 @@ class DBManager_filesystem
 	 * @param $gid admin group ID
 	 * @return object admin group permissions
 	 */
-	public function getAdminGroupPermissions($gid)
+	public function getAdminGroupPermissions($gid, $serverID=null)
 	{
 		$fh = fopen($this->filepath_adminGroupPermissions, 'r');
-	
+		
 		while (false !== ($line = fgets($fh))) {
 			$tmpPerms = $this->createAdminGroupPermissionsFromString($line);
-			if ($tmpPerms['groupID'] == $gid) {
+			if ($tmpPerms['groupID'] == $gid && ($serverID == null || $serverID == $tmpPerms['serverID'])) {
 				fclose($fh);
 				return $tmpPerms;
 			}
 		}
 		fclose($fh);
 		
+		// no such permissions, try to get and return global ones for this group
+		if ($serverID != null) {
+			return $this->getAdminGroupPermissions($gid, null);
+		}
+		
+		// no global perms, return default perms
 		$defPerms = DBManager::$defaultAdminGroupPerms;
 		$defPerms['groupID'] = $gid;
 		return $defPerms;
@@ -694,7 +706,7 @@ class DBManager_filesystem
 	 * @param int $gid group ID
 	 * @param array $perms array of permissions (indices: startStop, editConf, genSuUsPW, viewRegistrations, editRegistrations, moderate, kick, ban)
 	 */
-	public function addAdminGroupPermissions($gid=null, $perms)
+	public function addAdminGroupPermissions($gid=null, $perms, $serverID=null)
 	{
 		$perms = array_merge(DBManager::$defaultAdminGroupPerms, $perms);
 		
@@ -705,24 +717,50 @@ class DBManager_filesystem
 		$this->removeAdminGroupPermissions($perms['groupID']);
 		
 		$fh = fopen($this->filepath_adminGroupPermissions, 'a');
-		fwrite($fh, sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
-				$perms['groupID'],
-				$perms['startStop']?1:0, $perms['editConf']?1:0, $perms['genSuUsPW']?1:0, $perms['viewRegistrations']?1:0,
-				$perms['editRegistrations']?1:0, $perms['moderate']?1:0, $perms['kick']?1:0, $perms['ban']?1:0)
+		fwrite(
+				$fh,
+				sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+					$perms['groupID'], is_int($serverID)?$serverID:'',
+					$perms['startStop']?1:0, $perms['editConf']?1:0, $perms['genSuUsPW']?1:0, $perms['viewRegistrations']?1:0,
+					$perms['editRegistrations']?1:0, $perms['moderate']?1:0, $perms['kick']?1:0, $perms['ban']?1:0,
+					$perms['channels']?1:0, $perms['acls']?1:0, $perms['admins']?1:0
+				)
 			);
 		fclose($fh);
+	}
+	
+	/**
+	 * remove group permissions for group
+	 * @param unknown_type $gid group ID
+	 */
+	public function removeAdminGroupPermissions($groupID, $serverID=null)
+	{
+		$data = file($this->filepath_adminGroupPermissions);
+		$fd = fopen($this->filepath_adminGroupPermissions, 'w');
+		$size = count($data);
+		
+		for ($line = 0; $line < $size; $line++) {
+			$perms = $this->createAdminGroupPermissionsFromString($data[$line]);
+			
+			if ($perms['groupID'] != $groupID) {
+				fputs($fd, $data[$line]);
+			} elseif ($serverID != $perms['serverID']) {
+				fputs($fd, $data[$line]);
+			}
+		}
+		fclose($fd);
 	}
 	
 	/**
 	 * @param int $aid admin ID
 	 * @return array permissions
 	 */
-	public function getAdminGroupPermissionsByAdminID($aid)
+	public function getAdminGroupPermissionsByAdminID($aid, $serverID=null)
 	{
 		$groups = $this->getAdminGroupsByAdminID($aid);
 		$perms = DBManager::$defaultAdminGroupPerms;
 		foreach ($groups AS $group) {
-			$tmpPerms = DBManager::getInstance()->getAdminGroupPermissions($group['id']);
+			$tmpPerms = $this->getAdminGroupPermissions($group['id'], $serverID);
 			foreach ($perms AS $key=>$val) {
 				if(!$val)
 					$perms[$key] = $tmpPerms[$key];
@@ -732,33 +770,14 @@ class DBManager_filesystem
 	}
 	
 	/**
-	 * remove group permissions for group
-	 * @param unknown_type $gid group ID
-	 */
-	public function removeAdminGroupPermissions($gid)
-	{
-		$data = file($this->filepath_adminGroupPermissions);
-		$fd = fopen($this->filepath_adminGroupPermissions, 'w');
-		$size = count($data);
-		
-		for ($line = 0; $line < $size; $line++) {
-			$perms = $this->createAdminGroupPermissionsFromString($data[$line]);
-			
-			if ($perms['groupID'] != $gid) {
-				fputs($fd, $data[$line]);
-			}
-		}
-		fclose($fd);
-	}
-	
-	/**
 	 * update a single permission
 	 * @param $gid group id
 	 * @param $perm permission key/name
 	 * @param $newval new value
 	 */
-	public function updateAdminGroupPermission($gid, $perm, $newval)
+	public function updateAdminGroupPermission($gid, $perm, $newval, $serverID=null)
 	{
+		//TODO server specific
 		$old=$this->getAdminGroupPermissions($gid);
 		
 		if (isset($old[$perm])) {
@@ -776,8 +795,9 @@ class DBManager_filesystem
 	 * @param int $gid group ID
 	 * @param array $perms array of permissions (indices: startStop, editConf, genSuUsPW, viewRegistrations, editRegistrations, moderate, kick, ban)
 	 */
-	public function updateAdminGroupPermissions($gid, $perms)
+	public function updateAdminGroupPermissions($gid, $perms, $serverID=null)
 	{
+		//TODO server specific
 		$old=$this->getAdminGroupPermissions($gid);
 		
 		foreach ($old AS $key=>$val) {
@@ -789,6 +809,57 @@ class DBManager_filesystem
 		}
 		$this->removeAdminGroupPermissions($gid);
 		$this->addAdminGroupPermissions($gid, $old);
+	}
+	
+	/**
+	 * @param int $adminGroupID
+	 * @param int $serverID
+	 * @return void
+	 */
+	public function makeAdminGroupAdminOfServer($adminGroupID, $serverID)
+	{
+		// skip if the server is alredy associated to the admin group
+		$groupServers = $this->getAdminGroupServers($adminGroupID);
+		if (in_array($serverID, $groupServers)) {
+			return;
+		}
+		
+		// add assoc
+		$fh = fopen($this->filepath_adminGroupServerAssoc, 'a');
+		fwrite($fh, sprintf("%d;%d\n", $adminGroupID, $serverID));
+		fclose($fh);
+	}
+	/**
+	 * @param int $serverID
+	 * @return void
+	 */
+	public function removeAdminGroupAsAdminOfServer($adminGroupID, $serverID)
+	{
+		$lines = file($this->filepath_adminGroupServerAssoc);
+		$fh = fopen($this->filepath_adminGroupServerAssoc, 'w');
+		foreach ($lines AS $line) {
+			$data = HelperFunctions::stripNewline($line);
+			$assoc = explode(';', $line);
+			if ($assoc[0] != $adminGroupID || $assoc[1] != $serverID) {
+				fputs($fh, $line);
+			}
+		}
+		fclose($fh);
+	}
+	public function getAdminGroupServers($groupID)
+	{
+		$servers = array();
+		$fh = fopen($this->filepath_adminGroupServerAssoc, 'r');
+		while ($line = fgets($fh)) {
+			$line = HelperFunctions::stripNewline($line);
+			$assoc = explode(';', $line);
+			if (intval($assoc[0]) == $groupID) {
+				$servers[] = $assoc[1];
+			}
+		}
+		fclose($fh);
+		sort($servers);
+		return $servers;
 	}
 	
 }

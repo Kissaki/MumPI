@@ -97,6 +97,10 @@ define('MUMPHPI_SECTION', 'install');
 		echo 'creating admin group assoc file…<br/>';
 		fclose(fopen('../data/admin_group_assoc.dat', 'w'));
 	}
+	if (!file_exists('../data/admin_group_server_assoc.dat')) {
+		echo 'creating admin group server assoc file…<br/>';
+		fclose(fopen('../data/admin_group_server_assoc.dat', 'w'));
+	}
 	
 ?>
 	<p>

@@ -20,7 +20,7 @@ class Ajax_Admin
 	
 	public static function db_admins_groups_get()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
 		
 		$groups = DBManager::getInstance()->getAdminGroups();
@@ -29,7 +29,7 @@ class Ajax_Admin
 	
 	public static function db_adminGroupHeads_get()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
 		
 		$groups = DBManager::getInstance()->getAdminGroupHeads();
@@ -38,17 +38,19 @@ class Ajax_Admin
 	
 	public static function db_admingroups_echo()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
 ?>
 		<table>
-			<thead><tr><th>ID</th><th>name</th><th>permissions</th><th>actions</th></tr></thead>
+			<thead><tr><th>ID</th><th>name</th><th>permissions</th><th>servers</th><th>actions</th></tr></thead>
 			<tbody>
 <?php
 				$groups = DBManager::getInstance()->getAdminGroups();
 				foreach ($groups AS $group) {
-					echo '<tr><td>' . $group['id'] . '</td><td>' . $group['name']
-						. '</td><td style="font-size:0.6em;">';
+					echo '<tr>
+						<td>' . $group['id'] . '</td>
+						<td>' . $group['name'] . '</td>
+						<td style="font-size:0.6em;">';
 					
 					// create permissions string
 					$tmp = '';
@@ -63,8 +65,19 @@ class Ajax_Admin
 					echo $tmp;
 					
 					echo '</td>';
+					
+					// admin on servers
+					echo '<td>';
+					$tmp = '';
+					foreach ($group['adminOnServers'] AS $srv) {
+						$tmp .= $srv.', ';
+					}
+					echo substr($tmp, 0, strlen($tmp)-2);
+					echo '</td>';
+					
 					echo '<td>';
 					echo 	'<a class="jqlink" onclick="jq_admingroup_perms_edit_display(' . $group['id'] . ')">edit perms</a>, ';
+					echo 	'<a class="jqlink" onclick="jq_admingroup_server_assoc_edit_display(' . $group['id'] . ')">edit servers</a>, ';
 					echo 	'<a class="jqlink" onclick="jq_admingroup_remove(' . $group['id'] . ')">delete</a>';
 					echo '</td>';
 					echo '</tr>';
@@ -95,19 +108,27 @@ class Ajax_Admin
 	
 	public static function db_adminGroup_perms_edit_display()
 	{
+		// TODO server specific perms
 		if (!PermissionManager::getInstance()->isGlobalAdmin())
 			return ;
 		
-		$_POST['gid'] = intval($_POST['gid']);
-		$group = DBManager::getInstance()->getAdminGroup($_POST['gid']);
-		$perms = $group['perms'];
+		// exit on missing params
+		if (!isset($_POST['groupID']))
+			exit();
 		
+		// make sure only ints are passed
+		$_POST['groupID'] = intval($_POST['groupID']);
+		$_POST['serverID'] = isset($_POST['serverID'])?intval($_POST['serverID']):null;
+		$group = DBManager::getInstance()->getAdminGroup($_POST['groupID']);
+		
+		// output
 		echo '<ul class="form_group_permissions">';
-		foreach ($perms AS $key=>$val) {
-			if ($key != 'groupID')
+		foreach ($group['perms'] AS $key=>$val) {
+			if ($key != 'groupID' && $key != 'serverID') {
 				echo sprintf('<li><input type="checkbox" name="%s"%s onclick="jq_admingroup_perm_update(%d, \'%s\', %s);"/> %s</li>',
-						$key, $val==true?' checked="checked"':'', $_POST['gid'], $key, "$('input[name=".$key."]').attr('checked')", $key
-					); 
+						$key, $val==true?' checked="checked"':'', $_POST['groupID'], $key, "$('input[name=".$key."]').attr('checked')", $key
+					);
+			}
 		}
 		echo '</ul>';
 	}
@@ -129,6 +150,52 @@ class Ajax_Admin
 		// TODO: [security] perms should only hold the correct keys and boolean vals
 		$group = DBManager::getInstance()->updateAdminGroupPermissions(intval($_POST['gid']), $_POST['perms']);
 		MessageManager::echoAll();
+	}
+	
+	public static function db_adminGroups_makeAdminOnServer()
+	{
+		if (!PermissionManager::getInstance()->serverCanEditAdmins()) {
+			return;
+		}
+		
+		$groupID = intval($_POST['groupID']);
+		$serverID = intval($_POST['serverID']);
+		
+		DBManager::getInstance()->makeAdminGroupAdminOfServer($groupID, $serverID);
+	}
+	public static function db_adminGroups_revokeAdminOnServer()
+	{
+		if (!PermissionManager::getInstance()->serverCanEditAdmins()) {
+			return;
+		}
+		
+		$groupID = intval($_POST['groupID']);
+		$serverID = intval($_POST['serverID']);
+		
+		DBManager::getInstance()->removeAdminGroupAsAdminOfServer($groupID, $serverID);
+	}
+	public static function db_adminGroup_servers_edit_display()
+	{
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
+			return ;
+		
+		// exit on missing params
+		if (!isset($_POST['groupID']))
+			exit();
+		
+		// make sure only ints are passed
+		$_POST['groupID'] = intval($_POST['groupID']);
+		$group = DBManager::getInstance()->getAdminGroup($_POST['groupID']);
+		$servers = ServerInterface::getInstance()->getServers();
+		
+		// output
+		echo '<ul class="form_group_servers">';
+		foreach ($servers AS $srv) { //FIXME ###
+			echo sprintf('<li><input type="checkbox" name="%s"%s onclick="jq_adminGroup_server_update(%d, %d, %s);"/> %s</li>',
+					'srv'.$srv->id(), in_array($srv->id(), $group['adminOnServers'])?' checked="checked"':'', $_POST['groupID'], $srv->id(), "$('input[name=srv".$srv->id()."]').attr('checked')", SettingsManager::getInstance()->getServerName($srv->id())
+				);
+		}
+		echo '</ul>';
 	}
 	
 	public static function db_admins_echo()

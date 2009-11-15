@@ -144,6 +144,30 @@ class PermissionManager_admin
 	{
 		return $this->isGlobalAdmin || $this->perms['ban'];
 	}
+
+	/**
+	 * @return boolean
+	 */
+	public function serverCanEditChannels()
+	{
+		return $this->isGlobalAdmin || $this->perms['channels'];
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function serverCanEditACLs()
+	{
+		return $this->isGlobalAdmin || $this->perms['acls'];
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function serverCanEditAdmins()
+	{
+		return $this->isGlobalAdmin || $this->perms['admins'];
+	}
 }
 
 ?>

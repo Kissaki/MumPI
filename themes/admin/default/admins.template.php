@@ -8,7 +8,7 @@
 			<h2>Admin Accounts</h2>
 		 	<div class="head">
 				<a class="jqlink" onclick="jq_admins_list_toggle();" style="display:block;">
-					<div class="indicator" style="float:left; width:16px; text-decoration:none;">+</div> Admins
+					<span class="indicator" style="float:left; width:16px; text-decoration:none;">+</span> Admins
 				</a>
 			</div>
 			<div class="content"></div>
@@ -231,7 +231,7 @@
 
 		function jq_admingroup_perms_edit_display(gid)
 		{
-			$.post('./?ajax=db_adminGroup_perms_edit_display', { 'gid': gid },
+			$.post('./?ajax=db_adminGroup_perms_edit_display', { 'groupID': gid },
 					function(data){$('#jq_information').html(data);}
 				);
 		}
@@ -266,6 +266,49 @@
 				);
 		}
 
+		function jq_admingroup_server_add(groupID, serverID)
+		{
+			$.post("./?ajax=db_adminGroups_makeAdminOnServer",
+					{ 'groupID': groupID, 'serverID': serverID },
+					function(data)
+					{
+						if (data.length>0) {
+							$('#jq_information').html('Failed: '+ data);
+						}
+					}
+				);
+			jq_adminGroups_list_display();
+		}
+		function jq_admingroup_server_remove(groupID, serverID)
+		{
+			$.post("./?ajax=db_adminGroups_revokeAdminOnServer",
+					{ 'groupID': groupID, 'serverID': serverID },
+					function(data)
+					{
+						if (data.length>0) {
+							$('#jq_information').html('Failed: '+ data);
+						}
+					}
+				);
+			jq_adminGroups_list_display();
+		}
+		function jq_adminGroup_server_update(groupID, serverID, newval)
+		{
+			if (newval) {
+				jq_admingroup_server_add(groupID, serverID);
+			} else {
+				jq_admingroup_server_remove(groupID, serverID);
+			}
+			jq_admingroup_server_assoc_edit_display(groupID);
+		}
+		function jq_admingroup_server_assoc_edit_display(groupID)
+		{
+			$.post('./?ajax=db_adminGroup_servers_edit_display', { 'groupID': groupID },
+					function(data){$('#jq_information').html(data);}
+				);
+		}
+
+
 		function jq_admin_addToGroup_display(aid)
 		{
 			$.post(
@@ -295,7 +338,6 @@
 					}
 				);
 		}
-		
 
 
 		/********************************************************************
