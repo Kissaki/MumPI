@@ -719,8 +719,8 @@ class Ajax_Admin
 	
 	public static function meta_server_information_update()
 	{
-		$_POST['sid'] = intval($_POST['sid']);
-		if (!PermissionManager::getInstance()->serverCanEditConf($_POST['sid'])) {
+		$_POST['serverid'] = intval($_POST['serverid']);
+		if (PermissionManager::getInstance()->serverCanEditConf($_POST['serverid'])) {
 			if (isset($_POST['name']) && isset($_POST['allowlogin']) && isset($_POST['allowregistration']) && isset($_POST['forcemail']) && isset($_POST['authbymail']) ) {
 				SettingsManager::getInstance()->setServerInformation($_POST['serverid'], $_POST['name'], $_POST['allowlogin'], $_POST['allowregistration'], $_POST['forcemail'], $_POST['authbymail']);
 			} else {

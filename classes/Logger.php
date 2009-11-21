@@ -10,10 +10,22 @@
  * Provides logging functionality
  */
 class Logger{
-	public static function log_loginFail($uname,$pw){
+	const LEVEL_DEBUG='DEBUG';
+	const LEVEL_INFO='INFO';
+	const LEVEL_ERROR='ERROR';
+	const LEVEL_FATAL='FATAL';
+	const LEVEL_SECURITY='SECURITY';	// failed logins etc.
+	
+	public static function log($message, $level)
+	{
+		DBManager::getInstance()->append('log.log', date('Y.m.d H:i:s').' – '.$level.': '.$message);
+	}
+	public static function log_loginFail($uname,$pw)
+	{
 		DBManager::getInstance()->append('log_register.log', time().';'.$_SERVER['REMOTE_ADDR'].';'.$_SERVER['HTTP_REFERER'].';uname:'.$uname.';pw:'.$pw);
 	}
-	public static function log_registration($uname){
+	public static function log_registration($uname)
+	{
 		DBManager::getInstance()->append('log_register.log', time().';'.$_SERVER['REMOTE_ADDR'].';'.$_SERVER['HTTP_REFERER'].';uname:'.$uname);
 	}
 }

@@ -33,6 +33,7 @@ class SettingsManager {
 	private $site;
 	private $useCaptcha;
 	private $dbType;
+	private $showAdminLink;
 	private $dbInterface_type;
 	private $dbInterface_address;
 	private $numberOfServers;
@@ -51,6 +52,7 @@ class SettingsManager {
 		$this->defaultLanguage = $defaultLanguage;
 		$this->useCaptcha = $useCaptcha;
 		$this->dbType = $dbType;
+		$this->showAdminLink = $showAdminLink;
 		
 		$this->site = array();
 		$this->site['title'] = $site_title;
@@ -158,6 +160,9 @@ class SettingsManager {
 	function isUseCaptcha(){
 		return $this->useCaptcha;
 	}
+	function isShowAdminLink(){
+		return $this->showAdminLink;
+	}
 	function getDbType(){
 		return $this->dbType;
 	}
@@ -226,7 +231,7 @@ class SettingsManager {
 					{
 						if( strncmp($line, '$servers['.$serverid.'][\'name\']', 19) === 0 )
 						{
-							fwrite($fh, '$servers['.$serverid.'][\'name\']              = \''.$name.'\';'."\n");
+							fwrite($fh, '$servers['.$serverid.'][\'name\']              = \''.str_replace(array('\\', "'"), array('\\\\', "\'"), $name).'\';'."\n");
 						}
 						if( strncmp($line, '$servers['.$serverid.'][\'allowlogin\']', 25) === 0 )
 						{

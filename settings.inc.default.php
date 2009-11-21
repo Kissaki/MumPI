@@ -9,9 +9,8 @@ $debug = false;
 
 $theme	= 'default';
 $defaultLanguage = 'en';	// currently available: en, de
-$useCaptcha = true;		// This is recommended to be true to prevent spam/abuse by bots etc. This requires the php gd extension (image manipulation).
-
-// TODO: allow disabling admin-section link in user area
+$useCaptcha = true;				// This is recommended to be true to prevent spam/abuse by bots etc. This requires the php gd extension (image manipulation).
+$showAdminLink = true;		// Show a link to the admin section in the user section?
 
 // Interface to use. Currently available: ice
 $dbInterface_type		= 'ice';

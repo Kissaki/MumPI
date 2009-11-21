@@ -1,11 +1,13 @@
 <?php
 if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
-	if(isset($_POST['serverid']) && isset($_POST['name']) && $_POST['password']){
+	if (isset($_POST['serverid']) && isset($_POST['name']) && isset($_POST['password'])) {
+		
 		$tmpUid = ServerInterface::getInstance()->verifyPassword($_POST['serverid'],$_POST['name'],$_POST['password']);
 		switch($tmpUid){
 			case -2:
 				MessageManager::addWarning(tr('login_unknownusername'));
 				Logger::log_loginFail($_POST['serverid'], $_POST['name'], $_POST['password']);
+				Logger::log("[{$_SERVER['REMOTE_ADDR']}] failed to log in as user $name.", Logger::LEVEL_SECURITY);
 				break;
 			case -1:
 				MessageManager::addWarning(tr('login_wronglogininformation'));
@@ -18,6 +20,8 @@ if(isset($_GET['action']) && $_GET['action'] == 'dologin' ){
 				echo tr('login_success');
 				break;
 		}
+	} else {
+		MessageManager::addError(tr('login_missing_data'));
 	}
 }else{
 ?>

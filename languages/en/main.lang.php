@@ -20,6 +20,7 @@
 	$txt['info_serverversion'] = 'Server Version: %s';
 	$txt['info_scriptexecutiontime'] = 'Script execution time: %6.3fms | memory peak: ~%s kByte';
 	$txt['failed'] = 'failed';
+	$txt['admin_area'] = 'Admin';
 	
 	// Account Information
 	$txt['email'] = 'Email';
@@ -45,5 +46,6 @@
 	$txt['iceprofilealreadyloaded'] 	= 'Ice Profile has already been loaded!';
 	$txt['error_dbmanager_couldnotopenadmins'] = 'Could not open admins.dat file.';
 	$txt['error_invalidTexture']		= 'Invalid image data. Please check your image file.';
+	$txt['login_missing_data'] = 'Login failed: You did not seem to provide all the necessary data.';
 
 ?>

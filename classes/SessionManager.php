@@ -72,21 +72,25 @@ class SessionManager_obj
 	 */
 	public function getLanguage()
 	{
-		if (isset($_SESSION['language'])) {
-			return $_SESSION['language'];
-		} else {
-			return null;
-		}
+		return isset($_SESSION['language'])?$_SESSION['language']:null;
 	}
 	
+	/**
+	 * 
+	 * @param string $name
+	 * @param string $pw
+	 * @return void
+	 * @throws Exception on failed login
+	 */
 	public function loginAsAdmin($name, $pw)
 	{
 		if (DBManager::getInstance()->checkAdminLogin($_POST['username'], $_POST['password'])) {
 			$_SESSION['adminLoggedIn'] = true;
 			$admin = DBManager::getInstance()->getAdminByName($name);
 			$_SESSION['adminLoggedInAs'] = $admin['id'];
-		}else{
-			throw new Exception();
+		} else {
+			Logger::log("[{$_SERVER['REMOTE_ADDR']}] failed to log in as admin $name.", Logger::LEVEL_SECURITY);
+			throw new Exception('Login failed');
 		}
 	}
 	
@@ -98,7 +102,9 @@ class SessionManager_obj
 	
 	public function getAdminID()
 	{
-		return $_SESSION['adminLoggedInAs'];
+		if (isset($_SESSION['adminLoggedInAs']))
+			return $_SESSION['adminLoggedInAs'];
+		throw new Exception('Tried to get admin id when not logged in.');
 	}
 	
 }

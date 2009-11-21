@@ -8,8 +8,9 @@
 /**
  * This is the language file for the user section (index) of the interface
  */
-
+	
 	// General
+	$txt['index_welcome'] = '<h1>Welcome</h1>';
 	$txt['welcome_guest'] = 'Welcome. You may want to register and account for a mumble server or log in to change your details.';
 	$txt['welcome_user'] = 'Welcome %s.';
 
@@ -34,5 +35,4 @@
 		// Logout
 		$txt['logout_success'] = '<p>You have been logged out.<br/><a href="./">Click here</a> to go back to the welcome page.</p>';
 		
-
 ?>

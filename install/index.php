@@ -41,6 +41,13 @@ define('MUMPHPI_SECTION', 'install');
 		echo '</body></html>';
 		exit();
 	}
+	if(function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()==1)
+	{
+		echo 'Your PHP configuration has <i>magic quotes</i> enabled, however this is discouraged and may cause problems sending data to the interface.';
+		echo 'Please disable it in your PHP configuration or ask your host to do so.';
+		echo 'Magic quotes are <a href="http://de.php.net/manual/en/info.configuration.php#ini.magic-quotes-gpc">depreciated as of PHP 5.3 and removed in PHP 6</a>. And that’s for a reason. :)';
+		exit();
+	}
 
 	// create settings file
 	if (!file_exists('../settings.inc.php')) {

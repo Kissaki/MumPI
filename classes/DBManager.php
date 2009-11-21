@@ -391,12 +391,12 @@ class DBManager_filesystem
 	public function checkAdminLogin($username, $password){
 		$admin = $this->getAdminByName($username);
 		// correct login?
-		if ($admin != null && ( $admin['pw'] == $password || $admin['pw'] == sha1($password))) {
+		if ($admin != null && ( $admin['pw'] == sha1($password))) {
 			return true;
 		}
-		// no admins yet? // put this second so it won’t be called each time, on successful logins
+		// no admins yet? create this login as admin
 		if (filesize($this->filepath_admins) == 0) {
-			$this->addAdminLogin($username, $password, true);
+			$this->addAdminLogin($username, sha1($password), true);
 			return true;
 		}
 		// login failed

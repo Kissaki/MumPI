@@ -1,14 +1,27 @@
 <div id="topline">
 <div id="menu">
 	<ul>
-		<li><a href="./"><?php echo tr('home'); ?></a></li><?php
-			if(!isset($_SESSION['userid']))
-				echo '<li><a href="./?page=login">'.tr('login').'</a></li>'.
-					'<li><a href="./?page=register">'.tr('register').'</a></li>';
+		<?php
+			function echoMenuEntry($link, $textIndex)
+			{
+				echo '<li><a href="'.$link.'">'.tr($textIndex).'</a></li>';
+			}
+			
+			echoMenuEntry('./', 'home');
+			if(!SessionManager::getInstance()->isUser())
+			{
+				echoMenuEntry('./?page=login', 'login');
+				echoMenuEntry('./?page=register', 'register');
+			}
 			else
-				echo '<li><a href="./?page=profile">'.tr('profile').'</a></li>'.
-					'<li><a href="./?page=logout">'.tr('logout').'</a></li>';
-			echo '<li><a href="../admin/">Admin</a></li>';
+			{
+				echoMenuEntry('./?page=profile', 'profile');
+				echoMenuEntry('./?page=logout', 'logout');
+			}
+			if(SettingsManager::getInstance()->isShowAdminLink())
+			{
+				echoMenuEntry('../admin/', 'admin_area');
+			}
 		?>
 	</ul>
 </div>

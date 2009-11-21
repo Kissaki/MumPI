@@ -19,4 +19,5 @@
 	$txt['profile_texture_fail'] = 'Failed to set image.';
 	$txt['profile_texture_unknownext'] = 'Unknown file extension.';
 	$txt['profile_texture_tmpopenfail'] = 'Trying to open the temp file failed.';
+
 ?>
