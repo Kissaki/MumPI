@@ -117,6 +117,33 @@ class HelperFunctions{
 		echo'<pre>';print_r($var);echo'</pre>';
 	}
 	
+	public static function ip2int($ip)
+	{
+		$array = explode('.', $ip);
+		$int = 0;
+		
+		$byte = count($array)-1;
+		foreach ($array as $part) {
+			$part = $part << ($byte * 8);
+			$int = $int | $part;
+			$byte--;
+		}
+		return $int;
+	}
+	public static function int2ip($int)
+	{
+		//127.0.0.1 = 2130706433 = 0111 1111  0000 0000  0000 0000  0000 0001
+		$int = intval($int);
+		$ip = '';
+		for ($i=0; $i<4; $i++) {
+			$ip = '.' . ($int & 255) . $ip;
+			$int = $int >> 8;
+		}
+		$ip = substr($ip, 1);
+		
+		return $ip;
+	}
+	
 	
 }
 ?>

@@ -529,20 +529,67 @@ class Ajax_Admin
 	public static function show_server_bans()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
+		$serverId = $_POST['sid'];
 		if (PermissionManager::getInstance()->serverCanModerate($_POST['sid']) || PermissionManager::getInstance()->serverCanBan($_POST['sid'])) {
 			$bans = ServerInterface::getInstance()->getServerBans($_POST['sid']);
 			echo '<h2>Bans</h2>';
-			echo '<p><a>add</a></p>';
-			if(count($bans)==0){
+			echo '<p><a class="jqlink" onclick="jq_server_ban_show(' . $_POST['sid'] . ')">add</a></p>';
+			if (count($bans)==0) {
 				echo 'no bans on this virtual server';
-			}else{
-				echo '<ul>';
-				foreach($bans AS $ban){
-					echo '<li>'.$ban->address.'</li>';
+			} else {
+?>
+				<table>
+					<thead>
+						<tr>
+							<th>address</th>
+							<th>bits</th>
+							<th>actions</th>
+						</tr>
+					</thead>
+					<tbody>
+<?php
+			foreach ($bans as $ban) {
+					echo "<tr><td>".HelperFunctions::int2ip($ban->address)."</td><td>$ban->bits</td><td><a class=\"jqlink\" onclick=\"jq_server_unban($serverId, $ban->address, $ban->bits)\">remove</a></td></tr>";
 				}
-				echo '</ul>';
+?>
+					</tbody>
+				</table>
+				<br/>
+				<p>
+					<?php echo tr('info_ip_bits'); ?>
+				</p>
+<?php
 			}
 		}
+	}
+	public static function server_ban_show()
+	{
+		$serverId = intval($_POST['serverId']);
+		echo '<div class="ban_form">';
+		echo '<table><thead><tr><th>IP</th><th>bits</th></tr></thead><tbody><tr><td><input type="text" name="ip" value=""/></td><td><input type="text" name="bits" value="32"/></td></tr></tbody></table>';
+		echo '<a class="jqlink" onclick="' . "jq_server_ban($serverId, $('.ban_form input[name=ip]').val(), $('.ban_form input[name=bits]').val())" . '">add</a><br/>';
+		echo '<br/>';
+		echo tr('info_ip_bits');
+		echo '</div>';
+	}
+	public static function server_ban()
+	{
+		$serverId = intval($_POST['serverId']);
+		$ip = strip_tags($_POST['ipmask']);
+		$bits = intval($_POST['bits']);
+		if (strpos($ip, '.') === false) {
+			$ip = intval($ip);
+		} else {
+			$ip = HelperFunctions::ip2int($ip);
+		}
+		ServerInterface::getInstance()->ban($serverId, $ip, $bits);
+	}
+	public static function server_unban()
+	{
+		$serverId=intval($_POST['serverId']);
+		$ipmask=intval($_POST['ipmask']);
+		$bits=intval($_POST['bits']);
+		ServerInterface::getInstance()->unban($serverId, $ipmask, $bits);
 	}
 	
 	public static function show_tree()

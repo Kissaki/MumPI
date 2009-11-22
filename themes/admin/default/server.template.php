@@ -199,6 +199,39 @@
 				);
 			jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 		}
+		function jq_server_unban(serverId, mask, bits)
+		{
+			$.post(
+					"./?ajax=server_unban",
+					{ 'serverId': serverId, 'ipmask': mask, 'bits': bits },
+					function(data) {
+						if(data.length>0){ alert('failed: '+data); }
+						jq_server_getBans(serverId);
+					}
+				);
+		}
+		function jq_server_ban_show(serverId)
+		{
+			$.post(
+					"./?ajax=server_ban_show",
+					{ 'serverId': serverId },
+					function(data) {
+						$('#jq_information').show().html(data);
+					}
+				);
+		}
+		function jq_server_ban(serverId, mask, bits)
+		{
+			$.post(
+					"./?ajax=server_ban",
+					{ 'serverId': serverId, 'ipmask': mask, 'bits': bits },
+					function(data) {
+						if(data.length>0){ alert('failed: '+data); } else {
+							jq_server_getBans(serverId);
+						}
+					}
+				);
+		}
 		
 		function center(object)
 		{
