@@ -357,6 +357,8 @@ class ServerInterface_ice
 	}
 	function banUser($srvid, $sessid, $reason='')
 	{
+		var_dump($this->meta->getServer(intval($srvid))->getState(intval($sessid)));
+		$this->meta->getServer(intval($srvid))->banPlayer(intval($sessid), $reason);
 		$this->meta->getServer(intval($srvid))->kickPlayer(intval($sessid), $reason);
 	}
 	function ban($serverId, $ip, $bits=32)

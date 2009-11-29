@@ -195,14 +195,23 @@
 			jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 		}
 		function jq_server_user_kick(sessid){
+			if(!confirm('Are you sure you want to kick this user from the server?'))
+				return;
 			$.post("./?ajax=server_user_kick",
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
 				);
 			jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 		}
 		function jq_server_user_ban(sessid){
+			if(!confirm('Are you sure you want to ban and kick this user from the server?'))
+				return;
 			$.post("./?ajax=server_user_ban",
-					{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
+					{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid },
+					function(data)
+					{
+						if(data.length>0)
+							alert(data);
+					}
 				);
 			jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 		}
