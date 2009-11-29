@@ -90,7 +90,7 @@ class Ajax_Admin
 	
 	public static function db_adminGroup_add()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
 		
 		DBManager::getInstance()->addAdminGroup($_POST['name']);
@@ -99,7 +99,7 @@ class Ajax_Admin
 	
 	public static function db_adminGroup_remove()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
 		
 		DBManager::getInstance()->removeAdminGroup(intval($_POST['id']));
@@ -109,7 +109,7 @@ class Ajax_Admin
 	public static function db_adminGroup_perms_edit_display()
 	{
 		// TODO server specific perms
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
 		
 		// exit on missing params
@@ -135,7 +135,7 @@ class Ajax_Admin
 	
 	public static function db_adminGroup_perm_update()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin() || !PermissionManager::getInstance()->serverCanEditAdmins()) {
+		if (!PermissionManager::getInstance()->serverCanEditAdmins()) {
 			MessageManager::addError('Insufficient privileges.');
 			return;
 		}
@@ -145,7 +145,7 @@ class Ajax_Admin
 	
 	public static function db_adminGroup_perms_edit()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
 		
 		// TODO: [security] perms should only hold the correct keys and boolean vals
@@ -201,7 +201,7 @@ class Ajax_Admin
 	
 	public static function db_admins_echo()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
 		
 		echo '<table class="list_admins"><thead><tr class="head"><th>Username</th><th>global Admin</th><th>Groups</th><th>Actions</th></tr></thead>';
@@ -225,7 +225,10 @@ class Ajax_Admin
 			echo 	'<td>';
 			echo 		'<ul>';
 			// TODO: I18N
-			echo 			'<li><a title="add" class="jqlink" onclick="jq_admin_addToGroup_display(' . $admin['id'] . ');">addToGroup</a></li>';
+			if(empty($groups))
+				echo 			'<li><a title="add" class="jqlink" onclick="jq_admin_addToGroup_display(' . $admin['id'] . ');">addToGroup</a></li>';
+			else
+				echo 			'<li><a title="add" class="jqlink" onclick="jq_admin_removeFromGroups(' . $admin['id'] . ');">removeFromGroups</a></li>';
 			// TODO: I18N
 			echo 			'<li><a class="jqlink" onclick="jq_admin_remove('.$admin['id'].')">delete</a></li>';
 			echo 		'</ul>';
@@ -238,7 +241,7 @@ class Ajax_Admin
 	
 	public static function db_admin_update_name()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
 		
 		DBManager::getInstance()->updateAdminName($_POST['name'], $_POST['pw']);
@@ -246,7 +249,7 @@ class Ajax_Admin
 	
 	public static function db_admin_add()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
 		DBManager::getInstance()->addAdmin(strip_tags($_POST['name']), strip_tags($_POST['pw']), strip_tags($_POST['isGlobalAdmin']));
 		MessageManager::echoAllErrors();
@@ -254,7 +257,7 @@ class Ajax_Admin
 	
 	public static function db_admin_remove()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
 		
 		DBManager::getInstance()->removeAdminLogin($_POST['id']);
@@ -266,10 +269,22 @@ class Ajax_Admin
 	 */
 	public static function db_admin_addToGroup()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
 		
 		DBManager::getInstance()->addAdminToGroup($_POST['aid'], $_POST['gid']);
+		MessageManager::echoAllErrors();
+	}
+
+	/**
+	 * requires admin id 'aid' as _POST
+	 */
+	public static function db_admin_removeFromGroups()
+	{
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
+			return ;
+		
+		DBManager::getInstance()->removeAdminFromGroup($_POST['aid']);
 		MessageManager::echoAllErrors();
 	}
 	
@@ -278,7 +293,7 @@ class Ajax_Admin
 	 */
 	public static function db_admin_addToGroup_display()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
+		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
 		
 		$aid = intval($_POST['aid']);
@@ -317,7 +332,7 @@ class Ajax_Admin
 	public static function server_delete()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
-		if (!PermissionManager::getInstance()->serverCanStartStop($_POST['sid']))
+		if (!PermissionManager::getInstance()->isGlobalAdmin($_POST['sid']))
 			return ;
 		
 		ServerInterface::getInstance()->deleteServer($_POST['sid']);
@@ -375,12 +390,17 @@ class Ajax_Admin
 					</tr>
 				</thead>
 				<tbody>
-<?php				foreach($users AS $user){	?>
+<?php				foreach ($users AS $user) { ?>
 					<tr>
 						<td><?php echo $user->playerid; ?></td>
 						<td id="user_name_<?php echo $user->playerid; ?>" class="jq_editable"><?php echo $user->name; ?></td>
 						<td id="user_email_<?php echo $user->playerid; ?>" class="jq_editable"><?php echo $user->email; ?></td>
-						<td><a class="jqlink" onclick="jq_server_registration_remove(<?php echo $user->playerid; ?>)">remove</a></td>
+						<td>
+<?php
+							if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
+								echo '<a class="jqlink" onclick="jq_server_registration_remove(<?php echo $user->playerid; ?>)">remove</a>';
+?>
+						</td>
 					</tr>
 <?php				}	?>
 				</tbody>
@@ -427,8 +447,6 @@ class Ajax_Admin
 <?php
 						if (PermissionManager::getInstance()->serverCanKick($_POST['sid']))
 							echo '<a class="jqlink" onclick="jq_server_user_kick(' . $user->session . ')">kick</a>';
-						if (PermissionManager::getInstance()->serverCanBan($_POST['sid']))
-							echo '<a class="jqlink" onclick="jq_server_user_ban('.$user->session.')">ban</a>';
 ?>
 						</td>
 					</tr>
@@ -518,13 +536,6 @@ class Ajax_Admin
 		$_POST['sid'] = intval($_POST['sid']);
 		if (PermissionManager::getInstance()->serverCanKick($_POST['sid']))
 			ServerInterface::getInstance()->kickUser($_POST['sid'], $_POST['sessid']);
-	}
-	
-	public static function server_user_ban()
-	{
-		$_POST['sid'] = intval($_POST['sid']);
-		if (PermissionManager::getInstance()->serverCanBan($_POST['sid']))
-			ServerInterface::getInstance()->banUser($_POST['sid'], $_POST['sessid']);
 	}
 	
 	public static function show_server_bans()

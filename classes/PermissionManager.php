@@ -114,7 +114,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanEditRegistrations($sid)
 	{
-		return $this->isGlobalAdmin || $this->perms['editRegistrations'];
+		return $this->isGlobalAdmin || ($this->perms['editRegistrations'] && in_array($sid, $this->servers));
 	}
 	
 	/**

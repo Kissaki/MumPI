@@ -31,7 +31,7 @@ class TranslationManager
 	/**
 	 * Get the TranslationManager instance
 	 * create it if necessary
-	 * @return TranslationManager
+	 * @return TranslationManager_Instance
 	 */
 	public static function getInstance()
 	{	// $obj=null){
@@ -63,11 +63,11 @@ class TranslationManager_Instance
 	public function __construct()
 	{
 		$this->defaultLanguage = SettingsManager::getInstance()->getDefaultLanguage();
-		if( isset($_GET['lang']) && !empty($_GET['lang']) ){
+		if (isset($_GET['lang']) && !empty($_GET['lang'])) {
 			$this->language = $_GET['lang'];
-		}elseif( ($ses_lang = SessionManager::getInstance()->getLanguage())!=null ){
+		} elseif (($ses_lang = SessionManager::getInstance()->getLanguage())!=null) {
 			$this->language = $ses_lang;
-		}else{
+		} else {
 			$this->language = $this->defaultLanguage;
 		}
 		
@@ -133,18 +133,18 @@ class TranslationManager_Instance
 		if ($section==null) {
 			$filename = $filename.'/main.lang.php';
 			$fallback = $fallback.'/main.lang.php';
-		}elseif($page==null) {
+		} elseif ($page==null) {
 			$filename = $filename.'/'.$section.'.lang.php';
 			$fallback = $fallback.'/'.$section.'.lang.php';
-		}else{
+		} else {
 			$filename = $filename.'/'.$section.'/'.$page.'.lang.php';
 			$fallback = $fallback.'/'.$section.'/'.$page.'.lang.php';
 		}
 		// Parse file
-		if(file_exists($filename)) {
+		if (file_exists($filename)) {
 			$langfile = file_get_contents($filename);
 			$langfile = substr($langfile, 5, strlen($langfile)-7);	// strip php tags
-		}elseif(file_exists($fallback)) {
+		} elseif (file_exists($fallback)) {
 			$langfile = file_get_contents($fallback);
 			$langfile = substr($langfile, 5, strlen($langfile)-7);	// strip php tags
 		}

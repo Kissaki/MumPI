@@ -17,7 +17,6 @@ class DBManager
 {
 	private static $instance;
 	/**
-	 * TODO: make this interface and mark returns interface
 	 * @return DBManager_filesystem
 	 */
 	public static function getInstance()
@@ -232,18 +231,6 @@ class DBManager_filesystem
 	}
 	
 	/**
-	 * obsolete function
-	 * TODO: code: (obsolete) change all calls to addAdmin(…)
-	 * @param unknown_type $username account name
-	 * @param unknown_type $password password
-	 * @param bool $isGlobalAdmin is the admin a global admin, with all privileges/permissions
-	 */
-	public function addAdminLogin($username, $password, $isGlobalAdmin='false')
-	{
-		$this->addAdmin($username, $password, $isGlobalAdmin);
-	}
-	
-	/**
 	 * add an admin group
 	 * @param $name group name
 	 */
@@ -396,7 +383,7 @@ class DBManager_filesystem
 		}
 		// no admins yet? create this login as admin
 		if (filesize($this->filepath_admins) == 0) {
-			$this->addAdminLogin($username, sha1($password), true);
+			$this->addAdmin($username, sha1($password), true);
 			return true;
 		}
 		// login failed
@@ -476,7 +463,7 @@ class DBManager_filesystem
 	 * @param $aid admin ID or null for all
 	 * @param $gid group ID or null for all
 	 */
-	public function removeAdminFromGroup($aid, $gid)
+	public function removeAdminFromGroup($aid, $gid=null)
 	{
 		$data = file($this->filepath_adminGroupAssoc);
 		$fh = fopen($this->filepath_adminGroupAssoc, 'w');

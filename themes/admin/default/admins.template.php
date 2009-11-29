@@ -345,6 +345,23 @@
 					}
 				);
 		}
+		function jq_admin_removeFromGroups(adminId)
+		{
+			$.post("./?ajax=db_admin_removeFromGroups",
+					{ 'aid': adminId },
+					function(data)
+					{
+						if (data.length>0) {
+							$('#jq_information').html('Failed: '+ data);
+						} else {
+							$('#jq_information').html(
+									'Removed admin from groups.'
+								);
+						}
+						jq_admins_list_display();
+					}
+				);
+		}
 
 
 		/********************************************************************
