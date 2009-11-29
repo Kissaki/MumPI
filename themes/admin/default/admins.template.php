@@ -95,22 +95,25 @@
 		function jq_admin_add_display()
 		{
 			$('#admin_area > div.content').html(
-					'Name: <input type="text" name="name"/>'
+					'<div class="admin_add_form">'
+					+ 'Name: <input type="text" name="name"/>'
 					+ 'Pass: <input type="text" name="pw"/>'
 					+ 'is global admin?: <input type="checkbox" name="isGlobalAdmin"/><br/>'
-					+ '<input type="submit" onclick="jq_admin_add()" value="Add"/>'
-					+ '<input type="button" onclick="$(\'#admin_area > div.content\').html(\'\')" value="Cancel"/>'
+					+ '<input type="submit" onclick="jq_admin_add();" value="Add"/>'
+					+ '<input type="button" onclick="$(\'#admin_area > div.content\').html(\'\');" value="Cancel"/>'
+					+ ' </div>'
 				);
 		}
 		
 		function jq_admin_add()
 		{
-			var name = $('input[name=\'name\']').val();
-			var pw = $('input[name=\'pw\']').val();
-			var isGlobalAdmin = $('input:checkbox[name=\'isGlobalAdmin\']').attr('checked');
+			var name = $(".admin_add_form input[name='name']").val();
+			var pw = $(".admin_add_form input[name='pw']").val();
+			var isGlobalAdmin = $(".admin_add_form input[name='isGlobalAdmin']").attr('checked');
 			
-			$.post("./?ajax=db_admin_add",
-					{ 'name': name, 'pw': pw, 'isGlobalAdmin' : isGlobalAdmin },
+			$.post(
+					"./?ajax=db_admin_add",
+					{ 'name': name, 'pw': pw, 'isGlobalAdmin': isGlobalAdmin },
 					function(data)
 					{
 						if (data.length>0) {
@@ -129,6 +132,8 @@
 		
 		function jq_admin_remove(id)
 		{
+			if(!confirm('Are you sure you want to remove this admin account?'))
+				return ;
 			$.post("./?ajax=db_admin_remove",
 					{ 'id': id },
 					function(data)
@@ -218,6 +223,8 @@
 
 		function jq_admingroup_remove(gid)
 		{
+			if(!confirm('Are you sure you want to remove this admin group?'))
+				return ;
 			$.post('./?ajax=db_adminGroup_remove',
 					{ 'id': gid },
 					function(){

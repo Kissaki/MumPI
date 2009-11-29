@@ -25,8 +25,6 @@ class PermissionManager
 			if (class_exists('PermissionManager_' . $section)) {
 				eval('self::$instance = new PermissionManager_' . $section . '();');
 			} else {
-				// TODO: transl
-				// TODO: errormsg
 				echo 'Unknown Permission Manager';
 			}
 		}
@@ -41,6 +39,7 @@ class PermissionManager
 class PermissionManager_admin
 {
 	private $perms;
+	private $servers;
 	private $isGlobalAdmin;
 	
 	public function __construct()
@@ -50,9 +49,11 @@ class PermissionManager_admin
 			$admin = DBManager::getInstance()->getAdmin($aid);
 			$this->isGlobalAdmin = $admin['isGlobalAdmin'];
 			$this->perms = DBManager::getInstance()->getAdminGroupPermissionsByAdminID($aid);
+			$this->servers = DBManager::getInstance()->getAdminGroupServersByAdminId($aid);
 		} else {
 			$this->isGlobalAdmin = false;
 			$this->perms = DBManager::$defaultAdminGroupPerms;
+			$this->servers = array();
 		}
 	}
 	
@@ -71,9 +72,9 @@ class PermissionManager_admin
 	 * @param $sid
 	 * @return boolean
 	 */
-	public function serverCanStartStop($sid)
+	public function serverCanStartStop($sid=null)
 	{
-		return $this->isGlobalAdmin || $this->perms['startStop'];
+		return $this->isGlobalAdmin || ($this->perms['startStop'] && in_array($sid, $this->servers));
 	}
 	
 	/**

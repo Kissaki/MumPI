@@ -135,11 +135,12 @@ class Ajax_Admin
 	
 	public static function db_adminGroup_perm_update()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
-			return ;
+		if (!PermissionManager::getInstance()->isGlobalAdmin() || !PermissionManager::getInstance()->serverCanEditAdmins()) {
+			MessageManager::addError('Insufficient privileges.');
+			return;
+		}
 		
-		$group = DBManager::getInstance()->updateAdminGroupPermission(intval($_POST['gid']), $_POST['perm'], $_POST['newval']?true:false);
-		MessageManager::echoAll();
+		DBManager::getInstance()->updateAdminGroupPermission(intval($_POST['gid']), $_POST['perm'], ($_POST['newval']=='true')?true:false);
 	}
 	
 	public static function db_adminGroup_perms_edit()
@@ -247,8 +248,7 @@ class Ajax_Admin
 	{
 		if (!PermissionManager::getInstance()->isGlobalAdmin())
 			return ;
-		
-		DBManager::getInstance()->addAdminLogin($_POST['name'], $_POST['pw'], $_POST['isGlobalAdmin']);
+		DBManager::getInstance()->addAdmin(strip_tags($_POST['name']), strip_tags($_POST['pw']), strip_tags($_POST['isGlobalAdmin']));
 		MessageManager::echoAllErrors();
 	}
 	
@@ -316,7 +316,8 @@ class Ajax_Admin
 	
 	public static function server_delete()
 	{
-		if (!PermissionManager::getInstance()->isGlobalAdmin())
+		$_POST['sid'] = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->serverCanStartStop($_POST['sid']))
 			return ;
 		
 		ServerInterface::getInstance()->deleteServer($_POST['sid']);
@@ -424,10 +425,10 @@ class Ajax_Admin
 						<td id="user_email_<?php echo $user->session; ?>" class="jq_editable"><?php $on = $user->onlinesecs; if($on > 59){ echo sprintf('%.0f', $on/60).'m'; }else{ echo $on.'s'; } ?></td>
 						<td>
 <?php
-						if (PermissionManager::getInstance()->serverCanModerate($_POST['sid']))
+						if (PermissionManager::getInstance()->serverCanKick($_POST['sid']))
 							echo '<a class="jqlink" onclick="jq_server_user_kick(' . $user->session . ')">kick</a>';
-						// TODO: ban link
-						// <a class="jqlink" onclick="jq_server_user_ban(<?php echo $user->session; ?\>)">ban</a>
+						if (PermissionManager::getInstance()->serverCanBan($_POST['sid']))
+							echo '<a class="jqlink" onclick="jq_server_user_ban('.$user->session.')">ban</a>';
 ?>
 						</td>
 					</tr>
@@ -530,36 +531,35 @@ class Ajax_Admin
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		$serverId = $_POST['sid'];
-		if (PermissionManager::getInstance()->serverCanModerate($_POST['sid']) || PermissionManager::getInstance()->serverCanBan($_POST['sid'])) {
-			$bans = ServerInterface::getInstance()->getServerBans($_POST['sid']);
-			echo '<h2>Bans</h2>';
+		$bans = ServerInterface::getInstance()->getServerBans($_POST['sid']);
+		echo '<h2>Bans</h2>';
+		if (PermissionManager::getInstance()->serverCanBan($_POST['sid']))
 			echo '<p><a class="jqlink" onclick="jq_server_ban_show(' . $_POST['sid'] . ')">add</a></p>';
-			if (count($bans)==0) {
-				echo 'no bans on this virtual server';
-			} else {
+		if (count($bans)==0) {
+			echo 'no bans on this virtual server';
+		} else {
 ?>
-				<table>
-					<thead>
-						<tr>
-							<th>address</th>
-							<th>bits</th>
-							<th>actions</th>
-						</tr>
-					</thead>
-					<tbody>
+			<table>
+				<thead>
+					<tr>
+						<th>address</th>
+						<th>bits</th>
+						<th>actions</th>
+					</tr>
+				</thead>
+				<tbody>
 <?php
-			foreach ($bans as $ban) {
-					echo "<tr><td>".HelperFunctions::int2ip($ban->address)."</td><td>$ban->bits</td><td><a class=\"jqlink\" onclick=\"jq_server_unban($serverId, $ban->address, $ban->bits)\">remove</a></td></tr>";
-				}
-?>
-					</tbody>
-				</table>
-				<br/>
-				<p>
-					<?php echo tr('info_ip_bits'); ?>
-				</p>
-<?php
+		foreach ($bans as $ban) {
+				echo "<tr><td>".HelperFunctions::int2ip($ban->address)."</td><td>$ban->bits</td><td><a class=\"jqlink\" onclick=\"jq_server_unban($serverId, $ban->address, $ban->bits)\">remove</a></td></tr>";
 			}
+?>
+				</tbody>
+			</table>
+			<br/>
+			<p>
+				<?php echo tr('info_ip_bits'); ?>
+			</p>
+<?php
 		}
 	}
 	public static function server_ban_show()

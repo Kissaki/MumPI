@@ -240,7 +240,7 @@ class DBManager_filesystem
 	 */
 	public function addAdminLogin($username, $password, $isGlobalAdmin='false')
 	{
-		$this->addAdminLogin($username, $password, $isGlobalAdmin);
+		$this->addAdmin($username, $password, $isGlobalAdmin);
 	}
 	
 	/**
@@ -775,9 +775,8 @@ class DBManager_filesystem
 	 * @param $perm permission key/name
 	 * @param $newval new value
 	 */
-	public function updateAdminGroupPermission($gid, $perm, $newval, $serverID=null)
+	public function updateAdminGroupPermission($gid, $perm, $newval)
 	{
-		//TODO server specific
 		$old=$this->getAdminGroupPermissions($gid);
 		
 		if (isset($old[$perm])) {
@@ -795,9 +794,8 @@ class DBManager_filesystem
 	 * @param int $gid group ID
 	 * @param array $perms array of permissions (indices: startStop, editConf, genSuUsPW, viewRegistrations, editRegistrations, moderate, kick, ban)
 	 */
-	public function updateAdminGroupPermissions($gid, $perms, $serverID=null)
+	public function updateAdminGroupPermissions($gid, $perms)
 	{
-		//TODO server specific
 		$old=$this->getAdminGroupPermissions($gid);
 		
 		foreach ($old AS $key=>$val) {
@@ -846,6 +844,10 @@ class DBManager_filesystem
 		}
 		fclose($fh);
 	}
+	/**
+	 * @param int $groupID
+	 * @return array
+	 */
 	public function getAdminGroupServers($groupID)
 	{
 		$servers = array();
@@ -859,6 +861,23 @@ class DBManager_filesystem
 		}
 		fclose($fh);
 		sort($servers);
+		return $servers;
+	}
+	/**
+	 * @param int $adminId
+	 * @return array list of serverIds
+	 */
+	public function getAdminGroupServersByAdminId($adminId)
+	{
+		$groups = $this->getAdminGroupsByAdminID($adminId);
+		$servers=array();
+		foreach($groups as $group)
+		{
+			$srvs = $this->getAdminGroupServers($group['id']);
+			foreach($srvs as $srv)
+				if(!in_array($srv, $servers))
+					$servers[] = $srv;
+		}
 		return $servers;
 	}
 	

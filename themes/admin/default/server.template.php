@@ -22,7 +22,7 @@
 		echo sprintf('<li><a class="jqlink" onclick="jq_server_getBans(%d); return false;">Bans</a></li>', $server->id());
 		echo sprintf('<li><a class="jqlink" onclick="jq_server_showTree(%d); return false;">Channel-Tree</a></li>', $server->id());
 		if (PermissionManager::getInstance()->serverCanGenSuUsPW($server->id()))
-			echo sprintf('<li id="li_server_superuserpassword"><a class="jqlink" onclick="jq_server_setSuperuserPassword(%d); return false;">Generate new SuperuserPassword</a></li>', $server->id());
+			echo sprintf('<li id="li_server_superuserpassword"><a class="jqlink" onclick="if(confirm(\'Are you sure you want to generate and set a new SuperUser password?\')){jq_server_setSuperuserPassword(%d); return false;}">Generate new SuperuserPassword</a><div class="ajax_info"></div></li>', $server->id());
 		echo sprintf('<li><a class="jqlink" onclick="jq_server_config_show(%d); return false;">Config</a></li>', $server->id());
 ?>
 	</ul>
@@ -44,6 +44,7 @@
 		}
 		function jq_server_setSuperuserPassword(sid)
 		{
+			$('#li_server_superuserpassword > .ajax_info').html('<img src="<?php echo SettingsManager::getInstance()->getThemeUrl(); ?>/img/ajax-loader.gif" alt="loading…"/>');
 			var pw = randomString(6);
 			$.post('./?ajax=server_setSuperuserPassword',
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'pw': pw },
@@ -51,9 +52,9 @@
 					{
 						if(data=='')
 						{
-							$('#li_server_superuserpassword').append('<div>Password set to: '+pw+'</div>');
+							$('#li_server_superuserpassword > .ajax_info').html('<div>Password set to: '+pw+'</div>');
 						}else{
-							$('#li_server_superuserpassword').append(data);
+							$('#li_server_superuserpassword > .ajax_info').html(data);
 						}
 					}
 				);
@@ -79,6 +80,12 @@
 											var id = $(this).attr('id');
 											var sub = id.substring(0, id.lastIndexOf('_'));
 											var id = id.substring(id.lastIndexOf('_')+1, id.length);
+											if(id==0)
+											{
+												alert('Changing the superuser account is not possible.');
+												jq_server_getRegistrations(sid);
+												return;
+											}
 											switch(sub){
 												case 'user_name':
 													jq_user_updateUsername(id, content.current);

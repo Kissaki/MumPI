@@ -48,6 +48,7 @@ define('MUMPHPI_SECTION', 'admin');
 		// TODO: this should probably have a check, whether the function exists
 		if (is_callable('Ajax_Admin::' . $_GET['ajax']))
 			eval('Ajax_Admin::' . $_GET['ajax'] . '();');
+		MessageManager::echoAll();
 		exit();
 	}
 	
