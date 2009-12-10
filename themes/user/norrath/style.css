@@ -1,0 +1,74 @@
+@CHARSET "UTF-8";
+
+html, body {
+	margin:20px; padding:0px; padding-bottom:20px; border: 1px solid #123C52; -moz-border-radius:10px; -webkit-border-radius:10px; border-radius:10px;
+	background-color: #00192D; color: #CCCCCC;
+font-family:arial;
+}
+
+html {
+	height:85%;
+}
+body {
+	height:100%;
+}
+img { border:0px; vertical-align:middle; }
+p, ul, li, div, span, img { margin:0px; padding:0px; }
+ul { white-space:nowrap; list-style-type:none; }
+p { margin-bottom:6px; }
+acronym, abbr, .info { cursor:help; border-bottom:1px dotted #aac; }
+hr { clear:both; }
+a { text-decoration:underline; }
+a:active, a:hover, a:focus {  }
+a:link { color:white; }
+a:visited { color:white; }
+a[href^="http://"]:after { font-size:x-small; vertical-align:top; content:" (out)"; }
+a[href$=".pdf"]:after { content:"(PDF)"; }
+form table tr td.formitemname { text-align:right; padding:2px 6px 2px 2px; }
+.fullwidth { width:100%; }
+input[type=text], input[type=password], input[type=text], select { width:100%; }
+.alignl { text-align:left; }
+.alignc { text-align:center; }
+.alignr { text-align:right; }
+h1 {  }
+
+.helpicon { background-image:URL('images/help.png'); min-width:16px; min-height:16px; background-repeat:no-repeat;
+	cursor:help; }
+.helpicon_detail { position:absolute; border:1px solid #844; background-color:#444; margin-left:32px; margin-top:4px; }
+.error { color:red; }
+div.error { margin:20px; padding:20px; }
+div.error div.detail { margin-top:10px; color:white; }
+.hidden { display:none; }
+
+#topline {
+	border-bottom:1px solid #123C52; padding-right:6px; line-height:30px; text-align:right;-moz-border-radius:10px; -webkit-border-radius:10px; border-radius:10px;
+}
+#menu {
+	float:left; margin-right:10px;
+	background-color:transparent; font-family:verdana;
+}
+#menu ul {
+	white-space:nowrap;
+	list-style-type:none;
+}
+#menu li { display:inline; font-size:105%; line-height:30px;}
+#menu li a {
+	display:block; float:left;
+	padding:0px 10px; line-height:30px;
+margin: 5px;
+	background-color:#052E44; color:#ccc; text-decoration:none;-moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;
+}
+#menu li a:hover {
+	background-color:#123C52; color:#fff;
+}
+#footer {
+	position:fixed; bottom:0px; width:100%;
+	text-align:center; font-size:8pt;
+}
+#logarea { position:absolute; }
+#logarea ul { background-color:#444; margin:6px; padding:6px; border:1px solid darkorange; }
+#logarea ul.log_list_errors { color:#FF0000; }
+#logarea ul.log_list_warnings { color:#CC2222; }
+#logarea ul.log_list_messages { color:#BB4444; }
+
+#content { margin:20px 20% 0px 20%; }
