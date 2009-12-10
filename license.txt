@@ -1,4 +1,4 @@
 
-Mumble PHP Interface by Kissaki
-Released under Creative Commons Attribution-Noncommercial License
-http://creativecommons.org/licenses/by-nc/3.0/
+Mumble PHP Interface (MumPI) by Kissaki
+Released under LGPLv3
+http://www.gnu.org/licenses/lgpl-3.0.txt

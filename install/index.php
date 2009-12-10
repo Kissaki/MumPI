@@ -9,7 +9,6 @@
 define('MUMPHPI_MAINDIR', '..');
 define('MUMPHPI_SECTION', 'install');
 
-	// TODO: admins.dat 2 admins2.dat conversion
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -70,6 +69,7 @@ define('MUMPHPI_SECTION', 'install');
 		$line = fgets($fh);
 		
 		if (count(split(';', $line)) == 2) {
+			// convert old to new format
 			echo '<i>admins.dat</i> in old format.<br/>';
 			echo 'Converting…<br/>';
 			$newfile = '';
@@ -88,7 +88,8 @@ define('MUMPHPI_SECTION', 'install');
 			echo '<i>admins.dat</i> does not have to be converted.';
 		}
 	} else {
-		echo '<i>admins.dat</i> does not have to be converted.';
+		fclose(fopen('../data/admins.dat', 'w'));
+		echo '<i>admins.dat</i> created.';
 	}
 	echo '<br/>';
 	
