@@ -1,3 +1,4 @@
 /data/*.dat
 /data/*.log
 /settings.inc.php
+/tmp/*
