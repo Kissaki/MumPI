@@ -11,7 +11,7 @@
 		} else {
 			HelperFunctions::echoMenuEntry('meta');
 			HelperFunctions::echoMenuEntry('server');
-			if (PermissionManager::getInstance()->isGlobalAdmin())
+			if (PermissionManager::getInstance()->serverCanEditAdmins())
 				HelperFunctions::echoMenuEntry('admins');
 			HelperFunctions::echoMenuEntry('logout');
 ?>

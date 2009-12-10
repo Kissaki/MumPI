@@ -23,7 +23,8 @@
 		echo sprintf('<li><a class="jqlink" onclick="jq_server_showTree(%d); return false;">Channel-Tree</a></li>', $server->id());
 		if (PermissionManager::getInstance()->serverCanGenSuUsPW($server->id()))
 			echo sprintf('<li id="li_server_superuserpassword"><a class="jqlink" onclick="if(confirm(\'Are you sure you want to generate and set a new SuperUser password?\')){jq_server_setSuperuserPassword(%d); return false;}">Generate new SuperuserPassword</a><div class="ajax_info"></div></li>', $server->id());
-		echo sprintf('<li><a class="jqlink" onclick="jq_server_config_show(%d); return false;">Config</a></li>', $server->id());
+		if (PermissionManager::getInstance()->serverCanEditConf($server->id()))
+			echo sprintf('<li><a class="jqlink" onclick="jq_server_config_show(%d); return false;">Config</a></li>', $server->id());
 ?>
 	</ul>
 	
