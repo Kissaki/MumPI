@@ -105,9 +105,9 @@
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid },
 					function(data){
 						if(data.length>0){ alert('failed: '+data); }
+						else jq_server_getRegistrations(<?php echo $_GET['sid']; ?>);
 					}
 				);
-			jq_server_getRegistrations(<?php echo $_GET['sid']; ?>);
 			
 		}
 		function jq_user_updateUsername(uid, newVal){

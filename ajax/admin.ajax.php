@@ -398,7 +398,7 @@ class Ajax_Admin
 						<td>
 <?php
 							if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
-								echo '<a class="jqlink" onclick="jq_server_registration_remove(<?php echo $user->playerid; ?>)">remove</a>';
+								echo '<a class="jqlink" onclick="jq_server_registration_remove('.$user->playerid.')">remove</a>';
 ?>
 						</td>
 					</tr>
