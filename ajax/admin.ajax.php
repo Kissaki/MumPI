@@ -559,11 +559,18 @@ class Ajax_Admin
 					</tr>
 				</thead>
 				<tbody>
-<?php
-		foreach ($bans as $ban) {
-				echo "<tr><td>".HelperFunctions::int2ip($ban->address)."</td><td>$ban->bits</td><td><a class=\"jqlink\" onclick=\"jq_server_unban($serverId, $ban->address, $ban->bits)\">remove</a></td></tr>";
-			}
-?>
+					<?php foreach ($bans as $ban) { ?>
+						<tr>
+							<td><?php echo HelperFunctions::int2ip($ban->address); ?></td>
+							<td><?php echo $ban->bits; ?></td>
+							<td>
+								<?php
+									if (PermissionManager::getInstance()->serverCanBan($serverId))
+										echo "<a class=\"jqlink\" onclick=\"jq_server_unban($serverId, $ban->address, $ban->bits)\">remove</a>";
+								?>
+						</td>
+						</tr>
+					<?php } ?>
 				</tbody>
 			</table>
 			<br/>
@@ -600,7 +607,9 @@ class Ajax_Admin
 		$serverId=intval($_POST['serverId']);
 		$ipmask=intval($_POST['ipmask']);
 		$bits=intval($_POST['bits']);
-		ServerInterface::getInstance()->unban($serverId, $ipmask, $bits);
+		if (PermissionManager::getInstance()->serverCanBan($serverId)) {
+			ServerInterface::getInstance()->unban($serverId, $ipmask, $bits);
+		}
 	}
 	
 	public static function show_tree()
