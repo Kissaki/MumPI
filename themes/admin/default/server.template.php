@@ -4,13 +4,24 @@
 ?>
 		<h1>Select a server</h1>
 		<ul>
-<?php		foreach($servers AS $server) {	?>
+<?php
+			foreach($servers AS $server) {
+				if (PermissionManager::getInstance()->isAdminOfServer($server->id())) {
+?>
 					<li><a href="?page=server&amp;sid=<?php echo $server->id(); ?>"><?php echo $server->id().': '.SettingsManager::getInstance()->getServerName($server->id()); ?></a></li>
-<?php		}	?>
+<?php
+				}
+			}
+?>
 		</ul>
 <?php
 	} else {
 		$_GET['sid'] = intval($_GET['sid']);
+		if (!PermissionManager::getInstance()->isAdminOfServer($_GET['sid'])) {
+			echo tr('permission_denied');
+			MessageManager::echoAllMessages();
+			exit();
+		}
 		$server = ServerInterface::getInstance()->getServer($_GET['sid']);
 ?>
 	<h1>Server Details: <?php echo SettingsManager::getInstance()->getServerName($_GET['sid']); ?></h1>

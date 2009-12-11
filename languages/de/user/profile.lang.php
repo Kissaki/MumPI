@@ -19,4 +19,5 @@
 	$txt['profile_texture_fail'] = 'Bild-festlegen fehlgeschlagen.';
 	$txt['profile_texture_unknownext'] = 'Unbekannte Dateiendung / Unbekannter Dateityp.';
 	$txt['profile_texture_tmpopenfail'] = 'Die temporäre Datei auf dem Server konnte nicht geöffnet werden.';
+
 ?>

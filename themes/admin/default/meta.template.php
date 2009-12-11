@@ -11,7 +11,7 @@
 		<tbody>
 			<?php
 				$servers = ServerInterface::getInstance()->getServers();
-				foreach($servers AS $server){
+				foreach ($servers AS $server) {
 					$servername = SettingsManager::getInstance()->getServerName($server->id());
 					$server_isRunning = $server->isRunning();
 			?>
@@ -24,23 +24,23 @@
 								</div>
 							<?php } ?>
 <?php
-							if(isset($servername)){
+							if (isset($servername)) {
 								echo $servername;
 							}
 ?>
 						</td>
 						<td>
 							<?php
-								if($server_isRunning){
+								if ($server_isRunning) {
 									echo '<span style="color:green;">Running</span>';
-								}else{
+								} else {
 									echo '<span style="color:darkgrey;">Not Running</span>';
 								}
 							?>
 						</td>
 						<td>
 							<?php if (PermissionManager::getInstance()->serverCanStartStop($server->id())) { ?>
-								<?php if($server_isRunning){?>
+								<?php if ($server_isRunning) { ?>
 									<a class="jqlink" onclick="jq_server_stop(<?php echo $server->id(); ?>)">Stop</a>
 								<?php }else{ ?>
 									<a class="jqlink" onclick="jq_server_start(<?php echo $server->id(); ?>)">Start</a>

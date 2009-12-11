@@ -85,7 +85,13 @@ class ServerInterface_ice
 	 */
 	public function getServers()
 	{
-		return $this->meta->getAllServers();
+		$servers = $this->meta->getAllServers();
+		$filtered = array();
+		foreach ($servers as $server) {
+			if (PermissionManager::getInstance()->isAdminOfServer($server->id()))
+				$filtered[] = $server;
+		}
+		return $filtered;
 	}
 	/**
 	 * Get all running virtual servers

@@ -68,6 +68,16 @@ class PermissionManager_admin
 	}
 	
 	/**
+	 * Is the admin an admin of that server?
+	 * @param int $serverId
+	 * @return bool
+	 */
+	public function isAdminOfServer($serverId)
+	{
+		return $this->isGlobalAdmin || in_array($serverId, $this->servers);
+	}
+	
+	/**
 	 * Can start and stop servers?
 	 * @param $sid
 	 * @return boolean

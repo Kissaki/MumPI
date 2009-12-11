@@ -21,6 +21,7 @@
 	$txt['info_scriptexecutiontime'] = 'Script execution time: %6.3fms | memory peak: ~%s kByte';
 	$txt['failed'] = 'failed';
 	$txt['admin_area'] = 'Admin';
+	$txt['permission_denied'] = 'Permission denied.';
 	
 	// Account Information
 	$txt['email'] = 'Email';

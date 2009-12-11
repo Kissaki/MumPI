@@ -10,6 +10,7 @@
  */
 
 	// General
+	$txt['index_welcome'] = '<h1>Willkommen</h1>';
 	$txt['welcome_guest'] = 'Willkommen. Du kannst dich hier registrieren und dein Profil ändern.';
 	$txt['welcome_user'] = 'Willkommen %s.';
 

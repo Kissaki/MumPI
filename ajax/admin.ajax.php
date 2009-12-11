@@ -368,8 +368,11 @@ class Ajax_Admin
 	public static function server_getRegistrations()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
-		if (!PermissionManager::getInstance()->serverCanViewRegistrations($_POST['sid']))
-			return ;
+		if (!PermissionManager::getInstance()->serverCanViewRegistrations($_POST['sid'])) {
+			echo tr('permission_denied');
+			MessageManager::echoAllMessages();
+			exit();
+		}
 		
 		$users = array();
 		try{
@@ -411,6 +414,11 @@ class Ajax_Admin
 	public static function show_onlineUsers()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->isAdminOfServer($_POST['sid'])) {
+			echo tr('permission_denied');
+			MessageManager::echoAllMessages();
+			exit();
+		}
 		$canModerate = PermissionManager::getInstance()->serverCanModerate($_POST['sid']);
 		
 		$users = array();
@@ -542,6 +550,11 @@ class Ajax_Admin
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		$serverId = $_POST['sid'];
+		if (!PermissionManager::getInstance()->isAdminOfServer($serverId)) {
+			echo tr('permission_denied');
+			MessageManager::echoAllMessages();
+			exit();
+		}
 		$bans = ServerInterface::getInstance()->getServerBans($_POST['sid']);
 		echo '<h2>Bans</h2>';
 		if (PermissionManager::getInstance()->serverCanBan($_POST['sid']))
@@ -615,6 +628,12 @@ class Ajax_Admin
 	public static function show_tree()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->isAdminOfServer($_POST['sid'])) {
+			echo tr('permission_denied');
+			MessageManager::echoAllMessages();
+			exit();
+		}
+		
 		$tree = ServerInterface::getInstance()->getServer($_POST['sid'])->getTree();
 		HelperFunctions::showChannelTree($tree);
 	}
