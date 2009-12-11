@@ -34,6 +34,7 @@
 		
 	</div>
 	<script type="text/javascript">
+		
 		function randomString(length) {
 			var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz§$%&/()=?!{[]}";
 			var str = '';
@@ -45,7 +46,7 @@
 		}
 		function jq_server_setSuperuserPassword(sid)
 		{
-			$('#li_server_superuserpassword > .ajax_info').html('<img src="<?php echo SettingsManager::getInstance()->getThemeUrl(); ?>/img/ajax-loader.gif" alt="loading…"/>');
+			$('#li_server_superuserpassword > .ajax_info').html(imgAjaxLoading);
 			var pw = randomString(6);
 			$.post('./?ajax=server_setSuperuserPassword',
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'pw': pw },
@@ -60,44 +61,41 @@
 					}
 				);
 		}
-		function jq_updateUsername(uid, newValue){
-			$.post('./?ajax=server_user_updateUsername',
-					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': newValue }
-				);
-		}
 		function jq_server_getRegistrations(sid){
 			$.post("./?ajax=server_getRegistrations",
 					{ 'sid': sid },
 					function(data){
-						$('#jq_information').show().html(data).prepend('<p style="font-size:x-small;">(Double-click entries to edit them)</p>');
-						$('.jq_editable')
-							.editable(
-								{	'submit': 'save',
-									'cancel':'cancel',
-									'editBy': 'dblclick',
-									'onSubmit':
-										function(content)
-										{
-											var id = $(this).attr('id');
-											var sub = id.substring(0, id.lastIndexOf('_'));
-											var id = id.substring(id.lastIndexOf('_')+1, id.length);
-											if(id==0)
-											{
-												alert('Changing the superuser account is not possible.');
-												jq_server_getRegistrations(sid);
-												return;
-											}
-											switch(sub){
-												case 'user_name':
-													jq_user_updateUsername(id, content.current);
-													break;
-												case 'user_email':
-													jq_user_updateEmail(id, content.current);
-													break;
-											}
-										}
-								}
-							);
+						$('#jq_information').show().html(data);
+						<?php if (PermissionManager::getInstance()->serverCanEditRegistrations($_GET['sid'])) { ?>
+							$('#jq_information').prepend('<p style="font-size:x-small;">(Double-click entries to edit them)</p>');
+							$('.jq_editable').editable(
+																					{	'submit': 'save',
+																						'cancel':'cancel',
+																						'editBy': 'dblclick',
+																						'onSubmit':
+																							function(content)
+																							{
+																								var id = $(this).attr('id');
+																								var sub = id.substring(0, id.lastIndexOf('_'));
+																								var id = id.substring(id.lastIndexOf('_')+1, id.length);
+																								if(id==0)
+																								{
+																									alert('Changing the superuser account is not possible.');
+																									jq_server_getRegistrations(sid);
+																									return;
+																								}
+																								switch(sub){
+																									case 'user_name':
+																										jq_user_updateUsername(id, content.current);
+																										break;
+																									case 'user_email':
+																										jq_user_updateEmail(id, content.current);
+																										break;
+																								}
+																							}
+																					}
+																				);
+						<?php } ?>
 					}
 				);
 		}
@@ -112,14 +110,18 @@
 			
 		}
 		function jq_user_updateUsername(uid, newVal){
+			$('#user_name_'+uid).append(imgAjaxLoading);
+			var serverId = <?php echo $_GET['sid']; ?>;
 			$.post("./?ajax=server_user_updateUsername",
-					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid, 'newValue': newVal },
+					{ 'sid': serverId, 'uid': uid, 'newValue': newVal },
 					function(data){
 						if(data.length>0){ alert('failed: '+data); }
+						else jq_server_getRegistrations(serverId);
 					}
 				);
 		}
 		function jq_user_updateEmail(uid, newVal){
+			$('#user_name_'+uid).append(imgAjaxLoading);
 			$.post("./?ajax=server_user_updateEmail",
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid, 'newValue': newVal },
 					function(data){

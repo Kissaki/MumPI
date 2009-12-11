@@ -707,7 +707,7 @@ class DBManager_filesystem
 		fwrite(
 				$fh,
 				sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
-					$perms['groupID'], is_int($serverID)?$serverID:'',
+					$perms['groupID'], is_int($serverID)?$serverID:'0',
 					$perms['startStop']?1:0, $perms['editConf']?1:0, $perms['genSuUsPW']?1:0, $perms['viewRegistrations']?1:0,
 					$perms['editRegistrations']?1:0, $perms['moderate']?1:0, $perms['kick']?1:0, $perms['ban']?1:0,
 					$perms['channels']?1:0, $perms['acls']?1:0, $perms['admins']?1:0
