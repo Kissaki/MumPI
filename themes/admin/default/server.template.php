@@ -1,15 +1,15 @@
 <?php
-	if(!isset($_GET['sid']) || empty($_GET['sid'])){
+	if (!isset($_GET['sid']) || empty($_GET['sid'])) {
 		$servers = ServerInterface::getInstance()->getServers();
 ?>
 		<h1>Select a server</h1>
 		<ul>
-<?php		foreach($servers AS $server){	?>
-				<li><a href="?page=server&amp;sid=<?php echo $server->id(); ?>"><?php echo $server->id().': '.SettingsManager::getInstance()->getServerName($server->id()); ?></a></li>
+<?php		foreach($servers AS $server) {	?>
+					<li><a href="?page=server&amp;sid=<?php echo $server->id(); ?>"><?php echo $server->id().': '.SettingsManager::getInstance()->getServerName($server->id()); ?></a></li>
 <?php		}	?>
 		</ul>
 <?php
-	}else{
+	} else {
 		$_GET['sid'] = intval($_GET['sid']);
 		$server = ServerInterface::getInstance()->getServer($_GET['sid']);
 ?>
