@@ -10,42 +10,42 @@
  */
 
 	// General Functions
-	$txt['edit'] = 'редактировать';			// Edit something
-	$txt['cancel'] = 'отмена';		// Cancel, whatever you're doing (go back to the last page).
-	$txt['update'] = 'обновить';		// Update the old item/key/var. Use the entered values as new values.
-	$txt['remove'] = 'удалить';
+	$txt['edit'] = 'СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ';			// Edit something
+	$txt['cancel'] = 'РѕС‚РјРµРЅР°';		// Cancel, whatever you're doing (go back to the last page).
+	$txt['update'] = 'РѕР±РЅРѕРІРёС‚СЊ';		// Update the old item/key/var. Use the entered values as new values.
+	$txt['remove'] = 'СѓРґР°Р»РёС‚СЊ';
 
 	// General
-	$txt['server'] = 'Сервер';		// Mumble Server
-	$txt['info_serverversion'] = 'Версия сервера: %s';
-	$txt['info_scriptexecutiontime'] = 'Время работы скрипта: %6.3fms | использование памяти: ~%s kByte';
-	$txt['failed'] = 'ошибка';
-	$txt['admin_area'] = 'Админ меню';
+	$txt['server'] = 'РЎРµСЂРІРµСЂ';		// Mumble Server
+	$txt['info_serverversion'] = 'Р’РµСЂСЃРёСЏ СЃРµСЂРІРµСЂР°: %s';
+	$txt['info_scriptexecutiontime'] = 'Р’СЂРµРјСЏ СЂР°Р±РѕС‚С‹ СЃРєСЂРёРїС‚Р°: %6.3fms | РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РїР°РјСЏС‚Рё: ~%s kByte';
+	$txt['failed'] = 'РѕС€РёР±РєР°';
+	$txt['admin_area'] = 'РђРґРјРёРЅ РјРµРЅСЋ';
 
 	// Account Information
 	$txt['email'] = 'Email';
-	$txt['username'] = 'Имя пользователя';
-	$txt['password'] = 'Пароль';
-	$txt['texture'] = 'Картинка пользователя';
-	$txt['userid'] = 'ID пользователя';
+	$txt['username'] = 'РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ';
+	$txt['password'] = 'РџР°СЂРѕР»СЊ';
+	$txt['texture'] = 'РљР°СЂС‚РёРЅРєР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ';
+	$txt['userid'] = 'ID РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ';
 
-	$txt['texture_none'] = 'нет картинки';
-	$txt['texture_set'] = 'картинка установлена';
+	$txt['texture_none'] = 'РЅРµС‚ РєР°СЂС‚РёРЅРєРё';
+	$txt['texture_set'] = 'РєР°СЂС‚РёРЅРєР° СѓСЃС‚Р°РЅРѕРІР»РµРЅР°';
 
 	// Profile
-	$txt['help_profile_textur'] = 'Эта строка будет показана вместо имени пользователя, если включено в настройках.';
+	$txt['help_profile_textur'] = 'Р­С‚Р° СЃС‚СЂРѕРєР° Р±СѓРґРµС‚ РїРѕРєР°Р·Р°РЅР° РІРјРµСЃС‚Рѕ РёРјРµРЅРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РµСЃР»Рё РІРєР»СЋС‡РµРЅРѕ РІ РЅР°СЃС‚СЂРѕР№РєР°С….';
 
 	//Errors
-	$txt['error_noIceExtensionLoaded']	= 'Возможно ваша PHP конфигурация запущена без поддержки ICE<br/>Пожалуйста настройте ваш PHP для поддержки Ice.<br/><br/>Ice необходим для связки между <acronym title="Mumble Server">Murmur</acronym> и PHP/интерфейсом, для возможности PHP выполнять Murmur функции. Поэтому придется его установить.<br/>Для того что бы узнать как установить, обратитесь <a href="http://mumble.sourceforge.net/Ice">mumble.sf.net/Ice</a>.';
-	$txt['error_noIceSliceLoaded']		= 'Вероятно файлы вашей конфигурации PHP неверно настроены.<br/>Инстукции по настройке вы найдете на <a href="http://mumble.sourceforge.net/Ice">mumble.sf.net/Ice</a>.<br/><br/>В конфигурациооном файле настраивается какие методы PHP доступны <acronym title="Mumble Server">Murmur</acronym>.';
-	$txt['error_noIce']					= 'Немогу соединится с Ice.<br/>Или ваш сервер незапущен или неработает с Ice. Проверьте свою конфигурацию.';
-	$txt['error_unknowninterface']		= 'Misconfiguration: Неизвестный тип интерфейса <acronym title="database">DB</acronym>!';
-	$txt['unknownserver']				= 'Сервер не найден.';
-	$txt['error_missing_values']		= 'Вероятно нехватает всех необходимых настроек.';
-	$txt['error_db_unknowntype']		= 'Ваш тип базы данных (в ваших настройках) не доступен/определен';
-	$txt['iceprofilealreadyloaded'] 	= 'Ice профиль уже был загружен!';
-	$txt['error_dbmanager_couldnotopenadmins'] = 'Немогу открыть admins.dat файл.';
-	$txt['error_invalidTexture']		= 'Неверная картинка. Проверьте файл картинки.';
-	$txt['login_missing_data'] = 'Ошибка входа: Недостаточно введеных вами данных.';
+	$txt['error_noIceExtensionLoaded']	= 'Р’РѕР·РјРѕР¶РЅРѕ РІР°С€Р° PHP РєРѕРЅС„РёРіСѓСЂР°С†РёСЏ Р·Р°РїСѓС‰РµРЅР° Р±РµР· РїРѕРґРґРµСЂР¶РєРё ICE<br/>РџРѕР¶Р°Р»СѓР№СЃС‚Р° РЅР°СЃС‚СЂРѕР№С‚Рµ РІР°С€ PHP РґР»СЏ РїРѕРґРґРµСЂР¶РєРё Ice.<br/><br/>Ice РЅРµРѕР±С…РѕРґРёРј РґР»СЏ СЃРІСЏР·РєРё РјРµР¶РґСѓ <acronym title="Mumble Server">Murmur</acronym> Рё PHP/РёРЅС‚РµСЂС„РµР№СЃРѕРј, РґР»СЏ РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё PHP РІС‹РїРѕР»РЅСЏС‚СЊ Murmur С„СѓРЅРєС†РёРё. РџРѕСЌС‚РѕРјСѓ РїСЂРёРґРµС‚СЃСЏ РµРіРѕ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ.<br/>Р”Р»СЏ С‚РѕРіРѕ С‡С‚Рѕ Р±С‹ СѓР·РЅР°С‚СЊ РєР°Рє СѓСЃС‚Р°РЅРѕРІРёС‚СЊ, РѕР±СЂР°С‚РёС‚РµСЃСЊ <a href="http://mumble.sourceforge.net/Ice">mumble.sf.net/Ice</a>.';
+	$txt['error_noIceSliceLoaded']		= 'Р’РµСЂРѕСЏС‚РЅРѕ С„Р°Р№Р»С‹ РІР°С€РµР№ РєРѕРЅС„РёРіСѓСЂР°С†РёРё PHP РЅРµРІРµСЂРЅРѕ РЅР°СЃС‚СЂРѕРµРЅС‹.<br/>РРЅСЃС‚СѓРєС†РёРё РїРѕ РЅР°СЃС‚СЂРѕР№РєРµ РІС‹ РЅР°Р№РґРµС‚Рµ РЅР° <a href="http://mumble.sourceforge.net/Ice">mumble.sf.net/Ice</a>.<br/><br/>Р’ РєРѕРЅС„РёРіСѓСЂР°С†РёРѕРѕРЅРѕРј С„Р°Р№Р»Рµ РЅР°СЃС‚СЂР°РёРІР°РµС‚СЃСЏ РєР°РєРёРµ РјРµС‚РѕРґС‹ PHP РґРѕСЃС‚СѓРїРЅС‹ <acronym title="Mumble Server">Murmur</acronym>.';
+	$txt['error_noIce']					= 'РќРµРјРѕРіСѓ СЃРѕРµРґРёРЅРёС‚СЃСЏ СЃ Ice.<br/>РР»Рё РІР°С€ СЃРµСЂРІРµСЂ РЅРµР·Р°РїСѓС‰РµРЅ РёР»Рё РЅРµСЂР°Р±РѕС‚Р°РµС‚ СЃ Ice. РџСЂРѕРІРµСЂСЊС‚Рµ СЃРІРѕСЋ РєРѕРЅС„РёРіСѓСЂР°С†РёСЋ.';
+	$txt['error_unknowninterface']		= 'Misconfiguration: РќРµРёР·РІРµСЃС‚РЅС‹Р№ С‚РёРї РёРЅС‚РµСЂС„РµР№СЃР° <acronym title="database">DB</acronym>!';
+	$txt['unknownserver']				= 'РЎРµСЂРІРµСЂ РЅРµ РЅР°Р№РґРµРЅ.';
+	$txt['error_missing_values']		= 'Р’РµСЂРѕСЏС‚РЅРѕ РЅРµС…РІР°С‚Р°РµС‚ РІСЃРµС… РЅРµРѕР±С…РѕРґРёРјС‹С… РЅР°СЃС‚СЂРѕРµРє.';
+	$txt['error_db_unknowntype']		= 'Р’Р°С€ С‚РёРї Р±Р°Р·С‹ РґР°РЅРЅС‹С… (РІ РІР°С€РёС… РЅР°СЃС‚СЂРѕР№РєР°С…) РЅРµ РґРѕСЃС‚СѓРїРµРЅ/РѕРїСЂРµРґРµР»РµРЅ';
+	$txt['iceprofilealreadyloaded'] 	= 'Ice РїСЂРѕС„РёР»СЊ СѓР¶Рµ Р±С‹Р» Р·Р°РіСЂСѓР¶РµРЅ!';
+	$txt['error_dbmanager_couldnotopenadmins'] = 'РќРµРјРѕРіСѓ РѕС‚РєСЂС‹С‚СЊ admins.dat С„Р°Р№Р».';
+	$txt['error_invalidTexture']		= 'РќРµРІРµСЂРЅР°СЏ РєР°СЂС‚РёРЅРєР°. РџСЂРѕРІРµСЂСЊС‚Рµ С„Р°Р№Р» РєР°СЂС‚РёРЅРєРё.';
+	$txt['login_missing_data'] = 'РћС€РёР±РєР° РІС…РѕРґР°: РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РІРІРµРґРµРЅС‹С… РІР°РјРё РґР°РЅРЅС‹С….';
 
 ?>

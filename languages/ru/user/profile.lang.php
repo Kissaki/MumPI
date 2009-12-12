@@ -6,18 +6,18 @@
  * @author Kissaki
  */
 
-	$txt['profile_head'] = 'Редактирование профиля';
-	$txt['profile_note_texture'] = '<b>Примечание:</b> Аватар может быть размером 600x60 px. Вы можете загружать картинки типов: png, jpeg, gif, raw (RGBA)</p>';
-	$txt['profile_emptypassword'] = 'После пароль пустое. Не было изменено.<br/>';
+	$txt['profile_head'] = 'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РїСЂРѕС„РёР»СЏ';
+	$txt['profile_note_texture'] = '<b>РџСЂРёРјРµС‡Р°РЅРёРµ:</b> РђРІР°С‚Р°СЂ РјРѕР¶РµС‚ Р±С‹С‚СЊ СЂР°Р·РјРµСЂРѕРј 600x60 px. Р’С‹ РјРѕР¶РµС‚Рµ Р·Р°РіСЂСѓР¶Р°С‚СЊ РєР°СЂС‚РёРЅРєРё С‚РёРїРѕРІ: png, jpeg, gif, raw (RGBA)</p>';
+	$txt['profile_emptypassword'] = 'РџРѕСЃР»Рµ РїР°СЂРѕР»СЊ РїСѓСЃС‚РѕРµ. РќРµ Р±С‹Р»Рѕ РёР·РјРµРЅРµРЅРѕ.<br/>';
 
-	$txt['profile_removetexturefailed'] = 'Ошибка удаления аватара';
-	$txt['profile_texture_notempfile'] = 'Ошибка установки аватара, временный файл отсутствовал на сервере.';
-	$txt['profile_texture_imgresfail'] = 'Немогу создать картинку.';
-	$txt['profile_texture_wrongresolution'] = 'Размер картинки не 600x60.';
-	$txt['profile_texture_conversionfail'] = 'Ошибка конвертирования картинки в строку данных.';
-	$txt['profile_texture_success'] = 'Аватар успешно загружен и установлен.<br/>';
-	$txt['profile_texture_fail'] = 'Ошибка установки картинки.';
-	$txt['profile_texture_unknownext'] = 'Неизвестный тип файла.';
-	$txt['profile_texture_tmpopenfail'] = 'Ошибка при попытке открыть времеенный файл.';
+	$txt['profile_removetexturefailed'] = 'РћС€РёР±РєР° СѓРґР°Р»РµРЅРёСЏ Р°РІР°С‚Р°СЂР°';
+	$txt['profile_texture_notempfile'] = 'РћС€РёР±РєР° СѓСЃС‚Р°РЅРѕРІРєРё Р°РІР°С‚Р°СЂР°, РІСЂРµРјРµРЅРЅС‹Р№ С„Р°Р№Р» РѕС‚СЃСѓС‚СЃС‚РІРѕРІР°Р» РЅР° СЃРµСЂРІРµСЂРµ.';
+	$txt['profile_texture_imgresfail'] = 'РќРµРјРѕРіСѓ СЃРѕР·РґР°С‚СЊ РєР°СЂС‚РёРЅРєСѓ.';
+	$txt['profile_texture_wrongresolution'] = 'Р Р°Р·РјРµСЂ РєР°СЂС‚РёРЅРєРё РЅРµ 600x60.';
+	$txt['profile_texture_conversionfail'] = 'РћС€РёР±РєР° РєРѕРЅРІРµСЂС‚РёСЂРѕРІР°РЅРёСЏ РєР°СЂС‚РёРЅРєРё РІ СЃС‚СЂРѕРєСѓ РґР°РЅРЅС‹С….';
+	$txt['profile_texture_success'] = 'РђРІР°С‚Р°СЂ СѓСЃРїРµС€РЅРѕ Р·Р°РіСЂСѓР¶РµРЅ Рё СѓСЃС‚Р°РЅРѕРІР»РµРЅ.<br/>';
+	$txt['profile_texture_fail'] = 'РћС€РёР±РєР° СѓСЃС‚Р°РЅРѕРІРєРё РєР°СЂС‚РёРЅРєРё.';
+	$txt['profile_texture_unknownext'] = 'РќРµРёР·РІРµСЃС‚РЅС‹Р№ С‚РёРї С„Р°Р№Р»Р°.';
+	$txt['profile_texture_tmpopenfail'] = 'РћС€РёР±РєР° РїСЂРё РїРѕРїС‹С‚РєРµ РѕС‚РєСЂС‹С‚СЊ РІСЂРµРјРµРµРЅРЅС‹Р№ С„Р°Р№Р».';
 
 ?>
