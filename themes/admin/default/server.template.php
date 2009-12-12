@@ -55,27 +55,24 @@
 			}
 			return str;
 		}
-		function jq_server_setSuperuserPassword(sid)
-		{
+		function jq_server_setSuperuserPassword(sid) {
 			$('#li_server_superuserpassword > .ajax_info').html(imgAjaxLoading);
 			var pw = randomString(6);
 			$.post('./?ajax=server_setSuperuserPassword',
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'pw': pw },
-					function(data)
-					{
-						if(data=='')
-						{
+					function (data) {
+						if (data=='') {
 							$('#li_server_superuserpassword > .ajax_info').html('<div>Password set to: '+pw+'</div>');
-						}else{
+						} else {
 							$('#li_server_superuserpassword > .ajax_info').html(data);
 						}
 					}
 				);
 		}
-		function jq_server_getRegistrations(sid){
+		function jq_server_getRegistrations(sid) {
 			$.post("./?ajax=server_getRegistrations",
 					{ 'sid': sid },
-					function(data){
+					function (data) {
 						$('#jq_information').show().html(data);
 						<?php if (PermissionManager::getInstance()->serverCanEditRegistrations($_GET['sid'])) { ?>
 							$('#jq_information').prepend('<p style="font-size:x-small;">(Double-click entries to edit them)</p>');
@@ -84,18 +81,16 @@
 																						'cancel':'cancel',
 																						'editBy': 'dblclick',
 																						'onSubmit':
-																							function(content)
-																							{
+																							function (content) {
 																								var id = $(this).attr('id');
 																								var sub = id.substring(0, id.lastIndexOf('_'));
 																								var id = id.substring(id.lastIndexOf('_')+1, id.length);
-																								if(id==0)
-																								{
+																								if (id==0) {
 																									alert('Changing the superuser account is not possible.');
 																									jq_server_getRegistrations(sid);
 																									return;
 																								}
-																								switch(sub){
+																								switch (sub) {
 																									case 'user_name':
 																										jq_user_updateUsername(id, content.current);
 																										break;
@@ -110,32 +105,32 @@
 					}
 				);
 		}
-		function jq_server_registration_remove(uid){
+		function jq_server_registration_remove(uid) {
 			$.post("./?ajax=server_regstration_remove",
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid },
 					function(data){
-						if(data.length>0){ alert('failed: '+data); }
+						if (data.length>0) { alert('failed: '+data); }
 						else jq_server_getRegistrations(<?php echo $_GET['sid']; ?>);
 					}
 				);
 			
 		}
-		function jq_user_updateUsername(uid, newVal){
+		function jq_user_updateUsername(uid, newVal) {
 			$('#user_name_'+uid).append(imgAjaxLoading);
 			var serverId = <?php echo $_GET['sid']; ?>;
 			$.post("./?ajax=server_user_updateUsername",
 					{ 'sid': serverId, 'uid': uid, 'newValue': newVal },
-					function(data){
-						if(data.length>0){ alert('failed: '+data); }
+					function (data) {
+						if (data.length>0) { alert('failed: '+data); }
 						else jq_server_getRegistrations(serverId);
 					}
 				);
 		}
-		function jq_user_updateEmail(uid, newVal){
+		function jq_user_updateEmail(uid, newVal) {
 			$('#user_name_'+uid).append(imgAjaxLoading);
 			$.post("./?ajax=server_user_updateEmail",
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid, 'newValue': newVal },
-					function(data){
+					function (data) {
 						if(data.length>0){ alert('failed: '+data); }
 					}
 				);
