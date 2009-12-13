@@ -3,7 +3,7 @@
  * Mumble PHP Interface by Kissaki
  * Released under Creative Commons Attribution-Noncommercial License
  * http://creativecommons.org/licenses/by-nc/3.0/
- * @author Kissaki
+ * @author 
  */
 /**
  * This is the main language file, containing general strings that will be used in more than one section
