@@ -375,12 +375,8 @@ class Ajax_Admin
 		}
 		
 		$users = array();
-		try{
+		try {
 			$users = ServerInterface::getInstance()->getServerRegistrations($_POST['sid']);
-		}catch(Murmur_ServerBootedException $exc){
-			echo '<div class="error">Server is not running</div>';
-			break;
-		}
 ?>
 			<h2>Registrations</h2>
 			<table>
@@ -393,15 +389,19 @@ class Ajax_Admin
 					</tr>
 				</thead>
 				<tbody>
-<?php				foreach ($users AS $user) { ?>
+<?php
+					foreach ($users AS $userId=>$userName) {
+						//FIXME Ice version check, enum-index available? otherwise, one has to edit his slice file
+						$user=ServerInterface::getInstance()->getServerRegistration($_POST['sid'], $userId);
+?>
 					<tr>
-						<td><?php echo $user->playerid; ?></td>
-						<td id="user_name_<?php echo $user->playerid; ?>" class="jq_editable"><?php echo $user->name; ?></td>
-						<td id="user_email_<?php echo $user->playerid; ?>" class="jq_editable"><?php echo $user->email; ?></td>
+						<td><?php echo $userId; ?></td>
+						<td id="user_name_<?php echo $userId; ?>" class="jq_editable"><?php echo $userName; ?></td>
+						<td id="user_email_<?php echo $userId; ?>" class="jq_editable"><?php echo isset($user['UserEmail'])?$user['UserEmail']:(isset($user[1])?$user[1]:''); ?></td>
 						<td>
 <?php
 							if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
-								echo '<a class="jqlink" onclick="jq_server_registration_remove('.$user->playerid.')">remove</a>';
+								echo '<a class="jqlink" onclick="jq_server_registration_remove('.$userId.')">remove</a>';
 ?>
 						</td>
 					</tr>
@@ -409,6 +409,9 @@ class Ajax_Admin
 				</tbody>
 			</table>
 <?php
+		} catch(Murmur_ServerBootedException $exc) {
+			echo '<div class="error">Server is not running</div>';
+		}
 	}
 	
 	public static function show_onlineUsers()
@@ -424,10 +427,6 @@ class Ajax_Admin
 		$users = array();
 		try{
 			$users = ServerInterface::getInstance()->getServerUsersConnected($_POST['sid']);
-		}catch(Murmur_ServerBootedException $exc){
-			echo '<div class="error">Server is not running</div>';
-			break;
-		}
 ?>
 			<h2>Online Users</h2>
 			<table>
@@ -446,7 +445,7 @@ class Ajax_Admin
 <?php				foreach($users AS $user){	?>
 					<tr>
 						<td><?php echo $user->session; ?></td>
-						<td><?php if($user->playerid > 0) echo $user->playerid; ?></td>
+						<td><?php if($user->userid > 0) echo $user->userid; ?></td>
 						<td id="user_name_<?php echo $user->session; ?>" class="jq_editable"><?php echo $user->name; ?></td>
 						<td><input id="user_mute_<?php echo $user->session; ?>" class="jq_toggleable" type="checkbox" <?php if($user->mute) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
 						<td><input id="user_deaf_<?php echo $user->session; ?>" class="jq_toggleable" type="checkbox" <?php if($user->deaf) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
@@ -462,36 +461,39 @@ class Ajax_Admin
 				</tbody>
 			</table>
 <?php
-		if ($canModerate) {
+			if ($canModerate) {
 ?>
-			<script type="text/javascript">
-				$('.jq_toggleable').click(
-						function(event){
-							var id = $(this).attr('id');
-							var sub = id.substring(0, id.lastIndexOf('_'));
-							var id = id.substring(id.lastIndexOf('_')+1, id.length);
-							switch(sub){
-								case 'user_mute':
-									if($(this).attr('checked')){
-										jq_server_user_mute(id);
-									}else{
-										jq_server_user_unmute(id);
-									}
-									
-									break;
-								case 'user_deaf':
-									if($(this).attr('checked')){
-										jq_server_user_deaf(id);
-									}else{
-										jq_server_user_undeaf(id);
-									}
-									break;
+				<script type="text/javascript">
+					$('.jq_toggleable').click(
+							function(event){
+								var id = $(this).attr('id');
+								var sub = id.substring(0, id.lastIndexOf('_'));
+								var id = id.substring(id.lastIndexOf('_')+1, id.length);
+								switch(sub){
+									case 'user_mute':
+										if($(this).attr('checked')){
+											jq_server_user_mute(id);
+										}else{
+											jq_server_user_unmute(id);
+										}
+										
+										break;
+									case 'user_deaf':
+										if($(this).attr('checked')){
+											jq_server_user_deaf(id);
+										}else{
+											jq_server_user_undeaf(id);
+										}
+										break;
+								}
 							}
-						}
-					);
-			</script>
+						);
+				</script>
 <?php
-		} // permission check: moderate
+			} // permission check: moderate
+		}catch(Murmur_ServerBootedException $exc){
+			echo '<div class="error">Server is not running</div>';
+		}
 	} // show_onlineUsers()
 	
 	public static function server_regstration_remove()
@@ -555,42 +557,48 @@ class Ajax_Admin
 			MessageManager::echoAllMessages();
 			exit();
 		}
-		$bans = ServerInterface::getInstance()->getServerBans($_POST['sid']);
-		echo '<h2>Bans</h2>';
-		if (PermissionManager::getInstance()->serverCanBan($_POST['sid']))
-			echo '<p><a class="jqlink" onclick="jq_server_ban_show(' . $_POST['sid'] . ')">add</a></p>';
-		if (count($bans)==0) {
-			echo 'no bans on this virtual server';
-		} else {
+		$bans = array();
+		try {
+			$bans = ServerInterface::getInstance()->getServerBans($_POST['sid']);
+			echo '<h2>Bans</h2>';
+			if (PermissionManager::getInstance()->serverCanBan($_POST['sid']))
+				echo '<p><a class="jqlink" onclick="jq_server_ban_show(' . $_POST['sid'] . ')">add</a></p>';
+			if (count($bans)==0) {
+				echo 'no bans on this virtual server';
+			} else {
 ?>
-			<table>
-				<thead>
-					<tr>
-						<th>address</th>
-						<th>bits</th>
-						<th>actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach ($bans as $ban) { ?>
+				<table>
+					<thead>
 						<tr>
-							<td><?php echo HelperFunctions::int2ip($ban->address); ?></td>
-							<td><?php echo $ban->bits; ?></td>
-							<td>
-								<?php
-									if (PermissionManager::getInstance()->serverCanBan($serverId))
-										echo "<a class=\"jqlink\" onclick=\"jq_server_unban($serverId, $ban->address, $ban->bits)\">remove</a>";
-								?>
-						</td>
+							<th>address</th>
+							<th>bits</th>
+							<th>actions</th>
 						</tr>
-					<?php } ?>
-				</tbody>
-			</table>
-			<br/>
-			<p>
-				<?php echo tr('info_ip_bits'); ?>
-			</p>
+					</thead>
+					<tbody>
+						<?php foreach ($bans as $ban) { ?>
+							<tr>
+								<td><?php echo HelperFunctions::int2ip($ban->address); ?></td>
+								<td><?php echo $ban->bits; ?></td>
+								<td>
+									<?php
+										if (PermissionManager::getInstance()->serverCanBan($serverId))
+											echo "<a class=\"jqlink\" onclick=\"jq_server_unban($serverId, $ban->address, $ban->bits)\">remove</a>";
+									?>
+							</td>
+							</tr>
+						<?php } ?>
+					</tbody>
+				</table>
+				<br/>
+				<p>
+					<?php echo tr('info_ip_bits'); ?>
+				</p>
 <?php
+			}
+		} catch(Murmur_ServerBootedException $exc) {
+			//TODO i18n
+			echo 'Server is not running.';
 		}
 	}
 	public static function server_ban_show()
@@ -634,8 +642,13 @@ class Ajax_Admin
 			exit();
 		}
 		
-		$tree = ServerInterface::getInstance()->getServer($_POST['sid'])->getTree();
-		HelperFunctions::showChannelTree($tree);
+		try {
+			$tree = ServerInterface::getInstance()->getServer($_POST['sid'])->getTree();
+			HelperFunctions::showChannelTree($tree);
+		} catch(Murmur_ServerBootedException $exc) {
+			//TODO i18n
+			echo 'Server is not running.';
+		}
 	}
 	
 	public static function show_acl()

@@ -205,9 +205,16 @@ class ServerInterface_ice
 	 * @param $filter a filter
 	 * @return sequence of registrations
 	 */
-	public function getServerRegistrations($sid, $filter='')
+	public function getServerRegistrations($serverId, $filter='')
 	{
-		return $this->getServer($sid)->getRegisteredPlayers($filter);
+		return $this->getServer($serverId)->getRegisteredUsers($filter);
+	}
+	public function getServerRegistration($serverId, $userId)
+	{
+		$server=$this->getServer($serverId);
+		if(null===$server)
+			throw new Exception('Invalid server id, server not found.');
+		return $server->getRegistration($userId);
 	}
 	/**
 	 * Get connected users of a virtual server
@@ -216,7 +223,7 @@ class ServerInterface_ice
 	 */
 	public function getServerUsersConnected($sid)
 	{
-		return $this->getServer($sid)->getPlayers();
+		return $this->getServer($sid)->getUsers();
 	}
 	/**
 	 * Get a user registration from a virtual server

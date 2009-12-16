@@ -5,47 +5,47 @@
  * http://creativecommons.org/licenses/by-nc/3.0/
  * @author Kissaki
  */
-if( isset($_POST['email']) && !empty($_POST['email']) ){
+if (isset($_POST['email']) && !empty($_POST['email'])) {
 	$_POST['email'] = trim($_POST['email']);
-	if( isset($_POST['password']) && isset($_POST['username']) ){
+	if (isset($_POST['password']) && isset($_POST['username'])) {
 		// Send username and new password
 		$user = ServerInterface::getInstance()->getUserByEmail(intval($_POST['serverid']), $_POST['email']);
 		if($user != null){
 			$newPw = substr(md5(rand()), 4, 8);
-			ServerInterface::getInstance()->updateUserPw(intval($_POST['serverid']), $user->playerid, $newPw);
+			ServerInterface::getInstance()->updateUserPw(intval($_POST['serverid']), $user->userid, $newPw);
 			mail($_POST['email'], tr('request_mail_up_subj'), sprintf(tr('request_mail_up_body'), $user->name, $newPw) );
 			$formProcessed = tr('request_mail_sent');
 		}else{
 			MessageManager::addWarning(tr('request_nosuchaccount'));
 		}
-	}elseif( isset($_POST['password']) ){
+	} elseif (isset($_POST['password'])) {
 		// send new password
 		$user = ServerInterface::getInstance()->getUserByEmail(intval($_POST['serverid']), $_POST['email']);
-		if($user != null){
+		if ($user != null) {
 			$newPw = substr(md5(rand()), 4, 8);
-			ServerInterface::getInstance()->updateUserPw(intval($_POST['serverid']), $user->playerid, $newPw);
+			ServerInterface::getInstance()->updateUserPw(intval($_POST['serverid']), $user->userid, $newPw);
 			mail($_POST['email'], tr('request_mail_p_subj'), sprintf(tr('request_mail_p_body'), $newPw) );
 			$formProcessed = tr('request_mail_sent');
-		}else{
+		} else {
 			MessageManager::addWarning(tr('request_nosuchaccount'));
 		}
-	}elseif( isset($_POST['username']) ){
+	} elseif (isset($_POST['username'])) {
 		// send username
 		$user = ServerInterface::getInstance()->getUserByEmail(intval($_POST['serverid']), $_POST['email']);
-		if($user != null){
+		if ($user != null) {
 			mail($_POST['email'], tr('request_mail_u_subj'), sprintf(tr('request_mail_u_body'), $user->name) );
 			$formProcessed = tr('request_mail_sent');
-		}else{
+		} else {
 			MessageManager::addWarning(tr('request_nosuchaccount'));
 		}
 	}
 }
 ?>
 <div id="content">
-	<?php if(isset($formProcessed)){ ?>
+	<?php if (isset($formProcessed)) { ?>
 		<h1 class="alignc">Data Sent</h1>
 		<p><?php echo $formProcessed; ?></p>
-	<?php }else{ ?>
+	<?php } else { ?>
 	<h1><?php echo tr('request_head'); ?></h1>
 	<form action="./?page=request&amp;action=dorequest" method="post" class="alignc" style="width:400px;">
 		<table class="fullwidth alignl">
