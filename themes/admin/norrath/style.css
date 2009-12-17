@@ -1,0 +1,102 @@
+@CHARSET "UTF-8";
+
+html, body {
+	margin:20px; padding:0px; padding-bottom:20px; border: 1px solid #123C52; -moz-border-radius:10px; -webkit-border-radius:10px; border-radius:10px;
+	background-color: #00192D; color: #CCCCCC;
+font-family:arial; font-size: 11pt;
+}
+
+html {
+	height:85%;
+}
+body {
+	height:100%;
+}
+
+
+img { border:0px; vertical-align:middle; }
+p, ul, li, div, span, img { margin:0px; padding:0px; }
+ul { white-space:nowrap; list-style-type:none; margin-left:10px; }
+p { margin-bottom:6px; }
+acronym, abbr, .info { cursor:help; border-bottom:1px dotted #aac; }
+hr { clear:both; }
+a { text-decoration:underline; }
+a:active, a:hover, a:focus {  }
+a:link { color:white; }
+a:visited { color:white; }
+a[href^="http://"]:after { font-size:x-small; vertical-align:top; content:" (out)"; }
+a[href$=".pdf"]:after { content:"(PDF)"; }
+form table tr td.formitemname { text-align:right; padding:2px 6px 2px 2px; }
+td, th { text-align:left; padding-left:4px; vertical-align:top; }
+.fullwidth { width:100%; }
+input[type=text], input[type=password], input[type=text], select { width:100%; }
+textarea { width:100%; min-height:100px; }
+textarea.heightInc { height:200px; }
+.alignl { text-align:left; }
+.alignc { text-align:center; }
+.alignr { text-align:right; }
+h1 { font-size:1.8em; font-weight:bold; margin:12px 0px 6px; }
+h2 { font-size:1.4em; margin:12px 0px 6px; }
+
+.helpicon { background-image:URL('images/help.png'); min-width:16px; min-height:16px; background-repeat:no-repeat; }
+.error { color:red; }
+div.error { margin:20px; padding:20px; }
+div.error div.detail { margin-top:10px; color:white; }
+div.js_link { color:grey; font-size:x-small; margin-left:4px; margin-right:4px; }
+.hidden { display:none; }
+.jslink, .jqlink { cursor:pointer; }
+
+#menu {
+	float:left; margin-right:10px; margin-left:5px; width: 250px;
+	background-color:transparent; font-family:verdana;
+}
+#menu ul { margin:0px;
+	white-space:nowrap; list-style-type:none;
+}
+#menu li { font-size:120%; line-height:30px; }
+#menu li.active a { background-color:#123C52; border: 1px solid #CCCCCC;}
+#menu li a {
+	display:block;
+	padding:0px 10px; line-height:30px;
+margin: 5px;
+	background-color:#052E44; color:#ccc; text-decoration:none;-moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px;
+}
+#menu li a:hover {
+	background-color:#123C52; color:#fff;
+}
+#footer {
+	position:fixed; bottom:0px; width:100%;
+	text-align:center;
+}
+#log_area ul { background-color:darkgrey; }
+#log_area ul.log_list_errors { color:#FF0000; }
+#log_area ul.log_list_warnings { color:#DD0000; }
+#log_area ul.log_list_messages { color:#BB0000; }
+
+#content { margin:20px 130px 50px; }
+#jq_information { margin-top:10px; }
+
+.table_headline td { padding-top:12px; font-family:arial; font-weight:bold; text-decoration:underline; }
+
+.datalist { margin-bottom:6px; }
+.datalist a { text-decoration:none; }
+.datalist > .head { background-color:#444; padding:2px 4px 0px; border-bottom:1px dotted grey; }
+.datalist > .head .indicator { width:20px; height:20px; text-align:center; }
+.datalist > .content { background-color:#333; }
+
+table.list_admins { border:1px solid #000000; margin:4px; }
+
+table.list_admins td {
+	padding:0px 8px;
+}
+
+table.list_admins tr.head {
+	border-bottom:1px solid #555555;
+	margin-bottom:2px;
+}
+
+table.list_admins .list_admins_item {
+	border-bottom:1px solid #555555;
+}
+
+.list_admins .list_groups { font-size:10px; line-height:10px; }
