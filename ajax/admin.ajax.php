@@ -137,10 +137,10 @@ class Ajax_Admin
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins()) {
 			MessageManager::addError('Insufficient privileges.');
-			return;
+		} else {
+			DBManager::getInstance()->updateAdminGroupPermission(intval($_POST['gid']), $_POST['perm'], ($_POST['newval']=='true')?true:false);
 		}
-		
-		DBManager::getInstance()->updateAdminGroupPermission(intval($_POST['gid']), $_POST['perm'], ($_POST['newval']=='true')?true:false);
+		MessageManager::echoAll();
 	}
 	
 	public static function db_adminGroup_perms_edit()

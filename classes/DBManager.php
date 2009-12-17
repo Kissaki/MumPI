@@ -664,13 +664,13 @@ class DBManager_filesystem
 	 * @param $gid admin group ID
 	 * @return object admin group permissions
 	 */
-	public function getAdminGroupPermissions($gid, $serverID=null)
+	public function getAdminGroupPermissions($gid, $serverID=0)
 	{
 		$fh = fopen($this->filepath_adminGroupPermissions, 'r');
 		
 		while (false !== ($line = fgets($fh))) {
 			$tmpPerms = $this->createAdminGroupPermissionsFromString($line);
-			if ($tmpPerms['groupID'] == $gid && ($serverID == null || $serverID == $tmpPerms['serverID'])) {
+			if ($tmpPerms['groupID'] == $gid && ($serverID == $tmpPerms['serverID'])) {
 				fclose($fh);
 				return $tmpPerms;
 			}
@@ -720,7 +720,7 @@ class DBManager_filesystem
 	 * remove group permissions for group
 	 * @param unknown_type $gid group ID
 	 */
-	public function removeAdminGroupPermissions($groupID, $serverID=null)
+	public function removeAdminGroupPermissions($groupID, $serverID=0)
 	{
 		$data = file($this->filepath_adminGroupPermissions);
 		$fd = fopen($this->filepath_adminGroupPermissions, 'w');
@@ -728,7 +728,6 @@ class DBManager_filesystem
 		
 		for ($line = 0; $line < $size; $line++) {
 			$perms = $this->createAdminGroupPermissionsFromString($data[$line]);
-			
 			if ($perms['groupID'] != $groupID) {
 				fputs($fd, $data[$line]);
 			} elseif ($serverID != $perms['serverID']) {
@@ -765,12 +764,11 @@ class DBManager_filesystem
 	public function updateAdminGroupPermission($gid, $perm, $newval)
 	{
 		$old=$this->getAdminGroupPermissions($gid);
-		
 		if (isset($old[$perm])) {
 			$old[$perm] = $newval;
 		}
 		
-		if (!$old['groupID'] || $old['groupID'] != $gid && $gid != null) {
+		if (!isset($old['groupID']) || ($old['groupID'] != $gid && $gid != null)) {
 			$old['groupID'] = $gid;
 		}
 		$this->removeAdminGroupPermissions($gid);
