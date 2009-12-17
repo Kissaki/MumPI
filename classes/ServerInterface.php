@@ -90,7 +90,7 @@ class ServerInterface_ice
 		$servers = $this->meta->getAllServers();
 		$filtered = array();
 		foreach ($servers as $server) {
-			if (PermissionManager::getInstance()->isAdminOfServer($server->id()))
+			if (HelperFunctions::getActiveSection()!='admin' || PermissionManager::getInstance()->isAdminOfServer($server->id()))
 				$filtered[] = $server;
 		}
 		return $filtered;
