@@ -6,6 +6,8 @@
  * @author Kissaki
  */
 
+require_once dirname(__FILE__).'/PermissionManager.php';
+
 /**
  * Provides murmur server functionality
  */
