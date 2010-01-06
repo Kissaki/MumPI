@@ -7,6 +7,7 @@
  */
 
 require_once dirname(__FILE__).'/PermissionManager.php';
+require_once dirname(__FILE__).'/MurmurClasses.php';
 
 /**
  * Provides murmur server functionality
@@ -231,11 +232,11 @@ class ServerInterface_ice
 	 * Get a user registration from a virtual server
 	 * @param $srvid
 	 * @param $uid
-	 * @return unknown_type
+	 * @return MurmurRegistration
 	 */
 	public function getServerUser($srvid, $uid)
 	{
-		return $this->getServer(intval($srvid))->getRegistration(intval($uid));
+		return MurmurRegistration::fromIceObject($this->getServer(intval($srvid))->getRegistration(intval($uid)));
 	}
 	/**
 	 * Get a user account by searching for a specific email.
@@ -256,22 +257,22 @@ class ServerInterface_ice
 	}
 	function getUserName($srvid, $uid)
 	{
-		return $this->getServerUser($srvid,$uid)->name;
+		return $this->getServerUser($srvid, $uid)->getName();
 	}
 	function getUserEmail($srvid, $uid)
 	{
-		return $this->getServerUser($srvid,$uid)->email;
+		return $this->getServerUser($srvid, $uid)->getEmail();
 	}
 	function getUserPw($srvid, $uid)
 	{
-		return $this->getServerUser($srvid,$uid)->pw;
+		return $this->getServerUser($srvid,$uid)->getPassword();
 	}
 	function getUserTexture($srvid, $uid)
 	{
 		return $this->getServer($srvid)->getTexture(intval($uid));
 	}
 	
-	function addUser($srvid, $name, $password, $email='')
+	function addUser($srvid, $name, $password, $email=null)
 	{
 		try {
 			$tmpServer = ServerInterface::getInstance()->getServer(intval($srvid));
@@ -279,12 +280,10 @@ class ServerInterface_ice
 				echo 'Server could not be found.<br/>';
 				die();
 			}
-			$tmpUid = $tmpServer->registerPlayer($name);
-			$tmpReg = $tmpServer->getRegistration($tmpUid);
-			$tmpReg->pw = $password;
-			if(!empty($email))
-				$tmpReg->email = $email;
-			$tmpReg = $tmpServer->updateregistration($tmpReg);
+			
+			$reg = new MurmurRegistration($name, $email, null, null, $password);
+			$tmpUid = $tmpServer->registerUser($reg->toArray());
+			
 			echo TranslationManager::getInstance()->getText('doregister_success').'<br/>';
 		} catch(Murmur_InvalidServerException $exc) {	// This is depreciated (murmur.ice)
 			echo 'Invalid server. Please check your server selection.<br/><a onclick="history.go(-1); return false;" href="?page=register">go back</a><br/>If the problem persists, please contact a server admin or webmaster.<br/>';
