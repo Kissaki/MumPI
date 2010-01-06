@@ -41,9 +41,15 @@ if(isset($_GET['action']) && $_GET['action']=='doedit'){
 			$fileExtension = pathinfo($_FILES['texture']['name']);
 			$fileExtension = isset($fileExtension['extension']) ? $fileExtension['extension'] : '';
 			
+			
 function stringToByteArray($str){
 	return unpack('C*', $str);
 }
+/**
+ * @todo move to HelperFunctions class
+ * @param $imgRes
+ * @return string
+ */
 function imgToString($imgRes){
 	$tex = '';
 	for($y=0; $y<imagesy($imgRes); $y++){
@@ -57,6 +63,7 @@ function imgToString($imgRes){
 	return $tex;
 }
 /*
+ * @todo move to HelperFunctions class
  * used for memory intensive image calculations
  * Checks that memory_limit is high enough and increases it if necessary.
  */
@@ -66,6 +73,8 @@ function checkMemoryLimit(){
 	if( intval(substr($tmp_memLim, 0, strlen($tmp_memLim)-1)) < 60 )
 		ini_set('memory_limit', '60M');
 }
+			
+			
 			$tex = '';
 			switch($fileExtension){
 				case 'png':

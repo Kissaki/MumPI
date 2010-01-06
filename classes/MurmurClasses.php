@@ -138,21 +138,21 @@ class MurmurRegistration
 	{
 		$this->name = $name;
 	}
-	public function setEmail()
+	public function setEmail($email)
 	{
-		//TODO IMPLEMENT
+		$this->email=$email;
 	}
 	public function setComment()
 	{
-		//TODO IMPLEMENT
+		$this->comment=$comment;
 	}
 	public function setHash()
 	{
-		//TODO IMPLEMENT
+		$this->hash=$hash;
 	}
 	public function setPassword()
 	{
-		//TODO IMPLEMENT
+		$this->password=$password;
 	}
 }
 

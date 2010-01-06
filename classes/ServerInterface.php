@@ -307,19 +307,19 @@ class ServerInterface_ice
 		$reg->setName($newName);
 		$this->getServer($srvid)->updateregistration($userId, $reg->toArray());
 	}
-	function updateUserEmail($srvid, $uid, $newEmail)
+	function updateUserEmail($srvid, $userId, $newEmail)
 	{
 		$srv = $this->getServer($srvid);
-		$reg = $srv->getRegistration(intval($uid));
-		$reg->email = $newEmail;
-		$srv->updateregistration($reg);
+		$reg = $this->getServerUser($srvid, $userId);
+		$reg->setEmail($newEmail);
+		$srv->updateregistration($userId, $reg->toArray());
 	}
-	function updateUserPw($srvid, $uid, $newPw)
+	function updateUserPw($srvid, $userId, $newPw)
 	{
 		$srv = $this->getServer($srvid);
-		$reg = $srv->getRegistration($uid);
-		$reg->pw = $newPw;
-		$srv->updateregistration($reg);
+		$reg = $this->getServerUser($srvid, $userId);
+		$reg->setPassword($newPw);
+		$srv->updateregistration($userId, $reg->toArray());
 	}
 	function updateUserTexture($srvid, $uid, $newTexture)
 	{
