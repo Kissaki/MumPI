@@ -62,8 +62,6 @@ class MurmurRegistration
 	private $hash;
 	private $password;
 	
-	private $serverId;
-	
 	public function __construct($name, $email=null, $comment=null, $hash=null, $password=null)
 	{
 		$this->name=$name;
@@ -136,11 +134,9 @@ class MurmurRegistration
 		return $this->password;
 	}
 	
-	public function setName()
+	public function setName($name)
 	{
-		//TODO IMPLEMENT
-		// set
-		// save
+		$this->name = $name;
 	}
 	public function setEmail()
 	{

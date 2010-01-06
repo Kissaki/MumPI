@@ -217,7 +217,7 @@ class ServerInterface_ice
 		$server=$this->getServer($serverId);
 		if(null===$server)
 			throw new Exception('Invalid server id, server not found.');
-		return $server->getRegistration($userId);
+		return MurmurRegistration::fromIceObject($server->getRegistration($userId));
 	}
 	/**
 	 * Get connected users of a virtual server
@@ -301,12 +301,11 @@ class ServerInterface_ice
 		ServerInterface::getInstance()->getServer(intval($srvid))->unregisterPlayer(intval($uid));
 	}
 	
-	function updateUserName($srvid, $uid, $newName)
+	function updateUserName($srvid, $userId, $newName)
 	{
-		$srv = $this->getServer($srvid);
-		$reg = $srv->getRegistration(intval($uid));
-		$reg->name = $newName;
-		$srv->updateregistration($reg);
+		$reg = $this->getServerRegistration($srvid, $userId);
+		$reg->setName($newName);
+		$this->getServer($srvid)->updateregistration($userId, $reg->toArray());
 	}
 	function updateUserEmail($srvid, $uid, $newEmail)
 	{
