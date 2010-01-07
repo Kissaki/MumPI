@@ -70,6 +70,8 @@
 				);
 		}
 		function jq_server_getRegistrations(sid) {
+			if(sid==null)
+				sid = <?php echo isset($_GET['sid'])?$_GET['sid']:0; ?>;
 			$.post("./?ajax=server_getRegistrations",
 					{ 'sid': sid },
 					function (data) {
@@ -110,7 +112,7 @@
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid },
 					function(data){
 						if (data.length>0) { alert('failed: '+data); }
-						else jq_server_getRegistrations(<?php echo $_GET['sid']; ?>);
+						jq_server_getRegistrations(<?php echo $_GET['sid']; ?>);
 					}
 				);
 			
@@ -122,7 +124,7 @@
 					{ 'sid': serverId, 'uid': uid, 'newValue': newVal },
 					function (data) {
 						if (data.length>0) { alert('failed: '+data); }
-						else jq_server_getRegistrations(serverId);
+						jq_server_getRegistrations(serverId);
 					}
 				);
 		}
@@ -132,6 +134,7 @@
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid, 'newValue': newVal },
 					function (data) {
 						if(data.length>0){ alert('failed: '+data); }
+						jq_server_getRegistrations();
 					}
 				);
 		}

@@ -212,6 +212,11 @@ class ServerInterface_ice
 	{
 		return $this->getServer($serverId)->getRegisteredUsers($filter);
 	}
+	/**
+	 * @param int $serverId
+	 * @param int $userId
+	 * @return MurmurRegistration
+	 */
 	public function getServerRegistration($serverId, $userId)
 	{
 		$server=$this->getServer($serverId);

@@ -397,7 +397,7 @@ class Ajax_Admin
 					<tr>
 						<td><?php echo $userId; ?></td>
 						<td id="user_name_<?php echo $userId; ?>" class="jq_editable"><?php echo $userName; ?></td>
-						<td id="user_email_<?php echo $userId; ?>" class="jq_editable"><?php echo isset($user['UserEmail'])?$user['UserEmail']:(isset($user[1])?$user[1]:''); ?></td>
+						<td id="user_email_<?php echo $userId; ?>" class="jq_editable"><?php echo $user->getEmail(); ?></td>
 						<td>
 <?php
 							if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
@@ -689,7 +689,8 @@ class Ajax_Admin
 			<tr class="table_headline">	<td colspan="2"></td></tr>
 			<tr><td>bandwidth</td>		<td class="jq_editable" id="jq_editable_server_conf_bandwidth"><?php echo $conf['bandwidth']; unset($conf['bandwidth']); ?></td></tr>
 			<tr><td>channelname</td>	<td class="jq_editable" id="jq_editable_server_conf_channelname"><?php echo $conf['channelname']; unset($conf['channelname']); ?></td></tr>
-			<tr><td>playername</td>		<td class="jq_editable" id="jq_editable_server_conf_playername"><?php echo $conf['playername']; unset($conf['playername']); ?></td></tr>
+			<tr><td>username</td>		<td class="jq_editable" id="jq_editable_server_conf_playername"><?php echo $conf['username']; unset($conf['username']); ?></td></tr>
+			<tr><td>textmessagelength</td>		<td class="jq_editable" id="jq_editable_server_conf_playername"><?php echo $conf['textmessagelength']; unset($conf['textmessagelength']); ?></td></tr>
 			<tr><td>obfuscate</td>		<td class="jq_editable" id="jq_editable_server_conf_obfuscate"><?php echo $conf['obfuscate']; unset($conf['obfuscate']); ?></td></tr>
 			
 			<tr class="table_headline">	 <td colspan="2">Server Registration</td></tr>
@@ -766,6 +767,7 @@ class Ajax_Admin
 	public static function server_user_updateUsername()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
+		$_POST['uid'] = intval($_POST['uid']);
 		if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
 			ServerInterface::getInstance()->updateUserName($_POST['sid'], $_POST['uid'], $_POST['newValue']);
 	}
@@ -773,6 +775,7 @@ class Ajax_Admin
 	public static function server_user_updateEmail()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
+		$_POST['uid'] = intval($_POST['uid']);
 		if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
 			ServerInterface::getInstance()->updateUserEmail($_POST['sid'], $_POST['uid'], $_POST['newValue']);
 	}
