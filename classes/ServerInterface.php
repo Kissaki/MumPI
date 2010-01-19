@@ -222,7 +222,7 @@ class ServerInterface_ice
 		$server=$this->getServer($serverId);
 		if(null===$server)
 			throw new Exception('Invalid server id, server not found.');
-		return MurmurRegistration::fromIceObject($server->getRegistration($userId));
+		return MurmurRegistration::fromIceObject($server->getRegistration($userId), $serverId, $userId);
 	}
 	/**
 	 * Get connected users of a virtual server
@@ -239,23 +239,24 @@ class ServerInterface_ice
 	 * @param $uid
 	 * @return MurmurRegistration
 	 */
-	public function getServerUser($srvid, $uid)
+	public function getServerUser($serverId, $userId)
 	{
-		return MurmurRegistration::fromIceObject($this->getServer(intval($srvid))->getRegistration(intval($uid)));
+		return MurmurRegistration::fromIceObject($this->getServer(intval($serverId))->getRegistration(intval($userId)), $serverId, $userId);
 	}
 	/**
 	 * Get a user account by searching for a specific email.
 	 * This will only return the first user account found.
 	 * @param $srvid server id
 	 * @param $email email address
-	 * @return unknown_type registration or null
+	 * @return MurmurRegistration registration or null
 	 */
 	function getUserByEmail($srvid, $email)
 	{
-		$regs = $this->getServer($srvid)->getRegisteredPlayers('');
-		foreach($regs AS $reg){
-			if($reg->email == $email){
-				return $reg;
+		$regs = $this->getServerRegistrations($srvid);
+		foreach ($regs AS $uid=>$name) {
+			$user = $this->getServerRegistration($srvid, $uid);
+			if ($user->getEmail() == $email) {
+				return $user;
 			}
 		}
 		return null;
@@ -324,7 +325,7 @@ class ServerInterface_ice
 		$srv = $this->getServer($srvid);
 		$reg = $this->getServerUser($srvid, $userId);
 		$reg->setPassword($newPw);
-		$srv->updateregistration($userId, $reg->toArray());
+		$srv->updateRegistration($userId, $reg->toArray());
 	}
 	function updateUserTexture($srvid, $uid, $newTexture)
 	{

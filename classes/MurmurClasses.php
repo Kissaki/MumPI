@@ -56,14 +56,17 @@ class MurmurRegistration
 	const USERHASH=3;
 	const USERPASSWORD=4;
 	
+	private $serverId;
 	private $name;
 	private $email;
 	private $comment;
 	private $hash;
 	private $password;
 	
-	public function __construct($name, $email=null, $comment=null, $hash=null, $password=null)
+	public function __construct($serverId, $userId, $name, $email=null, $comment=null, $hash=null, $password=null)
 	{
+		$this->serverId=$serverId;
+		$this->userId=$userId;
 		$this->name=$name;
 		$this->email=$email;
 		$this->comment=$comment;
@@ -76,17 +79,17 @@ class MurmurRegistration
 	 * @param unknown_type $object UserInfoMap
 	 * @return MurmurRegistration
 	 */
-	public static function fromIceObject(array $object)
+	public static function fromIceObject(array $object, $serverId, $userId)
 	{
 		$name=isset($object[self::USERNAME])?$object[self::USERNAME]:null;
 		$email=isset($object[self::USEREMAIL])?$object[self::USEREMAIL]:null;
 		$comment=isset($object[self::USERCOMMENT])?$object[self::USERCOMMENT]:null;
 		$hash=isset($object[self::USERHASH])?$object[self::USERHASH]:null;
 		$password=isset($object[self::USERPASSWORD])?$object[self::USERPASSWORD]:null;
-		return new self($name, $email, $comment, $hash, $password);
+		return new self($serverId, $userId, $name, $email, $comment, $hash, $password);
 	}
 	/**
-	 * @return array
+	 * @return array with name, email, comment, hash, password and indices defined as constants
 	 */
 	public function toArray()
 	{
@@ -113,6 +116,15 @@ class MurmurRegistration
 			);*/
 	}
 	
+	// getters
+	public function getServerId()
+	{
+		return $this->serverId;
+	}
+	public function getUserId()
+	{
+		return $this->userId;
+	}
 	public function getName()
 	{
 		return $this->name;
@@ -134,6 +146,7 @@ class MurmurRegistration
 		return $this->password;
 	}
 	
+	// setters
 	public function setName($name)
 	{
 		$this->name = $name;
@@ -142,15 +155,15 @@ class MurmurRegistration
 	{
 		$this->email=$email;
 	}
-	public function setComment()
+	public function setComment($comment)
 	{
 		$this->comment=$comment;
 	}
-	public function setHash()
+	public function setHash($hash)
 	{
 		$this->hash=$hash;
 	}
-	public function setPassword()
+	public function setPassword($password)
 	{
 		$this->password=$password;
 	}

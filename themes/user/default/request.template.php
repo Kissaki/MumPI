@@ -12,8 +12,8 @@ if (isset($_POST['email']) && !empty($_POST['email'])) {
 		$user = ServerInterface::getInstance()->getUserByEmail(intval($_POST['serverid']), $_POST['email']);
 		if($user != null){
 			$newPw = substr(md5(rand()), 4, 8);
-			ServerInterface::getInstance()->updateUserPw(intval($_POST['serverid']), $user->userid, $newPw);
-			mail($_POST['email'], tr('request_mail_up_subj'), sprintf(tr('request_mail_up_body'), $user->name, $newPw) );
+			ServerInterface::getInstance()->updateUserPw(intval($_POST['serverid']), $user->getUserId(), $newPw);
+			mail($_POST['email'], tr('request_mail_up_subj'), sprintf(tr('request_mail_up_body'), $user->getName(), $newPw) );
 			$formProcessed = tr('request_mail_sent');
 		}else{
 			MessageManager::addWarning(tr('request_nosuchaccount'));
@@ -23,7 +23,7 @@ if (isset($_POST['email']) && !empty($_POST['email'])) {
 		$user = ServerInterface::getInstance()->getUserByEmail(intval($_POST['serverid']), $_POST['email']);
 		if ($user != null) {
 			$newPw = substr(md5(rand()), 4, 8);
-			ServerInterface::getInstance()->updateUserPw(intval($_POST['serverid']), $user->userid, $newPw);
+			ServerInterface::getInstance()->updateUserPw(intval($_POST['serverid']), $user->getUserId(), $newPw);
 			mail($_POST['email'], tr('request_mail_p_subj'), sprintf(tr('request_mail_p_body'), $newPw) );
 			$formProcessed = tr('request_mail_sent');
 		} else {
@@ -33,7 +33,7 @@ if (isset($_POST['email']) && !empty($_POST['email'])) {
 		// send username
 		$user = ServerInterface::getInstance()->getUserByEmail(intval($_POST['serverid']), $_POST['email']);
 		if ($user != null) {
-			mail($_POST['email'], tr('request_mail_u_subj'), sprintf(tr('request_mail_u_body'), $user->name) );
+			mail($_POST['email'], tr('request_mail_u_subj'), sprintf(tr('request_mail_u_body'), $user->getName()) );
 			$formProcessed = tr('request_mail_sent');
 		} else {
 			MessageManager::addWarning(tr('request_nosuchaccount'));
