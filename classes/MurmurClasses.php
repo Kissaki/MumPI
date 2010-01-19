@@ -7,45 +7,11 @@
  */
 
 
-class MurmurUser
-{
-	
-	private $session;
-	private $userId;
-	
-	private $isMuted;
-	private $isDeafened;
-	private $isSuppressed;
-	private $isSelfMuted;
-	private $isSelfDeafened;
-	
-	private $channel;
-	
-	private $name;
-	private $onlineSeconds;
-	private $bytesPerSec;
-	
-	private $clientVersion;
-	private $clientRelease;
-	private $clientOs;
-	private $clientOsVersion;
-	
-	private $pluginIdentity;
-	private $pluginContext;
-	
-	private $comment;
-	private $address;
-	private $isTcpOnly;
-	private $idleSeconds;
-	
-	//TODO constructors (from ice obj, new)
-	//TODO getters
-	//TODO setters
-}
-
 /**
- * slice doc name: UserInfoMap
- * @link http://mumble.sourceforge.net/slice/Murmur.html#UserInfoMap
+ * a registration on a virtual server
+ * 
+ * slice doc name: UserInfo
+ * @link http://mumble.sourceforge.net/slice/Murmur/UserInfo.html
  */
 class MurmurRegistration
 {
@@ -169,4 +135,104 @@ class MurmurRegistration
 	}
 }
 
+
+/**
+ * a currently connected User (on a virtual server)
+ * 
+ * slice doc name: User
+ * @link http://mumble.sourceforge.net/slice/Murmur/User.html
+ */
+class MurmurUser
+{
+	/**
+	 * @var int
+	 */
+	private $sessionId;
+	/**
+	 * -1 if anonymous
+	 * @var int
+	 */
+	private $registrationId;
+	
+	private $isMuted;
+	private $isDeafened;
+	private $isSuppressed;
+	private $isSelfMuted;
+	private $isSelfDeafened;
+	
+	/**
+	 * @var int
+	 */
+	private $channelId;
+	
+	/**
+	 * @var string
+	 */
+	private $name;
+	/**
+	 * @var int
+	 */
+	private $onlineSeconds;
+	/**
+	 * @var int
+	 */
+	private $bytesPerSec;
+	
+	/**
+	 * @var int 16 upper bits is major, followed by 8 bits of minor version, followed by 8 bits of patchlevel => 0x00010203 is 1.2.3
+	 */
+	private $clientVersion;
+	/**
+	 * @var string for releases: version, for snapshots/compiles: something else
+	 */
+	private $clientRelease;
+	/**
+	 * @var string
+	 */
+	private $clientOs;
+	/**
+	 * @var string
+	 */
+	private $clientOsVersion;
+	
+	/**
+	 * @var string unique ID inside current game
+	 */
+	private $pluginIdentity;
+	/**
+	 * @var string binary blob, game and team…
+	 */
+	private $pluginContext;
+	
+	/**
+	 * @var string
+	 */
+	private $comment;
+	/**
+	 * @var MurmurNetAddress byte sequence, ipv6 address
+	 */
+	private $address;
+	/**
+	 * @var bool
+	 */
+	private $isTcpOnly;
+	/**
+	 * @var int
+	 */
+	private $idleSeconds;
+	
+	//TODO constructors (from ice obj, new)
+	//TODO getters
+	//TODO setters
+}
+
+/**
+ * IPv6 network address
+ * 
+ * @link http://mumble.sourceforge.net/slice/Murmur.html#NetAddress
+ */
+class MurmurNetAddress
+{
+	// TODO implement MurmurNetAddress
+}
 

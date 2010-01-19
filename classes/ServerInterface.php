@@ -227,21 +227,37 @@ class ServerInterface_ice
 	/**
 	 * Get connected users of a virtual server
 	 * @param $sid
-	 * @return array[pid] Array with user id as key and user name as value  
+	 * @return array of MurmurUser objects
 	 */
-	public function getServerUsersConnected($sid)
+	public function getServerUsersConnected($serverId)
 	{
-		return $this->getServer($sid)->getUsers();
+		return $this->getServer($serverId)->getUsers();
+		// TODO use MurmurUser class
+		$users = array();
+		$userMap = $this->getServer($serverId)->getUsers();
+		foreach ($userMap as $sessionId=>$iceUser) {
+			$user = MurmurUser::fromIceObject($iceUser);
+			$users[] = $user;
+		}
+		return $users;
 	}
 	/**
-	 * Get a user registration from a virtual server
-	 * @param $srvid
-	 * @param $uid
-	 * @return MurmurRegistration
+	 * @param int $serverId
+	 * @param int $sessionId
+	 * @return MurmurUser
 	 */
-	public function getServerUser($serverId, $userId)
+	public function getServerUser($serverId, $sessionId)
 	{
-		return MurmurRegistration::fromIceObject($this->getServer(intval($serverId))->getRegistration(intval($userId)), $serverId, $userId);
+		return MurmurUser::fromIceObject($this->getServer($serverId)->getState($sessionId));
+	}
+	/**
+	 * @param int $serverId
+	 * @param MurmurUser $user
+	 * @return void
+	 */
+	public function saveServerUser($serverId, MurmurUser $user)
+	{
+		MurmurUser::fromIceObject($this->getServer($serverId)->setState($user->toIceObject()));
 	}
 	/**
 	 * Get a user account by searching for a specific email.
@@ -263,15 +279,15 @@ class ServerInterface_ice
 	}
 	function getUserName($srvid, $uid)
 	{
-		return $this->getServerUser($srvid, $uid)->getName();
+		return $this->getServerRegistration($srvid, $uid)->getName();
 	}
 	function getUserEmail($srvid, $uid)
 	{
-		return $this->getServerUser($srvid, $uid)->getEmail();
+		return $this->getServerRegistration($srvid, $uid)->getEmail();
 	}
 	function getUserPw($srvid, $uid)
 	{
-		return $this->getServerUser($srvid,$uid)->getPassword();
+		return $this->getServerRegistration($srvid,$uid)->getPassword();
 	}
 	function getUserTexture($srvid, $uid)
 	{
@@ -316,14 +332,14 @@ class ServerInterface_ice
 	function updateUserEmail($srvid, $userId, $newEmail)
 	{
 		$srv = $this->getServer($srvid);
-		$reg = $this->getServerUser($srvid, $userId);
+		$reg = $this->getServerRegistration($srvid, $userId);
 		$reg->setEmail($newEmail);
 		$srv->updateregistration($userId, $reg->toArray());
 	}
 	function updateUserPw($srvid, $userId, $newPw)
 	{
 		$srv = $this->getServer($srvid);
-		$reg = $this->getServerUser($srvid, $userId);
+		$reg = $this->getServerRegistration($srvid, $userId);
 		$reg->setPassword($newPw);
 		$srv->updateRegistration($userId, $reg->toArray());
 	}
