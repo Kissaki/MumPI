@@ -437,7 +437,7 @@ class Ajax_Admin
 						<th>Username</th>
 						<th>muted?</th>
 						<th>deaf?</th>
-						<th>Seconds online</th>
+						<th>time online</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
