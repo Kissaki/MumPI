@@ -108,14 +108,24 @@
 				);
 		}
 		function jq_server_registration_remove(uid) {
-			$.post("./?ajax=server_regstration_remove",
-					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid },
-					function(data){
-						if (data.length>0) { alert('failed: '+data); }
-						jq_server_getRegistrations(<?php echo $_GET['sid']; ?>);
-					}
-				);
-			
+			$.post(
+						"./?ajax=server_regstration_remove",
+						{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid },
+						function(data){
+							if (data.length>0) { alert('failed: '+data); }
+							jq_server_getRegistrations(<?php echo $_GET['sid']; ?>);
+						}
+			);
+		}
+		function jq_server_user_genNewPw(userId) {
+			$.post(
+						"./?ajax=server_regstration_genpw",
+						{ 'serverId': <?php echo $_GET['sid']; ?>, 'userId': uid },
+						function(data) {
+							if (data.length>0) { alert('failed: '+data); }
+							jq_server_getRegistrations(<?php echo $_GET['sid']; ?>);
+						}
+			);
 		}
 		function jq_user_updateUsername(uid, newVal) {
 			$('#user_name_'+uid).append(imgAjaxLoading);

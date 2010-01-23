@@ -385,6 +385,8 @@ class Ajax_Admin
 						<th>User ID</th>
 						<th>Username</th>
 						<th>email</th>
+						<th>comment</th>
+						<th>hash</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -398,10 +400,29 @@ class Ajax_Admin
 						<td><?php echo $userId; ?></td>
 						<td id="user_name_<?php echo $userId; ?>" class="jq_editable"><?php echo $userName; ?></td>
 						<td id="user_email_<?php echo $userId; ?>" class="jq_editable"><?php echo $user->getEmail(); ?></td>
+						<td id="userComment<?php echo $user->getUserId(); ?>" class="comment userComment">
+							<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getUserId(); ?>);" style="float:left; margin-right:4px;">○</a>
+							<?php $commentClean = htmlspecialchars($user->getComment()); ?>
+							<div class="teaser">“<?php echo substr($commentClean, 0, 10); ?>…“</div>
+							<div class="complete" style="display:none;"><?php echo $commentClean; ?></div>
+							<script type="text/javascript">
+								// toggle display of user comment teaser <-> full
+								function toggleUserComment(userId)
+								{
+									jQuery('#userComment' + userId + ' .teaser').css('display', (jQuery('#userComment' + userId + ' .teaser').css('display')=='block'?'none':'block'));
+									jQuery('#userComment' + userId + ' .complete').css('display', (jQuery('#userComment' + userId + ' .complete').css('display')=='block'?'none':'block'));
+								}
+							</script>
+						</td>
+						<td class="userHash"><?php echo $user->getHash(); ?></td>
 						<td>
 <?php
-							if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
-								echo '<a class="jqlink" onclick="jq_server_registration_remove('.$userId.')">remove</a>';
+							if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid'])) {
+								echo '<ul>';
+								echo '<li><a class="jqlink" onclick="jq_server_registration_remove('.$userId.')">remove</a></li>';
+								echo '<li><a title="generate a new password for the user" class="jqlink" onclick="jq_server_user_genNewPw('.$userId.')">genNewPw</a></li>';
+								echo '</ul>';
+							}
 ?>
 						</td>
 					</tr>
@@ -490,11 +511,6 @@ class Ajax_Admin
 							</script>
 						</td>
 						<td class="userAddress">
-							<?php
-//								foreach($user->getAddress() AS $byte=>$value) {
-//									echo $value;
-//								}
-							?>
 							<?php echo $user->getAddress()->__toString(); ?> <sup>(<a href="http://[<?php echo $user->getAddress(); ?>]">http</a>, <a href="http://www.db.ripe.net/whois?searchtext=<?php echo $user->getAddress(); ?>">lookup</a>)</sup>
 							<?php if ($user->getAddress()->isIPv4()) { echo '<div>' . $user->getAddress()->toStringAsIPv4() . '</div>'; } ?>
 						</td>
@@ -553,6 +569,14 @@ class Ajax_Admin
 			return ;
 		
 		ServerInterface::getInstance()->removeRegistration($_POST['sid'], $_POST['uid']);
+	}
+	public static function server_regstration_genpw()
+	{
+		$serverId = intval($_POST['serverId']);
+		$userId = $_POST['uid'];
+		if (!PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
+			return ;
+		ServerInterface::getInstance()->getServerRegistration($serverId, $userId);
 	}
 	
 	public static function server_user_mute()

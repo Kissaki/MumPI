@@ -22,7 +22,7 @@
 			}
 			// Everything ok, check if auth by mail
 			if( SettingsManager::getInstance()->isAuthByMail($_POST['serverid'])) {
-				// Everything ok, create Auth by mail (send activation mail)
+				// create Auth by mail (send activation mail)
 				// Add unactivated account and send mail
 				if (ServerInterface::getInstance()->getServer(intval($_POST['serverid'])) != null) {
 					// Server does exist
@@ -34,8 +34,7 @@
 					MessageManager::addWarning(tr('unknownserver'));
 				}
 			} else {
-				// Everything ok, register account
-				// Input ok, now do try to register
+				// non-auth-by-mail, just add registration
 				ServerInterface::getInstance()->addUser($_POST['serverid'], $_POST['name'], $_POST['password'], $_POST['email']);
 				echo tr('register_success');
 				Logger::log_registration($_POST['name']);

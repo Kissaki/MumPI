@@ -17,7 +17,8 @@ a:visited { color:white; }
 a[href^="http://"]:after { font-size:x-small; vertical-align:top; content:" (out)"; }
 a[href$=".pdf"]:after { content:"(PDF)"; }
 form table tr td.formitemname { text-align:right; padding:2px 6px 2px 2px; }
-td, th { text-align:left; padding-left:4px; vertical-align:top; }
+td, th { text-align:left; padding:0px 3px; vertical-align:top; border:1px solid #333333; }
+th { border-bottom-color:#444444; }
 .fullwidth { width:100%; }
 input[type=text], input[type=password], input[type=text], select { width:100%; }
 textarea { width:100%; min-height:100px; }
