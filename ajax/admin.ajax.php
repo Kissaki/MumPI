@@ -191,7 +191,7 @@ class Ajax_Admin
 		
 		// output
 		echo '<ul class="form_group_servers">';
-		foreach ($servers AS $srv) { //FIXME ###
+		foreach ($servers AS $srv) {
 			echo sprintf('<li><input type="checkbox" name="%s"%s onclick="jq_adminGroup_server_update(%d, %d, %s);"/> %s</li>',
 					'srv'.$srv->id(), in_array($srv->id(), $group['adminOnServers'])?' checked="checked"':'', $_POST['groupID'], $srv->id(), "$('input[name=srv".$srv->id()."]').attr('checked')", SettingsManager::getInstance()->getServerName($srv->id())
 				);
