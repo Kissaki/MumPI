@@ -302,7 +302,7 @@ class ServerInterface_ice
 				die();
 			}
 			
-			$reg = new MurmurRegistration($name, $email, null, null, $password);
+			$reg = new MurmurRegistration($srvid, null, $name, $email, null, null, $password);
 			$tmpUid = $tmpServer->registerUser($reg->toArray());
 			
 			echo TranslationManager::getInstance()->getText('doregister_success').'<br/>';
