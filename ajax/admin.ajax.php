@@ -475,8 +475,28 @@ class Ajax_Admin
 						</td>
 						<td><?php echo $user->getBytesPerSecond(); ?></td>
 						<td><?php echo $user->clientVersion() . ($user->clientVersion()!=$user->clientRelease())?$user->clientRelease():'' . $user->clientOs() . $user->clientOsVersion(); ?></td>
-						<td><?php echo $user->getComment(); ?></td>
-						<td><?php echo $user->getAddress(); ?></td>
+						<td id="userComment<?php echo $user->getSessionId(); ?>" class="comment userComment">
+							<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getSessionId(); ?>);" style="float:left; margin-right:4px;">○</a>
+							<?php $commentClean = htmlspecialchars($user->getComment()); ?>
+							<div class="teaser">“<?php echo substr($commentClean, 0, 10); ?>…“</div>
+							<div class="complete" style="display:none;"><?php echo $commentClean; ?></div>
+							<script type="text/javascript">
+								// toggle display of user comment teaser <-> full
+								function toggleUserComment(userSessionId)
+								{
+									jQuery('#userComment' + userSessionId + ' .teaser').css('display', (jQuery('#userComment' + userSessionId + ' .teaser').css('display')=='block'?'none':'block'));
+									jQuery('#userComment' + userSessionId + ' .complete').css('display', (jQuery('#userComment' + userSessionId + ' .complete').css('display')=='block'?'none':'block'));
+								}
+							</script>
+						</td>
+						<td class="userAddress">
+							<?php
+//								foreach($user->getAddress() AS $byte=>$value) {
+//									echo $value;
+//								}
+							?>
+							<?php echo $user->getAddress(); ?> <sup>(<a href="http://[<?php echo $user->getAddress(); ?>]">http</a>)</sup>
+						</td>
 						<td><?php echo $user->getIsTcpOnly(); ?></td>
 						
 						<td>

@@ -247,7 +247,7 @@ class MurmurUser
 	 */
 	public function __construct($sessionId, $registrationId, $isMuted, $isDeafened, $isSuppressed, $isSelfMuted, $isSelfDeafened,
 															$channelId, $name, $onlineSeconds, $bytesPerSecond, $clientVersion, $clientRelease, $clientOs, $clientOsVersion,
-															$pluginIdentity, $pluginContext, $comment, $address, $isTcpOnly, $idleSeconds)
+															$pluginIdentity, $pluginContext, $comment, MurmurNetAddress $address, $isTcpOnly, $idleSeconds)
 	{
 		$this->sessionId=$sessionId;
 		$this->registrationId=$registrationId;
@@ -297,8 +297,7 @@ class MurmurUser
 										$iceUser->identity,
 										$iceUser->context,
 										$iceUser->comment,
-										//TODO NetAddress
-										$iceUser->address,
+										MurmurNetAddress::fromIceObject($iceUser->address),
 										$iceUser->tcponly,
 										$iceUser->idlesecs
 									);
@@ -345,6 +344,69 @@ class MurmurUser
  */
 class MurmurNetAddress
 {
+	private $address;
+
+	public static function fromIceObject(array $address)
+	{
+		// $byte: byte number (0-15); $value: int
+		foreach ($address AS $byte=>$value) {
+			
+		}
+		return new self($address);
+	}
+	public function __construct(array $address)
+	{
+		$this->address = $address;
+	}
+	
 	// TODO implement MurmurNetAddress
+	public function isIPv4()
+	{
+		$expected = array(
+											0=>0,
+											1=>0,
+											2=>0,
+											3=>0,
+											4=>0,
+											5=>0xffff,
+											);
+		for($byte=0; $byte<6; $byte++) {
+			if ($expected[$byte] !== $this->address[$byte]) {
+				return false;
+			}
+		}
+		return true;
+	}
+	public function isIPv6()
+	{
+		return !$this->isIPv4();
+	}
+	public function __toString()
+	{
+		$str = '';
+		$byteOdd = true;
+		foreach ($this->address AS $byte=>$value) {
+			if ($byteOdd && !empty($str))
+				$str .= ':';
+			$str .= sprintf('%02x', $value);
+			$byteOdd = !$byteOdd;
+		}
+		$str = preg_replace(':0000:', '::', $str);
+		
+		$str = '';
+		$tmp = null;
+		$word = null;
+		foreach ($this->address AS $byte=>$value) {
+			if ($tmp === null)
+				$tmp = $value;
+			else {
+				$str .= sprintf(':%x', $tmp + $value);
+				$tmp = null;
+			}
+		}
+		$str = substr($str, 1);
+		//TODO: strip 0:, :0: to ::
+		return $str;
+	}
 }
 
