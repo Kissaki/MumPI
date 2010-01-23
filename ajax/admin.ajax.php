@@ -495,9 +495,10 @@ class Ajax_Admin
 //									echo $value;
 //								}
 							?>
-							<?php echo $user->getAddress(); ?> <sup>(<a href="http://[<?php echo $user->getAddress(); ?>]">http</a>)</sup>
+							<?php echo $user->getAddress()->__toString(); ?> <sup>(<a href="http://[<?php echo $user->getAddress(); ?>]">http</a>, <a href="http://www.db.ripe.net/whois?searchtext=<?php echo $user->getAddress(); ?>">lookup</a>)</sup>
+							<?php if ($user->getAddress()->isIPv4()) { echo '<div>' . $user->getAddress()->toStringAsIPv4() . '</div>'; } ?>
 						</td>
-						<td><?php echo $user->getIsTcpOnly(); ?></td>
+						<td><?php echo $user->getIsTcpOnly()?'true':'false'; ?></td>
 						
 						<td>
 <?php

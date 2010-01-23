@@ -333,6 +333,13 @@ class MurmurUser
 	{
 		return $this->sessionId;
 	}
+	/**
+	 * @return MurmurNetAddress
+	 */
+	public function getAddress()
+	{
+		return $this->address;
+	}
 	
 	//TODO setters
 }
@@ -344,6 +351,7 @@ class MurmurUser
  */
 class MurmurNetAddress
 {
+	private $IPv4Range;
 	private $address;
 
 	public static function fromIceObject(array $address)
@@ -357,20 +365,27 @@ class MurmurNetAddress
 	public function __construct(array $address)
 	{
 		$this->address = $address;
-	}
-	
-	// TODO implement MurmurNetAddress
-	public function isIPv4()
-	{
-		$expected = array(
+		$this->IPv4Range = array(
 											0=>0,
 											1=>0,
 											2=>0,
 											3=>0,
 											4=>0,
-											5=>0xffff,
+											5=>0,
+											6=>0,
+											7=>0,
+											8=>0,
+											9=>0,
+											10=>0,
+											11=>0xffff,
 											);
-		for($byte=0; $byte<6; $byte++) {
+	}
+	
+	public function isIPv4()
+	{
+		// IPv4 range
+		$expected = $this->IPv4Range;
+		for($byte=0; $byte<count($expected); $byte++) {
 			if ($expected[$byte] !== $this->address[$byte]) {
 				return false;
 			}
@@ -384,18 +399,7 @@ class MurmurNetAddress
 	public function __toString()
 	{
 		$str = '';
-		$byteOdd = true;
-		foreach ($this->address AS $byte=>$value) {
-			if ($byteOdd && !empty($str))
-				$str .= ':';
-			$str .= sprintf('%02x', $value);
-			$byteOdd = !$byteOdd;
-		}
-		$str = preg_replace(':0000:', '::', $str);
-		
-		$str = '';
 		$tmp = null;
-		$word = null;
 		foreach ($this->address AS $byte=>$value) {
 			if ($tmp === null)
 				$tmp = $value;
@@ -407,6 +411,20 @@ class MurmurNetAddress
 		$str = substr($str, 1);
 		//TODO: strip 0:, :0: to ::
 		return $str;
+	}
+	public function toString()
+	{
+		return $this->__toString();
+	}
+	public function toStringAsIPv4()
+	{
+		if (!$this->isIPv4())
+			throw new Exception('Not an IPv4 address.');
+		$str = '';
+		for ($byteNr=count($this->IPv4Range); $byteNr<count($this->address); $byteNr++) {
+			$str .= '.' . $this->address[$byteNr];
+		}
+		return substr($str, 1);
 	}
 }
 
