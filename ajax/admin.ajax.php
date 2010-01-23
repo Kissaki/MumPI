@@ -420,7 +420,7 @@ class Ajax_Admin
 							if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid'])) {
 								echo '<ul>';
 								echo '<li><a class="jqlink" onclick="jq_server_registration_remove('.$userId.')">remove</a></li>';
-								echo '<li><a title="generate a new password for the user" class="jqlink" onclick="jq_server_user_genNewPw('.$userId.')">genNewPw</a></li>';
+								echo '<li><a title="generate a new password for the user" class="jqlink" onclick="if(confirm(\'Are you sure you want to generate and set a new password for this account?\')){jq_server_user_genNewPw('.$user->getServerId().', '.$user->getUserId().'); return false;}">genNewPw</a></li>';
 								echo '</ul>';
 							}
 ?>
@@ -573,10 +573,13 @@ class Ajax_Admin
 	public static function server_regstration_genpw()
 	{
 		$serverId = intval($_POST['serverId']);
-		$userId = $_POST['uid'];
-		if (!PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
+		$userId = $_POST['userId'];
+		$newPw = $_POST['newPw'];
+		if (!PermissionManager::getInstance()->serverCanEditRegistrations($_POST['serverId']))
 			return ;
-		ServerInterface::getInstance()->getServerRegistration($serverId, $userId);
+		$reg = ServerInterface::getInstance()->getServerRegistration($serverId, $userId);
+		$reg->setPassword($newPw);
+		ServerInterface::getInstance()->saveRegistration($reg);
 	}
 	
 	public static function server_user_mute()

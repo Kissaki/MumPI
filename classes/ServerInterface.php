@@ -219,6 +219,9 @@ class ServerInterface_ice
 	 */
 	public function getServerRegistration($serverId, $userId)
 	{
+		$serverId = intval($serverId);
+		$userId = intval($userId);
+		
 		$server=$this->getServer($serverId);
 		if(null===$server)
 			throw new Exception('Invalid server id, server not found.');
@@ -321,7 +324,10 @@ class ServerInterface_ice
 	{
 		ServerInterface::getInstance()->getServer(intval($srvid))->unregisterUser(intval($uid));
 	}
-	
+	function saveRegistration(MurmurRegistration $reg)
+	{
+		$this->getServer($reg->getServerId())->updateregistration($reg->getUserId(), $reg->toArray());
+	}
 	function updateUserName($srvid, $userId, $newName)
 	{
 		$reg = $this->getServerRegistration($srvid, $userId);
@@ -416,9 +422,9 @@ class ServerInterface_ice
 		}
 		$srv->setBans($newBans);
 	}
-	function getServerBans($srvid)
+	function getServerBans($serverId)
 	{
-		return $this->meta->getServer(intval($srvid))->getBans();
+		return $this->meta->getServer(intval($serverId))->getBans();
 	}
 	function getServerBansIpString($srvid)
 	{

@@ -117,13 +117,16 @@
 						}
 			);
 		}
-		function jq_server_user_genNewPw(userId) {
+		function jq_server_user_genNewPw(serverId, userId) {
+			var newPw = randomString(6);
 			$.post(
 						"./?ajax=server_regstration_genpw",
-						{ 'serverId': <?php echo $_GET['sid']; ?>, 'userId': uid },
+						{ 'serverId': serverId, 'userId': userId, 'newPw': newPw },
 						function(data) {
 							if (data.length>0) { alert('failed: '+data); }
-							jq_server_getRegistrations(<?php echo $_GET['sid']; ?>);
+							else
+								alert('Password set to: ' + newPw);
+							jq_server_getRegistrations(serverId);
 						}
 			);
 		}
