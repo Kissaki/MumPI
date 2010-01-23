@@ -176,7 +176,7 @@ class MurmurUser
 	/**
 	 * @var int
 	 */
-	private $bytesPerSec;
+	private $bytesPerSecond;
 	
 	/**
 	 * @var int 16 upper bits is major, followed by 8 bits of minor version, followed by 8 bits of patchlevel => 0x00010203 is 1.2.3
@@ -221,8 +221,120 @@ class MurmurUser
 	 */
 	private $idleSeconds;
 	
-	//TODO constructors (from ice obj, new)
+	/**
+	 * @param int $sessionId
+	 * @param int $registrationId
+	 * @param bool $isMuted
+	 * @param bool $isDeafened
+	 * @param bool $isSuppressed
+	 * @param bool $isSelfMuted
+	 * @param bool $isSelfDeafened
+	 * @param int $channelId
+	 * @param unknown_type $name
+	 * @param int $onlineSeconds
+	 * @param int $bytesPerSec
+	 * @param int $clientVersion
+	 * @param string $clientRelease
+	 * @param string $clientOs
+	 * @param string $clientOsVersion
+	 * @param string $pluginIdentity
+	 * @param string $pluginContext
+	 * @param string $comment
+	 * @param int $address
+	 * @param bool $isTcpOnly
+	 * @param int $idleSeconds
+	 * @return MurmurUser
+	 */
+	public function __construct($sessionId, $registrationId, $isMuted, $isDeafened, $isSuppressed, $isSelfMuted, $isSelfDeafened,
+															$channelId, $name, $onlineSeconds, $bytesPerSecond, $clientVersion, $clientRelease, $clientOs, $clientOsVersion,
+															$pluginIdentity, $pluginContext, $comment, $address, $isTcpOnly, $idleSeconds)
+	{
+		$this->sessionId=$sessionId;
+		$this->registrationId=$registrationId;
+		$this->isMuted=$isMuted;
+		$this->isDeafened=$isDeafened;
+		$this->isSuppressed=$isSuppressed;
+		$this->isSelfMuted=$isSelfMuted;
+		$this->isSelfDeafened=$isSelfDeafened;
+		$this->channelId=$channelId;
+		$this->name=$name;
+		$this->onlineSeconds=$onlineSeconds;
+		$this->bytesPerSecond=$bytesPerSecond;
+		$this->clientVersion=$clientVersion;
+		$this->clientRelease=$clientRelease;
+		$this->clientOs=$clientOs;
+		$this->clientOsVersion=$clientOsVersion;
+		$this->pluginIdentity=$pluginIdentity;
+		$this->pluginContext=$pluginContext;
+		$this->comment=$comment;
+		$this->address=$address;
+		$this->isTcpOnly=$isTcpOnly;
+		$this->idleSeconds=$idleSeconds;
+	}
+	/**
+	 * Create a MurmurUser from an ice User
+	 * @param Murmur_User $iceUser
+	 * @return MurmurUser
+	 */
+	public static function fromIceObject(Murmur_User $iceUser)
+	{
+		return new self(
+										$iceUser->session,
+										$iceUser->userid,
+										$iceUser->mute,
+										$iceUser->deaf,
+										$iceUser->suppress,
+										$iceUser->selfMute,
+										$iceUser->selfDeaf,
+										$iceUser->channel,
+										$iceUser->name,
+										$iceUser->onlinesecs,
+										$iceUser->bytespersec,
+										$iceUser->version,
+										$iceUser->release,
+										$iceUser->os,
+										$iceUser->osversion,
+										$iceUser->identity,
+										$iceUser->context,
+										$iceUser->comment,
+										//TODO NetAddress
+										$iceUser->address,
+										$iceUser->tcponly,
+										$iceUser->idlesecs
+									);
+	}
+	
 	//TODO getters
+	/**
+	 * dynamic getter for vars
+	 * @param string $name varname
+	 * @return unknown_type
+	 */
+	public function __get($name)
+	{
+		if (isset($this->$name)) {
+			return $this->$name;
+		}
+	}
+	/**
+	 * dynamic getter for get fns
+	 * @param string $name fnname
+	 * @param array $arguments fn arguments
+	 * @return unknown_type
+	 */
+	public function __call($name, array $arguments)
+	{
+		if (substr($name, 0, 3)=='get') {
+			$varName = strtolower(substr($name, 3, 1)).substr($name, 4);
+			return $this->$varName;
+		}
+	}
+	
+	public function getSessionIds()
+	{
+		return $this->sessionId;
+	}
+	
 	//TODO setters
 }
 

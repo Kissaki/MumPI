@@ -231,8 +231,7 @@ class ServerInterface_ice
 	 */
 	public function getServerUsersConnected($serverId)
 	{
-		return $this->getServer($serverId)->getUsers();
-		// TODO use MurmurUser class
+		//return $this->getServer($serverId)->getUsers();
 		$users = array();
 		$userMap = $this->getServer($serverId)->getUsers();
 		foreach ($userMap as $sessionId=>$iceUser) {
@@ -311,7 +310,7 @@ class ServerInterface_ice
 			echo 'Invalid server. Please check your server selection.<br/><a onclick="history.go(-1); return false;" href="?page=register">go back</a><br/>If the problem persists, please contact a server admin or webmaster.<br/>';
 		} catch(Murmur_ServerBootedException $exc) {
 			echo 'Server is currently not running, but it has to to be able to register.<br/>Please contact a server admin';
-		} catch(Murmur_InvalidPlayerException $exc) {
+		} catch(Murmur_InvalidUserException $exc) {
 			echo 'The username you specified is probably already in use or invalid. Please try another one.<br/><a onclick="history.go(-1); return false;" href="?page=register">go back</a>';
 		} catch(Ice_UnknownUserException $exc) {	// This should not be caught
 			echo $exc->unknown.'<br/>';
@@ -320,7 +319,7 @@ class ServerInterface_ice
 	}
 	function removeRegistration($srvid, $uid)
 	{
-		ServerInterface::getInstance()->getServer(intval($srvid))->unregisterPlayer(intval($uid));
+		ServerInterface::getInstance()->getServer(intval($srvid))->unregisterUser(intval($uid));
 	}
 	
 	function updateUserName($srvid, $userId, $newName)
@@ -360,35 +359,35 @@ class ServerInterface_ice
 	function muteUser($srvid, $sessid)
 	{
 		$srv = $this->meta->getServer(intval($srvid));
-		$player = $srv->getState(intval($sessid));
-		$player->mute = true;
-		$srv->setState($player);
+		$user = $srv->getState(intval($sessid));
+		$user->mute = true;
+		$srv->setState($user);
 	}
 	function unmuteUser($srvid, $sessid)
 	{
 		$srv = $this->meta->getServer(intval($srvid));
-		$player = $srv->getState(intval($sessid));
-		$player->deaf = false;
-		$player->mute = false;
-		$srv->setState($player);
+		$user = $srv->getState(intval($sessid));
+		$user->deaf = false;
+		$user->mute = false;
+		$srv->setState($user);
 	}
 	function deafUser($srvid, $sessid)
 	{
 		$srv = $this->meta->getServer(intval($srvid));
-		$player = $srv->getState(intval($sessid));
-		$player->deaf = true;
-		$srv->setState($player);
+		$user = $srv->getState(intval($sessid));
+		$user->deaf = true;
+		$srv->setState($user);
 	}
 	function undeafUser($srvid, $sessid)
 	{
 		$srv = $this->meta->getServer(intval($srvid));
-		$player = $srv->getState(intval($sessid));
-		$player->deaf = false;
-		$srv->setState($player);
+		$user = $srv->getState(intval($sessid));
+		$user->deaf = false;
+		$srv->setState($user);
 	}
 	function kickUser($srvid, $sessid, $reason='')
 	{
-		$this->meta->getServer(intval($srvid))->kickPlayer(intval($sessid), $reason);
+		$this->meta->getServer(intval($srvid))->kickUser(intval($sessid), $reason);
 	}
 	function ban($serverId, $ip, $bits=32)
 	{

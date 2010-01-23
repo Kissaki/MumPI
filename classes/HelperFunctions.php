@@ -114,7 +114,11 @@ class HelperFunctions{
 	
 	public static function print_r_pre($var)
 	{
-		echo'<pre>';print_r($var);echo'</pre>';
+		echo '<pre>';print_r($var);echo'</pre>';
+	}
+	public static function var_dump_pre($var)
+	{
+		echo '<pre>';var_dump($var);echo'</pre>';
 	}
 	
 	public static function ip2int($ip)

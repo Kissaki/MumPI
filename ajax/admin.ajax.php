@@ -435,25 +435,54 @@ class Ajax_Admin
 						<th>Sess ID</th>
 						<th>Reg ID</th>
 						<th>Username</th>
+						<th></th>
+						
 						<th>muted?</th>
 						<th>deaf?</th>
+						<th>suppressed</th>
+						<th>selfMuted</th>
+						<th>selfDeafened</th>
+						
 						<th>time online</th>
+						<th>idle</th>
+						<th>B/s</th>
+						<th>client</th>
+						<th>comment</th>
+						<th>address</th>
+						<th>TCPonly</th>
+						
 						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>
-<?php				foreach($users AS $user){	?>
+<?php				foreach ($users AS $user) {	?>
 					<tr>
-						<td><?php echo $user->session; ?></td>
-						<td><?php if($user->userid > 0) echo $user->userid; ?></td>
-						<td id="user_name_<?php echo $user->session; ?>" class="jq_editable"><?php echo $user->name; ?></td>
-						<td><input id="user_mute_<?php echo $user->session; ?>" class="jq_toggleable" type="checkbox" <?php if($user->mute) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
-						<td><input id="user_deaf_<?php echo $user->session; ?>" class="jq_toggleable" type="checkbox" <?php if($user->deaf) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
-						<td id="user_email_<?php echo $user->session; ?>" class="jq_editable"><?php $on = $user->onlinesecs; if($on > 59){ echo sprintf('%.0f', $on/60).'m'; }else{ echo $on.'s'; } ?></td>
+						<td><?php echo $user->getSessionId(); ?></td>
+						<td><?php if($user->getRegistrationId() !== -1) echo $user->getRegistrationId(); ?></td>
+						<td id="user_name_<?php echo $user->sessionId; ?>" class="jq_editable"><?php echo $user->name; ?></td>
+						<td><?php echo $user->get ?></td>
+						<td><input id="user_mute_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if($user->getIsMuted()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
+						<td><input id="user_deaf_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if($user->getIsDeafened()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
+						<td><input id="user_suppr_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if($user->getIsSuppressed()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
+						<td><input id="user_selfm_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if($user->getIsSelfMuted()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
+						<td><input id="user_selfd_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if($user->getIsSelfDeafened()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
+						
+						<td id="user_email_<?php echo $user->getSessionId(); ?>" class="jq_editable">
+							<?php $on = $user->getOnlineSeconds(); if($on > 59){ echo sprintf('%.0f', $on/60).'m'; }else{ echo $on.'s'; } ?>
+						</td>
+						<td>
+							<?php $idle = $user->getIdleSeconds(); if($idle > 59){ echo sprintf('%.0f', $idle/60).'m'; }else{ echo $idle.'s'; } ?>
+						</td>
+						<td><?php echo $user->getBytesPerSecond(); ?></td>
+						<td><?php echo $user->clientVersion() . ($user->clientVersion()!=$user->clientRelease())?$user->clientRelease():'' . $user->clientOs() . $user->clientOsVersion(); ?></td>
+						<td><?php echo $user->getComment(); ?></td>
+						<td><?php echo $user->getAddress(); ?></td>
+						<td><?php echo $user->getIsTcpOnly(); ?></td>
+						
 						<td>
 <?php
 						if (PermissionManager::getInstance()->serverCanKick($_POST['sid']))
-							echo '<a class="jqlink" onclick="jq_server_user_kick(' . $user->session . ')">kick</a>';
+							echo '<a class="jqlink" onclick="jq_server_user_kick(' . $user->getSessionId() . ')">kick</a>';
 ?>
 						</td>
 					</tr>
