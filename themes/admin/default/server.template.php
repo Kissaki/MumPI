@@ -163,6 +163,8 @@
 		
 
 		function jq_server_getBans(sid){
+			$('#jq_information').show().html('Bans are not ported yet to Mumble/Murmur 1.2. Please be patient. ☺<br/>You can use the clients ban editor for now.');
+			return;
 			$.post("./?ajax=show_server_bans",
 					{ 'sid': sid },
 					function(data){

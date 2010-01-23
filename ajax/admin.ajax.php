@@ -627,8 +627,7 @@ class Ajax_Admin
 	
 	public static function show_server_bans()
 	{
-		$_POST['sid'] = intval($_POST['sid']);
-		$serverId = $_POST['sid'];
+		$serverId = intval($_POST['sid']);
 		if (!PermissionManager::getInstance()->isAdminOfServer($serverId)) {
 			echo tr('permission_denied');
 			MessageManager::echoAllMessages();
@@ -636,10 +635,10 @@ class Ajax_Admin
 		}
 		$bans = array();
 		try {
-			$bans = ServerInterface::getInstance()->getServerBans($_POST['sid']);
+			$bans = ServerInterface::getInstance()->getServerBans($serverId);
 			echo '<h2>Bans</h2>';
-			if (PermissionManager::getInstance()->serverCanBan($_POST['sid']))
-				echo '<p><a class="jqlink" onclick="jq_server_ban_show(' . $_POST['sid'] . ')">add</a></p>';
+			if (PermissionManager::getInstance()->serverCanBan($serverId))
+				echo '<p><a class="jqlink" onclick="jq_server_ban_show(' . $serverId . ')">add</a></p>';
 			if (count($bans)==0) {
 				echo 'no bans on this virtual server';
 			} else {
