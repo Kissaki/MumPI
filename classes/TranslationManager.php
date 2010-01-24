@@ -18,7 +18,7 @@ function tr($key)
 	return TranslationManager::getText($key);
 }
 
-//TODO language folder should be in templates, so they can have their own strings
+//TODO language folder should be in templates folder (as well), so they can have their own strings
 /**
  * The TranslationManager class provides an interface to get translated text.
  * @author Kissaki
