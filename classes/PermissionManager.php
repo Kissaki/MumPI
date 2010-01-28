@@ -38,6 +38,7 @@ class PermissionManager
  */
 class PermissionManager_admin
 {
+	private $adminGroups;
 	private $perms;
 	private $servers;
 	private $isGlobalAdmin;
@@ -48,8 +49,23 @@ class PermissionManager_admin
 			$aid = SessionManager::getInstance()->getAdminID();
 			$admin = DBManager::getInstance()->getAdmin($aid);
 			$this->isGlobalAdmin = $admin['isGlobalAdmin'];
-			$this->perms = DBManager::getInstance()->getAdminGroupPermissionsByAdminID($aid);
+			$this->adminGroups = DBManager::getInstance()->getAdminGroupsByAdminID($aid);
 			$this->servers = DBManager::getInstance()->getAdminGroupServersByAdminId($aid);
+			
+			$this->perms = array();
+			foreach ($this->adminGroups as $group) {
+				foreach($group['adminOnServers'] as $serverId)
+				{
+					foreach ($group['perms'] as $perm=>$value) {
+						if ($perm!='serverID' && $perm!='groupID') {
+							if (!isset($this->perms[$serverId])) {
+								$this->perms[$serverId] = array();
+							}
+							$this->perms[$serverId][$perm] = $value;
+						}
+					}
+				}
+			}
 		} else {
 			$this->isGlobalAdmin = false;
 			$this->perms = DBManager::$defaultAdminGroupPerms;
@@ -84,7 +100,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanStartStop($sid=null)
 	{
-		return $this->isGlobalAdmin || ($this->perms['startStop'] && in_array($sid, $this->servers));
+		return $this->isGlobalAdmin || ($this->perms[$sid]['startStop'] && in_array($sid, $this->servers));
 	}
 	
 	/**
@@ -94,7 +110,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanEditConf($sid)
 	{
-		return $this->isGlobalAdmin || ($this->perms['editConf'] && in_array($sid, $this->servers));
+		return $this->isGlobalAdmin || ($this->perms[$sid]['editConf'] && in_array($sid, $this->servers));
 	}
 	
 	/**
@@ -104,7 +120,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanGenSuUsPW($sid)
 	{
-		return $this->isGlobalAdmin || ($this->perms['genSuUsPW'] && in_array($sid, $this->servers));
+		return $this->isGlobalAdmin || ($this->perms[$sid]['genSuUsPW'] && in_array($sid, $this->servers));
 	}
 	
 	/**
@@ -114,7 +130,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanViewRegistrations($sid)
 	{
-		return $this->isGlobalAdmin || ($this->perms['viewRegistrations'] && in_array($sid, $this->servers));
+		return $this->isGlobalAdmin || ($this->perms[$sid]['viewRegistrations'] && in_array($sid, $this->servers));
 	}
 	
 	/**
@@ -124,7 +140,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanEditRegistrations($sid)
 	{
-		return $this->isGlobalAdmin || ($this->perms['editRegistrations'] && in_array($sid, $this->servers));
+		return $this->isGlobalAdmin || ($this->perms[$sid]['editRegistrations'] && in_array($sid, $this->servers));
 	}
 	
 	/**
@@ -133,7 +149,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanModerate($sid)
 	{
-		return $this->isGlobalAdmin || ($this->perms['moderate'] && in_array($sid, $this->servers));
+		return $this->isGlobalAdmin || ($this->perms[$sid]['moderate'] && in_array($sid, $this->servers));
 	}
 	
 	/**
@@ -143,7 +159,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanKick($sid)
 	{
-		return $this->isGlobalAdmin || ($this->perms['kick'] && in_array($sid, $this->servers));
+		return $this->isGlobalAdmin || ($this->perms[$sid]['kick'] && in_array($sid, $this->servers));
 	}
 	
 	/**
@@ -153,7 +169,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanBan($sid)
 	{
-		return $this->isGlobalAdmin || ($this->perms['ban'] && in_array($sid, $this->servers));
+		return $this->isGlobalAdmin || ($this->perms[$sid]['ban'] && in_array($sid, $this->servers));
 	}
 
 	/**
@@ -161,7 +177,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanEditChannels($sid)
 	{
-		return $this->isGlobalAdmin || ($this->perms['channels'] && in_array($sid, $this->servers));
+		return $this->isGlobalAdmin || ($this->perms[$sid]['channels'] && in_array($sid, $this->servers));
 	}
 	
 	/**
@@ -169,7 +185,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanEditACLs($sid)
 	{
-		return $this->isGlobalAdmin || ($this->perms['acls'] && in_array($sid, $this->servers));
+		return $this->isGlobalAdmin || ($this->perms[$sid]['acls'] && in_array($sid, $this->servers));
 	}
 	
 	/**
@@ -177,7 +193,7 @@ class PermissionManager_admin
 	 */
 	public function serverCanEditAdmins($sid=null)
 	{
-		return $this->isGlobalAdmin || ($this->perms['admins'] && in_array($sid, $this->servers));
+		return $this->isGlobalAdmin || (($sid!=null && isset($this->perms[$sid]['admins']))?$this->perms[$sid]['admins']:false);
 	}
 }
 

@@ -46,10 +46,10 @@ class DBManager
  */
 class DBManager_filesystem
 {
-	private static $filename_admins					= 'admins.dat';
-	private static $filename_adminGroups			= 'admin_groups.dat';
+	private static $filename_admins									= 'admins.dat';
+	private static $filename_adminGroups						= 'admin_groups.dat';
 	private static $filename_adminGroupPermissions	= 'admin_group_permissions.dat';
-	private static $filename_adminGroupAssoc		= 'admin_group_assoc.dat';
+	private static $filename_adminGroupAssoc				= 'admin_group_assoc.dat';
 	private static $filename_adminGroupServerAssoc	= 'admin_group_server_assoc.dat';
 	
 	private $filepath_admins;
@@ -641,20 +641,20 @@ class DBManager_filesystem
 		$lastindex = count($array)-1;
 		$array[$lastindex] = HelperFunctions::stripNewline($array[$lastindex]);
 		
-		$perms = DBManager::$defaultAdminGroupPerms;
+		$perms = array();
 		$perms['groupID']   = $array[0];
 		$perms['serverID']  = $array[1];
-		$perms['startStop'] = $array[2];
-		$perms['editConf']  = $array[3];
-		$perms['genSuUsPW'] = $array[4];
-		$perms['viewRegistrations'] = $array[5];
-		$perms['editRegistrations'] = $array[6];
-		$perms['moderate']  = $array[7];
-		$perms['kick']      = $array[8];
-		$perms['ban']       = $array[9];
-		$perms['channels']  = $array[10];
-		$perms['acls']      = $array[11];
-		$perms['admins']    = $array[12];
+		$perms['startStop'] = (bool)$array[2];
+		$perms['editConf']  = (bool)$array[3];
+		$perms['genSuUsPW'] = (bool)$array[4];
+		$perms['viewRegistrations'] = (bool)$array[5];
+		$perms['editRegistrations'] = (bool)$array[6];
+		$perms['moderate']  = (bool)$array[7];
+		$perms['kick']      = (bool)$array[8];
+		$perms['ban']       = (bool)$array[9];
+		$perms['channels']  = (bool)$array[10];
+		$perms['acls']      = (bool)$array[11];
+		$perms['admins']    = (bool)$array[12];
 		
 		return $perms;
 	}
@@ -668,14 +668,33 @@ class DBManager_filesystem
 	{
 		$fh = fopen($this->filepath_adminGroupPermissions, 'r');
 		
+		$fallBack = null;
+		// go through file, line by line, until EOF
 		while (false !== ($line = fgets($fh))) {
 			$tmpPerms = $this->createAdminGroupPermissionsFromString($line);
-			if ($tmpPerms['groupID'] == $gid && ($serverID == $tmpPerms['serverID'])) {
-				fclose($fh);
-				return $tmpPerms;
+			if ($tmpPerms['groupID'] == $gid) {
+				if ($serverID == $tmpPerms['serverID']) {
+					fclose($fh);
+					return $tmpPerms;
+					
+				} elseif ($tmpPerms['serverID'] == 0) {
+					// fallback to global groups (groups for all servers
+					if ($fallBack == null) {
+						$fallBack = $tmpPerms;
+					} else {
+						foreach ($tmpPerms as $perm=>$value)
+						{
+							if (!$fallBack[$perm])
+								$fallBack[$perm] = $value;
+						}
+					}
+				}
 			}
 		}
 		fclose($fh);
+		
+		if ($fallBack != null)
+			return $fallBack;
 		
 		// no such permissions, try to get and return global ones for this group
 		if ($serverID != null) {
@@ -738,12 +757,12 @@ class DBManager_filesystem
 	}
 	
 	/**
-	 * @param int $aid admin ID
+	 * @param int $adminId admin ID
 	 * @return array permissions
 	 */
-	public function getAdminGroupPermissionsByAdminID($aid, $serverID=null)
+	public function getAdminGroupPermissionsByAdminID($adminId, $serverID=null)
 	{
-		$groups = $this->getAdminGroupsByAdminID($aid);
+		$groups = $this->getAdminGroupsByAdminID($adminId);
 		$perms = DBManager::$defaultAdminGroupPerms;
 		foreach ($groups AS $group) {
 			$tmpPerms = $this->getAdminGroupPermissions($group['id'], $serverID);
