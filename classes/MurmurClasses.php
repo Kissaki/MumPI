@@ -7,6 +7,224 @@
  */
 
 
+class MurmurServer
+{
+	/**
+	 * @param Ice_ObjectPrx $iceObject
+	 * @return MurmurServer
+	 */
+	public static function fromIceObject($iceObject)
+	{
+		if($iceObject==null)
+			throw new Exception('Required iceObject parameter was null');
+		return new self($iceObject);
+	}
+	
+	private $iceObj;
+	
+	public function __construct($iceObj)
+	{
+		$this->iceObj = $iceObj;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function isRunning()
+	{
+		return $this->iceObj->isRunning();
+	}
+	public function start()
+	{
+		return $this->iceObj->start();
+	}
+	public function stop()
+	{
+		return $this->iceObj->stop();
+	}
+	public function delete()
+	{
+		return $this->iceObj->delete();
+	}
+	public function id()
+	{
+		return $this->iceObj->id();
+	}
+	public function addCallback(MurmurServerCallback &$callback)
+	{
+		return $this->iceObj->addCallback($callback);
+	}
+	public function removeCallback(MurmurServerCallback &$callback)
+	{
+		return $this->iceObj->removeCallback($callback);
+	}
+	public function setAuthenticator(MurmurServerAuthenticator &$auth)
+	{
+		return $this->iceObj->setAuthenticator($auth);
+	}
+	
+	public function getAllConf()
+	{
+		return $this->iceObj->getAllConf();
+	}
+	public function getConf($key)
+	{
+		return $this->iceObj->getConf($key);
+	}
+	public function setConf($key, $value)
+	{
+		return $this->iceObj->setConf($key, $value);
+	}
+	
+	public function setSuperuserPassword($newPw)
+	{
+		return $this->iceObj->setSuperuserPassword($newPw);
+	}
+	
+	/**
+	 * @param int $startRowFromEnd Lowest numbered entry to fetch. 0 is the most recent item.
+	 * @param int $endRow Last entry to fetch.
+	 * @return array array of MurmurLogEntry
+	 */
+	public function getLog($startRowFromEnd=0, $endRow=100)
+	{
+		return $this->iceObj->getLog($startRowFromEnd, $endRow);
+	}
+	
+	public function getUsers()
+	{
+		return $this->iceObj->getUsers();
+	}
+	public function getChannels()
+	{
+		return $this->iceObj->getChannels();
+	}
+	/**
+	 * @return MurmurTree
+	 * @throws Murmur_ServerBootedException
+	 */
+	public function getTree()
+	{
+		return MurmurTree::fromIceObject($this->iceObj->getTree());
+	}
+	public function getBans()
+	{
+		return $this->iceObj->getBans();
+	}
+	public function setBans()
+	{
+		return $this->iceObj->setBans();
+	}
+	public function kickUser()
+	{
+		return $this->iceObj->kickUser();
+	}
+	public function getState()
+	{
+		return $this->iceObj->getState();
+	}
+	public function setState()
+	{
+		return $this->iceObj->setState();
+	}
+	public function sendMessage()
+	{
+		return $this->iceObj->sendMessage();
+	}
+	public function hasPermission()
+	{
+		return $this->iceObj->hasPermission();
+	}
+	public function addContextCallback()
+	{
+		return $this->iceObj->addContextCallback();
+	}
+	public function removeContextCallback()
+	{
+		return $this->iceObj->removeContextCallback();
+	}
+	public function getChannelState()
+	{
+		return $this->iceObj->getChannelState();
+	}
+	public function setChannelState()
+	{
+		return $this->iceObj->setChannelState();
+	}
+	public function removeChannel()
+	{
+		return $this->iceObj->removeChannel();
+	}
+	public function addChannel()
+	{
+		return $this->iceObj->addChannel();
+	}
+	public function sendMessageChannel()
+	{
+		return $this->iceObj->sendMessageChannel();
+	}
+	public function getACL()
+	{
+		return $this->iceObj->getACL();
+	}
+	public function setACL()
+	{
+		return $this->iceObj->setACL();
+	}
+	public function addUserToGroup()
+	{
+		return $this->iceObj->addUserToGroup();
+	}
+	public function removeUserFromGroup()
+	{
+		return $this->iceObj->removeUserFromGroup();
+	}
+	public function redirectWhisperGroup()
+	{
+		return $this->iceObj->redirectWhisperGroup();
+	}
+	public function getUserNames()
+	{
+		return $this->iceObj->getUserNames();
+	}
+	public function getUserIds()
+	{
+		return $this->iceObj->getUserIds();
+	}
+	public function registerUser()
+	{
+		return $this->iceObj->registerUser();
+	}
+	public function unregisterUser()
+	{
+		return $this->iceObj->unregisterUser();
+	}
+	public function updateRegistration()
+	{
+		return $this->iceObj->updateRegistration();
+	}
+	public function getRegistration()
+	{
+		return $this->iceObj->getRegistration();
+	}
+	public function getRegisteredUsers()
+	{
+		return $this->iceObj->getRegisteredUsers();
+	}
+	public function verifyPassword()
+	{
+		return $this->iceObj->verifyPassword();
+	}
+	public function getTexture()
+	{
+		return $this->iceObj->getTexture();
+	}
+	public function setTexture()
+	{
+		return $this->iceObj->setTexture();
+	}
+}
+
 /**
  * a registration on a virtual server
  * 
@@ -303,6 +521,19 @@ class MurmurUser
 									);
 	}
 	
+	public function __toString()
+	{
+		return $this->toString();
+	}
+	public function toString()
+	{
+		return $this->getName();
+	}
+	public function toHtml()
+	{
+		return '<div class="username">' . $this->getName() . '</div>';
+	}
+	
 	//TODO getters
 	/**
 	 * dynamic getter for vars
@@ -427,4 +658,148 @@ class MurmurNetAddress
 		return substr($str, 1);
 	}
 }
+
+class MurmurTree
+{
+	public static function fromIceObject($iceObject)
+	{
+		$channel = MurmurChannel::fromIceObject($iceObject->c);
+		$children = array();
+		foreach ($iceObject->children as $child) {
+			$children[] = self::fromIceObject($child);
+		}
+		$users = array();
+		foreach ($iceObject->users as $user) {
+			$users[] = MurmurUser::fromIceObject($user);
+		}
+		
+		return new self($channel, $children, $users);
+	}
+	
+	private $channel;
+	private $children;
+	private $users;
+	
+	public function __construct($channel, $children, $users)
+	{
+		$this->channel = $channel;
+		/**
+		 * @var array array of MurmurChannel
+		 */
+		$this->children = $children;
+		$this->users = $users;
+	}
+	
+	public function toHtml()
+	{
+		$html  = '<div class="channel">';
+		$html .=   '<div class="channelname">' . $this->channel->getName() . '</div>';
+		$html .=   '<ul class="subchannels">';
+		foreach ($this->children as $child) {
+			$html .=   '<li>' . $child->toHtml() . '</li>';
+		}
+		$html .=   '</ul>';
+		$html .=   '<ul class="users">';
+		foreach ($this->users as $user) {
+			$html .=   '<li>'. $user->toHtml() . '</li>';
+		}
+		$html .=   '</ul>';
+		$html .= '</div>';
+		
+		return $html;
+	}
+	public function toString()
+	{
+		//TODO line prefix for increasing indent
+		$str = (string)$this->channel . "\n";
+		foreach ($this->children as $child) {
+			$str .= '+ ' . (string)$child . "\n";
+		}
+		foreach ($this->users as $user) {
+			$str .= '* ' . (string)$user . "\n";
+		}
+		return $str;
+	}
+	public function __toString()
+	{
+		return $this->toString();
+	}
+}
+
+class MurmurChannel
+{
+	/**
+	 * @param unknown_type $iceObject
+	 * @return MurmurChannel
+	 */
+	public static function fromIceObject($iceObject)
+	{
+		return new self($iceObject->id, $iceObject->name, $iceObject->parent, $iceObject->links, $iceObject->description, $iceObject->temporary, $iceObject->position);
+	}
+	
+	/**
+	 * @var int
+	 */
+	private $id;
+	/**
+	 * @var string
+	 */
+	private $name;
+	/**
+	 * @var int
+	 */
+	private $parentId;
+	/**
+	 * @var array of int
+	 */
+	private $linkedChannels;
+	/**
+	 * @var string
+	 */
+	private $description;
+	/**
+	 * @var bool
+	 */
+	private $isTemporary;
+	/**
+	 * @var int
+	 */
+	private $position;
+	
+	/**
+	 * @param int $id
+	 * @param string $name
+	 * @param int $parent id of the parent channel, or -1 on root
+	 * @param array $links array of int linked channel ids
+	 * @param string $description
+	 * @param bool $isTemporary
+	 * @param int $position
+	 * @return MurmurChannel
+	 */
+	public function __construct($id, $name, $parentId, $linkedChannels, $description, $isTemporary, $position)
+	{
+		$this->id = $id;
+		$this->name = $name;
+		$this->parentId = $parentId;
+		$this->linkedChannels = $linkedChannels;
+		$this->description = $description;
+		$this->isTemporary = $isTemporary;
+		$this->position = $position;
+	}
+	
+	public function __toString()
+	{
+		return $this->toString();
+	}
+	public function toString()
+	{
+		return $this->name;
+	}
+	
+	public function getName()
+	{
+		return $this->name;
+	}
+}
+
 
