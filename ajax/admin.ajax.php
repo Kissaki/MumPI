@@ -386,7 +386,7 @@ class Ajax_Admin
 						<th>Username</th>
 						<th>email</th>
 						<th>comment</th>
-						<th>hash</th>
+						<th>cert hash</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -403,7 +403,7 @@ class Ajax_Admin
 						<td id="userComment<?php echo $user->getUserId(); ?>" class="comment userComment">
 							<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getUserId(); ?>);" style="float:left; margin-right:4px;">○</a>
 							<?php $commentClean = htmlspecialchars($user->getComment()); ?>
-							<div class="teaser">“<?php echo substr($commentClean, 0, 10); ?>…“</div>
+							<div class="teaser"><?php echo substr($commentClean, 0, 10) . strlen($commentClean)>0?'…':''; ?></div>
 							<div class="complete" style="display:none;"><?php echo $commentClean; ?></div>
 							<script type="text/javascript">
 								// toggle display of user comment teaser <-> full

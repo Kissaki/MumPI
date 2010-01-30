@@ -91,3 +91,8 @@ table.list_admins .list_admins_item {
 }
 
 .list_admins .list_groups { font-size:10px; line-height:10px; }
+
+
+.userHash {
+	font-size:0.8em;
+}
