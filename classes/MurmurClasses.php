@@ -46,7 +46,7 @@ class MurmurServer
 	{
 		return $this->iceObj->delete();
 	}
-	public function id()
+	public function getId()
 	{
 		return $this->iceObj->id();
 	}
@@ -105,7 +105,7 @@ class MurmurServer
 	 */
 	public function getTree()
 	{
-		return MurmurTree::fromIceObject($this->iceObj->getTree());
+		return MurmurTree::fromIceObject($this->iceObj->getTree(), $this);
 	}
 	public function getBans()
 	{
@@ -222,6 +222,18 @@ class MurmurServer
 	public function setTexture()
 	{
 		return $this->iceObj->setTexture();
+	}
+	
+	//TODO clean this, also using parent chans would suck - make it JS instead…
+	public function getJoinUrl()
+	{
+		$info = SettingsManager::getInstance()->getServerInformation($this->getId());
+		$host = $info['host'];
+		if (empty($host))
+			return '.';
+		$port = $this->getConf('port');
+		$port = (!empty($port))?$port:'64738';
+		return 'mumble://' . $host . ':' . $port;
 	}
 }
 
@@ -661,12 +673,12 @@ class MurmurNetAddress
 
 class MurmurTree
 {
-	public static function fromIceObject($iceObject)
+	public static function fromIceObject($iceObject, &$server)
 	{
-		$channel = MurmurChannel::fromIceObject($iceObject->c);
+		$channel = MurmurChannel::fromIceObject($iceObject->c, $server);
 		$children = array();
 		foreach ($iceObject->children as $child) {
-			$children[] = self::fromIceObject($child);
+			$children[] = self::fromIceObject($child, $server);
 		}
 		$users = array();
 		foreach ($iceObject->users as $user) {
@@ -684,7 +696,7 @@ class MurmurTree
 	{
 		$this->channel = $channel;
 		/**
-		 * @var array array of MurmurChannel
+		 * @var array array of MurmurTree
 		 */
 		$this->children = $children;
 		$this->users = $users;
@@ -692,18 +704,22 @@ class MurmurTree
 	
 	public function toHtml()
 	{
-		$html  = '<div class="channel">';
-		$html .=   '<div class="channelname">' . $this->channel->getName() . '</div>';
-		$html .=   '<ul class="subchannels">';
-		foreach ($this->children as $child) {
-			$html .=   '<li>' . $child->toHtml() . '</li>';
+		$html = '<div class="channel">';
+		$html .=   '<div class="channelname"><a href="' . $this->channel->getJoinUrl() . '?version=1.2.0">' . $this->channel->getName() . '</a></div>';
+		if (!empty($this->children)) {
+			$html .=   '<ul class="subchannels">';
+			foreach ($this->children as $child) {
+				$html .=   '<li>' . $child->toHtml() . '</li>';
+			}
+			$html .=   '</ul>';
 		}
-		$html .=   '</ul>';
-		$html .=   '<ul class="users">';
-		foreach ($this->users as $user) {
-			$html .=   '<li>'. $user->toHtml() . '</li>';
+		if (!empty($this->users)) {
+			$html .=   '<ul class="users">';
+			foreach ($this->users as $user) {
+				$html .=   '<li>'. $user->toHtml() . '</li>';
+			}
+			$html .=   '</ul>';
 		}
-		$html .=   '</ul>';
 		$html .= '</div>';
 		
 		return $html;
@@ -732,11 +748,15 @@ class MurmurChannel
 	 * @param unknown_type $iceObject
 	 * @return MurmurChannel
 	 */
-	public static function fromIceObject($iceObject)
+	public static function fromIceObject($iceObject, &$server)
 	{
-		return new self($iceObject->id, $iceObject->name, $iceObject->parent, $iceObject->links, $iceObject->description, $iceObject->temporary, $iceObject->position);
+		return new self($iceObject->id, $iceObject->name, $iceObject->parent, $iceObject->links, $iceObject->description, $iceObject->temporary, $iceObject->position, $server);
 	}
 	
+	/**
+	 * @var MurmurServer
+	 */
+	private $server;
 	/**
 	 * @var int
 	 */
@@ -776,7 +796,7 @@ class MurmurChannel
 	 * @param int $position
 	 * @return MurmurChannel
 	 */
-	public function __construct($id, $name, $parentId, $linkedChannels, $description, $isTemporary, $position)
+	public function __construct($id, $name, $parentId, $linkedChannels, $description, $isTemporary, $position, &$server)
 	{
 		$this->id = $id;
 		$this->name = $name;
@@ -785,6 +805,7 @@ class MurmurChannel
 		$this->description = $description;
 		$this->isTemporary = $isTemporary;
 		$this->position = $position;
+		$this->server=$server;
 	}
 	
 	public function __toString()
@@ -796,9 +817,21 @@ class MurmurChannel
 		return $this->name;
 	}
 	
+	/**
+	 * @return string channel name
+	 */
 	public function getName()
 	{
 		return $this->name;
+	}
+	
+	/**
+	 * Get the mumble:// join url
+	 * @return string
+	 */
+	public function getJoinUrl()
+	{
+		return $this->server->getJoinUrl() . '/' . $this->getName();
 	}
 }
 

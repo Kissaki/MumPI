@@ -52,6 +52,8 @@ define('MUMPHPI_SECTION', 'viewer');
 	<meta name="description" content="<?php echo SettingsManager::getInstance()->getSiteDescription(); ?>" />
 	<meta name="keywords" content="<?php echo SettingsManager::getInstance()->getSiteKeywords(); ?>" />
 	
+	<link rel="stylesheet" type="text/css" href="reset-min.css" />
+	<link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
 
@@ -60,7 +62,6 @@ define('MUMPHPI_SECTION', 'viewer');
 	
 	// Parse Template
 	echo ServerViewer::getHtmlCode4ViewServer(1);
-	echo ServerViewer::getHtmlCode4ViewServer(2);
 	
 ?>
 </body></html>

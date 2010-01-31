@@ -1,0 +1,21 @@
+
+body {
+	font-size:100%; /* default: 16px */
+}
+
+.server {
+	border:1px solid black;
+	font-size:0.8em;
+}
+.channel {
+	margin-left:6px;
+}
+.channel .channelname {
+	font-size:1.2em;
+	font-weight:bold;
+}
+.subchannels {
+}
+.users {
+	margin-left:4px;
+}
