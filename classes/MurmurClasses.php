@@ -705,7 +705,7 @@ class MurmurTree
 	public function toHtml()
 	{
 		$html = '<div class="channel">';
-		$html .=   '<div class="channelname"><a href="' . $this->channel->getJoinUrl() . '?version=1.2.0">' . $this->channel->getName() . '</a></div>';
+		$html .=   '<div class="channelname">' . $this->channel->getName() . '</div>';
 		if (!empty($this->children)) {
 			$html .=   '<ul class="subchannels">';
 			foreach ($this->children as $child) {
