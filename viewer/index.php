@@ -54,6 +54,11 @@ define('MUMPHPI_SECTION', 'viewer');
 	
 	<link rel="stylesheet" type="text/css" href="reset-min.css" />
 	<link rel="stylesheet" type="text/css" href="style.css" />
+	<style type="text/javascript">
+		jQuery.ready(function(){
+			jQuery('.channelname').html('<a>' + jQuery('channelname').html() + '</a>');
+			});
+	</style>
 </head>
 <body>
 
