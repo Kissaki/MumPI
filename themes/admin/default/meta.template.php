@@ -41,13 +41,13 @@
 						<td>
 							<?php if (PermissionManager::getInstance()->serverCanStartStop($server->id())) { ?>
 								<?php if ($server_isRunning) { ?>
-									<a class="jqlink" onclick="jq_server_stop(<?php echo $server->id(); ?>)">Stop</a>
+									<a class="jqlink" onclick="if(confirm('Are you sure you want to stop this virtual server?')){jq_server_stop(<?php echo $server->id(); ?>);}">Stop</a>
 								<?php }else{ ?>
 									<a class="jqlink" onclick="jq_server_start(<?php echo $server->id(); ?>)">Start</a>
 								<?php } ?>
 							<?php } ?>
 							<?php if (PermissionManager::getInstance()->isGlobalAdmin()) { ?>
-								<a class="jqlink" onclick="jq_server_delete(<?php echo $server->id(); ?>); return false;">Delete</a>
+								<a class="jqlink" onclick="if(confirm('Are you sure you want to delete this Server?\nYou will loose ALL DATA!')){jq_server_delete(<?php echo $server->id(); ?>);} return false;">Delete</a>
 							<?php } ?>
 						</td>
 						<td style="padding-left:10px;">
