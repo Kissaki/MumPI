@@ -63,7 +63,7 @@ define('MUMPHPI_SECTION', 'viewer');
 	<script type="text/javascript" src="../js/jquery.eztip.js"></script>
 	<script type="text/javascript" src="../js/mumpi.js"></script>
 	<script type="text/javascript">
-		var mumpiSetting_viewerDefaultRefreshInterval = 2;
+		var mumpiSetting_viewerDefaultRefreshInterval = 20; // seconds
 		
 		var mumpiViewerRefreshTreeRunning = false;
 		var mumpiViewerRefreshTreeObject;
