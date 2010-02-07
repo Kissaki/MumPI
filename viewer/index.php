@@ -59,53 +59,83 @@ define('MUMPHPI_SECTION', 'viewer');
 	
 	<link rel="stylesheet" type="text/css" href="reset-min.css" />
 	<link rel="stylesheet" type="text/css" href="style.css" />
-	<script type="text/javascript" src="../libs/jquery.js"></script>
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/jquery.eztip.js"></script>
+	<script type="text/javascript" src="../js/mumpi.js"></script>
 	<script type="text/javascript">
+		var mumpiSetting_viewerDefaultRefreshInterval = 2;
+		
 		var mumpiViewerRefreshTreeRunning = false;
 		var mumpiViewerRefreshTreeObject;
 		var mumpiViewerRefreshTreeRate;
 
 		function refreshTree()
 		{
+			showAjaxLoading();
 			jQuery.post(
 					'./?ajax=getServerTreeAsHtml',
 					{serverId: 1},
 					function(data){
 							jQuery('.mumpi_viewer_container_main').html(data);
+							hideAjaxLoading();
 						}
 				);
 		}
 		function refreshTreeIntervalStart()
 		{
+			refreshTree();
 			mumpiViewerRefreshTreeRunning = true;
 			mumpiViewerRefreshTreeObject = setInterval( "refreshTree();", mumpiViewerRefreshTreeRate);
+			jQuery('.mumpi_viewer_tree_refresh_action').attr('value', 'Stop Auto-Refresh');
 		}
 		function refreshTreeIntervalStop()
 		{
 			clearInterval(mumpiViewerRefreshTreeObject);
 			mumpiViewerRefreshTreeRunning = false;
+			jQuery('.mumpi_viewer_tree_refresh_action').attr('value', 'Start Auto-Refresh');
+		}
+		function refreshTreeIntervalToggle()
+		{
+			if (mumpiViewerRefreshTreeRunning)
+				refreshTreeIntervalStop();
+			else
+				refreshTreeIntervalStart();
 		}
 		function setTreeRefreshIntervalValue(value)
 		{
 			mumpiViewerRefreshTreeRate=value;
-			jQuery('.mumpi_viewer_tree_refresh_interval_value').html(mumpiViewerRefreshTreeRate/1000+'s');
+			jQuery('.mumpi_viewer_tree_refresh_interval_value').attr('value', mumpiViewerRefreshTreeRate/1000);
+			jQuery('.mumpi_viewer_tree_refresh_interval_value_unit').html('s');
 			if (mumpiViewerRefreshTreeRunning) {
 				refreshTreeIntervalStop();
 				refreshTreeIntervalStart();
 			}
 		}
-		jQuery().ready(function(){
-				/*jQuery('.channelname').html('<a>' + jQuery('channelname').html() + '</a>');*/
-				refreshTree();
-				setTreeRefreshIntervalValue(1000);
+
+		// document ready -> INITIALIZATION
+		jQuery(document).ready(function(){
+				jQuery('.mumpi_viewer_tree_refresh_interval_value').change(function(){setTreeRefreshIntervalValue(jQuery(this).attr('value')*1000);});
+				setTreeRefreshIntervalValue(mumpiSetting_viewerDefaultRefreshInterval*1000);
 				refreshTreeIntervalStart();
+
+				jQuery('.mumpi_viewer_tree_refresh_action').click(function(){
+						refreshTreeIntervalToggle();
+					});
+
+				// add icon to external links
+				jQuery('a').filter(function(){
+				    return this.hostname && this.hostname !== location.hostname;
+				  }).after(' <img src="../img/external.png" alt="[external]"/>');
+			  // tooltips
+				jQuery(document).eztip('.mumpi_tooltip', {contentAttrs:['title', 'href']});
 			});
 	</script>
 </head>
 <body>
 	<div class="tree_refresh_interval">
-		Refreshing all: <span class="mumpi_viewer_tree_refresh_interval_value"></span><br/>
-		<input type="button" value="stop" title="Do not refresh at all anymore" onclick="refreshTreeIntervalStop();" />
+		Refreshing all: <input class="mumpi_viewer_tree_refresh_interval_value" type="text" size="2" value="?"/><span class="mumpi_viewer_tree_refresh_interval_value_unit"></span><br/>
+		<input class="mumpi_viewer_tree_refresh_action" type="button" value="stop" title="Do not refresh at all anymore" />
+		<span class="mumpi_ajax_status"></span>
 	</div>
 	<div class="mumpi_viewer_container_main"></div>
 </body></html>
