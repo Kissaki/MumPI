@@ -3,7 +3,10 @@
  * Ajax functionality
  * @author Kissaki
  */
-//TODO secure this with $_SERVER['HTTP_REFERER'] or sth
+
+require_once dirname(__FILE__).'/ajax.ajax.php';
+
+//TODO make it a class “Ajax_User”, like Ajax_Admin
 
 // TODO getTexture does not work (yet). Remove or fix.
 //		This seems to be a problem with decompressing the string, gzuncompress() does not work, gzdecode() is PHP 6

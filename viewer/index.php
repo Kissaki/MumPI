@@ -24,6 +24,8 @@ define('MUMPHPI_SECTION', 'viewer');
 	require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/TemplateManager.php');
 	
+	require_once(MUMPHPI_MAINDIR.'/classes/ServerViewer.php');
+	
 	if(SettingsManager::getInstance()->isDebugMode())
 		error_reporting(E_ALL);
 	
@@ -37,8 +39,11 @@ define('MUMPHPI_SECTION', 'viewer');
   	}
 	
 	if(isset($_GET['ajax'])){
-		require_once(MUMPHPI_MAINDIR.'/ajax/user.ajax.php');
-		die();
+		require_once(MUMPHPI_MAINDIR.'/ajax/'.MUMPHPI_SECTION.'.ajax.php');
+		if (is_callable('Ajax_'.MUMPHPI_SECTION.'::' . $_GET['ajax']))
+			eval('Ajax_'.MUMPHPI_SECTION.'::' . $_GET['ajax'] . '();');
+		MessageManager::echoAll();
+		exit();
 	}
 	
 	
@@ -54,19 +59,28 @@ define('MUMPHPI_SECTION', 'viewer');
 	
 	<link rel="stylesheet" type="text/css" href="reset-min.css" />
 	<link rel="stylesheet" type="text/css" href="style.css" />
-	<style type="text/javascript">
-		jQuery.ready(function(){
-			jQuery('.channelname').html('<a>' + jQuery('channelname').html() + '</a>');
+	<script type="text/javascript" src="../libs/jquery.js"></script>
+	<script type="text/javascript">
+		var restBase = '<?php echo '../REST/REST.php'; ?>';
+		function refreshTree()
+		{
+			jQuery.post(
+					'./?ajax=getServerTreeAsHtml',
+					{serverId: 1},
+					function(data){
+							jQuery('.mumpi_viewer_container_main').html(data);
+						}
+				);
+		}
+		jQuery().ready(function(){
+				jQuery('.channelname').html('<a>' + jQuery('channelname').html() + '</a>');
+				var mumpiViewerRefreshTree = setInterval( "refreshTree()", 1000); // 1000ms=s*
 			});
-	</style>
+	</script>
 </head>
 <body>
-
-<?php
-	require_once(MUMPHPI_MAINDIR.'/classes/ServerViewer.php');
-	
-	// Parse Template
-	echo ServerViewer::getHtmlCode4ViewServer(1);
-	
-?>
+	<div class="tree_refresh_interval">
+		<input type="button" value="stop" title="Do not refresh at all anymore" onclick="clearinterval('mumpiViewerRefreshTree')" />
+	</div>
+	<div class="mumpi_viewer_container_main"></div>
 </body></html>

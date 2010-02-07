@@ -3,15 +3,14 @@
  * Ajax functionality
  * @author Kissaki
  */
-//TODO secure this with $_SERVER['HTTP_REFERER'] or sth
-//TODO secure this, preferably session data
-//TODO: make this a class, probably static, and access functions after checking if function exists with function_exists() with eval()
+
+require_once dirname(__FILE__).'/ajax.ajax.php';
 
 /**
  * ajax functionality, functions for the admin section
  * @author Kissaki
  */
-class Ajax_Admin
+class Ajax_Admin extends Ajax
 {
 	public static function getPage()
 	{
