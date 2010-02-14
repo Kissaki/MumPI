@@ -61,9 +61,11 @@ define('MUMPHPI_SECTION', 'viewer');
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<script type="text/javascript" src="../js/jquery.js"></script>
 	<script type="text/javascript" src="../js/jquery.eztip.js"></script>
+	<script type="text/javascript" src="../js/jquery.ba-bbq.min.js"></script>
 	<script type="text/javascript" src="../js/mumpi.js"></script>
 	<script type="text/javascript">
 		var mumpiSetting_viewerDefaultRefreshInterval = 20; // seconds
+		var mumpiSetting_viewerServerId = <?php echo isset($_GET['serverId'])?intval($_GET['serverId']):1; ?>;
 		
 		var mumpiViewerRefreshTreeRunning = false;
 		var mumpiViewerRefreshTreeObject;
@@ -74,7 +76,7 @@ define('MUMPHPI_SECTION', 'viewer');
 			showAjaxLoading();
 			jQuery.post(
 					'./?ajax=getServerTreeAsHtml',
-					{serverId: 1},
+					{serverId: mumpiSetting_viewerServerId},
 					function(data){
 							jQuery('.mumpi_viewer_container_main').html(data);
 							hideAjaxLoading();

@@ -3,18 +3,34 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>How To Embed via HTML – Example</title>
+<style type="text/css">
+	textarea { width:180px; }
+	hr { height:0px; border:0px; border-top:1px solid #000000; margin:32px 0px;}
+</style>
 </head>
 <body>
 
 	<p>As an iframe:</p>
-	<iframe src="./index.php"></iframe>
+	<div class="example example1">
+		<iframe src="./index.php" width="180" height="300"></iframe>
+	</div>
+	<textarea class="code code1">
+		<iframe src="./index.php" width="180" height="300"></iframe>
+	</textarea>
 	
-	<br/>
-	<br/>
+	<hr/>
 	
 	<p>As an object:</p>
-	<object type="text/html" data="./index.php" width="160">
-	</object>
+	<div class="example">
+		<object type="text/html" data="./index.php" width="180" height="300"></object>
+	</div>
+	<textarea class="code">
+		<object type="text/html" data="./index.php" width="180" height="300"></object>
+	</textarea>
+	
+	<hr/>
+	
+	<p>You can customize the look of it in the style.css</p> 
 	
 </body>
 </html>
