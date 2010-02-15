@@ -10,27 +10,23 @@
 </head>
 <body>
 
-	<p>As an iframe:</p>
-	<div class="example example1">
-		<iframe src="./index.php" width="180" height="300"></iframe>
-	</div>
-	<textarea class="code code1">
-		<iframe src="./index.php" width="180" height="300"></iframe>
-	</textarea>
-	
-	<hr/>
-	
 	<p>As an object:</p>
 	<div class="example">
-		<object type="text/html" data="./index.php" width="180" height="300"></object>
+		<object type="text/html" data="./index.php?serverId=1" width="180" height="300"></object>
 	</div>
-	<textarea class="code">
-		<object type="text/html" data="./index.php" width="180" height="300"></object>
-	</textarea>
-	
+	<textarea class="code" cols="90" rows="4">&lt;object type="text/html" data="./index.php?serverId=1" width="180" height="300"&gt;&lt;/object&gt;</textarea>
+
 	<hr/>
-	
+
+	<p>As an iframe:</p>
+	<div class="example example1">
+		<iframe src="./index.php?serverId=1" width="180" height="300"></iframe>
+	</div>
+	<textarea class="code code1" cols="90" rows="4">&lt;iframe src="./index.php?serverId=1" width="180" height="300"&gt;&lt;/iframe&gt;</textarea>
+
+	<hr/>
+
 	<p>You can customize the look of it in the style.css</p> 
-	
+
 </body>
 </html>

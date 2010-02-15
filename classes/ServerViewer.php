@@ -1,4 +1,5 @@
 <?php
+	require_once('../classes/SettingsManager.php');
 	require_once('../classes/MurmurClasses.php');
 	require_once('../classes/ServerInterface.php');
 
