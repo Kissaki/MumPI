@@ -151,6 +151,14 @@ class SettingsManager {
 	function getDefaultLanguage(){
 		return $this->defaultLanguage;
 	}
+	public function getServerIp() {
+		if (strtolower($this->dbInterface_type)==='ice') {
+			$matches;
+			preg_match('/-h ([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/', $this->dbInterface_address, $matches);
+			return isset($matches[1])?$matches[1]:null;
+		}
+		return null;
+	}
 	function getDbInterfaceType(){
 		return $this->dbInterface_type;
 	}

@@ -46,7 +46,7 @@ define('MUMPHPI_SECTION', 'viewer');
 		exit();
 	}
 	
-	
+	$serverId = isset($_GET['serverId'])?intval($_GET['serverId']):1;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -65,7 +65,9 @@ define('MUMPHPI_SECTION', 'viewer');
 	<script type="text/javascript" src="../js/mumpi.js"></script>
 	<script type="text/javascript">
 		var mumpiSetting_viewerDefaultRefreshInterval = 20; // seconds
-		var mumpiSetting_viewerServerId = <?php echo isset($_GET['serverId'])?intval($_GET['serverId']):1; ?>;
+		var mumpiSetting_viewerServerId = <?php echo $serverId; ?>;
+		var mumpiSetting_viewerServerIp = '<?php echo SettingsManager::getInstance()->getServerIp(); ?>';
+		var mumpiSetting_viewerServerVersion = '1.2.0';
 		
 		var mumpiViewerRefreshTreeRunning = false;
 		var mumpiViewerRefreshTreeObject;
@@ -79,6 +81,7 @@ define('MUMPHPI_SECTION', 'viewer');
 					{serverId: mumpiSetting_viewerServerId},
 					function(data){
 							jQuery('.mumpi_viewer_container_main').html(data);
+							linkChannels();
 							hideAjaxLoading();
 						}
 				);
@@ -111,6 +114,26 @@ define('MUMPHPI_SECTION', 'viewer');
 			if (mumpiViewerRefreshTreeRunning) {
 				refreshTreeIntervalStop();
 				refreshTreeIntervalStart();
+			}
+		}
+		function linkChannels(channel, urlPart)
+		{
+alert(urlPart);
+			if (channel==null) {
+				jQuery('.server > .channel').each(function(index) {
+						linkChannels(jQuery(this), 'mumble://' + mumpiSetting_viewerServerIp + '/');
+					});
+			} else {
+				if (channel.hasClass('channel')) {
+					var channelName = channel.find('.channelname');
+					if (channelName) {
+						var channelUrlPart = urlPart + channelName.text() + '/';
+						channelName.wrapInner('<a href="' + channelUrlPart + '?version=' + mumpiSetting_viewerServerVersion + '"/>');
+						channel.children('.subchannels').children('li').children('.channel').each(function(index) {
+								linkChannels(jQuery(this), channelUrlPart);
+							});
+					}
+				}
 			}
 		}
 
