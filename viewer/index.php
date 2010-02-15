@@ -63,7 +63,7 @@ define('MUMPHPI_SECTION', 'viewer');
 	<script type="text/javascript" src="../js/jquery.eztip.js"></script>
 	<script type="text/javascript" src="../js/jquery.ba-bbq.min.js"></script>
 	<script type="text/javascript" src="../js/mumpi.js"></script>
-	<script type="text/javascript">
+	<script type="text/javascript"><!--
 		var mumpiSetting_viewerDefaultRefreshInterval = 20; // seconds
 		var mumpiSetting_viewerServerId = <?php echo $serverId; ?>;
 		var mumpiSetting_viewerServerIp = '<?php echo SettingsManager::getInstance()->getServerIp(); ?>';
@@ -160,12 +160,14 @@ define('MUMPHPI_SECTION', 'viewer');
 			  // tooltips
 				jQuery(document).eztip('.mumpi_tooltip', {contentAttrs:['title', 'href']});
 			});
+		-->
 	</script>
 </head>
 <body>
 	<div class="tree_refresh_interval">
-		Refreshing all: <input class="mumpi_viewer_tree_refresh_interval_value" type="text" size="2" value="?"/><span class="mumpi_viewer_tree_refresh_interval_value_unit"></span><br/>
+		Refreshing all: <input class="mumpi_viewer_tree_refresh_interval_value" type="text" size="2" value="?"/><span class="mumpi_viewer_tree_refresh_interval_value_unit">s</span><br/>
 		<input class="mumpi_viewer_tree_refresh_action" type="button" value="stop" title="Do not refresh at all anymore" />
+		<button onclick="refreshTree();"><img src="../img/refresh_16.png" alt="♺" style="height:16px;"/></button>
 		<span class="mumpi_ajax_status"></span>
 	</div>
 	<div class="mumpi_viewer_container_main"></div>
