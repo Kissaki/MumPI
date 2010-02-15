@@ -116,18 +116,24 @@ define('MUMPHPI_SECTION', 'viewer');
 				refreshTreeIntervalStart();
 			}
 		}
-		function linkChannels(channel, urlPart)
+		function linkChannels(channel, urlPart, rootChannel)
 		{
-alert(urlPart);
+			if(rootChannel==null)
+				rootChannel = false;
 			if (channel==null) {
 				jQuery('.server > .channel').each(function(index) {
-						linkChannels(jQuery(this), 'mumble://' + mumpiSetting_viewerServerIp + '/');
+						linkChannels(jQuery(this), 'mumble://' + mumpiSetting_viewerServerIp + '/', true);
 					});
 			} else {
 				if (channel.hasClass('channel')) {
-					var channelName = channel.find('.channelname');
+					var channelName = channel.children('.channelname');
 					if (channelName) {
-						var channelUrlPart = urlPart + channelName.text() + '/';
+						var channelUrlPart = null;
+						if (rootChannel) {
+							channelUrlPart = urlPart;
+						} else {
+							channelUrlPart = urlPart + channelName.text() + '/';
+						}
 						channelName.wrapInner('<a href="' + channelUrlPart + '?version=' + mumpiSetting_viewerServerVersion + '"/>');
 						channel.children('.subchannels').children('li').children('.channel').each(function(index) {
 								linkChannels(jQuery(this), channelUrlPart);
