@@ -56,15 +56,17 @@ div.js_link { color:grey; font-size:x-small; margin-left:4px; margin-right:4px; 
 	background-color:#fc6; color:#fff;
 }
 #footer {
-	position:fixed; bottom:0px; width:100%; height:40px; border-top:1px solid darkgrey; background-color:black;
+	position:fixed; bottom:0px; width:100%; height:60px; border-top:1px solid darkgrey; background-color:black;
 	text-align:center;
+}
+#footer .updatecheck_result {
 }
 #log_area ul { background-color:darkgrey; }
 #log_area ul.log_list_errors { color:#FF0000; }
 #log_area ul.log_list_warnings { color:#DD0000; }
 #log_area ul.log_list_messages { color:#BB0000; }
 
-#content { margin:20px 130px 50px; }
+#content { margin:20px 130px 70px; }
 #jq_information { margin-top:10px; }
 
 .table_headline td { padding-top:12px; font-family:arial; font-weight:bold; text-decoration:underline; }
