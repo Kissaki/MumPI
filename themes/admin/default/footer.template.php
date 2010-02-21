@@ -21,8 +21,15 @@
 	<div class="updatecheck_result"></div>
 </div>
 <?php
-		include_once(MUMPHPI_MAINDIR.'/version.php');
-		if (isset($mumpiVersion)) {
+		//if(!isset($_SESSION['mumpiVersionCheckLast'])) {
+		//	$_SESSION['mumpiVersionCheckLast'] = 0;
+		//}
+		// only check every 60 minutes
+		//TODO make this cache the result and display the cached one when not querying
+		//if ($_SESSION['mumpiVersionCheckLast']+3600 < time()) {
+			include_once(MUMPHPI_MAINDIR.'/version.php');
+			if (isset($mumpiVersion)) {
+				$_SESSION['mumpiVersionCheckLast'] = time();
 ?>
 <script type="text/javascript">
 	<!--
@@ -34,6 +41,7 @@
 </script>
 <script type="text/javascript" src="http://mumpi.sourceforge.net/version.php?version=<?php echo $mumpiVersion; ?>"></script>
 <?php
-		}
+			}
+		//}
 	}
 ?>
