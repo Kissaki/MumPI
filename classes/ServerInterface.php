@@ -60,6 +60,10 @@ class ServerInterface_ice
 		// it would be good to be able to add a check if slice file is loaded
 		//MessageManager::addError(tr('error_noIceSliceLoaded'));
 		$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");	// May throw exception
+		// use IceSecret if set
+//		if (SettingsManager::getInstance()->getDbInterface_iceSecret()) {
+//			$this->meta = $this->meta->ice_context(array('icesecretwrite'=>SettingsManager::getInstance()->getDbInterface_iceSecret()));
+//		}
 		$this->meta = $this->meta->ice_timeout(10000);
 	}
 	
