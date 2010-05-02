@@ -88,20 +88,20 @@ class ServerInterface_ice
 		} catch (Ice_UnknownUserException $exc) {
 			switch ($exc->unknown) {
 				case 'Murmur::InvalidSecretException':
-					//T/ODO i18n
+					//TODO i18n
 					MessageManager::addError('The Ice end requires a password, but you did not specify one or not the correct one.');
 					die('The Ice end requires a password, but you did not specify one or not the correct one.' . get_class($exc) . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>' );
 					$this->conn = null;
 					break;
 					
 				default:
-					//T/ODO i18n
+					//TODO i18n
 					MessageManager::addError('Unknown exception was thrown. Please report to the developer. Class: ' . get_class($exc) . isset($exc->unknown)?' ->unknown: '.$exc->unknown:'' . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>');
 					$this->conn = null;
 					break;
 			}
 		} catch (Ice_LocalException $exc) {
-			//T/ODO i18n
+			//TODO i18n
 			MessageManager::addError('Unknown exception was thrown. Please report to the developer. Class: ' . get_class($exc) . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>');
 			$this->conn = null;
 		}
