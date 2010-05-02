@@ -744,7 +744,7 @@ class Ajax_Admin extends Ajax
 		$conf = ServerInterface::getInstance()->getServerConfig($_POST['sid']);
 ?>
 		<h1>Server Config</h1>
-		<p>For documentation, see your murmur.ini file (or <a href="http://mumble.git.sourceforge.net/git/gitweb.cgi?p=mumble;a=blob_plain;f=scripts/murmur.ini;hb=HEAD" rel="external">this</a> one in the repository, which may however differ from your version)</p>
+		<p>For documentation, see your murmur.ini file (or <a href="http://mumble.git.sourceforge.net/git/gitweb.cgi?p=mumble/mumble;a=blob;f=scripts/murmur.ini;hb=HEAD" rel="external">this</a> one in the repository, which may however differ from your version)</p>
 		<br/>
 		<br/>
 		<?php $canEdit = PermissionManager::getInstance()->serverCanEditConf($_POST['sid']);
