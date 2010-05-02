@@ -82,7 +82,6 @@ class ServerInterface_ice
 		}
 		$this->meta = $this->meta->ice_timeout(10000);
 		
-		/* pretty useless right now…
 		// to check the connection get the version (e.g. was a needed (context-)password not provided?)
 		try {
 			$this->version = $this->getVersion();
@@ -105,7 +104,7 @@ class ServerInterface_ice
 			//T/ODO i18n
 			MessageManager::addError('Unknown exception was thrown. Please report to the developer. Class: ' . get_class($exc) . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>');
 			$this->conn = null;
-		}*/
+		}
 	}
 	
 	//Meta

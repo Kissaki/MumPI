@@ -15,7 +15,14 @@ $showAdminLink = true;		// Show a link to the admin section in the user section?
 // Interface to use. Currently available: ice
 $dbInterface_type		= 'ice';
 $dbInterface_address	= 'Meta:tcp -h 127.0.0.1 -p 6502';
-//$dbInterface_icesecret = '';
+// if you set an icesecret password in your murmur.ini file, specify it here
+$dbInterface_icesecrets = array(
+    // for 1.2.2 if you set “icesecret” set “secret” here.
+    'secret' => '',
+    // for a version later than 1.2.2 you probably have set “icesecretread” and/or “icesecretwrite”. For either/both of them set it without the preceding "ice", just like you would have to for 1.2.2.
+    //'secretread' => '',
+    //'secretwrite' => '',
+  );
 
 // db type for Interface functionality
 // (does not have anything to do with mumble/murmur)
