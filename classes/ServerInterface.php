@@ -37,6 +37,7 @@ class ServerInterface_ice
 {
 	private $conn;
 	private $meta;
+	private $version;
 	
 	function __construct()
 	{
@@ -47,7 +48,7 @@ class ServerInterface_ice
 			try {
 				Ice_loadProfile();
 				$this->connect();
-			} catch(Ice_ProfileAlreadyLoadedException $exc) {
+			} catch (Ice_ProfileAlreadyLoadedException $exc) {
 				MessageManager::addError(tr('iceprofilealreadyloaded'));
 			}
 		}
@@ -59,12 +60,39 @@ class ServerInterface_ice
 		$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
 		// it would be good to be able to add a check if slice file is loaded
 		//MessageManager::addError(tr('error_noIceSliceLoaded'));
-		$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");	// May throw exception
+		//TODO what exceptions may be thrown with context and cast?
+		$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
 		// use IceSecret if set
-//		if (SettingsManager::getInstance()->getDbInterface_iceSecret()) {
-//			$this->meta = $this->meta->ice_context(array('icesecretwrite'=>SettingsManager::getInstance()->getDbInterface_iceSecret()));
-//		}
+		
+		if (SettingsManager::getInstance()->getDbInterface_iceSecret()) {
+			$this->meta = $this->meta->ice_context(array('icesecret'=>SettingsManager::getInstance()->getDbInterface_iceSecret()));
+		}
 		$this->meta = $this->meta->ice_timeout(10000);
+		
+		// to check the connection get the version (e.g. was a needed (context-)password not provided?)
+		try {
+			$this->version = $this->getVersion();
+		//TODO ice exceptions: some casting to classes?
+		} catch (Ice_UnknownUserException $exc) {
+			switch ($exc->unknown) {
+				case 'Murmur::InvalidSecretException':
+					//TODO i18n
+					MessageManager::addError('The Ice end requires a password, but you did not specify one or not the correct one.');
+					die('The Ice end requires a password, but you did not specify one or not the correct one.' . get_class($exc) . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>' );
+					$this->conn = null;
+					break;
+					
+				default:
+					//TODO i18n
+					MessageManager::addError('Unknown exception was thrown. Please report to the developer. Class: ' . get_class($exc) . isset($exc->unknown)?' ->unknown: '.$exc->unknown:'' . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>');
+					$this->conn = null;
+					break;
+			}
+		} catch (Ice_LocalException $exc) {
+				//TODO i18n
+				MessageManager::addError('Unknown exception was thrown. Please report to the developer. Class: ' . get_class($exc) . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>');
+				$this->conn = null;
+			}
 	}
 	
 	//Meta
@@ -74,9 +102,11 @@ class ServerInterface_ice
 	 */
 	public function getVersion()
 	{
-		unset($major); unset($minor); unset($patch); unset($text);
-		$this->meta->getVersion($major, $minor, $patch, $text);
-		return $major.'.'.$minor.'.'.$patch.' '.$text;
+		if ($this->version == null) {
+			$this->meta->getVersion($major, $minor, $patch, $text)->ice_context(array('secret'=>'ts'));
+			$this->version = $major . '.' . $minor . '.' . $patch . ' ' . $text;
+		}
+		return $this->version;
 	}
 	/**
 	 * 
@@ -319,7 +349,7 @@ class ServerInterface_ice
 			echo 'Server is currently not running, but it has to to be able to register.<br/>Please contact a server admin';
 		} catch(Murmur_InvalidUserException $exc) {
 			echo 'The username you specified is probably already in use or invalid. Please try another one.<br/><a onclick="history.go(-1); return false;" href="?page=register">go back</a>';
-		} catch(Ice_UnknownUserException $exc) {	// This should not be caught
+		} catch(Ice_UnknownUserException $exc) {	// This should not happen
 			echo $exc->unknown.'<br/>';
 //			echo '<pre>'; var_dump($exc); echo '</pre>';
 		}

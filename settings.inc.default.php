@@ -15,6 +15,7 @@ $showAdminLink = true;		// Show a link to the admin section in the user section?
 // Interface to use. Currently available: ice
 $dbInterface_type		= 'ice';
 $dbInterface_address	= 'Meta:tcp -h 127.0.0.1 -p 6502';
+//$dbInterface_icesecret = '';
 
 // db type for Interface functionality
 // (does not have anything to do with mumble/murmur)

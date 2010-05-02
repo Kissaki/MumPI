@@ -31,7 +31,7 @@ h2 { font-size:1.4em; margin:12px 0px 6px; }
 
 .helpicon { background-image:URL('images/help.png'); min-width:16px; min-height:16px; background-repeat:no-repeat; }
 .error { color:red; }
-div.error { margin:20px; padding:20px; }
+div.error { margin:20px; padding:20px; position:absolute; z-index:99; }
 div.error div.detail { margin-top:10px; color:white; }
 div.js_link { color:grey; font-size:x-small; margin-left:4px; margin-right:4px; }
 .hidden { display:none; }

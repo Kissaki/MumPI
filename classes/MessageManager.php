@@ -22,7 +22,7 @@ class MessageManager
 	public static function addError($text)
 	{
 		self::$errors[] = $text;
-		if(SettingsManager::getInstance()->isDebugMode()) echo '<div class="error">'.$text.'</div>';
+		if(SettingsManager::getInstance()->isDebugMode()) echo '<div class="error">[Debug:] '.$text.'</div>';
 	}
 	public static function addWarning($text)
 	{
