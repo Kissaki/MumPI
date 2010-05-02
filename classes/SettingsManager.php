@@ -36,7 +36,7 @@ class SettingsManager {
 	private $showAdminLink;
 	private $dbInterface_type;
 	private $dbInterface_address;
-	private $dbInterface_icesecret;
+	private $dbInterface_icesecrets;
 	private $numberOfServers;
 	private $servers;
 	
@@ -49,7 +49,7 @@ class SettingsManager {
 		$this->mainUrl = MUMPHPI_MAINDIR;
 		$this->dbInterface_type = $dbInterface_type;
 		$this->dbInterface_address = $dbInterface_address;
-		$this->dbInterface_icesecret = $dbInterface_icesecret;
+		$this->dbInterface_icesecrets = $dbInterface_icesecrets;
 		$this->theme = $theme;
 		$this->defaultLanguage = $defaultLanguage;
 		$this->useCaptcha = $useCaptcha;
@@ -167,8 +167,8 @@ class SettingsManager {
 	function getDbInterface_address(){
 		return $this->dbInterface_address;
 	}
-	function getDbInterface_iceSecret(){
-		return $this->dbInterface_icesecret;
+	function getDbInterface_iceSecrets(){
+		return $this->dbInterface_icesecrets;
 	}
 	function isUseCaptcha(){
 		return $this->useCaptcha;
