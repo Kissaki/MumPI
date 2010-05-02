@@ -222,12 +222,17 @@
 			jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 		}
 		function jq_server_user_kick(sessid){
-			if(!confirm('Are you sure you want to kick this user from the server?'))
+			if (!confirm('Are you sure you want to kick this user from the server?')) {
 				return;
-			$.post("./?ajax=server_user_kick",
-					{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
-				);
-			jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
+			} else {
+				$.post("./?ajax=server_user_kick",
+						{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid },
+						function(data) {
+							jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
+						}
+					);
+				
+			}
 		}
 		function jq_server_unban(serverId, mask, bits)
 		{
