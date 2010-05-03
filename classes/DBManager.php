@@ -383,7 +383,7 @@ class DBManager_filesystem
 		}
 		// no admins yet? create this login as admin
 		if (filesize($this->filepath_admins) == 0) {
-			$this->addAdmin($username, sha1($password), true);
+			$this->addAdmin($username, $password, true);
 			return true;
 		}
 		// login failed
