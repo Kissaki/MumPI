@@ -84,28 +84,41 @@
 			$.post("./?ajax=server_delete",
 					{ 'sid': sid },
 					function(data){
-						if(data!=''){
+						if (data.length > 0) {
+							// error:
 							$('#jq_information').html(data);
+						} else {
+							$('#jq_information').html('stopped');
+							jq_loadPage('meta');
 						}
-						$('#jq_information').html('stopped');
 					}
 				);
-			jq_loadPage('meta');
 		}
 		function jq_server_stop(sid){
 			$.post("./?ajax=server_stop",
 					{ 'sid': sid },
 					function(data){
-						$('#jq_information').html('stopped');
+						if (data.length > 0) {
+							// error:
+							$('#jq_information').html(data);
+						} else {
+							$('#jq_information').html('stopped virtual server…');
+							jq_loadPage('meta');
+						}
 					}
 				);
-			jq_loadPage('meta');
 		}
 		function jq_server_start(sid){
 			$.post("./?ajax=server_start",
 					{ 'sid': sid },
 					function(data){
-						$('#jq_information').html('stopped');
+						if (data.length > 0) {
+							// error:
+							$('#jq_information').html(data);
+						} else {
+							$('#jq_information').html('started virtual server…');
+							jq_loadPage('meta');
+						}
 					}
 				);
 			jq_loadPage('meta');
