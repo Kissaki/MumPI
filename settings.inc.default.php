@@ -17,11 +17,10 @@ $dbInterface_type		= 'ice';
 $dbInterface_address	= 'Meta:tcp -h 127.0.0.1 -p 6502';
 // if you set an icesecret password in your murmur.ini file, specify it here
 $dbInterface_icesecrets = array(
-    // for 1.2.2 if you set “icesecret” set “secret” here.
+    // for 1.2.2 if you set “icesecret” set “secret” to your value.
+    // for versions later than 1.2.2 (currently only snapshots/self-builds) your “icesecretread” and/or “icesecretwrite” will be specified only as secret here.
+    //   This means you can only use one value for both (this was tested on snapshot 02071e), not different values for them. (Still, no value + one value is ok.)
     'secret' => '',
-    // for a version later than 1.2.2 you probably have set “icesecretread” and/or “icesecretwrite”. For either/both of them set it without the preceding "ice", just like you would have to for 1.2.2.
-    //'secretread' => '',
-    //'secretwrite' => '',
   );
 
 // db type for Interface functionality
