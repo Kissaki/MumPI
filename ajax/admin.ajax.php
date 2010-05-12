@@ -742,9 +742,10 @@ class Ajax_Admin extends Ajax
 		if(!isset($_POST['sid'])) return;
 		$_POST['sid'] = intval($_POST['sid']);
 		$conf = ServerInterface::getInstance()->getServerConfig($_POST['sid']);
+		//TODO i18n
 ?>
 		<h1>Server Config</h1>
-		<p>For documentation, see your murmur.ini file (or <a href="http://mumble.git.sourceforge.net/git/gitweb.cgi?p=mumble/mumble;a=blob;f=scripts/murmur.ini;hb=HEAD" rel="external">this</a> one in the repository, which may however differ from your version)</p>
+		<p>For documentation, see your murmur.ini file (or <a href="http://mumble.git.sourceforge.net/git/gitweb.cgi?p=mumble/mumble;a=blob;f=scripts/murmur.ini;hb=HEAD" rel="external">this</a> one in the repository, which may be newer than yours though)</p>
 		<br/>
 		<br/>
 		<?php $canEdit = PermissionManager::getInstance()->serverCanEditConf($_POST['sid']);
@@ -758,7 +759,45 @@ class Ajax_Admin extends Ajax
 			<tr><td>Timeout</td>		<td class="jq_editable" id="jq_editable_server_conf_timeout"><?php echo $conf['timeout'];  unset($conf['timeout']); ?></td></tr>
 			<tr><td>Host</td>			<td class="jq_editable" id="jq_editable_server_conf_host"><?php echo $conf['host'];     unset($conf['host']); ?></td></tr>
 			<tr><td>Port</td>			<td class="jq_editable" id="jq_editable_server_conf_port"><?php echo $conf['port'];     unset($conf['port']); ?></td></tr>
-			<tr><td>Default Channel</td><td class="jq_editable" id="jq_editable_server_conf_defaultchannel"><?php echo $conf['defaultchannel']; unset($conf['defaultchannel']); ?></td></tr>
+			<tr>
+				<td>Default Channel</td>
+				<td class="" id="jq_editable_server_conf_defaultchannel">
+					<?php
+						$defaultChannelId = $conf['defaultchannel'];
+						$server = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($_POST['sid']));
+						$defaultChannel = $server->getChannel($defaultChannelId);
+						echo $defaultChannel->getName();
+						
+						// change default chan functionality
+						$chanTree = $server->getTree();
+						function treePrint(MurmurTree $tree, $first=true)
+						{
+							$subs = $tree->getSubChannels();
+							if ($first) {
+								echo '<div id="jq_editable_server_conf_defaultchannel_form">';
+								//TODO i18n
+								echo '<p>Select the channel unregistered and new users are to join when joining the server.</p>';
+							}
+							?>
+								<ul>
+									<li class="form_clickable_submit" id="channel_<?php echo $tree->getRootChannel()->getId(); ?>"><?php echo $tree->getRootChannel()->getName(); ?></li>
+									<?php
+										if (!empty($subs)) {
+											foreach ($subs as $subTree) {
+												treePrint($subTree, false);
+											}
+										}
+									?>
+								</ul>
+							<?php
+							if ($first) {
+								echo '</div>';
+							}
+						}
+						treePrint($chanTree);
+					?>
+				</td>
+			</tr>
 			<tr><td>welcometext</td>	<td class="jq_editable" id="jq_editable_server_conf_welcometext"><?php echo $conf['welcometext']; unset($conf['welcometext']); ?></td></tr>
 			
 			<tr class="table_headline">	<td colspan="2"></td></tr>
@@ -823,6 +862,38 @@ class Ajax_Admin extends Ajax
 				jq_editable_server_conf_text2textarea('welcometext');
 				jq_editable_server_conf_text2textarea('certificate');
 				jq_editable_server_conf_text2textarea('key');
+				
+				// default channel editable:
+				jQuery("#jq_editable_server_conf_defaultchannel_form").dialog({
+					title: 'Select default channel',
+					autoOpen: false,
+					height: 'auto',
+					width: 'auto',
+					modal: true,
+					buttons: {
+						Cancel: function() {
+							$(this).dialog('close');
+						}
+					},
+					close: function() {
+					}
+				});
+				jQuery('#jq_editable_server_conf_defaultchannel_form .form_clickable_submit').click(function(event){
+						var id = jQuery(this).attr('id');
+						var channelId = id.substr(id.indexOf('_')+1);
+						$.post('./?ajax=server_config_update',
+							{ 'sid': <?php echo $_POST['sid']; ?>, 'key': 'defaultchannel', 'value': channelId },
+							function(data)
+							{
+								jq_server_config_show(<?php echo $_POST['sid']; ?>);
+							}
+						);
+						jQuery('#jq_editable_server_conf_defaultchannel_form').dialog('close');
+					});
+				jQuery('#jq_editable_server_conf_defaultchannel')
+					.dblclick(function(){
+															jQuery('#jq_editable_server_conf_defaultchannel_form').dialog('open');
+														});
 			</script>
 <?php
 		}

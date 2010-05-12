@@ -143,9 +143,22 @@ class MurmurServer
 	{
 		return $this->iceObj->removeContextCallback();
 	}
-	public function getChannelState()
+	/**
+	 * same as getChannel
+	 * !obsolete!
+	 * @return MurmurChannel
+	 */
+	public function getChannelState($channelId)
 	{
-		return $this->iceObj->getChannelState();
+		return $this->getChannel($channelId);
+	}
+	/**
+	 * @param $channelId
+	 * @return MurmurChannel
+	 */
+	public function getChannel($channelId)
+	{
+		return MurmurChannel::fromIceObject($this->iceObj->getChannelState(intval($channelId)), $this);
 	}
 	public function setChannelState()
 	{
@@ -673,18 +686,26 @@ class MurmurNetAddress
 
 class MurmurTree
 {
+	/**
+	 * @param unknown_type $iceObject
+	 * @param MurmurServer $server
+	 * @return MurmurTree
+	 */
 	public static function fromIceObject($iceObject, &$server)
 	{
+		// get current channel
 		$channel = MurmurChannel::fromIceObject($iceObject->c, $server);
+		// get child channels
 		$children = array();
 		foreach ($iceObject->children as $child) {
 			$children[] = self::fromIceObject($child, $server);
 		}
+		// get users in channel
 		$users = array();
 		foreach ($iceObject->users as $user) {
 			$users[] = MurmurUser::fromIceObject($user);
 		}
-		
+		// return new instance of the tree
 		return new self($channel, $children, $users);
 	}
 	
@@ -692,13 +713,25 @@ class MurmurTree
 	private $children;
 	private $users;
 	
+	/**
+	 * @param MurmurChannel $channel
+	 * @param array $children
+	 * @param array $users
+	 * @return MurmurTree
+	 */
 	public function __construct($channel, $children, $users)
 	{
+		/**
+		 * @var MurmurChannel
+		 */
 		$this->channel = $channel;
 		/**
 		 * @var array array of MurmurTree
 		 */
 		$this->children = $children;
+		/**
+		 * @var array array of MurmurTree
+		 */
 		$this->users = $users;
 	}
 	
@@ -739,6 +772,18 @@ class MurmurTree
 	public function __toString()
 	{
 		return $this->toString();
+	}
+	
+	/**
+	 * @return MurmurChannel
+	 */
+	public function getRootChannel()
+	{
+		return $this->channel;
+	}
+	public function getSubChannels()
+	{
+		return $this->children;
 	}
 }
 
@@ -805,7 +850,7 @@ class MurmurChannel
 		$this->description = $description;
 		$this->isTemporary = $isTemporary;
 		$this->position = $position;
-		$this->server=$server;
+		$this->server = $server;
 	}
 	
 	public function __toString()
@@ -814,15 +859,38 @@ class MurmurChannel
 	}
 	public function toString()
 	{
-		return $this->name;
+		return $this->getName();
 	}
 	
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 	/**
 	 * @return string channel name
 	 */
 	public function getName()
 	{
 		return $this->name;
+	}
+	public function getParentChannelId()
+	{
+		return $this->parentId;
+	}
+	public function getDescription()
+	{
+		return $this->description;
+	}
+	public function getPosition()
+	{
+		return $this->position;
+	}
+	public function isTemporary()
+	{
+		return $this->isTemporary;
 	}
 	
 	/**
@@ -831,6 +899,7 @@ class MurmurChannel
 	 */
 	public function getJoinUrl()
 	{
+		//TODO this probably also requires the parent chan, right?
 		return $this->server->getJoinUrl() . '/' . $this->getName();
 	}
 }

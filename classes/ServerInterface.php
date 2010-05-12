@@ -137,6 +137,7 @@ class ServerInterface_ice
 		$servers = $this->meta->getAllServers();
 		$filtered = array();
 		foreach ($servers as $server) {
+			// icesecret context
 			if (!empty($this->contextVars)) {
 				$server = $server->ice_context($this->contextVars);
 			}
