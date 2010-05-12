@@ -780,7 +780,7 @@ class Ajax_Admin extends Ajax
 							}
 							?>
 								<ul>
-									<li class="form_clickable_submit" id="channel_<?php echo $tree->getRootChannel()->getId(); ?>"><?php echo $tree->getRootChannel()->getName(); ?></li>
+									<li class="form_clickable_submit jslink" id="channel_<?php echo $tree->getRootChannel()->getId(); ?>"><?php echo $tree->getRootChannel()->getName(); ?></li>
 									<?php
 										if (!empty($subs)) {
 											foreach ($subs as $subTree) {
@@ -829,15 +829,15 @@ class Ajax_Admin extends Ajax
 		if ($canEdit) {
 ?>
 			<script type="text/javascript">
+				var currentServerId = <?php echo $_POST['sid']; ?>;
 				function jq_editable_server_conf_onSubmit(obj, content)
 				{
 					var id = obj.attr('id');
 					var subId = id.substring(id.lastIndexOf('_')+1, id.length);
 					$.post('./?ajax=server_config_update',
-						{ 'sid': <?php echo $_POST['sid']; ?>, 'key': subId, 'value': content.current },
-						function(data)
-						{
-							jq_server_config_show(<?php echo $_POST['sid']; ?>);
+						{ 'sid': currentServerId, 'key': subId, 'value': content.current },
+						function(data) {
+							jq_server_config_show(currentServerId);
 						}
 					);
 				}
@@ -881,19 +881,19 @@ class Ajax_Admin extends Ajax
 				jQuery('#jq_editable_server_conf_defaultchannel_form .form_clickable_submit').click(function(event){
 						var id = jQuery(this).attr('id');
 						var channelId = id.substr(id.indexOf('_')+1);
-						$.post('./?ajax=server_config_update',
-							{ 'sid': <?php echo $_POST['sid']; ?>, 'key': 'defaultchannel', 'value': channelId },
-							function(data)
-							{
-								jq_server_config_show(<?php echo $_POST['sid']; ?>);
+						$.post(
+							'./?ajax=server_config_update',
+							{ 'sid': currentServerId, 'key': 'defaultchannel', 'value': channelId },
+							function(data) {
+								jq_server_config_show(currentServerId);
 							}
 						);
 						jQuery('#jq_editable_server_conf_defaultchannel_form').dialog('close');
 					});
 				jQuery('#jq_editable_server_conf_defaultchannel')
 					.dblclick(function(){
-															jQuery('#jq_editable_server_conf_defaultchannel_form').dialog('open');
-														});
+						jQuery('#jq_editable_server_conf_defaultchannel_form').dialog('open');
+					});
 			</script>
 <?php
 		}
