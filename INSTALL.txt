@@ -1,4 +1,6 @@
 
+Note: With the installer you should be guided through most of this. However, if you encounter problems, this may still help you fix your problems.
+
 make sure the following folders are writable:
 * Mumble_PHP_Interface
 * Mumble_PHP_Interface/tmp
