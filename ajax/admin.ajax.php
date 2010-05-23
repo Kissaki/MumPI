@@ -400,18 +400,20 @@ class Ajax_Admin extends Ajax
 						<td id="user_name_<?php echo $userId; ?>" class="jq_editable"><?php echo $userName; ?></td>
 						<td id="user_email_<?php echo $userId; ?>" class="jq_editable"><?php echo $user->getEmail(); ?></td>
 						<td id="userComment<?php echo $user->getUserId(); ?>" class="comment userComment">
-							<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getUserId(); ?>);" style="float:left; margin-right:4px;">○</a>
-							<?php $commentClean = htmlspecialchars($user->getComment()); ?>
-							<div class="teaser"><?php echo substr($commentClean, 0, 10) . strlen($commentClean)>0?'…':''; ?></div>
-							<div class="complete" style="display:none;"><?php echo $commentClean; ?></div>
-							<script type="text/javascript">
-								// toggle display of user comment teaser <-> full
-								function toggleUserComment(userId)
-								{
-									jQuery('#userComment' + userId + ' .teaser').css('display', (jQuery('#userComment' + userId + ' .teaser').css('display')=='block'?'none':'block'));
-									jQuery('#userComment' + userId + ' .complete').css('display', (jQuery('#userComment' + userId + ' .complete').css('display')=='block'?'none':'block'));
-								}
-							</script>
+							<?php $commentClean = htmlspecialchars($user->getComment()); ?>							
+							<?php if (!empty($commentClean)) { ?>
+								<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getUserId(); ?>);" style="float:left; margin-right:4px;">○</a>
+								<div class="teaser"><?php echo(substr($commentClean, 0, 10) . (strlen($commentClean)>0?'…':'')); ?></div>
+								<div class="complete" style="display:none;"><?php echo $commentClean; ?></div>
+								<script type="text/javascript">
+									// toggle display of user comment teaser <-> full
+									function toggleUserComment(userId)
+									{
+										jQuery('#userComment' + userId + ' .teaser').css('display', (jQuery('#userComment' + userId + ' .teaser').css('display')=='block'?'none':'block'));
+										jQuery('#userComment' + userId + ' .complete').css('display', (jQuery('#userComment' + userId + ' .complete').css('display')=='block'?'none':'block'));
+									}
+								</script>
+							<?php } ?>
 						</td>
 						<td class="userHash"><?php echo $user->getHash(); ?></td>
 						<td>
@@ -496,18 +498,20 @@ class Ajax_Admin extends Ajax
 						<td><?php echo $user->getBytesPerSecond(); ?></td>
 						<td><?php echo $user->clientVersion() . ($user->clientVersion()!=$user->clientRelease())?$user->clientRelease():'' . $user->clientOs() . $user->clientOsVersion(); ?></td>
 						<td id="userComment<?php echo $user->getSessionId(); ?>" class="comment userComment">
-							<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getSessionId(); ?>);" style="float:left; margin-right:4px;">○</a>
 							<?php $commentClean = htmlspecialchars($user->getComment()); ?>
-							<div class="teaser">“<?php echo substr($commentClean, 0, 10); ?>…“</div>
-							<div class="complete" style="display:none;"><?php echo $commentClean; ?></div>
-							<script type="text/javascript">
-								// toggle display of user comment teaser <-> full
-								function toggleUserComment(userSessionId)
-								{
-									jQuery('#userComment' + userSessionId + ' .teaser').css('display', (jQuery('#userComment' + userSessionId + ' .teaser').css('display')=='block'?'none':'block'));
-									jQuery('#userComment' + userSessionId + ' .complete').css('display', (jQuery('#userComment' + userSessionId + ' .complete').css('display')=='block'?'none':'block'));
+							<?php if (!empty($commentClean)) { ?>
+								<a title="Toggle display of full comment. HTML is escaped to ensure you can safely view it." href="javascript:toggleUserComment(<?php echo $user->getSessionId(); ?>);" style="float:left; margin-right:4px;">○</a>
+								<div class="teaser">“<?php echo substr($commentClean, 0, 10); ?>…“</div>
+								<div class="complete" style="display:none;"><?php echo $commentClean; ?></div>
+								<script type="text/javascript">
+									// toggle display of user comment teaser <-> full
+									function toggleUserComment(userSessionId)
+									{
+										jQuery('#userComment' + userSessionId + ' .teaser').css('display', (jQuery('#userComment' + userSessionId + ' .teaser').css('display')=='block'?'none':'block'));
+										jQuery('#userComment' + userSessionId + ' .complete').css('display', (jQuery('#userComment' + userSessionId + ' .complete').css('display')=='block'?'none':'block'));
 								}
 							</script>
+							<?php } ?>
 						</td>
 						<td class="userAddress">
 							<?php echo $user->getAddress()->__toString(); ?> <sup>(<a href="http://[<?php echo $user->getAddress(); ?>]">http</a>, <a href="http://www.db.ripe.net/whois?searchtext=<?php echo $user->getAddress(); ?>">lookup</a>)</sup>
