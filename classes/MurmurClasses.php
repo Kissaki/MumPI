@@ -95,6 +95,16 @@ class MurmurServer
 	{
 		return $this->iceObj->getUsers();
 	}
+	/**
+	 * @param int $userId
+	 * @return MurmurUser
+	 */
+	public function getUserById($userId)
+	{
+		$userMap = $this->iceObj->getUsers();
+		$user = isset($userMap[$userId])?MurmurUser::fromIceObject($userMap[$userId]):null;
+		return $user;
+	}
 	public function getChannels()
 	{
 		return $this->iceObj->getChannels();
@@ -595,6 +605,10 @@ class MurmurUser
 	public function getAddress()
 	{
 		return $this->address;
+	}
+	public function getName()
+	{
+		return $this->name;
 	}
 	
 	//TODO setters

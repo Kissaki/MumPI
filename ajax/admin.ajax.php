@@ -418,7 +418,7 @@ class Ajax_Admin extends Ajax
 <?php
 							if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid'])) {
 								echo '<ul>';
-								echo '<li><a class="jqlink" onclick="jq_server_registration_remove('.$userId.')">remove</a></li>';
+								echo '<li><a class="jqlink" onclick="if(confirm(\'Do you really want to remove the user ' . str_replace('"', '', $userName) . '?\')){jq_server_registration_remove('.$userId.');}">remove</a></li>';
 								echo '<li><a title="generate a new password for the user" class="jqlink" onclick="if(confirm(\'Are you sure you want to generate and set a new password for this account?\')){jq_server_user_genNewPw('.$user->getServerId().', '.$user->getUserId().'); return false;}">genNewPw</a></li>';
 								echo '</ul>';
 							}
