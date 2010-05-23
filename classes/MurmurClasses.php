@@ -226,9 +226,10 @@ class MurmurServer
 	{
 		return $this->iceObj->updateRegistration();
 	}
-	public function getRegistration()
+	public function getRegistration($registrationId)
 	{
-		return $this->iceObj->getRegistration();
+		$reg = MurmurRegistration::fromIceObject(empty($registrationId)?$this->iceObj->getRegistration():$this->iceObj->getRegistration(intval($registrationId)));
+		return $reg;
 	}
 	public function getRegisteredUsers()
 	{
@@ -300,11 +301,11 @@ class MurmurRegistration
 	 */
 	public static function fromIceObject(array $object, $serverId, $userId)
 	{
-		$name=isset($object[self::USERNAME])?$object[self::USERNAME]:null;
-		$email=isset($object[self::USEREMAIL])?$object[self::USEREMAIL]:null;
-		$comment=isset($object[self::USERCOMMENT])?$object[self::USERCOMMENT]:null;
-		$hash=isset($object[self::USERHASH])?$object[self::USERHASH]:null;
-		$password=isset($object[self::USERPASSWORD])?$object[self::USERPASSWORD]:null;
+		$name     = isset($object[self::USERNAME])    ?$object[self::USERNAME]    :null;
+		$email    = isset($object[self::USEREMAIL])   ?$object[self::USEREMAIL]   :null;
+		$comment  = isset($object[self::USERCOMMENT]) ?$object[self::USERCOMMENT] :null;
+		$hash     = isset($object[self::USERHASH])    ?$object[self::USERHASH]    :null;
+		$password = isset($object[self::USERPASSWORD])?$object[self::USERPASSWORD]:null;
 		return new self($serverId, $userId, $name, $email, $comment, $hash, $password);
 	}
 	/**

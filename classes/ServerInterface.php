@@ -395,6 +395,13 @@ class ServerInterface_ice
 		$reg->setEmail($newEmail);
 		$srv->updateregistration($userId, $reg->toArray());
 	}
+	function updateUserHash($srvid, $userId, $newHash)
+	{
+		$srv = $this->getServer($srvid);
+		$reg = $this->getServerRegistration($srvid, $userId);
+		$reg->setHash($newHash);
+		$srv->updateRegistration($userId, $reg->toArray());
+	}
 	function updateUserPw($srvid, $userId, $newPw)
 	{
 		$srv = $this->getServer($srvid);

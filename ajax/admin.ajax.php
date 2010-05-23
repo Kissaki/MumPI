@@ -415,7 +415,7 @@ class Ajax_Admin extends Ajax
 								</script>
 							<?php } ?>
 						</td>
-						<td class="userHash"><?php echo $user->getHash(); ?></td>
+						<td id="user_hash_<?php echo $userId; ?>" class="userHash jq_editable"><?php echo $user->getHash(); ?></td>
 						<td>
 <?php
 							if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid'])) {
@@ -918,16 +918,27 @@ class Ajax_Admin extends Ajax
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		$_POST['uid'] = intval($_POST['uid']);
-		if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
+		if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid'])) {
 			ServerInterface::getInstance()->updateUserName($_POST['sid'], $_POST['uid'], $_POST['newValue']);
+		}
 	}
 	
 	public static function server_user_updateEmail()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		$_POST['uid'] = intval($_POST['uid']);
-		if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
+		if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid'])) {
 			ServerInterface::getInstance()->updateUserEmail($_POST['sid'], $_POST['uid'], $_POST['newValue']);
+		}
+	}
+	
+	public static function server_user_updateHash()
+	{
+		$_POST['sid'] = intval($_POST['sid']);
+		$_POST['uid'] = intval($_POST['uid']);
+		if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid'])) {
+			ServerInterface::getInstance()->updateUserHash($_POST['sid'], $_POST['uid'], $_POST['newValue']);
+		}
 	}
 	
 	public static function meta_server_information_edit()

@@ -84,9 +84,9 @@
 																						'editBy': 'dblclick',
 																						'onSubmit':
 																							function (content) {
-																								var id = $(this).attr('id');
-																								var sub = id.substring(0, id.lastIndexOf('_'));
-																								var id = id.substring(id.lastIndexOf('_')+1, id.length);
+																								var domId = $(this).attr('id');
+																								var sub = domId.substring(0, domId.lastIndexOf('_'));
+																								var id = domId.substring(domId.lastIndexOf('_')+1, domId.length);
 																								if (id==0) {
 																									alert('Changing the superuser account is not possible.');
 																									jq_server_getRegistrations(sid);
@@ -98,6 +98,9 @@
 																										break;
 																									case 'user_email':
 																										jq_user_updateEmail(id, content.current);
+																										break;
+																									case 'user_hash':
+																										jq_user_updateHash(id, content.current);
 																										break;
 																								}
 																							}
@@ -144,6 +147,16 @@
 		function jq_user_updateEmail(uid, newVal) {
 			$('#user_name_'+uid).append(imgAjaxLoading);
 			$.post("./?ajax=server_user_updateEmail",
+					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid, 'newValue': newVal },
+					function (data) {
+						if(data.length>0){ alert('failed: '+data); }
+						jq_server_getRegistrations();
+					}
+				);
+		}
+		function jq_user_updateHash(uid, newVal) {
+			$('#user_name_'+uid).append(imgAjaxLoading);
+			$.post("./?ajax=server_user_updateHash",
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid, 'newValue': newVal },
 					function (data) {
 						if(data.length>0){ alert('failed: '+data); }
