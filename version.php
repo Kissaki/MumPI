@@ -1,2 +1,2 @@
 <?php
-	$mumpiVersion = '2.1.0';
+	$mumpiVersion = '2.1.1';
