@@ -214,6 +214,15 @@ class DBManager_filesystem
 	 *** Admin Accounts ***
 	 *************************************************************************/
 	/**
+	 * Does at least one admin account exist?
+	 * @return boolean
+	 */
+	public function doesAdminExist()
+	{
+		return filesize($this->filepath_admins) > 0;
+	}
+
+	/**
 	 * add an admin account
 	 * @param unknown_type $username account name
 	 * @param unknown_type $password password
@@ -382,7 +391,7 @@ class DBManager_filesystem
 			return true;
 		}
 		// no admins yet? create this login as admin
-		if (filesize($this->filepath_admins) == 0) {
+		if (!$this->doesAdminExist()) {
 			$this->addAdmin($username, $password, true);
 			return true;
 		}

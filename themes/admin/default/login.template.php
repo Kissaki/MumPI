@@ -1,15 +1,29 @@
 <?php
-	if (isset($_GET['action']) && $_GET['action']=='dologin') {
-		try {
-			SessionManager::getInstance()->loginAsAdmin($_POST['username'], $_POST['password']);
-			echo '<script type="text/javascript">location.replace("?page=meta")</script>';
-			echo 'Login successfull.<br/>
-				Go on to the <a href="?page=meta">Meta Page</a>.';
-		} catch(Exception $exc) {
-			echo 'Login failed.<br/>
-				<a href="?page=login">Go back</a> and try again.';
-		}
+	$isLoggedIn = SessionManager::getInstance()->isAdmin();
+	if ($isLoggedIn) {
+		echo 'You are already logged in!';
+		echo 'Were you looking for <a href="./?page=logout">logout</a>?';
 	} else {
+		if (isset($_GET['action']) && $_GET['action'] == 'dologin') {
+			// parse and handle login form data
+			try {
+				SessionManager::getInstance()->loginAsAdmin($_POST['username'], $_POST['password']);
+				echo '<script type="text/javascript">location.replace("?page=meta")</script>';
+				echo 'Login successfull.<br/>
+					Go on to the <a href="?page=meta">Meta Page</a>.';
+			} catch(Exception $exc) {
+				echo 'Login failed.<br/>
+					<a href="?page=login">Go back</a> and try again.';
+			}
+		} else {
+			// display login form
+			if (!DBManager::getInstance()->doesAdminExist()) {
+				echo '<div class="infobox infobox_info">';
+				echo 'No admin Account exists yet.<br/>';
+				echo 'To create an account, <b>just log in with your desired login-credentials</b>. The account will automatically created for you!<br/><br/>';
+				echo 'If you experience problems and the account is not created for you, please check that your webserver has write permissions to the data folder.';
+				echo '</div>';
+			}
 ?>
 <form class="mpi_login_form" action="?page=login&amp;action=dologin" method="post">
 	<label for="mpi_login_username">Username</label>
@@ -18,4 +32,7 @@
 	<input type="password" name="password" id="mpi_login_password" />
 	<input type="submit" value="Login" />
 </form>
-<?php } ?>
+<?php
+		}
+	}
+?>
