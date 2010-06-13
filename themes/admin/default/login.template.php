@@ -8,14 +8,15 @@
 			// parse and handle login form data
 			try {
 				SessionManager::getInstance()->loginAsAdmin($_POST['username'], $_POST['password']);
+				$isLoggedIn = true;
 				echo '<script type="text/javascript">location.replace("?page=meta")</script>';
 				echo 'Login successfull.<br/>
 					Go on to the <a href="?page=meta">Meta Page</a>.';
 			} catch(Exception $exc) {
-				echo 'Login failed.<br/>
-					<a href="?page=login">Go back</a> and try again.';
+				echo '<div class="infobox infobox_error">Login failed.</div>';
 			}
-		} else {
+		}
+		if (!$isLoggedIn) {
 			// display login form
 			if (!DBManager::getInstance()->doesAdminExist()) {
 				echo '<div class="infobox infobox_info">';
@@ -25,7 +26,9 @@
 				echo '</div>';
 			}
 ?>
-<form class="mpi_login_form" action="?page=login&amp;action=dologin" method="post">
+<form class="mpi_login_form" action="?page=login&amp;action=dologin" method="post" onsubmit="
+		if (jQuery('#mpi_login_username').attr('value').length == 0) {alert('You did not enter a username!'); return false;}
+		if (jQuery('#mpi_login_password').attr('value').length == 0) {alert('You did not enter a password!'); return false;}">
 	<label for="mpi_login_username">Username</label>
 	<input type="text" name="username" id="mpi_login_username" />
 	<label for="mpi_login_password">Password</label>
