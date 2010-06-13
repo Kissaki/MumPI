@@ -229,7 +229,13 @@ class Ajax_Admin extends Ajax
 			else
 				echo 			'<li><a title="add" class="jqlink" onclick="jq_admin_removeFromGroups(' . $admin['id'] . ');">removeFromGroups</a></li>';
 			// TODO: I18N
-			echo 			'<li><a class="jqlink" onclick="jq_admin_remove('.$admin['id'].')">delete</a></li>';
+			echo 			'<li><a class="jqlink" onclick="';
+			// if this is the account you're currently logged in as ask explicitly
+			//TODO this should be instead of the other confimation or afterwards
+			if (SessionManager::getInstance()->getAdminID() == $admin['id']) {
+				echo "if (!confirm('THIS IS YOUR ACCOUNT! Are you sure you want to remove it?')) {return false;};";
+			}
+			echo 'jq_admin_remove('.$admin['id'].');">delete</a></li>';
 			echo 		'</ul>';
 			echo 	'</td>';
 			echo '</tr>';

@@ -114,8 +114,10 @@
 			$.post(
 						"./?ajax=server_regstration_remove",
 						{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid },
-						function(data){
-							if (data.length>0) { alert('failed: '+data); }
+						function(data) {
+							if (data.length>0) {
+								alert('failed: '+data);
+							}
 							jq_server_getRegistrations(<?php echo $_GET['sid']; ?>);
 						}
 			);
@@ -126,9 +128,11 @@
 						"./?ajax=server_regstration_genpw",
 						{ 'serverId': serverId, 'userId': userId, 'newPw': newPw },
 						function(data) {
-							if (data.length>0) { alert('failed: '+data); }
-							else
+							if (data.length>0) {
+								alert('failed: '+data);
+							} else {
 								alert('Password set to: ' + newPw);
+							}
 							jq_server_getRegistrations(serverId);
 						}
 			);
