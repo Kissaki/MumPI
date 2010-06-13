@@ -11,11 +11,11 @@
 		}
 	} else {
 ?>
-<form action="?page=login&amp;action=dologin" method="post">
-	<label for="login_username">Username</label>
-	<input type="text" name="username" id="login_username" />
-	<label for="login_password">Password</label>
-	<input type="password" name="password" id="login_password" />
+<form class="mpi_login_form" action="?page=login&amp;action=dologin" method="post">
+	<label for="mpi_login_username">Username</label>
+	<input type="text" name="username" id="mpi_login_username" />
+	<label for="mpi_login_password">Password</label>
+	<input type="password" name="password" id="mpi_login_password" />
 	<input type="submit" value="Login" style="padding:4px 10px;" />
 </form>
 <?php } ?>

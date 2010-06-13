@@ -97,3 +97,8 @@ table.list_admins .list_admins_item {
 .userHash {
 	font-size:0.8em;
 }
+
+
+.mpi_login_form {
+	width: 220px;
+}
