@@ -4,9 +4,9 @@
 <?php
 		if (!SessionManager::getInstance()->isAdmin()) {
 ?>
-			<li<?php if(HelperFunctions::getActivePage()=='login') echo ' class="active"';?>><a href="./?page=login">Login</a></li>
-	</ul>
-</div>
+			<li<?php if(HelperFunctions::getActivePage()=='login') echo ' class="active"';?>>
+				<a href="./?page=login">Login</a>
+			</li>
 <?php
 		} else {
 			HelperFunctions::echoMenuEntry('meta');
@@ -16,27 +16,7 @@
 			HelperFunctions::echoMenuEntry('logout');
 ?>
 		<li style="height:10px; font-size:10px; line-height:10px; margin-top:10px; border-bottom:black;">Back to…</li>
+<?php } ?>
 		<li><a href="../user/"><-- User</a></li>
 	</ul>
 </div>
-<?php /* TODO: check for interface updates
-<div id="interface_update_status" style="background-color:darkgrey; float:right; position:absolute; top:0px; right:0px;">
-y
-</div>
-<script type="text/javascript">
-	$(document).ready(function(){
-		
-		$.getJSON("http://kissaki.clandooc.de/mumble/interfaces/PHP_Interface_RecentVersion.php?jsoncallback=?",
-			function(data){
-				alert('yo');
-				$('#interface_update_status').html(data.recent_version);
-				$.each(data.test, function(i,item){
-		            alert(i); alert(item);
-		          });
-				alert('yo');
-			}
-		);
-
-	});
-</script>*/ ?>
-<?php } ?>

@@ -12,8 +12,10 @@
 	} else {
 ?>
 <form action="?page=login&amp;action=dologin" method="post">
-	<input type="text" name="username" />
-	<input type="password" name="password" />
-	<input type="submit" value="Login" />
+	<label for="login_username">Username</label>
+	<input type="text" name="username" id="login_username" />
+	<label for="login_password">Password</label>
+	<input type="password" name="password" id="login_password" />
+	<input type="submit" value="Login" style="padding:4px 10px;" />
 </form>
 <?php } ?>
