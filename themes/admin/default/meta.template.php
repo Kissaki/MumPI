@@ -67,7 +67,7 @@
 	<div id="jq_information">
 		
 	</div>
-	<script type="text/javascript">
+	<script type="text/javascript">/*<![CDATA[*/
 		$('#server_create').click(
 			function(event){
 				// $.get("./?ajax=server_create", { name: "John", time: "2pm" } );
@@ -163,4 +163,5 @@
 			object.style.marginTop = "-" + parseInt(object.offsetHeight / 2) + "px";
 		}
 		//$('#jq_information').html($(parent).id());
+		/*]]>*/
 	</script>

@@ -1,7 +1,7 @@
 <?php
 	if(SessionManager::getInstance()->isAdmin()){
 ?>
-<script type="text/javascript">
+<script type="text/javascript">/*<![CDATA[*/
 	function jq_loadPage(page){
 		$.get('./?ajax=getPage&page='+page, {},
 				function(data){
@@ -9,6 +9,7 @@
 				}
 			);
 	}
+	/*]]>*/
 </script>
 <div id="log_area">
 <?php MessageManager::echoAll(); ?>
@@ -31,13 +32,12 @@
 			if (isset($mumpiVersion)) {
 				$_SESSION['mumpiVersionCheckLast'] = time();
 ?>
-<script type="text/javascript">
-	<!--
+<script type="text/javascript">/*<![CDATA[*/
 		function mumpi_jsonp(data)
 		{
 			jQuery('.updatecheck_result').html(data);
 		}
-	-->
+	/*]]>*/
 </script>
 <script type="text/javascript" src="http://mumpi.sourceforge.net/version.php?version=<?php echo $mumpiVersion; ?>"></script>
 <?php
