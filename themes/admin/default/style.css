@@ -102,3 +102,8 @@ table.list_admins .list_admins_item {
 .mpi_login_form {
 	width: 220px;
 }
+.mpi_login_form > input[type=submit] {
+	margin-top:8px;
+	padding:4px 10px;
+}
+

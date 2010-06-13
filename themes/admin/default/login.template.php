@@ -16,6 +16,6 @@
 	<input type="text" name="username" id="mpi_login_username" />
 	<label for="mpi_login_password">Password</label>
 	<input type="password" name="password" id="mpi_login_password" />
-	<input type="submit" value="Login" style="padding:4px 10px;" />
+	<input type="submit" value="Login" />
 </form>
 <?php } ?>
