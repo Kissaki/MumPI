@@ -410,13 +410,14 @@ class Ajax_Admin extends Ajax
 								<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getUserId(); ?>);" style="float:left; margin-right:4px;">○</a>
 								<div class="teaser"><?php echo(substr($commentClean, 0, 10) . (strlen($commentClean)>0?'…':'')); ?></div>
 								<div class="complete" style="display:none;"><?php echo $commentClean; ?></div>
-								<script type="text/javascript">
+								<script type="text/javascript">/*<![CDATA[*/
 									// toggle display of user comment teaser <-> full
 									function toggleUserComment(userId)
 									{
 										jQuery('#userComment' + userId + ' .teaser').css('display', (jQuery('#userComment' + userId + ' .teaser').css('display')=='block'?'none':'block'));
 										jQuery('#userComment' + userId + ' .complete').css('display', (jQuery('#userComment' + userId + ' .complete').css('display')=='block'?'none':'block'));
 									}
+									/*]]>*/
 								</script>
 							<?php } ?>
 						</td>
@@ -508,13 +509,14 @@ class Ajax_Admin extends Ajax
 								<a title="Toggle display of full comment. HTML is escaped to ensure you can safely view it." href="javascript:toggleUserComment(<?php echo $user->getSessionId(); ?>);" style="float:left; margin-right:4px;">○</a>
 								<div class="teaser">“<?php echo substr($commentClean, 0, 10); ?>…“</div>
 								<div class="complete" style="display:none;"><?php echo $commentClean; ?></div>
-								<script type="text/javascript">
+								<script type="text/javascript">/*<![CDATA[*/
 									// toggle display of user comment teaser <-> full
 									function toggleUserComment(userSessionId)
 									{
 										jQuery('#userComment' + userSessionId + ' .teaser').css('display', (jQuery('#userComment' + userSessionId + ' .teaser').css('display')=='block'?'none':'block'));
 										jQuery('#userComment' + userSessionId + ' .complete').css('display', (jQuery('#userComment' + userSessionId + ' .complete').css('display')=='block'?'none':'block'));
 								}
+								/*]]>*/
 							</script>
 							<?php } ?>
 						</td>
@@ -537,7 +539,7 @@ class Ajax_Admin extends Ajax
 <?php
 			if ($canModerate) {
 ?>
-				<script type="text/javascript">
+				<script type="text/javascript">/*<![CDATA[*/
 					$('.jq_toggleable').click(
 							function(event){
 								var id = $(this).attr('id');
@@ -562,6 +564,7 @@ class Ajax_Admin extends Ajax
 								}
 							}
 						);
+					/*]]>*/
 				</script>
 <?php
 			} // permission check: moderate
@@ -837,7 +840,7 @@ class Ajax_Admin extends Ajax
 <?php
 		if ($canEdit) {
 ?>
-			<script type="text/javascript">
+			<script type="text/javascript">/*<![CDATA[*/
 				var currentServerId = <?php echo $_POST['sid']; ?>;
 				function jq_editable_server_conf_onSubmit(obj, content)
 				{
@@ -903,6 +906,7 @@ class Ajax_Admin extends Ajax
 					.dblclick(function(){
 						jQuery('#jq_editable_server_conf_defaultchannel_form').dialog('open');
 					});
+				/*]]>*/
 			</script>
 <?php
 		}
