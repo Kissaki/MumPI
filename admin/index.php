@@ -61,6 +61,8 @@ define('MUMPHPI_SECTION', 'admin');
 	<title><?php echo SettingsManager::getInstance()->getSiteTitle().' - '.HelperFunctions::getActivePage(); ?></title>
 	<meta name="description" content="<?php echo SettingsManager::getInstance()->getSiteDescription(); ?>" />
 	<meta name="keywords" content="<?php echo SettingsManager::getInstance()->getSiteKeywords(); ?>" />
+	<meta name="generator" content="MumPI by KCode" />
+	<meta name="author" content="KCode.de" />
 	
 	<?php TemplateManager::parseTemplate('HTMLHead');; ?>
 </head>

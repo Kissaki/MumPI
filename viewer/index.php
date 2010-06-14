@@ -56,6 +56,8 @@ define('MUMPHPI_SECTION', 'viewer');
 	<title><?php echo SettingsManager::getInstance()->getSiteTitle(); ?></title>
 	<meta name="description" content="<?php echo SettingsManager::getInstance()->getSiteDescription(); ?>" />
 	<meta name="keywords" content="<?php echo SettingsManager::getInstance()->getSiteKeywords(); ?>" />
+	<meta name="generator" content="MumPI by KCode" />
+	<meta name="author" content="KCode.de" />
 	
 	<link rel="stylesheet" type="text/css" href="reset-min.css" />
 	<link rel="stylesheet" type="text/css" href="style.css" />
