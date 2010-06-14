@@ -51,7 +51,7 @@
 							<?php } ?>
 						</td>
 						<td style="padding-left:10px;">
-							<a class="mpi_tooltip" href="?page=server&amp;sid=<?php echo $server->id(); ?>" title="Show Server Details"><img src="<?php echo SettingsManager::getInstance()->getThemeUrl(); ?>/img/server_properties.png" alt="Show Server Details" /></a>
+							<a class="mpi_tooltip" href="?page=server&amp;sid=<?php echo $server->id(); ?>" title="Show Server Details"><img src="<?php echo SettingsManager::getInstance()->getThemeUrl(); ?>/img/server_details.png" alt="Show Server Details" /></a>
 							
 						</td>
 					</tr><?php
