@@ -276,12 +276,41 @@ class SettingsManager {
 		} else {
 			// There was no server information before, add it to the settings file
 			self::appendToSettingsFile(
-				 '$servers['.$serverid.'][\'name\']              = \''.$name.'\';'."\n"
-				.'$servers['.$serverid.'][\'allowlogin\']        = '.$allowlogin.';'."\n"
-				.'$servers['.$serverid.'][\'allowregistration\'] = '.$allowregistration.';'."\n"
-				.'$servers['.$serverid.'][\'forcemail\']         = '.$forcemail.';'."\n"
-				.'$servers['.$serverid.'][\'authbymail\']        = '.$authbymail.';'."\n");
+				 '$servers[' . $serverid . '][\'name\']              = \'' . $name . '\';'."\n"
+				.'$servers[' . $serverid . '][\'allowlogin\']        = ' . $allowlogin .        ';'."\n"
+				.'$servers[' . $serverid . '][\'allowregistration\'] = ' . $allowregistration . ';'."\n"
+				.'$servers[' . $serverid . '][\'forcemail\']         = ' . $forcemail .         ';'."\n"
+				.'$servers[' . $serverid . '][\'authbymail\']        = ' . $authbymail .        ';'."\n");
 		}
+	}
+	function removeServerInformation($serverId)
+	{
+		if (isset($this->servers[$serverId])) {
+			// server already has settings
+
+			// get and open settings file
+			$filename = 'settings.inc.php';
+			$filepath = MUMPHPI_MAINDIR.'/'.$filename;
+			if (file_exists($filepath)) {
+				// get individual lines so we can overwrite them one by one
+				$lines = file($filepath);
+				$fh = fopen($filepath, 'w');
+				
+				// expected string-beginnings in settings file
+				$expectedLineBeginning = '$servers[' . $serverId . ']';
+				
+				foreach ($lines AS $line) {
+					if (substr($line, 0, strlen($expectedLineBeginning)) == $expectedLineBeginning) {
+						// this is our servers settings, so drop them
+					} else {
+						// not our servers settings, just write them untouched
+						fwrite($fh, $line);
+					}
+				}
+				fclose($fh);
+			}
+		}
+		Logger::error('Server with id ' . $serverId . ' was not found in the settings file.');
 	}
 }
 ?>

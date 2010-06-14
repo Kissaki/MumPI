@@ -335,11 +335,12 @@ class Ajax_Admin extends Ajax
 	
 	public static function server_delete()
 	{
-		$_POST['sid'] = intval($_POST['sid']);
-		if (!PermissionManager::getInstance()->isGlobalAdmin($_POST['sid']))
+		$serverId = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->isGlobalAdmin($serverId))
 			return ;
 		
-		ServerInterface::getInstance()->deleteServer($_POST['sid']);
+		ServerInterface::getInstance()->deleteServer($serverId);
+		SettingsManager::getInstance()->removeServerInformation($serverId);
 	}
 	
 	public static function server_start()
