@@ -1,6 +1,6 @@
 
 	<h1>Server List</h1>
-	<table>
+	<table style="margin-bottom:8px;">
 		<thead>
 			<tr>
 				<th>ID</th>
@@ -19,8 +19,8 @@
 						<td><?php echo $server->id(); ?></td>
 						<td>
 							<?php if (PermissionManager::getInstance()->serverCanEditConf($server->id())) { ?>
-								<div class="js_link" style="float:right;">
-									<a class="jqlink" onclick="jq_meta_server_information_edit(<?php echo $server->id(); ?>)">edit</a>
+								<div class="js_link" style="float:right; margin-right:0px;">
+									<a class="jqlink" onclick="jq_meta_server_information_edit(<?php echo $server->id(); ?>)"><img src="<?php echo SettingsManager::getInstance()->getThemeUrl(); ?>/img/server_edit.png" alt="edit" style="width:12px;" /></a>
 								</div>
 							<?php } ?>
 <?php
@@ -41,17 +41,17 @@
 						<td>
 							<?php if (PermissionManager::getInstance()->serverCanStartStop($server->id())) { ?>
 								<?php if ($server_isRunning) { ?>
-									<a class="jqlink" onclick="if(confirm('Are you sure you want to stop this virtual server?')){jq_server_stop(<?php echo $server->id(); ?>);}">Stop</a>
+									<a class="jqlink" onclick="if(confirm('Are you sure you want to stop this virtual server?')){jq_server_stop(<?php echo $server->id(); ?>);}" title="Stop Server"><img src="<?php echo SettingsManager::getInstance()->getThemeUrl(); ?>/img/server_stop.png" alt="Stop" /></a>
 								<?php }else{ ?>
-									<a class="jqlink" onclick="jq_server_start(<?php echo $server->id(); ?>)">Start</a>
+									<a class="jqlink" onclick="jq_server_start(<?php echo $server->id(); ?>)" title="Start Server"><img src="<?php echo SettingsManager::getInstance()->getThemeUrl(); ?>/img/server_start.png" alt="Start" /></a>
 								<?php } ?>
 							<?php } ?>
 							<?php if (PermissionManager::getInstance()->isGlobalAdmin()) { ?>
-								<a class="jqlink" onclick="if(confirm('Are you sure you want to delete this Server?\nYou will loose ALL DATA!')){jq_server_delete(<?php echo $server->id(); ?>);} return false;">Delete</a>
+								<a class="jqlink" onclick="if(confirm('Are you sure you want to delete this Server?\nYou will loose ALL DATA!')){jq_server_delete(<?php echo $server->id(); ?>);} return false;" title="Delete Server"><img src="<?php echo SettingsManager::getInstance()->getThemeUrl(); ?>/img/server_delete.png" alt="Delete" /></a>
 							<?php } ?>
 						</td>
 						<td style="padding-left:10px;">
-							<a href="?page=server&amp;sid=<?php echo $server->id(); ?>">Show Server Details</a>
+							<a class="mpi_tooltip" href="?page=server&amp;sid=<?php echo $server->id(); ?>" title="Show Server Details"><img src="<?php echo SettingsManager::getInstance()->getThemeUrl(); ?>/img/server_properties.png" alt="Show Server Details" /></a>
 							
 						</td>
 					</tr><?php
@@ -60,7 +60,7 @@
 	</table>
 	
 	<?php if (PermissionManager::getInstance()->isGlobalAdmin()) { ?>
-		<a class="jqlink" id="server_create">Create a new Server</a>
+		<a class="jqlink mpi_tooltip" id="server_create" title="Create a new Server"><img src="<?php echo SettingsManager::getInstance()->getThemeUrl(); ?>/img/server_create.png" alt="Create a new Server" /></a><br/>
 		<a class="jqlink" onclick="jq_meta_showDefaultConfig()">Show Default Config</a>
 	<?php } ?>
 	
@@ -70,14 +70,14 @@
 	<script type="text/javascript">/*<![CDATA[*/
 		$('#server_create').click(
 			function(event){
-				// $.get("./?ajax=server_create", { name: "John", time: "2pm" } );
-				$.post("./?ajax=server_create",
-					{ name: "John", time: "2pm" },
-					function(data){
-						$('#jq_information').html('Server created with ID: '+data);
+				// send ajax call for creating a server; returns the new servers ID
+				$.get("./?ajax=server_create",
+					function(data) {
+						// reload content (serverlist)
+						$('#jq_information').html('Server created with ID: ' + data);
+						jq_loadPage('meta');
 					}
 				);
-				jq_loadPage('meta');
 			});
 		
 		function jq_server_delete(sid){
@@ -152,9 +152,16 @@
 						'allowregistration' : $('#meta_server_information_allowregistration').attr('checked'),
 						'forcemail'			: $('#meta_server_information_forcemail').attr('checked'),
 						'authbymail'		: $('#meta_server_information_authbymail').attr('checked')
+					},
+					function(data)
+					{
+						if (data > 0) {
+							showerror
+						} else {
+							jq_loadPage('meta');
+						}
 					}
 				);
-			jq_loadPage('meta');
 		}
 		
 		function center(object)
