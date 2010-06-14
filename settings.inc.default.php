@@ -26,14 +26,8 @@ $dbInterface_icesecrets = array(
 // db type for Interface functionality
 // (does not have anything to do with mumble/murmur)
 // specify one of the following: filesystem
-// later, the following will be implemented: (TODO: add mysql, psql, sqlite)
+// later, the following will be implemented:
 $dbType		= 'filesystem';
-
-// not necessary for dbType filesystem, but for mysql, psql etc (so not at all yet):
-$db_username    = '';
-$db_password    = '';
-$db_database    = '';
-$db_tableprefix = '';
 
 $site_title = 'Mumble Interface';
 $site_description='Mumble Interface to register on a mumble server and edit your account as well as upload a user-texture for the overlay.';
