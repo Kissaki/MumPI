@@ -980,20 +980,35 @@ class Ajax_Admin extends Ajax
 						.'<td><input type="checkbox" id="meta_server_information_authbymail" name="meta_server_information_authbymail"'
 						.($server['authbymail'] ? ' checked="checked"' : '').'" /></tr>';
 		echo	'</table>';
-		echo	'<input type="button" value="update" onclick="jq_meta_server_information_update('.$_POST['serverid'].');" />';
+		echo	'<input type="button" value="update" onclick="jq_meta_server_information_update(' . $_POST['serverid'] . ');" />';
 		echo	'<input type="button" value="cancel" onclick="$(\'#jq_information\').html(\'\');" />';
 		echo '</div>';
 	}
 	
 	public static function meta_server_information_update()
 	{
-		$_POST['serverid'] = intval($_POST['serverid']);
-		if (PermissionManager::getInstance()->serverCanEditConf($_POST['serverid'])) {
-			if (isset($_POST['name']) && isset($_POST['allowlogin']) && isset($_POST['allowregistration']) && isset($_POST['forcemail']) && isset($_POST['authbymail']) ) {
-				SettingsManager::getInstance()->setServerInformation($_POST['serverid'], $_POST['name'], $_POST['allowlogin'], $_POST['allowregistration'], $_POST['forcemail'], $_POST['authbymail']);
+		$serverId = isset($_POST['serverid'])?intval($_POST['serverid']):null;
+		// user has rights?
+		if (PermissionManager::getInstance()->serverCanEditConf($serverId)) {
+			if ($serverId != null
+					&& isset($_POST['name'])
+					&& isset($_POST['allowlogin'])
+					&& isset($_POST['allowregistration'])
+					&& isset($_POST['forcemail'])
+					&& isset($_POST['authbymail'])) {
+				$serverId = intval($_POST['serverid']);
+				$name = $_POST['name'];
+				$allowLogin = $_POST['allowlogin'];
+				$allowRegistration = $_POST['allowregistration'];
+				$forcemail = $_POST['forcemail'];
+				$authByMail = $_POST['authbymail'];
+				
+				SettingsManager::getInstance()->setServerInformation($serverId, $name, $allowLogin, $allowRegistration, $forcemail, $authByMail);
 			} else {
 				MessageManager::addError(TranslationManager::getInstance()->getText('error_missing_values'));
 			}
+		} else {
+			MessageManager::addError('You don’t have permission to do this.');
 		}
 	}
 	
