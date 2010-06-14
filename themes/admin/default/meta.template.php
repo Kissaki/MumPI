@@ -156,7 +156,7 @@
 					function(data)
 					{
 						if (data > 0) {
-							showerror
+							$('#jq_information').html(data);
 						} else {
 							jq_loadPage('meta');
 						}
