@@ -233,34 +233,28 @@ class SettingsManager {
 	{
 		if (isset($this->servers[$serverid])) {
 			// server already has settings
+
+			// get and open settings file
 			$filename = 'settings.inc.php';
 			$filepath = MUMPHPI_MAINDIR.'/'.$filename;
 			if (file_exists($filepath)) {
+				// get individual lines so we can overwrite them one by one
 				$lines = file($filepath);
 				$fh = fopen($filepath, 'w');
+				
+				// expected string-beginnings in settings file
+				$expectedLineBeginning = '$servers[' . $serverid . ']';
+				$expectedLineBeginnings = array(
+						'name'             =>'$servers['.$serverid.'][\'name\']',
+						'allowlogin'       =>'$servers['.$serverid.'][\'allowlogin\']',
+						'allowregistration'=>'$servers['.$serverid.'][\'allowregistration\']',
+						'forcemail'        =>'$servers['.$serverid.'][\'forcemail\']',
+						'authbymail'       =>'$servers['.$serverid.'][\'authbymail\']',
+					);
+				
 				foreach ($lines AS $line) {
-					/*if (preg_match('/^\$servers\[' . $serverid . '\]/', $line) == 1) {
-						if (preg_match('/^\$servers\[' . $serverid . '\]\[\'name\']/', $line) == 1) {
-							echo 'name: ' . $name . "\n";
-							echo 'pregRepl: ' . preg_replace('/(\$servers\[2\]\[\'name\']\s*=\s\')(.*)(\';\r?\n)/', '$1' . $name . '$3', $line);
-							echo 'line: ' . $line;
-							//fwrite($fh, $line);
-							$newLine = '$servers[' . $serverid . '][\'name\']              = \'';
-							$newLine .= str_replace(array('\\', "'"), array('\\\\', "\'"), $name) . '\';' . "\n";
-							echo 'newLine: ' . $newLine;
-							fwrite($fh, $newLine);
-						}
-					}*/
-					$expectedLineBeginning = '$servers[' . $serverid . ']';
 					if (substr($line, 0, strlen($expectedLineBeginning)) == $expectedLineBeginning) {
 						// this is our servers settings
-						$expectedLineBeginnings = array(
-								'name'             =>'$servers['.$serverid.'][\'name\']',
-								'allowlogin'       =>'$servers['.$serverid.'][\'allowlogin\']',
-								'allowregistration'=>'$servers['.$serverid.'][\'allowregistration\']',
-								'forcemail'        =>'$servers['.$serverid.'][\'forcemail\']',
-								'authbymail'       =>'$servers['.$serverid.'][\'authbymail\']',
-							);
 						if (strncmp($line, $expectedLineBeginnings['name'], strlen($expectedLineBeginnings['name'])) === 0) {
 							fwrite($fh, $expectedLineBeginnings['name'] . '              = \'' . str_replace(array('\\', "'"), array('\\\\', "\'"), $name) . "';\n");
 						} else if (strncmp($line, $expectedLineBeginnings['allowlogin'], strlen($expectedLineBeginnings['allowlogin'])) === 0 ) {
@@ -273,22 +267,12 @@ class SettingsManager {
 							fwrite($fh, $expectedLineBeginnings['authbymail'] . '        = ' . $authbymail . ";\n");
 						}
 					} else {
+						// not our servers settings, just write them untouched
 						fwrite($fh, $line);
 					}
 				}
 				fclose($fh);
 			}
-			
-//			$settings = str_replace( '$servers['.$serverid.'][\'name\']              = \''.$this->servers[$serverid]['name'].'\';',
-//				'$servers['.$serverid.'][\'name\']              = \''.$name.'\';',
-//				$settings);
-//			$settings = str_replace( '$servers['.$serverid.'][\'allowlogin\']        = '.$this->servers[$serverid]['allowlogin'].';',
-//				'$servers['.$serverid.'][\'allowlogin\']        = '.$allowlogin.';',
-//				$settings);
-			
-			//$settings = self::getSettingsFileContents();
-			//ereg_replace('$servers\['.$serverid.'\]\[\'name\'\]              = \'(.*)\';', '$servers\['.$serverid.'\][\'name\']              = \''.$name.'\';', $settings);
-			//self::setSettingsFileContents($settings);
 		} else {
 			// There was no server information before, add it to the settings file
 			self::appendToSettingsFile(
