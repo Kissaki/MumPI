@@ -879,33 +879,33 @@ class Ajax_Admin extends Ajax
 				// default channel editable:
 		jQuery('#jq_editable_server_conf_defaultchannel_form').ready(function(){
 			jQuery("#jq_editable_server_conf_defaultchannel_form").dialog({
-			title: 'Select default channel',
-			autoOpen: false,
-			height: 'auto',
-			width: 'auto',
-			modal: true,
-			buttons: {
-				Cancel: function() {
-					$(this).dialog('close');
-				}
-			}
-		});
-		jQuery('#jq_editable_server_conf_defaultchannel_form .form_clickable_submit').unbind('click').click(function(event){
-				var id = jQuery(this).attr('id');
-				var channelId = id.substr(id.indexOf('_')+1);
-				$.post(
-					'./?ajax=server_config_update',
-					{ 'sid': currentServerId, 'key': 'defaultchannel', 'value': channelId },
-					function(data) {
-						jq_server_config_show(currentServerId);
-						jQuery('#jq_editable_server_conf_defaultchannel_form').dialog('close');
+				title: 'Select default channel',
+				autoOpen: false,
+				height: 'auto',
+				width: 'auto',
+				modal: true,
+				buttons: {
+					Cancel: function() {
+						$(this).dialog('close');
 					}
-				);
+				}
 			});
-		jQuery('#jq_editable_server_conf_defaultchannel')
-			.dblclick(function(){
-				jQuery('#jq_editable_server_conf_defaultchannel_form').dialog('open');
-			});
+			jQuery('#jq_editable_server_conf_defaultchannel_form .form_clickable_submit').unbind('click').click(function(event){
+					var id = jQuery(this).attr('id');
+					var channelId = id.substr(id.indexOf('_')+1);
+					$.post(
+						'./?ajax=server_config_update',
+						{ 'sid': currentServerId, 'key': 'defaultchannel', 'value': channelId },
+						function(data) {
+							jq_server_config_show(currentServerId);
+							jQuery('#jq_editable_server_conf_defaultchannel_form').dialog('close');
+						}
+					);
+				});
+			jQuery('#jq_editable_server_conf_defaultchannel')
+				.dblclick(function(){
+					jQuery('#jq_editable_server_conf_defaultchannel_form').dialog('open');
+				});
 		});
 				/*]]>*/
 			</script>
