@@ -43,7 +43,7 @@
 			DBManager::getInstance()->activateAccount($_GET['key']);
 			echo tr('register_activate_success');
 		}
-		
+
 	} else {
 		// no form data received -> display registration form
 ?>
@@ -57,7 +57,7 @@
 				<td>
 					<?php $servers = ServerInterface::getInstance()->getServers(); ?>
 					<select name="serverid" style="width:100%">
-						<?php 
+						<?php
 							foreach($servers AS $server){
 								// Check that server allows registration and does exist
 								$serverDB = SettingsManager::getInstance()->getServerInformation($server->id());

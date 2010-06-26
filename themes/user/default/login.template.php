@@ -73,6 +73,6 @@
 				<?php echo tr('login_requestnote'); ?>
 			</p>
 		</div>
-		<?php 
+		<?php
 	}
 ?>

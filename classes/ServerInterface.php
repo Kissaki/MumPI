@@ -14,7 +14,7 @@ require_once dirname(__FILE__).'/MurmurClasses.php';
  */
 class ServerInterface{
 	private static $instance = null;
-	
+
 	/**
 	 * @return ServerInterface_ice
 	 */
@@ -30,7 +30,7 @@ class ServerInterface{
 		}
 		return self::$instance;
 	}
-	
+
 }
 
 class ServerInterface_ice
@@ -39,7 +39,7 @@ class ServerInterface_ice
 	private $meta;
 	private $version;
 	private $contextVars;
-	
+
 	function __construct()
 	{
 		// Check that the PHP Ice extension is loaded.
@@ -55,11 +55,11 @@ class ServerInterface_ice
 			}
 		}
 	}
-	
+
 	private function connect()
 	{
 		global $ICE;
-		
+
 		//$ICE->setProperty('Ice.ImplicitContext', 'Shared');
 		/* not avail. in Ice 3.3
 		$ICE->getImplicitContext();
@@ -71,7 +71,7 @@ class ServerInterface_ice
 		 * $initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
 		 * $ICE = Ice_initialize($initData);
 		 */
-		
+
 		$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
 		// it would be good to be able to add a check if slice file is loaded
 		//MessageManager::addError(tr('error_noIceSliceLoaded'));
@@ -81,7 +81,7 @@ class ServerInterface_ice
 			$this->meta = $this->meta->ice_context($this->contextVars);
 		}
 		$this->meta = $this->meta->ice_timeout(10000);
-		
+
 		// to check the connection get the version (e.g. was a needed (context-)password not provided?)
 		try {
 			$this->version = $this->getVersion();
@@ -93,7 +93,7 @@ class ServerInterface_ice
 					die('The Ice end requires a password, but you did not specify one or not the correct one.' . get_class($exc) . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>' );
 					$this->conn = null;
 					break;
-					
+
 				default:
 					//TODO i18n
 					MessageManager::addError('Unknown exception was thrown. Please report to the developer. Class: ' . get_class($exc) . isset($exc->unknown)?' ->unknown: '.$exc->unknown:'' . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>');
@@ -106,7 +106,7 @@ class ServerInterface_ice
 			$this->conn = null;
 		}
 	}
-	
+
 	//Meta
 	/**
 	 * Get servers version.
@@ -121,7 +121,7 @@ class ServerInterface_ice
 		return $this->version;
 	}
 	/**
-	 * 
+	 *
 	 * @return Array with name=>value
 	 */
 	public function getDefaultConfig()
@@ -176,11 +176,11 @@ class ServerInterface_ice
 	{
 		return $this->meta->newServer()->id();
 	}
-	
-	
-	
+
+
+
 	// Virtual Server
-	
+
 	/**
 	 * Is the virtual server currently running?
 	 * @param $sid server id
@@ -218,7 +218,7 @@ class ServerInterface_ice
 	}
 	//TODO implement callbacks (add, remove)
 	//TODO setAuthenticator(ServerAuthenticator* auth)
-	
+
 	public function getServerConfigEntry($sid, $key)
 	{
 		return $this->getServer($sid)->getConf($key);
@@ -237,14 +237,14 @@ class ServerInterface_ice
 	{
 		$this->getServer($sid)->setConf($key, $newValue);
 	}
-	
+
 	public function setServerSuperuserPassword($sid, $newPw)
 	{
 		$this->getServer($sid)->setSuperuserPassword($newPw);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param $sid server id
 	 * @param $first Lowest numbered entry to fetch. 0 is the most recent item.
 	 * @param $last Last entry to fetch.
@@ -254,8 +254,8 @@ class ServerInterface_ice
 	{
 		return $this->getServer($sid)->getLog($first, $last);
 	}
-	
-	
+
+
 	/**
 	 * Get all user registrations of the virtual server
 	 * @param $sid
@@ -275,7 +275,7 @@ class ServerInterface_ice
 	{
 		$serverId = intval($serverId);
 		$userId = intval($userId);
-		
+
 		$server=$this->getServer($serverId);
 		if(null===$server)
 			throw new Exception('Invalid server id, server not found.');
@@ -349,7 +349,7 @@ class ServerInterface_ice
 	{
 		return $this->getServer($srvid)->getTexture(intval($uid));
 	}
-	
+
 	function addUser($srvid, $name, $password, $email=null)
 	{
 		try {
@@ -358,10 +358,10 @@ class ServerInterface_ice
 				echo 'Server could not be found.<br/>';
 				die();
 			}
-			
+
 			$reg = new MurmurRegistration($srvid, null, $name, $email, null, null, $password);
 			$tmpUid = $tmpServer->registerUser($reg->toArray());
-			
+
 			echo TranslationManager::getInstance()->getText('doregister_success').'<br/>';
 		} catch(Murmur_InvalidServerException $exc) {	// This is depreciated (murmur.ice)
 			echo 'Invalid server. Please check your server selection.<br/><a onclick="history.go(-1); return false;" href="?page=register">go back</a><br/>If the problem persists, please contact a server admin or webmaster.<br/>';
@@ -461,7 +461,7 @@ class ServerInterface_ice
 		if (!is_int($ip)) {
 			$ip = HelperFunctions::ip2int($ip);
 		}
-		
+
 		$srv = $this->meta->getServer(intval($serverId));
 		$bans = $srv->getBans();
 		$ban = new Murmur_Ban();
@@ -495,7 +495,7 @@ class ServerInterface_ice
 		}
 		return $bans;
 	}
-	
+
 	function verifyPassword($serverid,$uname,$pw)
 	{
 		return $this->getServer(intval($serverid))->verifyPassword($uname,$pw);

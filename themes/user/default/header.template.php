@@ -6,7 +6,7 @@
 			{
 				echo '<li><a href="'.$link.'">'.tr($textIndex).'</a></li>';
 			}
-			
+
 			echoMenuEntry('./', 'home');
 			if(!SessionManager::getInstance()->isUser())
 			{
@@ -27,7 +27,7 @@
 </div>
 <?php
 	if (isset($_SESSION['userid'])) {
-		printf( tr('welcome_user'), ServerInterface::getInstance()->getUserName($_SESSION['serverid'],$_SESSION['userid']) ); 
+		printf( tr('welcome_user'), ServerInterface::getInstance()->getUserName($_SESSION['serverid'],$_SESSION['userid']) );
 	} else {
 		echo tr('welcome_guest');
 	}
