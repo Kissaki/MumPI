@@ -2,12 +2,12 @@
 //TODO: implement javascript version of form
 
 if (isset($_GET['action']) && $_GET['action']=='doedit') {
-	
+
 	// login check
 	if (!isset($_SESSION['userid'])) {
 		die();
 	}
-	
+
 	// new password
 	if (isset($_POST['password'])) {
 		if (empty($_POST['password'])) {
@@ -16,17 +16,17 @@ if (isset($_GET['action']) && $_GET['action']=='doedit') {
 			ServerInterface::getInstance()->updateUserPw($_SESSION['serverid'], $_SESSION['userid'], $_POST['password']);
 		}
 	}
-	
+
 	// new username
 	if (isset($_POST['name'])) {
 		ServerInterface::getInstance()->updateUserName($_SESSION['serverid'], $_SESSION['userid'], $_POST['name']);
 	}
-	
+
 	// new email
 	if (isset($_POST['email'])) {
 		ServerInterface::getInstance()->updateUserEmail($_SESSION['serverid'], $_SESSION['userid'], $_POST['email']);
 	}
-	
+
 	// remove texture
 	if (isset($_GET['remove_texture'])) {
 		try {
@@ -35,7 +35,7 @@ if (isset($_GET['action']) && $_GET['action']=='doedit') {
 			MessageManager::addWarning(tr('profile_removetexturefailed'));
 		}
 	}
-	
+
 	// new texture
 	if (isset($_FILES['texture'])) {
 		if(!file_exists($_FILES['texture']['tmp_name'])){
@@ -43,8 +43,8 @@ if (isset($_GET['action']) && $_GET['action']=='doedit') {
 		} else {
 			$fileExtension = pathinfo($_FILES['texture']['name']);
 			$fileExtension = isset($fileExtension['extension']) ? $fileExtension['extension'] : '';
-			
-			
+
+
 function stringToByteArray($str)
 {
 	return unpack('C*', $str);
@@ -80,13 +80,13 @@ function checkMemoryLimit()
 		ini_set('memory_limit', '60M');
 	}
 }
-			
-			
+
+
 			$tex = '';
 			switch ($fileExtension) {
 				case 'png':
 					checkMemoryLimit();
-					
+
 					if (!$texImg = imagecreatefrompng($_FILES['texture']['tmp_name'])) {
 						MessageManager::addWarning(tr('profile_texture_imgresfail'));
 						break;
@@ -98,17 +98,17 @@ function checkMemoryLimit()
 					//TODO: check if we even need those 2:
 					imagealphablending($texImg, true);		// enablealpha blending
 					imagesavealpha($texImg, true);			// save alphablending
-					
+
 					$tex = imgToString($texImg);
 					imagedestroy($texImg);
-					
+
 					if (strlen($tex)!=144000) {
 						MessageManager::addWarning(tr('profile_texture_conversionfail'));
 						break;
 					}
-					
+
 					$texArray = stringToByteArray($tex);
-					
+
 					if (ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )) {
 						MessageManager::addWarning(tr('profile_texture_success'));
 					} else {
@@ -118,7 +118,7 @@ function checkMemoryLimit()
 				case 'jpg':
 				case 'jpeg':
 					checkMemoryLimit();
-					
+
 					if (!$texImg = imagecreatefromjpeg($_FILES['texture']['tmp_name'])) {
 						MessageManager::addWarning(tr('profile_texture_imgresfail'));
 						break;
@@ -127,7 +127,7 @@ function checkMemoryLimit()
 						MessageManager::addWarning(tr('profile_texture_wrongresolution'));
 						break;
 					}
-					
+
 					$tex = imgToString($texImg);
 					imagedestroy($texImg);
 
@@ -147,7 +147,7 @@ function checkMemoryLimit()
 					break;
 				case 'gif':
 					checkMemoryLimit();
-					
+
 					if (!$texImg = imagecreatefromgif($_FILES['texture']['tmp_name'])) {
 						MessageManager::addWarning(tr('profile_texture_imgresfail'));
 						break;
@@ -156,41 +156,41 @@ function checkMemoryLimit()
 						MessageManager::addWarning(tr('profile_texture_wrongresolution'));
 						break;
 					}
-					
+
 					$tex = imgToString($texImg);
 					imagedestroy($texImg);
-					
+
 					if (strlen($tex)!=144000) {
 						MessageManager::addWarning(tr('profile_texture_conversionfail'));
 						break;
 					}
-					
+
 					$texArray = unpack('C*', $tex);
-					
+
 					if (ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )) {
 						MessageManager::addWarning(tr('profile_texture_success'));
 					} else {
 						MessageManager::addWarning(tr('profile_texture_fail'));
 					}
 					break;
-				
+
 				// RAW RGBA Image Data
 				case '':
 				case 'raw':
 					checkMemoryLimit();
-					
+
 					if ($_FILES['texture']['size'] != 144000) {
 						MessageManager::addWarning(tr('profile_texture_conversionfail'));
 						break;
 					}
-					
+
 					if (!$fd = fopen($_FILES['texture']['tmp_name'], 'r')) {
 						MessageManager::addWarning(tr('profile_texture_tmpopenfail'));
 						break;
 					}
 					$tex = fread($fd, 144000);
 					fclose($fd);
-					
+
 					// RGBA to BGRA
 					// for each pixel, swap R with B (36000 = 600*60)
 					for ($i=0; $i<36000; $i++) {
@@ -198,19 +198,19 @@ function checkMemoryLimit()
 						$tex[$i*4] = $tex[$i*4+2];
 						$tex[$i*4+2] = $red;
 					}
-					
+
 					//TODO compress in php to minimize size for ice call
 					//$tex = gzcompress($tex);
-					
+
 					$texArray = stringToByteArray($tex);
-					
+
 					if (ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray)) {
 						MessageManager::addWarning(tr('profile_texture_success'));
 					} else {
 						MessageManager::addWarning(tr('profile_texture_fail'));
 					}
 					break;
-					
+
 				default:
 					MessageManager::addWarning(tr('profile_texture_unknownext'));
 					break;
@@ -269,41 +269,39 @@ function checkMemoryLimit()
 					<?php if(isset($_GET['action']) && $_GET['action']=='edit_email'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_email_update" class="hidden"><?php echo tr('update'); ?></a>
 					<a href="?page=profile" id="profile_email_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_email'){ ?> class="hidden"<?php } ?>><?php echo tr('cancel'); ?></a></td>
 			</tr>
-			<tr><?php // Texture ?>
-				<td class="formitemname"><?php echo tr('texture'); ?>:</td>
+			<tr>
+				<?php
+					// Texture
+					$isTextureSet = (count(ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid'])) > 0);
+				?>
+				<td class="formitemname">
+					<?php echo tr('texture'); ?>:
+				</td>
 				<td>
 					<?php
-						$tex = ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']);
-						if (count($tex)==0) {
-							echo tr('texture_none');
-						} else {
+						if ($isTextureSet) {
 							echo tr('texture_set');
+						} else {
+							echo tr('texture_none');
 						}
 					?>
 				</td>
 				<td class="alignl">
-					<a href="?page=profile&amp;action=doedit&amp;remove_texture" id="profile_texture_remove"
-						<?php
-							if (isset($_GET['action']) && $_GET['action']=='edit_texture') {
+					<?php
+						if ($isTextureSet) {
+							echo '<a href="?page=profile&amp;action=doedit&amp;remove_texture" id="profile_texture_remove" onclick="return confirm(\'Are you sure you want to remove your user-avatar?\');"';
+							if (isset($_GET['action']) && ($_GET['action'] == 'edit_texture')) {
 								echo ' class="hidden"';
 							}
-						?>
-						>
-						<?php echo tr('remove'); ?>
-					</a>
-					<?php
-						if (isset($_GET['action']) && $_GET['action']=='edit_texture') {
-							echo '<input type="submit" value="'.tr('update').'"/>';
+							echo '>';
+							echo tr('remove');
+							echo '</a>';
 						}
 					?>
-					<a id="profile_texture_update" class="hidden">
-						<?php echo tr('update'); ?>
-					</a>
-					<a href="?page=profile" id="profile_texture_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>><?php echo tr('cancel'); ?></a>
 				</td>
 			</tr>
 		</table>
-		
+
 		<script type="text/javascript">
 			<!--
 				<![CDATA[
