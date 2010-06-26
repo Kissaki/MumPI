@@ -9,16 +9,24 @@
 	?>
 </div>
 <script type="text/javascript">
-	$('.helpicon').each(function(i,c){
-		var val = $(this).attr('title');
-		if( val != undefined && val != '' ){
-			$(this).attr('title','')
-				.hover(function(){
-					$(this).html('<div class="helpicon_detail">'+val+'<\/div>');
-					$(this).a
-				}, function(){
-					$(this).html('');
-				});
-		}
-	});
+	<!--
+		<![CDATA[
+			$('.helpicon').each(
+					function(i,c) {
+						var val = $(this).attr('title');
+						if (val != undefined && val != '') {
+							$(this).attr('title','')
+								.hover(
+										function(){
+											$(this).html('<div class="helpicon_detail">'+val+'<\/div>');
+										},
+									function() {
+										$(this).html('');
+										}
+									);
+						}
+					}
+				);
+		]]>
+	-->
 </script>

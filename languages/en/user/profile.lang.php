@@ -7,7 +7,7 @@
  */
 
 	$txt['profile_head'] = 'Edit Profile';
-	$txt['profile_note_texture'] = '<b>Note:</b> Textures have to be 600x60 px. You can upload images of type: png, jpeg, gif, raw (RGBA)</p>';
+	$txt['profile_note_texture'] = '<b>Note:</b> Textures have to be 600x60 px. You can upload images of type: png, jpeg, gif, raw (RGBA)';
 	$txt['profile_emptypassword'] = 'Password field was empty. It has not been changed.<br/>';
 	
 	$txt['profile_removetexturefailed'] = 'Removing the texture failed.';

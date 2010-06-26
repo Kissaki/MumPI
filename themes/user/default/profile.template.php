@@ -271,32 +271,58 @@ function checkMemoryLimit()
 			</tr>
 			<tr><?php // Texture ?>
 				<td class="formitemname"><?php echo tr('texture'); ?>:</td>
-				<td><?php
-					if (isset($_GET['action']) && $_GET['action']=='edit_texture') {
-						?><input type="file" name="texture" id="texture" value="<?php echo ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
-					} else {
+				<td>
+					<?php
 						$tex = ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']);
 						if (count($tex)==0) {
 							echo tr('texture_none');
 						} else {
 							echo tr('texture_set');
 						}
-					}
-				?></td>
+					?>
+				</td>
 				<td class="alignl">
-					<a href="?page=profile&amp;action=edit_texture" id="profile_texture_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ ?> class="hidden"<?php } ?>><?php echo tr('edit'); ?></a>
-					<a href="?page=profile&amp;action=doedit&amp;remove_texture" id="profile_texture_remove"<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ ?> class="hidden"<?php } ?>><?php echo tr('remove'); ?></a>
-					<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture'){ echo '<input type="submit" value="'.tr('update').'"/>'; } ?><a id="profile_texture_update" class="hidden"><?php echo tr('update'); ?></a>
+					<a href="?page=profile&amp;action=doedit&amp;remove_texture" id="profile_texture_remove"
+						<?php
+							if (isset($_GET['action']) && $_GET['action']=='edit_texture') {
+								echo ' class="hidden"';
+							}
+						?>
+						>
+						<?php echo tr('remove'); ?>
+					</a>
+					<?php
+						if (isset($_GET['action']) && $_GET['action']=='edit_texture') {
+							echo '<input type="submit" value="'.tr('update').'"/>';
+						}
+					?>
+					<a id="profile_texture_update" class="hidden">
+						<?php echo tr('update'); ?>
+					</a>
 					<a href="?page=profile" id="profile_texture_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>><?php echo tr('cancel'); ?></a>
 				</td>
 			</tr>
 		</table>
 		
 		<script type="text/javascript">
-			$('#profile_uname_edit').click( function(event){
-				$('#profile_uname_*').toggle( function(){$(this).removeClass('hidden');}, function(){$(this).addClass('hidden');} );
-			} );
+			<!--
+				<![CDATA[
+					$('#profile_uname_edit').click(
+						function(event) {
+							$('#profile_uname_*').toggle(
+									function(){
+										$(this).removeClass('hidden');
+									},
+									function() {
+										$(this).addClass('hidden');}
+								);
+							}
+						);
+				]]>
+			-->
 		</script>
 	</form>
-	<p <?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>><?php echo tr('profile_note_texture'); ?>
+	<p <?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>>
+		<?php echo tr('profile_note_texture'); ?>
+	</p>
 </div>

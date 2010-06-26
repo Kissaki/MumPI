@@ -7,7 +7,7 @@
  */
 
 	$txt['profile_head'] = 'Profil bearbeiten';
-	$txt['profile_note_texture'] = '<b>Beachte:</b> Bilder müssen eine Größe von 600x60 px haben. Du kannst Bilder in den folgenden Formattypen hochladen: png, jpeg, gif, raw (RGBA)</p>';
+	$txt['profile_note_texture'] = '<b>Beachte:</b> Bilder müssen eine Größe von 600x60 px haben. Du kannst Bilder in den folgenden Formattypen hochladen: png, jpeg, gif, raw (RGBA)';
 	$txt['profile_emptypassword'] = 'Das Passwort-Feld war leer. Es wurde nicht verändert.<br/>';
 	
 	$txt['profile_removetexturefailed'] = 'Das entfernen des Bildes ist gescheitert.';
