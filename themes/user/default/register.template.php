@@ -1,7 +1,6 @@
 <?php
 	require_once(SettingsManager::getInstance()->getMainDir().'/classes/Captcha.php');
-	if( isset($_GET['action']) )
-	{
+	if (isset($_GET['action'])) {
 		if ($_GET['action'] == 'doregister') {
 			$_POST['serverid'] = intval($_POST['serverid']);
 			if (!isset($_POST['serverid']) || empty($_POST['serverid'])) {
@@ -21,7 +20,7 @@
 				MessageManager::addWarning(tr('register_fail_wrongCaptcha'));
 			}
 			// Everything ok, check if auth by mail
-			if( SettingsManager::getInstance()->isAuthByMail($_POST['serverid'])) {
+			if (SettingsManager::getInstance()->isAuthByMail($_POST['serverid'])) {
 				// create Auth by mail (send activation mail)
 				// Add unactivated account and send mail
 				if (ServerInterface::getInstance()->getServer(intval($_POST['serverid'])) != null) {

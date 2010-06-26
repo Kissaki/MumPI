@@ -1,7 +1,7 @@
 <div id="logarea">
-<?php
-	MessageManager::echoAll();
-?>
+	<?php
+		MessageManager::echoAll();
+	?>
 </div>
 <div id="footer">
 	<?php
@@ -12,7 +12,7 @@
 	<!--
 		<![CDATA[
 			$('.helpicon').each(
-					function(i,c) {
+					function(i, c) {
 						var val = $(this).attr('title');
 						if (val != undefined && val != '') {
 							$(this).attr('title','')

@@ -26,9 +26,10 @@
 	</ul>
 </div>
 <?php
-	if(isset($_SESSION['userid']))
+	if (isset($_SESSION['userid'])) {
 		printf( tr('welcome_user'), ServerInterface::getInstance()->getUserName($_SESSION['serverid'],$_SESSION['userid']) ); 
-	else
+	} else {
 		echo tr('welcome_guest');
+	}
 ?>
 </div>
