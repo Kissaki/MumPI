@@ -20,8 +20,8 @@
 										function(){
 											$(this).html('<div class="helpicon_detail">'+val+'<\/div>');
 										},
-									function() {
-										$(this).html('');
+										function() {
+											$(this).html('');
 										}
 									);
 						}
