@@ -1,48 +1,52 @@
 <?php
 //TODO: implement javascript version of form
 
-if(isset($_GET['action']) && $_GET['action']=='doedit'){
+if (isset($_GET['action']) && $_GET['action']=='doedit') {
 	
 	// login check
-	if(!isset($_SESSION['userid'])) die();
+	if (!isset($_SESSION['userid'])) {
+		die();
+	}
 	
 	// new password
-	if(isset($_POST['password'])){
-		if(empty($_POST['password']))
+	if (isset($_POST['password'])) {
+		if (empty($_POST['password'])) {
 			MessageManager::addWarning(tr('profile_emptypassword'));
-		else
+		} else {
 			ServerInterface::getInstance()->updateUserPw($_SESSION['serverid'], $_SESSION['userid'], $_POST['password']);
+		}
 	}
 	
 	// new username
-	if(isset($_POST['name'])){
+	if (isset($_POST['name'])) {
 		ServerInterface::getInstance()->updateUserName($_SESSION['serverid'], $_SESSION['userid'], $_POST['name']);
 	}
 	
 	// new email
-	if(isset($_POST['email'])){
+	if (isset($_POST['email'])) {
 		ServerInterface::getInstance()->updateUserEmail($_SESSION['serverid'], $_SESSION['userid'], $_POST['email']);
 	}
 	
 	// remove texture
-	if(isset($_GET['remove_texture'])){
-		try{
+	if (isset($_GET['remove_texture'])) {
+		try {
 			ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], array());
-		}catch(Murmur_InvalidTextureException $exc){
+		} catch(Murmur_InvalidTextureException $exc) {
 			MessageManager::addWarning(tr('profile_removetexturefailed'));
 		}
 	}
 	
 	// new texture
-	if(isset($_FILES['texture'])){
+	if (isset($_FILES['texture'])) {
 		if(!file_exists($_FILES['texture']['tmp_name'])){
 			MessageManager::addWarning(tr('profile_texture_notempfile'));
-		}else{
+		} else {
 			$fileExtension = pathinfo($_FILES['texture']['name']);
 			$fileExtension = isset($fileExtension['extension']) ? $fileExtension['extension'] : '';
 			
 			
-function stringToByteArray($str){
+function stringToByteArray($str)
+{
 	return unpack('C*', $str);
 }
 /**
@@ -50,7 +54,8 @@ function stringToByteArray($str){
  * @param $imgRes
  * @return string
  */
-function imgToString($imgRes){
+function imgToString($imgRes)
+{
 	$tex = '';
 	for($y=0; $y<imagesy($imgRes); $y++){
 		for($x=0; $x<imagesx($imgRes); $x++){
@@ -67,24 +72,26 @@ function imgToString($imgRes){
  * used for memory intensive image calculations
  * Checks that memory_limit is high enough and increases it if necessary.
  */
-function checkMemoryLimit(){
+function checkMemoryLimit()
+{
 	// 40M should be enough, use 60M to be sure
 	$tmp_memLim = ini_get('memory_limit');
-	if( intval(substr($tmp_memLim, 0, strlen($tmp_memLim)-1)) < 60 )
+	if (intval(substr($tmp_memLim, 0, strlen($tmp_memLim)-1)) < 60) {
 		ini_set('memory_limit', '60M');
+	}
 }
 			
 			
 			$tex = '';
-			switch($fileExtension){
+			switch ($fileExtension) {
 				case 'png':
 					checkMemoryLimit();
 					
-					if(!$texImg = imagecreatefrompng($_FILES['texture']['tmp_name'])){
+					if (!$texImg = imagecreatefrompng($_FILES['texture']['tmp_name'])) {
 						MessageManager::addWarning(tr('profile_texture_imgresfail'));
 						break;
 					}
-					if( imagesx($texImg)!=600 || imagesy($texImg)!=60 ){
+					if (imagesx($texImg)!=600 || imagesy($texImg)!=60) {
 						MessageManager::addWarning(tr('profile_texture_wrongresolution'));
 						break;
 					}
@@ -95,16 +102,16 @@ function checkMemoryLimit(){
 					$tex = imgToString($texImg);
 					imagedestroy($texImg);
 					
-					if( strlen($tex)!=144000 ){
+					if (strlen($tex)!=144000) {
 						MessageManager::addWarning(tr('profile_texture_conversionfail'));
 						break;
 					}
 					
 					$texArray = stringToByteArray($tex);
 					
-					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )){
+					if (ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )) {
 						MessageManager::addWarning(tr('profile_texture_success'));
-					}else{
+					} else {
 						MessageManager::addWarning(tr('profile_texture_fail'));
 					}
 					break;
@@ -112,40 +119,40 @@ function checkMemoryLimit(){
 				case 'jpeg':
 					checkMemoryLimit();
 					
-					if(!$texImg = imagecreatefromjpeg($_FILES['texture']['tmp_name'])){
+					if (!$texImg = imagecreatefromjpeg($_FILES['texture']['tmp_name'])) {
 						MessageManager::addWarning(tr('profile_texture_imgresfail'));
 						break;
 					}
-					if( imagesx($texImg)!=600 || imagesy($texImg)!=60 ){
+					if (imagesx($texImg)!=600 || imagesy($texImg)!=60) {
 						MessageManager::addWarning(tr('profile_texture_wrongresolution'));
 						break;
 					}
 					
 					$tex = imgToString($texImg);
 					imagedestroy($texImg);
-					
-					if( strlen($tex)!=144000 ){
+
+					if (strlen($tex)!=144000){
 						MessageManager::addWarning(tr('profile_texture_conversionfail'));
 						break;
 					}
-					
+
 					$texArray = unpack('C*', $tex);
-					
-					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )){
+
+					if (ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )) {
 						MessageManager::addWarning(tr('profile_texture_success'));
-					}else{
+					} else {
 						MessageManager::addWarning(tr('profile_texture_fail'));
 					}
-					
+
 					break;
 				case 'gif':
 					checkMemoryLimit();
 					
-					if(!$texImg = imagecreatefromgif($_FILES['texture']['tmp_name'])){
+					if (!$texImg = imagecreatefromgif($_FILES['texture']['tmp_name'])) {
 						MessageManager::addWarning(tr('profile_texture_imgresfail'));
 						break;
 					}
-					if( imagesx($texImg)!=600 || imagesy($texImg)!=60 ){
+					if (imagesx($texImg)!=600 || imagesy($texImg)!=60) {
 						MessageManager::addWarning(tr('profile_texture_wrongresolution'));
 						break;
 					}
@@ -153,16 +160,16 @@ function checkMemoryLimit(){
 					$tex = imgToString($texImg);
 					imagedestroy($texImg);
 					
-					if( strlen($tex)!=144000 ){
+					if (strlen($tex)!=144000) {
 						MessageManager::addWarning(tr('profile_texture_conversionfail'));
 						break;
 					}
 					
 					$texArray = unpack('C*', $tex);
 					
-					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )){
+					if (ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )) {
 						MessageManager::addWarning(tr('profile_texture_success'));
-					}else{
+					} else {
 						MessageManager::addWarning(tr('profile_texture_fail'));
 					}
 					break;
@@ -172,12 +179,12 @@ function checkMemoryLimit(){
 				case 'raw':
 					checkMemoryLimit();
 					
-					if($_FILES['texture']['size'] != 144000){
+					if ($_FILES['texture']['size'] != 144000) {
 						MessageManager::addWarning(tr('profile_texture_conversionfail'));
 						break;
 					}
 					
-					if(!$fd = fopen($_FILES['texture']['tmp_name'], 'r')){
+					if (!$fd = fopen($_FILES['texture']['tmp_name'], 'r')) {
 						MessageManager::addWarning(tr('profile_texture_tmpopenfail'));
 						break;
 					}
@@ -186,32 +193,29 @@ function checkMemoryLimit(){
 					
 					// RGBA to BGRA
 					// for each pixel, swap R with B (36000 = 600*60)
-					for($i=0; $i<36000; $i++) {
+					for ($i=0; $i<36000; $i++) {
 						$red = $tex[$i*4];
 						$tex[$i*4] = $tex[$i*4+2];
 						$tex[$i*4+2] = $red;
 					}
 					
-//					$tex = gzcompress($tex);
+					//TODO compress in php to minimize size for ice call
+					//$tex = gzcompress($tex);
 					
 					$texArray = stringToByteArray($tex);
 					
-					if(ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )){
+					if (ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray)) {
 						MessageManager::addWarning(tr('profile_texture_success'));
-					}else{
+					} else {
 						MessageManager::addWarning(tr('profile_texture_fail'));
 					}
 					break;
+					
 				default:
 					MessageManager::addWarning(tr('profile_texture_unknownext'));
 					break;
 			}
-			
-			
-			
-			
 		}
-		
 	}
 }
 
@@ -232,9 +236,9 @@ function checkMemoryLimit(){
 			<tr><?php // USERNAME ?>
 				<td class="formitemname"><?php echo tr('username'); ?>:</td>
 				<td><?php
-					if(isset($_GET['action']) && $_GET['action']=='edit_uname'){
+					if (isset($_GET['action']) && $_GET['action']=='edit_uname') {
 						?><input type="text" name="name" value="<?php echo ServerInterface::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
-					}else{
+					} else {
 						echo ServerInterface::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']);
 					} ?></td>
 				<td class="alignl">
@@ -254,9 +258,9 @@ function checkMemoryLimit(){
 			<tr><?php // E-MAIL ?>
 				<td class="formitemname"><?php echo tr('email'); ?>:</td>
 				<td><?php
-					if(isset($_GET['action']) && $_GET['action']=='edit_email'){
+					if (isset($_GET['action']) && $_GET['action']=='edit_email') {
 						?><input type="text" name="email" id="email" value="<?php echo ServerInterface::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
-					}else{
+					} else {
 						echo ServerInterface::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']);
 					}
 				?></td>
@@ -268,13 +272,13 @@ function checkMemoryLimit(){
 			<tr><?php // Texture ?>
 				<td class="formitemname"><?php echo tr('texture'); ?>:</td>
 				<td><?php
-					if(isset($_GET['action']) && $_GET['action']=='edit_texture'){
+					if (isset($_GET['action']) && $_GET['action']=='edit_texture') {
 						?><input type="file" name="texture" id="texture" value="<?php echo ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
-					}else{
+					} else {
 						$tex = ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']);
-						if(count($tex)==0){
+						if (count($tex)==0) {
 							echo tr('texture_none');
-						}else{
+						} else {
 							echo tr('texture_set');
 						}
 					}
