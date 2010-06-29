@@ -74,6 +74,6 @@ class ChannelViewerProtocolProducer {
 
 	public function generateXml($serverId)
 	{
-		//TODO implement
+		//TODO implement generateXml
 	}
 }
