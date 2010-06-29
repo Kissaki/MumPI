@@ -19,14 +19,14 @@ class MurmurServer
 			throw new Exception('Required iceObject parameter was null');
 		return new self($iceObject);
 	}
-	
+
 	private $iceObj;
-	
+
 	public function __construct($iceObj)
 	{
 		$this->iceObj = $iceObj;
 	}
-	
+
 	/**
 	 * @return bool
 	 */
@@ -62,7 +62,7 @@ class MurmurServer
 	{
 		return $this->iceObj->setAuthenticator($auth);
 	}
-	
+
 	public function getAllConf()
 	{
 		return $this->iceObj->getAllConf();
@@ -75,12 +75,12 @@ class MurmurServer
 	{
 		return $this->iceObj->setConf($key, $value);
 	}
-	
+
 	public function setSuperuserPassword($newPw)
 	{
 		return $this->iceObj->setSuperuserPassword($newPw);
 	}
-	
+
 	/**
 	 * @param int $startRowFromEnd Lowest numbered entry to fetch. 0 is the most recent item.
 	 * @param int $endRow Last entry to fetch.
@@ -90,7 +90,7 @@ class MurmurServer
 	{
 		return $this->iceObj->getLog($startRowFromEnd, $endRow);
 	}
-	
+
 	public function getUsers()
 	{
 		return $this->iceObj->getUsers();
@@ -247,7 +247,7 @@ class MurmurServer
 	{
 		return $this->iceObj->setTexture();
 	}
-	
+
 	//TODO clean this, also using parent chans would suck - make it JS instead…
 	public function getJoinUrl()
 	{
@@ -263,7 +263,7 @@ class MurmurServer
 
 /**
  * a registration on a virtual server
- * 
+ *
  * slice doc name: UserInfo
  * @link http://mumble.sourceforge.net/slice/Murmur/UserInfo.html
  */
@@ -275,14 +275,14 @@ class MurmurRegistration
 	const USERCOMMENT=2;
 	const USERHASH=3;
 	const USERPASSWORD=4;
-	
+
 	private $serverId;
 	private $name;
 	private $email;
 	private $comment;
 	private $hash;
 	private $password;
-	
+
 	public function __construct($serverId, $userId, $name, $email=null, $comment=null, $hash=null, $password=null)
 	{
 		$this->serverId=$serverId;
@@ -293,7 +293,7 @@ class MurmurRegistration
 		$this->hash=$hash;
 		$this->password=$password;
 	}
-	
+
 	/**
 	 * create a MurmurRegistration object from ice object/array UserInfoMap
 	 * @param unknown_type $object UserInfoMap
@@ -325,7 +325,7 @@ class MurmurRegistration
 		if(null!==$this->password)
 			$array[self::USERPASSWORD] = $this->password;
 		return $array;
-		
+
 		/* the following would be much easier, but will send the null values which are then saved as empty strings
 		return array(
 			self::USERNAME=>$this->name,
@@ -335,7 +335,7 @@ class MurmurRegistration
 			self::USERPASSWORD=>$this->password,
 			);*/
 	}
-	
+
 	// getters
 	public function getServerId()
 	{
@@ -365,7 +365,7 @@ class MurmurRegistration
 	{
 		return $this->password;
 	}
-	
+
 	// setters
 	public function setName($name)
 	{
@@ -392,7 +392,7 @@ class MurmurRegistration
 
 /**
  * a currently connected User (on a virtual server)
- * 
+ *
  * slice doc name: User
  * @link http://mumble.sourceforge.net/slice/Murmur/User.html
  */
@@ -407,18 +407,18 @@ class MurmurUser
 	 * @var int
 	 */
 	private $registrationId;
-	
+
 	private $isMuted;
 	private $isDeafened;
 	private $isSuppressed;
 	private $isSelfMuted;
 	private $isSelfDeafened;
-	
+
 	/**
 	 * @var int
 	 */
 	private $channelId;
-	
+
 	/**
 	 * @var string
 	 */
@@ -431,7 +431,7 @@ class MurmurUser
 	 * @var int
 	 */
 	private $bytesPerSecond;
-	
+
 	/**
 	 * @var int 16 upper bits is major, followed by 8 bits of minor version, followed by 8 bits of patchlevel => 0x00010203 is 1.2.3
 	 */
@@ -448,7 +448,7 @@ class MurmurUser
 	 * @var string
 	 */
 	private $clientOsVersion;
-	
+
 	/**
 	 * @var string unique ID inside current game
 	 */
@@ -457,7 +457,7 @@ class MurmurUser
 	 * @var string binary blob, game and team…
 	 */
 	private $pluginContext;
-	
+
 	/**
 	 * @var string
 	 */
@@ -474,7 +474,7 @@ class MurmurUser
 	 * @var int
 	 */
 	private $idleSeconds;
-	
+
 	/**
 	 * @param int $sessionId
 	 * @param int $registrationId
@@ -556,7 +556,7 @@ class MurmurUser
 										$iceUser->idlesecs
 									);
 	}
-	
+
 	public function __toString()
 	{
 		return $this->toString();
@@ -569,7 +569,7 @@ class MurmurUser
 	{
 		return '<div class="username">' . $this->getName() . '</div>';
 	}
-	
+
 	//TODO getters
 	/**
 	 * dynamic getter for vars
@@ -595,29 +595,86 @@ class MurmurUser
 			return $this->$varName;
 		}
 	}
-	
-	public function getSessionIds()
-	{
+
+	/**
+	 * @deprecated this was a typo, use getSessionId() instead
+	 */
+	public function getSessionIds() {
+		return $this->sessionId;
+	}
+	public function getSessionId() {
 		return $this->sessionId;
 	}
 	/**
 	 * @return MurmurNetAddress
 	 */
-	public function getAddress()
-	{
+	public function getAddress() {
 		return $this->address;
 	}
-	public function getName()
-	{
+	public function getName() {
 		return $this->name;
 	}
-	
+
+	public function isMuted() {
+		return $this->isMuted;
+	}
+	public function isDeafened() {
+		return $this->isDeafened;
+	}
+	public function isSuppressed() {
+		return $this->isSuppressed;
+	}
+	public function isSelfMuted() {
+		return $this->isSelfMuted;
+	}
+	public function isSelfDeafened() {
+		return $this->isSelfDeafened;
+	}
+
+	public function getRegistrationId() {
+		return $this->registrationId;
+	}
+	public function getOnlineSeconds() {
+		return $this->onlineSeconds;
+	}
+	public function getBytesPerSecond() {
+		return $this->bytesPerSecond;
+	}
+	public function getClientVersion() {
+		return $this->clientVersion;
+	}
+	public function getClientRelease() {
+		return $this->clientRelease;
+	}
+	public function getClientOs() {
+		return $this->clientOs;
+	}
+	public function getClientOsVersion() {
+		return $this->clientOsVersion;
+	}
+	public function getPluginIdentity() {
+		return $this->pluginIdentity;
+	}
+	public function getPluginContext() {
+		return $this->pluginContext;
+	}
+
+	public function getComment() {
+		return $this->comment;
+	}
+	public function isTcpOnly() {
+		return $this->isTcpOnly;
+	}
+	public function getIdleSeconds() {
+		return $this->idleSeconds;
+	}
+
 	//TODO setters
 }
 
 /**
  * IPv6 network address
- * 
+ *
  * @link http://mumble.sourceforge.net/slice/Murmur.html#NetAddress
  */
 class MurmurNetAddress
@@ -629,7 +686,7 @@ class MurmurNetAddress
 	{
 		// $byte: byte number (0-15); $value: int
 		foreach ($address AS $byte=>$value) {
-			
+
 		}
 		return new self($address);
 	}
@@ -651,7 +708,7 @@ class MurmurNetAddress
 											11=>0xffff,
 											);
 	}
-	
+
 	public function isIPv4()
 	{
 		// IPv4 range
@@ -723,11 +780,11 @@ class MurmurTree
 		// return new instance of the tree
 		return new self($channel, $children, $users);
 	}
-	
+
 	private $channel;
 	private $children;
 	private $users;
-	
+
 	/**
 	 * @param MurmurChannel $channel
 	 * @param array $children
@@ -749,7 +806,7 @@ class MurmurTree
 		 */
 		$this->users = $users;
 	}
-	
+
 	public function toHtml()
 	{
 		$html = '<div class="channel">';
@@ -769,7 +826,7 @@ class MurmurTree
 			$html .=   '</ul>';
 		}
 		$html .= '</div>';
-		
+
 		return $html;
 	}
 	public function toString()
@@ -788,7 +845,7 @@ class MurmurTree
 	{
 		return $this->toString();
 	}
-	
+
 	/**
 	 * @return MurmurChannel
 	 */
@@ -796,9 +853,20 @@ class MurmurTree
 	{
 		return $this->channel;
 	}
+	/**
+	 * @return MurmurTree
+	 */
 	public function getSubChannels()
 	{
 		return $this->children;
+	}
+
+	/**
+	 * @return array(MurmurUser)
+	 */
+	public function getUsers()
+	{
+		return $this->users;
 	}
 }
 
@@ -812,7 +880,7 @@ class MurmurChannel
 	{
 		return new self($iceObject->id, $iceObject->name, $iceObject->parent, $iceObject->links, $iceObject->description, $iceObject->temporary, $iceObject->position, $server);
 	}
-	
+
 	/**
 	 * @var MurmurServer
 	 */
@@ -832,7 +900,7 @@ class MurmurChannel
 	/**
 	 * @var array of int
 	 */
-	private $linkedChannels;
+	private $linkedChannelIds;
 	/**
 	 * @var string
 	 */
@@ -845,7 +913,7 @@ class MurmurChannel
 	 * @var int
 	 */
 	private $position;
-	
+
 	/**
 	 * @param int $id
 	 * @param string $name
@@ -856,18 +924,18 @@ class MurmurChannel
 	 * @param int $position
 	 * @return MurmurChannel
 	 */
-	public function __construct($id, $name, $parentId, $linkedChannels, $description, $isTemporary, $position, &$server)
+	public function __construct($id, $name, $parentId, $linkedChannelIds, $description, $isTemporary, $position, &$server)
 	{
 		$this->id = $id;
 		$this->name = $name;
 		$this->parentId = $parentId;
-		$this->linkedChannels = $linkedChannels;
+		$this->linkedChannelIds = $linkedChannelIds;
 		$this->description = $description;
 		$this->isTemporary = $isTemporary;
 		$this->position = $position;
 		$this->server = $server;
 	}
-	
+
 	public function __toString()
 	{
 		return $this->toString();
@@ -876,7 +944,7 @@ class MurmurChannel
 	{
 		return $this->getName();
 	}
-	
+
 	/**
 	 * @return int
 	 */
@@ -907,7 +975,11 @@ class MurmurChannel
 	{
 		return $this->isTemporary;
 	}
-	
+	public function getLinkedChannelIds()
+	{
+		return $this->linkedChannelIds;
+	}
+
 	/**
 	 * Get the mumble:// join url
 	 * @return string
