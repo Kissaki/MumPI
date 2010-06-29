@@ -34,6 +34,7 @@ class ChannelViewerProtocolProducer {
 		$array['parent'] = $chan->getParentChannelId();
 		$array['temporary'] = $chan->isTemporary();
 		$array['position'] = $chan->getPosition();
+		$array['name'] = $chan->getName();
 		$array['description'] = $chan->getDescription();
 		$array['channels'] = $prior;
 		$array['links'] = $chan->getLinkedChannelIds();

@@ -20,7 +20,7 @@ define('MUMPHPI_MAINDIR', dirname(__FILE__));
 		}
 		$serverId = intval($_GET['serverId']);
 		require_once('./classes/ChannelViewerProtocolProducer.php');
-		header('Content-Type: text/json');
+		header('Content-Type: application/json');
 		$prod = new ChannelViewerProtocolProducer();
 		$json = $prod->generateJson($serverId);
 		if (isset($_GET['callback'])) {
