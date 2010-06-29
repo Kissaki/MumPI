@@ -474,6 +474,10 @@ class MurmurUser
 	 * @var int
 	 */
 	private $idleSeconds;
+	/**
+	 * @var int
+	 */
+	private $isPrioritySpeaker;
 
 	/**
 	 * @param int $sessionId
@@ -501,7 +505,7 @@ class MurmurUser
 	 */
 	public function __construct($sessionId, $registrationId, $isMuted, $isDeafened, $isSuppressed, $isSelfMuted, $isSelfDeafened,
 															$channelId, $name, $onlineSeconds, $bytesPerSecond, $clientVersion, $clientRelease, $clientOs, $clientOsVersion,
-															$pluginIdentity, $pluginContext, $comment, MurmurNetAddress $address, $isTcpOnly, $idleSeconds)
+															$pluginIdentity, $pluginContext, $comment, MurmurNetAddress $address, $isTcpOnly, $idleSeconds, $isPrioritySpeaker=null)
 	{
 		$this->sessionId=$sessionId;
 		$this->registrationId=$registrationId;
@@ -524,6 +528,7 @@ class MurmurUser
 		$this->address=$address;
 		$this->isTcpOnly=$isTcpOnly;
 		$this->idleSeconds=$idleSeconds;
+		$this->isPrioritySpeaker = $isPrioritySpeaker;
 	}
 	/**
 	 * Create a MurmurUser from an ice User
@@ -553,7 +558,8 @@ class MurmurUser
 										$iceUser->comment,
 										MurmurNetAddress::fromIceObject($iceUser->address),
 										$iceUser->tcponly,
-										$iceUser->idlesecs
+										$iceUser->idlesecs,
+										isset($iceUser->prioritySpeaker)?$iceUser->prioritySpeaker:null
 									);
 	}
 
@@ -667,6 +673,9 @@ class MurmurUser
 	}
 	public function getIdleSeconds() {
 		return $this->idleSeconds;
+	}
+	public function isPrioritySpeaker() {
+		return $this->isPrioritySpeaker;
 	}
 
 	//TODO setters

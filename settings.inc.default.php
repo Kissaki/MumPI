@@ -7,10 +7,17 @@
 // Debug? - This should be turned off for production sites.
 $debug = false;
 
+// allow freely calling data for a web serverviewer? http://mumble.sourceforge.net/Channel_Viewer_Protocol
+// it can be called via URL pointed to the main dir (where this settings file is located) + ?view=json&serverId=1
+$allowChannelViewerWebservice = true;
+// This is recommended to be true to prevent spam/abuse by bots etc. This requires the php gd extension (image manipulation). The captcha is used for user-registration.
+$useCaptcha = true;
+// Show a link to the admin section in the user section?
+$showAdminLink = true;
+// currently available: en, de ; en is recommended
+$defaultLanguage = 'en';
+// only “default” right now
 $theme	= 'default';
-$defaultLanguage = 'en';	// currently available: en, de
-$useCaptcha = true;				// This is recommended to be true to prevent spam/abuse by bots etc. This requires the php gd extension (image manipulation).
-$showAdminLink = true;		// Show a link to the admin section in the user section?
 
 // Interface to use. Currently available: ice
 $dbInterface_type		= 'ice';

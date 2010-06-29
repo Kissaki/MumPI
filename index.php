@@ -13,6 +13,11 @@ define('MUMPHPI_MAINDIR', dirname(__FILE__));
 		header('Location: ./install');
 	} else if (isset($_GET['view']) && $_GET['view'] == 'json') {
 		// channel-viewer protocol http://mumble.sourceforge.net/Channel_Viewer_Protocol
+		require_once(dirname(__FILE__) . '/classes/SettingsManager.php');
+		// check if it's allowed in settings
+		if (!SettingsManager::getInstance()->isChannelViewerWebserviceAllowed()) {
+			exit('The settings disallow accessing this webservice.');
+		}
 		$serverId = isset($_GET['serverId']) ? intval($_GET['serverId']) : null;
 		if (empty($serverId)) {
 			echo 'provide a serverid!';

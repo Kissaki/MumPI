@@ -34,16 +34,17 @@ class SettingsManager {
 	private $useCaptcha;
 	private $dbType;
 	private $showAdminLink;
+	private $allowChannelViewerWebservice;
 	private $dbInterface_type;
 	private $dbInterface_address;
 	private $dbInterface_icesecrets;
 	private $numberOfServers;
 	private $servers;
-	
+
 	function __construct()
 	{
 		eval(self::getSettingsFileContents());
-		
+
 		$this->isDebugMode = $debug;
 		$this->mainDir = MUMPHPI_MAINDIR;
 		$this->mainUrl = MUMPHPI_MAINDIR;
@@ -55,21 +56,22 @@ class SettingsManager {
 		$this->useCaptcha = $useCaptcha;
 		$this->dbType = $dbType;
 		$this->showAdminLink = $showAdminLink;
-		
+		$this->allowChannelViewerWebservice = isset($allowChannelViewerWebservice)?$allowChannelViewerWebservice:true;
+
 		$this->site = array();
 		$this->site['title'] = $site_title;
 		$this->site['description'] = $site_description;
 		$this->site['keywords'] = $site_keywords;
-		
+
 		$this->servers = $servers;
-		
+
 		foreach($this->servers AS $server){
 			if($server['authbymail']){
 				$server['forcemail'] = true;
 			}
 		}
 	}
-	
+
 	/**
 	 * Get the content of a settings file (opening and closing php tags are stripped)
 	 * @return string whole settings file content, without opening and closing php tags are stripped
@@ -78,7 +80,7 @@ class SettingsManager {
 	{
 		if($filename==null)
 			$filename = 'settings.inc.php';
-		
+
 		if(file_exists(MUMPHPI_MAINDIR.'/'.$filename)){
 			$settings = file_get_contents(MUMPHPI_MAINDIR.'/'.$filename);
 		}else{
@@ -91,29 +93,29 @@ class SettingsManager {
 		// strip php tags
 		$settings = substr($settings, 5, strlen($settings)-7);
 		return $settings;
-		
+
 	}
 	private static function setSettingsFileContents($settings_content, $filename=null)
 	{
 		if($filename==null)
 			$filename = 'settings.inc.php';
-		
+
 		$settings_content = '<?php'.$settings_content.'?>';
-		
+
 		file_put_contents(MUMPHPI_MAINDIR.'/'.$filename, $settings_content);
 	}
 	private static function appendToSettingsFile($append, $filename=null)
 	{
 		if($filename==null)
 			$filename = 'settings.inc.php';
-		
+
 		$settings_content = self::getSettingsFileContents($filename);
 		$settings_content = '<?php'.$settings_content.$append."\n".'?>';
 		if(file_exists(MUMPHPI_MAINDIR.'/'.$filename)){
 			file_put_contents(MUMPHPI_MAINDIR.'/'.$filename, $settings_content);
 		}
 	}
-	
+
 	/**
 	 * @return string local main dir of the interface WITHOUT trailing slash
 	 */
@@ -130,14 +132,14 @@ class SettingsManager {
 		return $this->theme;
 	}
 	/**
-	 * 
+	 *
 	 * @return path to theme without trailing slash (theme/ + themename)
 	 */
 	function getThemePath(){
 		return 'themes/' . HelperFunctions::getActiveSection() . '/'.$this->theme;
 	}
 	/**
-	 * 
+	 *
 	 * @return theme directoy on server filesystem
 	 */
 	function getThemeDir(){
@@ -176,6 +178,9 @@ class SettingsManager {
 	function isShowAdminLink(){
 		return $this->showAdminLink;
 	}
+	function isChannelViewerWebserviceAllowed() {
+		return $this->allowChannelViewerWebservice;
+	}
 	function getDbType(){
 		return $this->dbType;
 	}
@@ -200,7 +205,7 @@ class SettingsManager {
 		}
 		return $this->servers[$serverid]['name'];
 	}
-	
+
 	function isForceEmail($serverid){
 		if(isset($this->servers[$serverid]))
 			return $this->servers[$serverid]['forcemail'];
@@ -214,8 +219,8 @@ class SettingsManager {
 	function isDebugMode(){
 		return $this->isDebugMode;
 	}
-	
-	
+
+
 	/**
 	 * Get the Server Information saved about it in the interface DB.
 	 * @param $serverid server id
@@ -241,7 +246,7 @@ class SettingsManager {
 				// get individual lines so we can overwrite them one by one
 				$lines = file($filepath);
 				$fh = fopen($filepath, 'w');
-				
+
 				// expected string-beginnings in settings file
 				$expectedLineBeginning = '$servers[' . $serverid . ']';
 				$expectedLineBeginnings = array(
@@ -251,7 +256,7 @@ class SettingsManager {
 						'forcemail'        =>'$servers['.$serverid.'][\'forcemail\']',
 						'authbymail'       =>'$servers['.$serverid.'][\'authbymail\']',
 					);
-				
+
 				foreach ($lines AS $line) {
 					if (substr($line, 0, strlen($expectedLineBeginning)) == $expectedLineBeginning) {
 						// this is our servers settings
@@ -295,10 +300,10 @@ class SettingsManager {
 				// get individual lines so we can overwrite them one by one
 				$lines = file($filepath);
 				$fh = fopen($filepath, 'w');
-				
+
 				// expected string-beginnings in settings file
 				$expectedLineBeginning = '$servers[' . $serverId . ']';
-				
+
 				foreach ($lines AS $line) {
 					if (substr($line, 0, strlen($expectedLineBeginning)) == $expectedLineBeginning) {
 						// this is our servers settings, so drop them

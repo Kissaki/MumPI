@@ -56,9 +56,17 @@ class ChannelViewerProtocolProducer {
 				'userid' => $user->getRegistrationId(),
 				// following optional fields
 				'comment' => $user->getComment(),
-				'bytespersec' => $user->getBytesPerSecond(),
 				'idlesecs' => $user->getIdleSeconds(),
 				'onlinesecs' => $user->getOnlineSeconds(),
+				'version' => $user->getClientVersion(),
+				'release' => $user->getClientRelease(),
+				'os' => $user->getClientOs(),
+				'osversion' => $user->getClientOsVersion(),
+				'prioritySpeaker' => $user->isPrioritySpeaker(),
+				'bytespersec' => $user->getBytesPerSecond(),
+				'tcponly' => $user->isTcpOnly(),
+				'context' => $user->getPluginContext(),
+				'identity' => $user->getPluginIdentity(),
 			);
 		}
 		return $array;
