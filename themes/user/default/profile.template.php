@@ -37,184 +37,13 @@ if (isset($_GET['action']) && $_GET['action']=='doedit') {
 	}
 
 	// new texture
+	//TODO reimplement setting texture
 	if (isset($_FILES['texture'])) {
 		if (!file_exists($_FILES['texture']['tmp_name'])) {
 			MessageManager::addWarning(tr('profile_texture_notempfile'));
 		} else {
-			$fileExtension = pathinfo($_FILES['texture']['name']);
-			$fileExtension = isset($fileExtension['extension']) ? $fileExtension['extension'] : '';
-
-
-function stringToByteArray($str)
-{
-	return unpack('C*', $str);
-}
-/**
- * @todo move to HelperFunctions class
- * @param $imgRes
- * @return string
- */
-function imgToString($imgRes)
-{
-	$tex = '';
-	for ($y=0; $y<imagesy($imgRes); $y++) {
-		for ($x=0; $x<imagesx($imgRes); $x++) {
-			$colorIndex = imagecolorat($imgRes, $x, $y);
-			$colors = imagecolorsforindex($imgRes, $colorIndex);
-			// alpha has to be converted to be 0 and 254 (255 would be better) instead of 0 to 127 and inverted
-			$tex = $tex.pack('c4', $colors['blue'], $colors['green'], $colors['red'], abs(254-$colors['alpha']*2));
-		}
-	}
-	return $tex;
-}
-/*
- * @todo move to HelperFunctions class
- * used for memory intensive image calculations
- * Checks that memory_limit is high enough and increases it if necessary.
- */
-function checkMemoryLimit()
-{
-	// 40M should be enough, use 60M to be sure
-	$tmp_memLim = ini_get('memory_limit');
-	if (intval(substr($tmp_memLim, 0, strlen($tmp_memLim)-1)) < 60) {
-		ini_set('memory_limit', '60M');
-	}
-}
-
-
-			$tex = '';
-			switch ($fileExtension) {
-				case 'png':
-					checkMemoryLimit();
-
-					if (!$texImg = imagecreatefrompng($_FILES['texture']['tmp_name'])) {
-						MessageManager::addWarning(tr('profile_texture_imgresfail'));
-						break;
-					}
-					if (imagesx($texImg)!=600 || imagesy($texImg)!=60) {
-						MessageManager::addWarning(tr('profile_texture_wrongresolution'));
-						break;
-					}
-					//TODO: check if we even need those 2:
-					imagealphablending($texImg, true);		// enablealpha blending
-					imagesavealpha($texImg, true);			// save alphablending
-
-					$tex = imgToString($texImg);
-					imagedestroy($texImg);
-
-					if (strlen($tex)!=144000) {
-						MessageManager::addWarning(tr('profile_texture_conversionfail'));
-						break;
-					}
-
-					$texArray = stringToByteArray($tex);
-
-					if (ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )) {
-						MessageManager::addWarning(tr('profile_texture_success'));
-					} else {
-						MessageManager::addWarning(tr('profile_texture_fail'));
-					}
-					break;
-				case 'jpg':
-				case 'jpeg':
-					checkMemoryLimit();
-
-					if (!$texImg = imagecreatefromjpeg($_FILES['texture']['tmp_name'])) {
-						MessageManager::addWarning(tr('profile_texture_imgresfail'));
-						break;
-					}
-					if (imagesx($texImg)!=600 || imagesy($texImg)!=60) {
-						MessageManager::addWarning(tr('profile_texture_wrongresolution'));
-						break;
-					}
-
-					$tex = imgToString($texImg);
-					imagedestroy($texImg);
-
-					if (strlen($tex)!=144000){
-						MessageManager::addWarning(tr('profile_texture_conversionfail'));
-						break;
-					}
-
-					$texArray = unpack('C*', $tex);
-
-					if (ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )) {
-						MessageManager::addWarning(tr('profile_texture_success'));
-					} else {
-						MessageManager::addWarning(tr('profile_texture_fail'));
-					}
-
-					break;
-				case 'gif':
-					checkMemoryLimit();
-
-					if (!$texImg = imagecreatefromgif($_FILES['texture']['tmp_name'])) {
-						MessageManager::addWarning(tr('profile_texture_imgresfail'));
-						break;
-					}
-					if (imagesx($texImg)!=600 || imagesy($texImg)!=60) {
-						MessageManager::addWarning(tr('profile_texture_wrongresolution'));
-						break;
-					}
-
-					$tex = imgToString($texImg);
-					imagedestroy($texImg);
-
-					if (strlen($tex)!=144000) {
-						MessageManager::addWarning(tr('profile_texture_conversionfail'));
-						break;
-					}
-
-					$texArray = unpack('C*', $tex);
-
-					if (ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray )) {
-						MessageManager::addWarning(tr('profile_texture_success'));
-					} else {
-						MessageManager::addWarning(tr('profile_texture_fail'));
-					}
-					break;
-
-				// RAW RGBA Image Data
-				case '':
-				case 'raw':
-					checkMemoryLimit();
-
-					if ($_FILES['texture']['size'] != 144000) {
-						MessageManager::addWarning(tr('profile_texture_conversionfail'));
-						break;
-					}
-
-					if (!$fd = fopen($_FILES['texture']['tmp_name'], 'r')) {
-						MessageManager::addWarning(tr('profile_texture_tmpopenfail'));
-						break;
-					}
-					$tex = fread($fd, 144000);
-					fclose($fd);
-
-					// RGBA to BGRA
-					// for each pixel, swap R with B (36000 = 600*60)
-					for ($i=0; $i<36000; $i++) {
-						$red = $tex[$i*4];
-						$tex[$i*4] = $tex[$i*4+2];
-						$tex[$i*4+2] = $red;
-					}
-
-					//TODO compress in php to minimize size for ice call
-					//$tex = gzcompress($tex);
-
-					$texArray = stringToByteArray($tex);
-
-					if (ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $texArray)) {
-						MessageManager::addWarning(tr('profile_texture_success'));
-					} else {
-						MessageManager::addWarning(tr('profile_texture_fail'));
-					}
-					break;
-
-				default:
-					MessageManager::addWarning(tr('profile_texture_unknownext'));
-					break;
-			}
+			$imgData = file_get_contents($_FILES['texture']['tmp_name']);
+			ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], $imgData);
 		}
 	}
 }
@@ -334,7 +163,8 @@ function checkMemoryLimit()
 			<tr>
 				<?php
 					// Texture
-					$isTextureSet = (count(ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid'])) > 0);
+					$userAvatarByteSequence = ServerInterface::getInstance()->getUserTexture($_SESSION['serverid'], $_SESSION['userid']);
+					$isTextureSet = (count($userAvatarByteSequence) > 0);
 				?>
 				<td class="formitemname">
 					<?php echo tr('texture'); ?>:
@@ -343,6 +173,31 @@ function checkMemoryLimit()
 					<?php
 						if ($isTextureSet) {
 							echo tr('texture_set');
+							$texBytes = '';
+							foreach ($userAvatarByteSequence as $val) {
+								$texBytes .= chr($val);
+							}
+							$texB64 = base64_encode($texBytes);
+							?>
+							<div id="userAva">
+								<div id="userAvaToggle" style="font-style:italic;">
+									show
+								</div>
+								<div id="userAvaImage" style="display:none;">
+									<img src="data:image/*;base64,<?php echo $texB64; ?>" alt="" />
+								</div>
+								</div>
+								<script type="text/javascript">
+									jQuery('#userAvaToggle').toggle(
+											function (eventObj) {
+											  jQuery('#userAvaImage').css('display', 'block');
+											},
+											function (eventObj) {
+											  jQuery('#userAvaImage').css('display', 'none');
+											}
+										);
+								</script>
+							<?php
 						} else {
 							echo tr('texture_none');
 						}
@@ -365,8 +220,7 @@ function checkMemoryLimit()
 		</table>
 
 		<script type="text/javascript">
-			<!--
-				<![CDATA[
+			/*<![CDATA[*/
 					$('#profile_uname_edit').click(
 						function(event) {
 							$('#profile_uname_*').toggle(
@@ -378,8 +232,7 @@ function checkMemoryLimit()
 								);
 							}
 						);
-				]]>
-			-->
+				/*]]>*/
 		</script>
 	</form>
 	<p <?php if(!isset($_GET['action']) || $_GET['action']!='edit_texture'){ ?> class="hidden"<?php } ?>>

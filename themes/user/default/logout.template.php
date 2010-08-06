@@ -3,14 +3,12 @@
 		unset($_SESSION['serverid']);
 		unset($_SESSION['userid']);
 		unset($_SESSION['userLoggedIn']);
-		
+
 		echo tr('logout_success');
 	?>
 	<script type="text/javascript">
-		<!--
-			<![CDATA[
+		/*<![CDATA[*/
 				location.replace("./");
-			]]>
-		-->
+		/*]]>*/
 	</script>
 </div>

@@ -9,8 +9,7 @@
 	?>
 </div>
 <script type="text/javascript">
-	<!--
-		<![CDATA[
+	/*<![CDATA[*/
 			$('.helpicon').each(
 					function(i, c) {
 						var val = $(this).attr('title');
@@ -27,6 +26,5 @@
 						}
 					}
 				);
-		]]>
-	-->
+		/*]]>*/
 </script>

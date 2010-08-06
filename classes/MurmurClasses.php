@@ -203,42 +203,81 @@ class MurmurServer
 	{
 		return $this->iceObj->getUserNames();
 	}
-	public function getUserIds()
+	/**
+	 * @param $names array(string name) list of names
+	 * @return array(string name, int userId) list of name->userId mappings
+	 */
+	public function getUserIds($names)
 	{
 		return $this->iceObj->getUserIds();
 	}
-	public function registerUser()
+	/**
+	 * @param MurmurUser $user
+	 * @return int userId
+	 */
+	public function registerUser(MurmurUser $user)
 	{
 		return $this->iceObj->registerUser();
 	}
-	public function unregisterUser()
+	/**
+	 * @param int $userId
+	 * @return void
+	 */
+	public function unregisterUser($userId)
 	{
 		return $this->iceObj->unregisterUser();
 	}
-	public function updateRegistration()
+	/**
+	 * @param int $registrationId
+	 * @param MurmurRegistration $registration
+	 * @return void
+	 */
+	public function updateRegistration($registrationId, MurmurRegistration $registration)
 	{
 		return $this->iceObj->updateRegistration();
 	}
+	/**
+	 * @param int $registrationId
+	 * @return MurmurRegistration
+	 */
 	public function getRegistration($registrationId)
 	{
 		$reg = MurmurRegistration::fromIceObject(empty($registrationId)?$this->iceObj->getRegistration():$this->iceObj->getRegistration(intval($registrationId)));
 		return $reg;
 	}
-	public function getRegisteredUsers()
+	/**
+	 * @param string $filter
+	 * @return array(int registrationIds, string registrationUserName)
+	 */
+	public function getRegisteredUsers($filter)
 	{
-		return $this->iceObj->getRegisteredUsers();
+		return $this->iceObj->getRegisteredUsers($filter);
 	}
-	public function verifyPassword()
+	/**
+	 * @param string $name
+	 * @param string $password
+	 * @return int userId || -1: failed authentification || -2: unknown username
+	 */
+	public function verifyPassword($name, $password)
 	{
-		return $this->iceObj->verifyPassword();
+		return $this->iceObj->verifyPassword($name, $password);
 	}
-	public function getTexture()
+	/**
+	 * @param int $userId
+	 * @return array(int byteNr, int byteValue) image as byteSequence
+	 */
+	public function getTexture($userId)
 	{
-		return $this->iceObj->getTexture();
+		return $this->iceObj->getTexture(intval($userId));
 	}
-	public function setTexture()
+	/**
+	 * @param int $userId
+	 * @param array $byteSequence
+	 * @return void
+	 */
+	public function setUserAvatar($userId, array $byteSequence)
 	{
-		return $this->iceObj->setTexture();
+		$this->iceObj->setTexture(intval($userId), $byteSequence);
 	}
 
 	//TODO clean this, also using parent chans would suck - make it JS instead…
