@@ -1,12 +1,5 @@
 <?php
-/**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author Kissaki
- */
-
-define('MUMPHPI_MAINDIR', dirname(__FILE__));
+	define('MUMPHPI_MAINDIR', dirname(__FILE__));
 
 	if (!file_exists('settings.inc.php')) {
 		// missing settings file, thus redirect to install
@@ -38,4 +31,3 @@ define('MUMPHPI_MAINDIR', dirname(__FILE__));
 		// redirect to user section
 		header('Location: ./user');
 	}
-?>

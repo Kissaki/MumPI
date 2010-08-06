@@ -1,11 +1,4 @@
 <?php
-/**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author Kissaki
- */
-
 require_once(MUMPHPI_MAINDIR.'/classes/SessionManager.php');
 
 /**
@@ -27,7 +20,7 @@ class TranslationManager
 {
 	// To make calls shorter in code, the class _Instance was created so static functions with the same name can be used
 	private static $instance;
-	
+
 	/**
 	 * Get the TranslationManager instance
 	 * create it if necessary
@@ -35,19 +28,21 @@ class TranslationManager
 	 */
 	public static function getInstance()
 	{	// $obj=null){
-		if(!isset(self::$instance))
-			if(!isset($obj))
+		if (!isset(self::$instance)) {
+			if (!isset($obj)) {
 				self::$instance = new TranslationManager_Instance();
-			else
+			} else {
 				self::$instance = $obj;
+			}
+		}
 		return self::$instance;
 	}
-	
+
 	public static function getText($textname){
 		$txt = self::getInstance()->getText($textname);
 		return $txt;
 	}
-	
+
 }
 
 /**
@@ -59,7 +54,7 @@ class TranslationManager_Instance
 	private $language;
 	private $defaultLanguage;
 	private $text;
-	
+
 	public function __construct()
 	{
 		$this->defaultLanguage = SettingsManager::getInstance()->getDefaultLanguage();
@@ -70,21 +65,21 @@ class TranslationManager_Instance
 		} else {
 			$this->language = $this->defaultLanguage;
 		}
-		
+
 		// TODO add check, if translation files are recent version
 		$txt = array();
 		// Parse Main lang file
 		eval(self::parseLanguageFile($this->language));
-		
+
 		// Parse Section lang file
 		eval(self::parseLanguageFile($this->language, HelperFunctions::getActiveSection()));
-		
+
 		// Parse Page lang file (if exists)
 		eval(self::parseLanguageFile($this->language, HelperFunctions::getActiveSection(), HelperFunctions::getActivePage()));
-		
+
 		$this->text = $txt;
 	}
-	
+
 	/**
 	 * Get the currently active language
 	 * @return string language
@@ -101,7 +96,7 @@ class TranslationManager_Instance
 	{
 		return $this->defaultLanguage;
 	}
-	
+
 	/**
 	 * Get the (translated/local) text for the ID / text index
 	 * @param $textname text index
@@ -117,7 +112,7 @@ class TranslationManager_Instance
 		// w3c validator doesn't like html (tags) in javascript areas. maybe, or not:
 		//return htmlspecialchars($this->text[$textname]);
 	}
-	
+
 /**
 	 * Get a specific language file as a string for evaluation (eval()).
 	 * @param $language	The language to try to parse.
@@ -151,4 +146,3 @@ class TranslationManager_Instance
 		return $langfile;
 	}
 }
-?>

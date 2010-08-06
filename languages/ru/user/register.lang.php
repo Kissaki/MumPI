@@ -1,11 +1,5 @@
 <?php
 /**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author 
- */
-/**
  * Language file for section: user, page: register
  */
 
@@ -39,5 +33,3 @@
 	$txt['register_help_password']		= 'Придумайте пароль.<br/>Будьте аккуратны: Безопасный пароль должен использовать и буквы и цифры.<br/>Обычные слова или даты могут быть подобраны.<br/>К примеру число более 8 цифр будет достаточно безопасным.';
 	$txt['register_help_password2']		= 'Введите снова свой пароль, что бы убедится что вы неошиблись при его вводе.';
 	$txt['register_help_captcha']		= 'Эта область, для того что бы предотвратить спам.<br/>Сосчитайте и введите решение этого примера.';
-
-?>

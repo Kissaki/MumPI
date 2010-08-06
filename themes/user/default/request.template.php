@@ -1,21 +1,15 @@
 <?php
-/**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author Kissaki
- */
 if (isset($_POST['email']) && !empty($_POST['email'])) {
 	$_POST['email'] = trim($_POST['email']);
 	if (isset($_POST['password']) && isset($_POST['username'])) {
 		// Send username and new password
 		$user = ServerInterface::getInstance()->getUserByEmail(intval($_POST['serverid']), $_POST['email']);
-		if($user != null){
+		if ($user != null) {
 			$newPw = substr(md5(rand()), 4, 8);
 			ServerInterface::getInstance()->updateUserPw(intval($_POST['serverid']), $user->getUserId(), $newPw);
 			mail($_POST['email'], tr('request_mail_up_subj'), sprintf(tr('request_mail_up_body'), $user->getName(), $newPw) );
 			$formProcessed = tr('request_mail_sent');
-		}else{
+		} else {
 			MessageManager::addWarning(tr('request_nosuchaccount'));
 		}
 	} elseif (isset($_POST['password'])) {
@@ -55,9 +49,9 @@ if (isset($_POST['email']) && !empty($_POST['email'])) {
 					<?php $servers = SettingsManager::getInstance()->getServers(); ?>
 					<select name="serverid" style="width:100%">
 						<?php
-							foreach($servers AS $sid=>$server){
+							foreach ($servers AS $sid=>$server) {
 								// Check that server allows login and does exist
-								if($server['allowlogin'] && ServerInterface::getInstance()->getServer($sid)!=null){
+								if ($server['allowlogin'] && ServerInterface::getInstance()->getServer($sid)!=null) {
 									echo '<option value="'.$sid.'">';
 									echo $server['name'];
 									echo '</option>';

@@ -38,7 +38,7 @@ if (isset($_GET['action']) && $_GET['action']=='doedit') {
 
 	// new texture
 	if (isset($_FILES['texture'])) {
-		if(!file_exists($_FILES['texture']['tmp_name'])){
+		if (!file_exists($_FILES['texture']['tmp_name'])) {
 			MessageManager::addWarning(tr('profile_texture_notempfile'));
 		} else {
 			$fileExtension = pathinfo($_FILES['texture']['name']);
@@ -57,8 +57,8 @@ function stringToByteArray($str)
 function imgToString($imgRes)
 {
 	$tex = '';
-	for($y=0; $y<imagesy($imgRes); $y++){
-		for($x=0; $x<imagesx($imgRes); $x++){
+	for ($y=0; $y<imagesy($imgRes); $y++) {
+		for ($x=0; $x<imagesx($imgRes); $x++) {
 			$colorIndex = imagecolorat($imgRes, $x, $y);
 			$colors = imagecolorsforindex($imgRes, $colorIndex);
 			// alpha has to be converted to be 0 and 254 (255 would be better) instead of 0 to 127 and inverted
@@ -222,7 +222,7 @@ function checkMemoryLimit()
 ?>
 <div id="content">
 	<h1><?php echo TranslationManager::getText('profile_head'); ?></h1>
-	<form action="?page=profile&amp;action=doedit" method="post" style="width:420px;"<?php if(isset($_GET['action'])&&$_GET['action']=='edit_texture') echo ' enctype="multipart/form-data"'; ?>>
+	<form action="?page=profile&amp;action=doedit" method="post" style="width:420px;"<?php if(isset($_GET['action']) && $_GET['action']=='edit_texture') echo ' enctype="multipart/form-data"'; ?>>
 		<table class="fullwidth">
 			<tr><?php // SERVER Information (not changeable) ?>
 				<td class="formitemname"><?php echo tr('server'); ?>:</td>
@@ -249,7 +249,7 @@ function checkMemoryLimit()
 			</tr>
 			<tr><?php // PASSWORD ?>
 				<td class="formitemname"><?php echo tr('password'); ?>:</td>
-				<td><?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?><input type="text" name="password" id="password" value="" /><?php }else{ echo '<span class="info" title="password is not displayed">*****</span>'; } ?></td>
+				<td><?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?><input type="text" name="password" id="password" value="" /><?php } else { echo '<span class="info" title="password is not displayed">*****</span>'; } ?></td>
 				<td class="alignl">
 					<a href="?page=profile&amp;action=edit_pw" id="profile_pw_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?> class="hidden"<?php } ?>><?php echo tr('edit'); ?></a>
 					<?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_pw_update" class="hidden"><?php echo tr('update'); ?></a>

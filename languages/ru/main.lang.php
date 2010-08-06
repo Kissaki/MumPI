@@ -1,11 +1,5 @@
 <?php
 /**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author 
- */
-/**
  * This is the main language file, containing general strings that will be used in more than one section
  */
 
@@ -47,5 +41,3 @@
 	$txt['error_dbmanager_couldnotopenadmins'] = 'Немогу открыть admins.dat файл.';
 	$txt['error_invalidTexture']		= 'Неверная картинка. Проверьте файл картинки.';
 	$txt['login_missing_data'] = 'Ошибка входа: Недостаточно введеных вами данных.';
-
-?>

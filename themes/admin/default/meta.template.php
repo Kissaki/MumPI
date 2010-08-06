@@ -42,7 +42,7 @@
 							<?php if (PermissionManager::getInstance()->serverCanStartStop($server->id())) { ?>
 								<?php if ($server_isRunning) { ?>
 									<a class="jqlink" onclick="if(confirm('Are you sure you want to stop this virtual server?')){jq_server_stop(<?php echo $server->id(); ?>);}" title="Stop Server"><img src="<?php echo SettingsManager::getInstance()->getThemeUrl(); ?>/img/server_stop.png" alt="Stop" /></a>
-								<?php }else{ ?>
+								<?php } else { ?>
 									<a class="jqlink" onclick="jq_server_start(<?php echo $server->id(); ?>)" title="Start Server"><img src="<?php echo SettingsManager::getInstance()->getThemeUrl(); ?>/img/server_start.png" alt="Start" /></a>
 								<?php } ?>
 							<?php } ?>
@@ -52,20 +52,20 @@
 						</td>
 						<td style="padding-left:10px;">
 							<a class="mpi_tooltip" href="?page=server&amp;sid=<?php echo $server->id(); ?>" title="Show Server Details"><img src="<?php echo SettingsManager::getInstance()->getThemeUrl(); ?>/img/server_details.png" alt="Show Server Details" /></a>
-							
+
 						</td>
 					</tr><?php
 				} ?>
 		</tbody>
 	</table>
-	
+
 	<?php if (PermissionManager::getInstance()->isGlobalAdmin()) { ?>
 		<a class="jqlink mpi_tooltip" id="server_create" title="Create a new Server"><img src="<?php echo SettingsManager::getInstance()->getThemeUrl(); ?>/img/server_create.png" alt="Create a new Server" /></a><br/>
 		<a class="jqlink" onclick="jq_meta_showDefaultConfig()">Show Default Config</a>
 	<?php } ?>
-	
+
 	<div id="jq_information">
-		
+
 	</div>
 	<script type="text/javascript">/*<![CDATA[*/
 		$('#server_create').click(
@@ -79,7 +79,7 @@
 					}
 				);
 			});
-		
+
 		function jq_server_delete(sid){
 			$.post("./?ajax=server_delete",
 					{ 'sid': sid },
@@ -123,7 +123,7 @@
 				);
 			jq_loadPage('meta');
 		}
-		
+
 		function jq_meta_showDefaultConfig(){
 			$.post("./?ajax=meta_showDefaultConfig",
 					{  },
@@ -163,7 +163,7 @@
 					}
 				);
 		}
-		
+
 		function center(object)
 		{
 			object.style.marginLeft = "-" + parseInt(object.offsetWidth / 2) + "px";

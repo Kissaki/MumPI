@@ -1,11 +1,5 @@
 <?php
 /**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author Kissaki
- */
-/**
  * This is the main language file, containing general strings that will be used in more than one section
  */
 
@@ -14,7 +8,7 @@
 	$txt['cancel'] = 'cancel';		// Cancel, whatever you're doing (go back to the last page).
 	$txt['update'] = 'update';		// Update the old item/key/var. Use the entered values as new values.
 	$txt['remove'] = 'remove';
-	
+
 	// General
 	$txt['server'] = 'Server';		// Mumble Server
 	$txt['info_serverversion'] = 'Server Version: %s';
@@ -22,20 +16,20 @@
 	$txt['failed'] = 'failed';
 	$txt['admin_area'] = 'Admin';
 	$txt['permission_denied'] = 'Permission denied.';
-	
+
 	// Account Information
 	$txt['email'] = 'Email';
 	$txt['username'] = 'Username';
 	$txt['password'] = 'Password';
 	$txt['texture'] = 'User Image';
 	$txt['userid'] = 'User ID';
-	
+
 	$txt['texture_none'] = 'no image';
 	$txt['texture_set'] = 'image set';
-	
+
 	// Profile
 	$txt['help_profile_textur'] = 'This user texture will be displayed in mumbles overlay instead of a nickname, if activated in the options.';
-	
+
 	//Errors
 	$txt['error_noIceExtensionLoaded']	= 'It seems your PHP configuration is not running with the Ice extension.<br/>Please set up your PHP to load the Ice extension.<br/><br/>Ice is the middleware between <acronym title="Mumble Server">Murmur</acronym> and PHP/the Interface, allowing PHP to call Murmur functions. Thus, this is necessary.<br/>For introductions on how to set it up, see <a href="http://mumble.sourceforge.net/Ice">mumble.sf.net/Ice</a>.';
 	$txt['error_noIceSliceLoaded']		= 'It seems your PHP configuration does not know the necessary slice file.<br/>For introductions on how to set it up, see <a href="http://mumble.sourceforge.net/Ice">mumble.sf.net/Ice</a>.<br/><br/>The slice file tells PHP which methods and data are available to PHP, to access <acronym title="Mumble Server">Murmur</acronym>.';
@@ -48,5 +42,3 @@
 	$txt['error_dbmanager_couldnotopenadmins'] = 'Could not open admins.dat file.';
 	$txt['error_invalidTexture']		= 'Invalid image data. Please check your image file.';
 	$txt['login_missing_data'] = 'Login failed: You did not seem to provide all the necessary data.';
-
-?>

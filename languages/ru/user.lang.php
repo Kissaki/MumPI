@@ -1,11 +1,5 @@
 <?php
 /**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author 
- */
-/**
  * This is the language file for the user section (index) of the interface
  */
 
@@ -34,5 +28,3 @@
 
 		// Logout
 		$txt['logout_success'] = '<p>Вы вышли.<br/><a href="./">Нажмите здесь</a> что бы вернутся на главную страницу.</p>';
-
-?>

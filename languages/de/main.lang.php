@@ -1,11 +1,5 @@
 <?php
 /**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author Kissaki
- */
-/**
  * This is the main language file, containing general strings that will be used in more than one section
  */
 
@@ -14,7 +8,7 @@
 	$txt['cancel'] = 'abbrechen';		// Cancel, whatever you're doing (go back to the last page).
 	$txt['update'] = 'aktualisieren';		// Update the old item/key/var. Use the entered values as new values.
 	$txt['remove'] = 'entfernen';
-	
+
 	// General
 	$txt['server'] = 'Server';		// Mumble Server
 	$txt['info_serverversion'] = 'Server Version: %s';
@@ -22,20 +16,20 @@
 	$txt['failed'] = 'nicht erfolgreich';
 	$txt['admin_area'] = 'Admin';
 	$txt['permission_denied'] = 'Zugriff verweigert.';
-	
+
 	// Account Information
 	$txt['email'] = 'E-Mail';
 	$txt['username'] = 'Benutzername';
 	$txt['password'] = 'Passwort';
 	$txt['texture'] = 'Benutzer-Bild';
 	$txt['userid'] = 'Benutzer ID';
-	
+
 	$txt['texture_none'] = 'kein Bild';
 	$txt['texture_set'] = 'Bild gesetzt';
-	
+
 	// Profile
 	$txt['help_profile_textur'] = 'Dieses Benutzerbild wird in Mumbles Overlay anstatt des/eines Benutzernamens angezeigt, sofern dies in den Einstellungen erlaubt/aktiviert wurde.';
-	
+
 	//Errors
 	$txt['error_noIceExtensionLoaded']	= 'Es scheint, als würde Ihr PHP ohne die geladene Ice Erweiterung laufen.<br/>Bitte konfigurieren Sie PHP so, dass es diese läd.<br/><br/>Ice ist das Bindeglied zwischen <acronym title="Mumble Server">Murmur</acronym> und PHP/dem Interface. Es erlaubt PHP Funktionen von Murmur aufzurufen. Daher wird es unbedingt benötigt.<br/>Für Informationen, wie man es konfiguriert, siehe <a href="http://mumble.sourceforge.net/Ice">mumble.sf.net/Ice</a>.';
 	$txt['error_noIceSliceLoaded']		= 'Es scheint Ihr PHP kennt die notwendige slice Datei nicht.<br/>Bitte geben Sie PHP über den slice.ice Konfigurationsparameter die Murmur.ice an.<br/>Für Informationen, wie man es konfiguriert, siehe <a href="http://mumble.sourceforge.net/Ice">mumble.sf.net/Ice</a>.';
@@ -48,5 +42,3 @@
 	$txt['error_dbmanager_couldnotopenadmins'] = 'Konnte die admins.dat Datei nicht öffnen.';
 	$txt['error_invalidTexture']		= 'Ungültige Bilddaten. Bitte überprüfen Sie ihre Bilddatei.';
 	$txt['login_missing_data'] = 'Login fehlgeschlagen: Sie haben scheinbar nicht alle notwendigen Daten angegeben.';
-
-?>

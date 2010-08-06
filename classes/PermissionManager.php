@@ -1,26 +1,19 @@
 <?php
 /**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author Kissaki
- */
-
-/**
  * Permissionmanager for managing permissions,
  * asking for permission…
  */
 class PermissionManager
 {
 	private static $instance;
-	
+
 	/**
 	 * Get the object of the PermissionManager, specific to the section
 	 * @return PermissionManager_admin
 	 */
 	public static function getInstance()
 	{
-		if(self::$instance == null){
+		if (self::$instance == null) {
 			$section = HelperFunctions::getActiveSection();
 			if (class_exists('PermissionManager_' . $section)) {
 				eval('self::$instance = new PermissionManager_' . $section . '();');
@@ -30,7 +23,7 @@ class PermissionManager
 		}
 		return self::$instance;
 	}
-	
+
 }
 
 /**
@@ -42,7 +35,7 @@ class PermissionManager_admin
 	private $perms;
 	private $servers;
 	private $isGlobalAdmin;
-	
+
 	public function __construct()
 	{
 		if (SessionManager::getInstance()->isAdmin()) {
@@ -51,11 +44,10 @@ class PermissionManager_admin
 			$this->isGlobalAdmin = $admin['isGlobalAdmin'];
 			$this->adminGroups = DBManager::getInstance()->getAdminGroupsByAdminID($aid);
 			$this->servers = DBManager::getInstance()->getAdminGroupServersByAdminId($aid);
-			
+
 			$this->perms = array();
 			foreach ($this->adminGroups as $group) {
-				foreach($group['adminOnServers'] as $serverId)
-				{
+				foreach ($group['adminOnServers'] as $serverId) {
 					foreach ($group['perms'] as $perm=>$value) {
 						if ($perm!='serverID' && $perm!='groupID') {
 							if (!isset($this->perms[$serverId])) {
@@ -72,7 +64,7 @@ class PermissionManager_admin
 			$this->servers = array();
 		}
 	}
-	
+
 	/**
 	 * Is global admin?
 	 * Can administrate all servers, add and remove virtual servers
@@ -82,7 +74,7 @@ class PermissionManager_admin
 	{
 		return $this->isGlobalAdmin;
 	}
-	
+
 	/**
 	 * Is the admin an admin of that server?
 	 * @param int $serverId
@@ -92,7 +84,7 @@ class PermissionManager_admin
 	{
 		return $this->isGlobalAdmin || in_array($serverId, $this->servers);
 	}
-	
+
 	/**
 	 * Can start and stop servers?
 	 * @param $sid
@@ -102,7 +94,7 @@ class PermissionManager_admin
 	{
 		return $this->isGlobalAdmin || ($this->perms[$sid]['startStop'] && in_array($sid, $this->servers));
 	}
-	
+
 	/**
 	 * Can edit the (virtual) servers (config) settings?
 	 * @param $sid
@@ -112,7 +104,7 @@ class PermissionManager_admin
 	{
 		return $this->isGlobalAdmin || ($this->perms[$sid]['editConf'] && in_array($sid, $this->servers));
 	}
-	
+
 	/**
 	 * Can generate a new superuser password?
 	 * @param $sid
@@ -122,7 +114,7 @@ class PermissionManager_admin
 	{
 		return $this->isGlobalAdmin || ($this->perms[$sid]['genSuUsPW'] && in_array($sid, $this->servers));
 	}
-	
+
 	/**
 	 * Can view registrations / accounts on the server?
 	 * @param $sid
@@ -132,7 +124,7 @@ class PermissionManager_admin
 	{
 		return $this->isGlobalAdmin || ($this->perms[$sid]['viewRegistrations'] && in_array($sid, $this->servers));
 	}
-	
+
 	/**
 	 * Can edit user accounts?
 	 * @param $sid
@@ -142,7 +134,7 @@ class PermissionManager_admin
 	{
 		return $this->isGlobalAdmin || ($this->perms[$sid]['editRegistrations'] && in_array($sid, $this->servers));
 	}
-	
+
 	/**
 	 * Can create channels, Move users?
 	 * @return boolean
@@ -151,7 +143,7 @@ class PermissionManager_admin
 	{
 		return $this->isGlobalAdmin || ($this->perms[$sid]['moderate'] && in_array($sid, $this->servers));
 	}
-	
+
 	/**
 	 * Can kick online users?
 	 * @param $sid
@@ -161,7 +153,7 @@ class PermissionManager_admin
 	{
 		return $this->isGlobalAdmin || ($this->perms[$sid]['kick'] && in_array($sid, $this->servers));
 	}
-	
+
 	/**
 	 * Can ban users?
 	 * @param $sid
@@ -179,7 +171,7 @@ class PermissionManager_admin
 	{
 		return $this->isGlobalAdmin || ($this->perms[$sid]['channels'] && in_array($sid, $this->servers));
 	}
-	
+
 	/**
 	 * @return boolean
 	 */
@@ -187,7 +179,7 @@ class PermissionManager_admin
 	{
 		return $this->isGlobalAdmin || ($this->perms[$sid]['acls'] && in_array($sid, $this->servers));
 	}
-	
+
 	/**
 	 * @return boolean
 	 */
@@ -196,5 +188,3 @@ class PermissionManager_admin
 		return $this->isGlobalAdmin || (($sid!=null && isset($this->perms[$sid]['admins']))?$this->perms[$sid]['admins']:false);
 	}
 }
-
-?>

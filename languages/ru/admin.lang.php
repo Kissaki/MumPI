@@ -1,11 +1,5 @@
 <?php
 /**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author 
- */
-/**
  * This is the language file with text strings that will be used in the admin section
  */
 
@@ -23,5 +17,3 @@
 	$txt['info_ip_bits'] = 'Информация о бане ip маске битах:<br/>
 					32 бита означают только этот IP,<br/>
 					24 означает что последняя часть ip будет проигнорирована, будут использованы только 3 первые части адреса.';
-
-?>

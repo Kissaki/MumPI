@@ -4,7 +4,7 @@
 <?php
 		if (!SessionManager::getInstance()->isAdmin()) {
 ?>
-			<li<?php if(HelperFunctions::getActivePage()=='login') echo ' class="active"';?>>
+			<li<?php if (HelperFunctions::getActivePage()=='login') echo ' class="active"';?>>
 				<a href="./?page=login">Login</a>
 			</li>
 <?php

@@ -1,20 +1,11 @@
 <?php
-/**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author Kissaki
- */
-
-define('MUMPHPI_MAINDIR', '..');
-define('MUMPHPI_SECTION', 'install');
-
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	define('MUMPHPI_MAINDIR', '..');
+	define('MUMPHPI_SECTION', 'install');
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	
+
 	<title>MumPI – Installation</title>
 	<meta name="description" content="" />
 	<meta name="keywords" content="" />
@@ -40,8 +31,7 @@ define('MUMPHPI_SECTION', 'install');
 		echo '</body></html>';
 		exit();
 	}
-	if(function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()==1)
-	{
+	if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()==1) {
 		echo 'Your PHP configuration has <i>magic quotes</i> enabled, however this is <b>discouraged</b> and may cause problems sending data to the interface (for example adding links to the servers welcome message).';
 		echo 'Please disable it in your PHP configuration or ask your host to do so.';
 		echo 'Magic quotes are <a href="http://de.php.net/manual/en/info.configuration.php#ini.magic-quotes-gpc">depreciated as of PHP 5.3 and removed in PHP 6</a>. And that’s for a reason. :)';
@@ -62,19 +52,19 @@ define('MUMPHPI_SECTION', 'install');
 		echo '<i>settings.inc.php</i> seems to be in place. Skipping…<br/>';
 	}
 	echo '<br/>';
-	
+
 	// handle admins.dat file
 	if (file_exists('../data/admins.dat')) {
 		$fh = fopen('../data/admins.dat', 'r+');
 		$line = fgets($fh);
-		
+
 		if (count(split(';', $line)) == 2) {
 			// convert old to new format
 			echo '<i>admins.dat</i> in old format.<br/>';
 			echo 'Converting…<br/>';
 			$newfile = '';
 			$id = 1;
-			
+
 			do {
 				$admin = split(';', $line);
 				$newfile .= $id . ';' . $admin[0] . ';' . substr($admin[1], 0, strlen($admin[1])-1) . ';' . '1' . "\n";
@@ -92,7 +82,7 @@ define('MUMPHPI_SECTION', 'install');
 		echo '<i>admins.dat</i> created.';
 	}
 	echo '<br/>';
-	
+
 	if (!file_exists('../data/admin_groups.dat')) {
 		echo 'creating admin groups file…<br/>';
 		fclose(fopen('../data/admin_groups.dat', 'w'));
@@ -109,7 +99,6 @@ define('MUMPHPI_SECTION', 'install');
 		echo 'creating admin group server assoc file…<br/>';
 		fclose(fopen('../data/admin_group_server_assoc.dat', 'w'));
 	}
-	
 ?>
 	<p>
 		<b>You’re done.</b><br/>

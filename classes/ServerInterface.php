@@ -1,11 +1,4 @@
 <?php
-/**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author Kissaki
- */
-
 require_once dirname(__FILE__).'/PermissionManager.php';
 require_once dirname(__FILE__).'/MurmurClasses.php';
 
@@ -212,8 +205,9 @@ class ServerInterface_ice
 	 */
 	public function deleteServer($sid)
 	{
-		if($this->isRunning($sid))
+		if ($this->isRunning($sid)) {
 			$this->stopServer($sid);
+		}
 		$this->getServer($sid)->delete();
 	}
 	//TODO implement callbacks (add, remove)
@@ -277,8 +271,9 @@ class ServerInterface_ice
 		$userId = intval($userId);
 
 		$server=$this->getServer($serverId);
-		if(null===$server)
+		if (null===$server) {
 			throw new Exception('Invalid server id, server not found.');
+		}
 		return MurmurRegistration::fromIceObject($server->getRegistration($userId), $serverId, $userId);
 	}
 	/**
@@ -501,5 +496,3 @@ class ServerInterface_ice
 		return $this->getServer(intval($serverid))->verifyPassword($uname,$pw);
 	}
 }
-
-?>

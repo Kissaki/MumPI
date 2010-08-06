@@ -1,11 +1,4 @@
 <?php
-/**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author Kissaki
- */
-
 require_once(MUMPHPI_MAINDIR . '/classes/SettingsManager.php');
 require_once(MUMPHPI_MAINDIR . '/classes/MessageManager.php');
 require_once(MUMPHPI_MAINDIR . '/classes/TranslationManager.php');
@@ -21,9 +14,9 @@ class DBManager
 	 */
 	public static function getInstance()
 	{
-		if(!isset(self::$instance) || self::$instance == null) {
+		if (!isset(self::$instance) || self::$instance == null) {
 			$dbType = SettingsManager::getInstance()->getDBType();
-			if( class_exists('DBManager_'.$dbType) ) {
+			if (class_exists('DBManager_'.$dbType)) {
 				eval('self::$instance = new DBManager_'.$dbType.'();');
 			} else {
 				MessageManager::addError(tr('error_db_unknowntype'));
@@ -31,7 +24,7 @@ class DBManager
 		}
 		return self::$instance;
 	}
-	
+
 	/**
 	 * default adminGroupPerms array structure with default values (no perms)
 	 * @var array
@@ -51,7 +44,7 @@ class DBManager_filesystem
 	private static $filename_adminGroupPermissions	= 'admin_group_permissions.dat';
 	private static $filename_adminGroupAssoc				= 'admin_group_assoc.dat';
 	private static $filename_adminGroupServerAssoc	= 'admin_group_server_assoc.dat';
-	
+
 	private $filepath_admins;
 	private $filepath_awaiting;
 	private $filepath_log_register;
@@ -59,8 +52,8 @@ class DBManager_filesystem
 	private $filepath_adminGroupPermissions;
 	private $filepath_adminGroupAssoc;
 	private $filepath_adminGroupServerAssoc;
-	
-	
+
+
 	/**
 	 * constructor of DBManager filesystem
 	 * @return DBManager_filesystem
@@ -75,7 +68,7 @@ class DBManager_filesystem
 		$this->filepath_adminGroupPermissions	= $datapath . self::$filename_adminGroupPermissions;
 		$this->filepath_adminGroupAssoc			= $datapath . self::$filename_adminGroupAssoc;
 		$this->filepath_adminGroupServerAssoc	= $datapath . self::$filename_adminGroupServerAssoc;
-		
+
 		// if data dir does not exist yet, redirect to installer
 		if (
 			!is_writable(SettingsManager::getInstance()->getMainDir() . '/data')
@@ -83,9 +76,9 @@ class DBManager_filesystem
 			) {
 			header('Location: ../install/');
 		}
-		
+
 	}
-	
+
 	/**
 	 * Write a message to a specific file.
 	 * @param $filename
@@ -97,7 +90,7 @@ class DBManager_filesystem
 		fwrite($fd, $msg."\n");
 		fclose($fd);
 	}
-	
+
 	/**************************************************************************
 	 *** Admin Account Activation ***
 	 *************************************************************************/
@@ -111,12 +104,12 @@ class DBManager_filesystem
 	public function addAwaitingAccount($sid, $name, $pw, $email)
 	{
 		$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/awaiting.dat', 'a') OR die('could not open DB file');
-		
+
 		// Make sure the activation code is explicit
 		do {
 			$key = (string)md5(rand());
 		} while ( $this->getAwaitingAccount($key)!=null );
-		
+
 		// TODO: is this even allowed? ";" in name?
 		$name = str_replace(';', '/;/', $name);
 		// TODO: pw should be saved as hash here as well
@@ -124,7 +117,7 @@ class DBManager_filesystem
 		$line = $key.';;;'.$sid.';;;'.$name.';;;'.$pw.';;;'.$email."\n";
 		fwrite($fd, $line);
 		fclose($fd);
-		
+
 		// send mail
 		$this->sendActivationMail($email, $name, $sid, $key);
 	}
@@ -150,7 +143,7 @@ class DBManager_filesystem
 			'Content-Type: text/plain; charset="UTF-8"'			// +header
 			);
 	}
-	
+
 	/**
 	 * Try to activate an account with the given activation key
 	 * @param $key
@@ -163,7 +156,7 @@ class DBManager_filesystem
 				ServerInterface::getInstance()->addUser($acc['sid'], $acc['name'], $acc['pw'], $acc['email']);
 				$this->removeAwaitingAccount($key);
 			} catch(Exception $exc) {
-				
+
 			}
 		} else {
 			echo '<div class="error">unknown activation key</div>';
@@ -183,14 +176,14 @@ class DBManager_filesystem
 				foreach ($line as $key=>$val) {
 					$line[$key] = str_replace('/;/', ';', $val);
 				}
-				
+
 				$acc = array();
 				$acc['key']   = $line[0];
 				$acc['sid']   = $line[1];
 				$acc['name']  = $line[2];
 				$acc['pw']	  = $line[3];
 				$acc['email'] = str_replace("\n", '', $line[4]);
-				
+
 				fclose($fd);
 				return $acc;
 			}
@@ -209,7 +202,7 @@ class DBManager_filesystem
 		$file = preg_replace('/'.$key.';;;(.+)\n/', '', $file);
 		file_put_contents($filename, $file);
 	}
-	
+
 	/**************************************************************************
 	 *** Admin Accounts ***
 	 *************************************************************************/
@@ -238,23 +231,22 @@ class DBManager_filesystem
 			MessageManager::addError(tr('error_AdminAccountAlreadyExists'));
 		}
 	}
-	
+
 	/**
 	 * add an admin group
 	 * @param $name group name
 	 */
 	public function addAdminGroup($name)
 	{
-		if($this->getAdminGroupByName($name)===null)
-		{
+		if ($this->getAdminGroupByName($name)===null) {
 			$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/'.self::$filename_adminGroups, 'a');
 			fwrite($fd, sprintf("%d;%s\n", $this->getNextAdminGroupID(), $name));
 			fclose($fd);
-		}else{
+		} else {
 			MessageManager::addError(tr('db_admingroup_namealreadyexists'));
 		}
 	}
-	
+
 	/**
 	 * @param $aid admin ID
 	 * @param $gid group id
@@ -263,21 +255,19 @@ class DBManager_filesystem
 	{
 		// check that admin is not already member of that group
 		$groups = $this->getAdminGroupsByAdminID($aid);
-		foreach($groups AS $group)
-		{
-			if($group['id'] == $gid)
-			{
+		foreach ($groups AS $group) {
+			if ($group['id'] == $gid) {
 				MessageManager::addError(tr('db_error_admingroupassoc_alreadyexists'));
 				return ;
 			}
 		}
-		
+
 		// add admin
 		$fh = fopen($this->filepath_adminGroupAssoc, 'a');
 		fwrite($fh, sprintf("%d;%d\n", $aid, $gid));
 		fclose($fh);
 	}
-	
+
 	/**
 	 * Remove an admin account
 	 * @param $aid admin account ID
@@ -286,28 +276,30 @@ class DBManager_filesystem
 	{
 		// for database consistency, also remove admins group associations
 		$this->removeAdminFromGroup($aid, null);
-		
+
 		$data = file($this->filepath_admins);
 		$fd = fopen($this->filepath_admins, 'w');
 		$size = count($data);
-		
+
 		for ($line = 0; $line < $size; $line++) {
 			$array = explode(';', $data[$line]);
-			if( $array[0] != $aid ){ fputs($fd, $data[$line]); }
+			if ($array[0] != $aid) {
+				fputs($fd, $data[$line]);
+			}
 		}
 		fclose($fd);
 	}
 	/**
 	 * obsolete
-	 * TODO: code: (obsolete) change calls to removeAdmin(…) 
+	 * TODO: code: (obsolete) change calls to removeAdmin(…)
 	 * @param $aid admin account ID
 	 */
 	public function removeAdminLogin($aid)
 	{
 		$this->removeAdmin($aid);
 	}
-	
-	
+
+
 	/**
 	 * Get admin accounts
 	 * @return array of admins, with id, name, pw
@@ -322,7 +314,7 @@ class DBManager_filesystem
 		fclose($fh);
 		return $admins;
 	}
-	
+
 	/**
 	 * Get admin object by (account-)name.
 	 * @param $username account name
@@ -330,7 +322,7 @@ class DBManager_filesystem
 	 */
 	public function getAdminByName($username)
 	{
-		if(file_exists($this->filepath_admins)) {
+		if (file_exists($this->filepath_admins)) {
 			$fd = fopen($this->filepath_admins, 'r') OR MessageManager::addError('could not open '.self::$filename_admins.' file');
 			while ($line = fgets($fd)) {
 				$admin = $this->createAdminFromString($line);
@@ -342,7 +334,7 @@ class DBManager_filesystem
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Get an admin object by ID
 	 * @param $aid admin ID
@@ -372,12 +364,12 @@ class DBManager_filesystem
 		// Get the maximum ID in use
 		$maxid = 0;
 		foreach ($admins AS $admin) {
-			$maxid < $admin['id'] ? $maxid = $admin['id'] : void ; 
+			$maxid < $admin['id'] ? $maxid = $admin['id'] : void ;
 		}
 		// The next free ID is the maximum one +1
 		return $maxid+1;
 	}
-	
+
 	/**
 	 * check login
 	 * @param $username
@@ -398,7 +390,7 @@ class DBManager_filesystem
 		// login failed
 		return false;
 	}
-	
+
 	/**
 	 * Create an admin object from a db-line
 	 * @param $line string with admin account data
@@ -407,11 +399,11 @@ class DBManager_filesystem
 	private function createAdminFromString($line)
 	{
 		$array = explode(';', $line);
-		
+
 		// remove newline character from last value
 		$lastindex = count($array)-1;
 		$array[$lastindex] = HelperFunctions::stripNewline($array[$lastindex]);
-		
+
 		$admin = array();
 		$admin['id'] = $array[0];
 		$admin['name'] = $array[1];
@@ -419,11 +411,11 @@ class DBManager_filesystem
 		$admin['isGlobalAdmin'] = ($array[3] == 1 ? true : false);
 		return $admin;
 	}
-	
+
 	/**************************************************************************
 	 *** Admin Groups ***
 	 *************************************************************************/
-	
+
 	/**
 	 * Get the next free ID for an admin group
 	 * @return int
@@ -434,12 +426,12 @@ class DBManager_filesystem
 		// Get the maximum ID in use
 		$maxid = 0;
 		foreach ($adminGroups AS $ag) {
-			$maxid < $ag['id'] ? $maxid = $ag['id'] : void ; 
+			$maxid < $ag['id'] ? $maxid = $ag['id'] : void ;
 		}
 		// The next free ID is the current maximum one +1
 		return $maxid+1;
 	}
-	
+
 	/**
 	 * Remove an adminGroup
 	 * @param $id admingroup ID
@@ -449,11 +441,11 @@ class DBManager_filesystem
 		// first, make sure integrity is kept by removing obsolete assoc data
 		$this->removeAdminFromGroup(null, $gid);
 		$this->removeAdminGroupPermissions($gid);
-		
+
 		$data = file($this->filepath_adminGroups);
 		$fd = fopen($this->filepath_adminGroups, 'w');
 		$size = count($data);
-		
+
 		for ($line = 0; $line < $size; $line++) {
 			$g = $this->createAdminGroupFromString($data[$line]);
 			if ($g['id'] != $gid) {
@@ -462,13 +454,13 @@ class DBManager_filesystem
 		}
 		fclose($fd);
 	}
-	
+
 	/**
 	 * Remove an admin from an admin group or
 	 * remove all admin or all group associations.
-	 * 
+	 *
 	 * If both $aid and $gid are null, it will have no effect.
-	 * 
+	 *
 	 * @param $aid admin ID or null for all
 	 * @param $gid group ID or null for all
 	 */
@@ -477,7 +469,7 @@ class DBManager_filesystem
 		$data = file($this->filepath_adminGroupAssoc);
 		$fh = fopen($this->filepath_adminGroupAssoc, 'w');
 		$lines = count($data);
-		
+
 		for ($line = 0; $line < $lines; $line++) {
 			$assoc = $this->createAdminGroupAssocFromString($data[$line]);
 			if ($aid == null) {
@@ -496,8 +488,8 @@ class DBManager_filesystem
 		}
 		fclose($fh);
 	}
-	
-	
+
+
 	/**
 	 * Create an adminGroup object/array from a db-file line.
 	 * @param $line line from db file
@@ -506,17 +498,17 @@ class DBManager_filesystem
 	private function createAdminGroupAssocFromString($line)
 	{
 		$array = explode(';', $line);
-		
+
 		// remove newline character from last value
 		$lastindex = count($array)-1;
 		$array[$lastindex] = HelperFunctions::stripNewline($array[$lastindex]);
-		
+
 		$assoc = array();
 		$assoc['adminID'] = $array[0];
 		$assoc['adminGroupID'] = $array[1];
 		return $assoc;
 	}
-	
+
 	/**
 	 * Get all admin groups
 	 * @return array array of adminGroups
@@ -531,7 +523,7 @@ class DBManager_filesystem
 		fclose($fh);
 		return $groups;
 	}
-	
+
 	/**
 	 * Get adminGroup by ID
 	 * @param $gid ID
@@ -551,7 +543,7 @@ class DBManager_filesystem
 		fclose($fh);
 		return $groups;
 	}
-	
+
 /**
 	 * Get adminGroup by name
 	 * @param $name name
@@ -570,7 +562,7 @@ class DBManager_filesystem
 		fclose($fh);
 		return null;
 	}
-	
+
 	/**
 	 * Get admin groups an admin is associated to by the admins ID
 	 * @param $id admin ID
@@ -587,44 +579,44 @@ class DBManager_filesystem
 			}
 		}
 		fclose($fh);
-		
+
 		return $groups;
 	}
-	
+
 	public function getAdminGroupHeads()
 	{
 		$fh = fopen($this->filepath_adminGroups, 'r');
 		$groups = array();
-		
+
 		while ($line = fgets($fh)) {
 			$groups[] = $this->createAdminGroupHeadFromString($line);
 		}
-		
+
 		fclose($fh);
 		return $groups;
 	}
-	
+
 	private function createAdminGroupFromString($line)
 	{
 		$group = $this->createAdminGroupHeadFromString($line);
 		$group = $this->createAdminGroupFromAdminGroupHead($group);
 		return $group;
 	}
-	
+
 	private function createAdminGroupHeadFromString($line)
 	{
 		$array = explode(';', $line);
-		
+
 		// remove newline character from last value
 		$lastindex = count($array)-1;
 		$array[$lastindex] = HelperFunctions::stripNewline($array[$lastindex]);
-		
+
 		$group = array();
 		$group['id'] = $array[0];
 		$group['name'] = $array[1];
 		return $group;
 	}
-	
+
 	private function createAdminGroupFromAdminGroupHead($group)
 	{
 		$perms = $this->getAdminGroupPermissions($group['id']);
@@ -632,11 +624,11 @@ class DBManager_filesystem
 		$group['adminOnServers'] = $this->getAdminGroupServers($group['id']);
 		return $group;
 	}
-	
+
 	/**************************************************************************
 	 *** Admin Group Permissions ***
 	 *************************************************************************/
-	
+
 	/**
 	 * create an array of permissions from a database-line/-row
 	 * @param string $line
@@ -645,11 +637,11 @@ class DBManager_filesystem
 	private function createAdminGroupPermissionsFromString($line)
 	{
 		$array = explode(';', $line);
-		
+
 		// remove newline character from last value
 		$lastindex = count($array)-1;
 		$array[$lastindex] = HelperFunctions::stripNewline($array[$lastindex]);
-		
+
 		$perms = array();
 		$perms['groupID']   = $array[0];
 		$perms['serverID']  = $array[1];
@@ -664,10 +656,10 @@ class DBManager_filesystem
 		$perms['channels']  = (bool)$array[10];
 		$perms['acls']      = (bool)$array[11];
 		$perms['admins']    = (bool)$array[12];
-		
+
 		return $perms;
 	}
-	
+
 	/**
 	 * get permissions for a specific group
 	 * @param $gid admin group ID
@@ -676,7 +668,7 @@ class DBManager_filesystem
 	public function getAdminGroupPermissions($gid, $serverID=0)
 	{
 		$fh = fopen($this->filepath_adminGroupPermissions, 'r');
-		
+
 		$fallBack = null;
 		// go through file, line by line, until EOF
 		while (false !== ($line = fgets($fh))) {
@@ -685,7 +677,7 @@ class DBManager_filesystem
 				if ($serverID == $tmpPerms['serverID']) {
 					fclose($fh);
 					return $tmpPerms;
-					
+
 				} elseif ($tmpPerms['serverID'] == 0) {
 					// fallback to global groups (groups for all servers
 					if ($fallBack == null) {
@@ -701,21 +693,21 @@ class DBManager_filesystem
 			}
 		}
 		fclose($fh);
-		
+
 		if ($fallBack != null)
 			return $fallBack;
-		
+
 		// no such permissions, try to get and return global ones for this group
 		if ($serverID != null) {
 			return $this->getAdminGroupPermissions($gid, null);
 		}
-		
+
 		// no global perms, return default perms
 		$defPerms = DBManager::$defaultAdminGroupPerms;
 		$defPerms['groupID'] = $gid;
 		return $defPerms;
 	}
-	
+
 	/**
 	 * add permissions for admin group
 	 * @param int $gid group ID
@@ -724,13 +716,13 @@ class DBManager_filesystem
 	public function addAdminGroupPermissions($gid=null, $perms, $serverID=null)
 	{
 		$perms = array_merge(DBManager::$defaultAdminGroupPerms, $perms);
-		
+
 		if (!$perms['groupID'] || $gid != null && $perms['groupID'] != $gid) {
 			$perms['groupID'] = $gid;
 		}
-		
+
 		$this->removeAdminGroupPermissions($perms['groupID']);
-		
+
 		$fh = fopen($this->filepath_adminGroupPermissions, 'a');
 		fwrite(
 				$fh,
@@ -743,7 +735,7 @@ class DBManager_filesystem
 			);
 		fclose($fh);
 	}
-	
+
 	/**
 	 * remove group permissions for group
 	 * @param unknown_type $gid group ID
@@ -753,7 +745,7 @@ class DBManager_filesystem
 		$data = file($this->filepath_adminGroupPermissions);
 		$fd = fopen($this->filepath_adminGroupPermissions, 'w');
 		$size = count($data);
-		
+
 		for ($line = 0; $line < $size; $line++) {
 			$perms = $this->createAdminGroupPermissionsFromString($data[$line]);
 			if ($perms['groupID'] != $groupID) {
@@ -764,7 +756,7 @@ class DBManager_filesystem
 		}
 		fclose($fd);
 	}
-	
+
 	/**
 	 * @param int $adminId admin ID
 	 * @return array permissions
@@ -776,13 +768,14 @@ class DBManager_filesystem
 		foreach ($groups AS $group) {
 			$tmpPerms = $this->getAdminGroupPermissions($group['id'], $serverID);
 			foreach ($perms AS $key=>$val) {
-				if(!$val)
+				if (!$val) {
 					$perms[$key] = $tmpPerms[$key];
+				}
 			}
 		}
 		return $perms;
 	}
-	
+
 	/**
 	 * update a single permission
 	 * @param $gid group id
@@ -795,7 +788,7 @@ class DBManager_filesystem
 		if (isset($old[$perm])) {
 			$old[$perm] = $newval;
 		}
-		
+
 		if (!isset($old['groupID']) || ($old['groupID'] != $gid && $gid != null)) {
 			$old['groupID'] = $gid;
 		}
@@ -810,18 +803,18 @@ class DBManager_filesystem
 	public function updateAdminGroupPermissions($gid, $perms)
 	{
 		$old=$this->getAdminGroupPermissions($gid);
-		
+
 		foreach ($old AS $key=>$val) {
 			$old[$key] = $perms[$key];
 		}
-		
+
 		if (!$old['groupID'] || $old['groupID'] != $gid && $gid != null) {
 			$old['groupID'] = $gid;
 		}
 		$this->removeAdminGroupPermissions($gid);
 		$this->addAdminGroupPermissions($gid, $old);
 	}
-	
+
 	/**
 	 * @param int $adminGroupID
 	 * @param int $serverID
@@ -834,7 +827,7 @@ class DBManager_filesystem
 		if (in_array($serverID, $groupServers)) {
 			return;
 		}
-		
+
 		// add assoc
 		$fh = fopen($this->filepath_adminGroupServerAssoc, 'a');
 		fwrite($fh, sprintf("%d;%d\n", $adminGroupID, $serverID));
@@ -884,16 +877,17 @@ class DBManager_filesystem
 	{
 		$groups = $this->getAdminGroupsByAdminID($adminId);
 		$servers=array();
-		foreach($groups as $group)
-		{
+		foreach ($groups as $group) {
 			$srvs = $this->getAdminGroupServers($group['id']);
-			foreach($srvs as $srv)
-				if(!in_array($srv, $servers))
+			foreach ($srvs as $srv) {
+				if (!in_array($srv, $servers)) {
 					$servers[] = $srv;
+				}
+			}
 		}
 		return $servers;
 	}
-	
+
 }
 
 // TODO: implement MySQL (?)
@@ -904,5 +898,3 @@ class DBManager_filesystem
 
 // TODO: implement SQLite (?)
 //class DBManager_sqlite
-
-?>

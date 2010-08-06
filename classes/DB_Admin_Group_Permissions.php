@@ -14,7 +14,7 @@ class DB_Admin_Group_Permissions
 	public $channels;
 	public $acls;
 	public $addAdmins;
-	
+
 	public function __construct(bool $startStop, bool $editConf, bool $genSuUsPW, bool $viewRegistrations, bool $editRegistrations, bool $moderate, bool $kick, bool $ban, bool $channels, bool $acls, bool $addAdmins)
 	{
 		$this->startStop = $startStop;
@@ -29,7 +29,5 @@ class DB_Admin_Group_Permissions
 		$this->acls = $acls;
 		$this->addAdmins = $admins;
 	}
-	
-}
 
-?>
+}

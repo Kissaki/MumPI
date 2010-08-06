@@ -16,25 +16,25 @@ class Ajax_Admin extends Ajax
 	{
 		TemplateManager::parseTemplate($_GET['page']);
 	}
-	
+
 	public static function db_admins_groups_get()
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
-		
+
 		$groups = DBManager::getInstance()->getAdminGroups();
 		echo json_encode($groups);
 	}
-	
+
 	public static function db_adminGroupHeads_get()
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
-		
+
 		$groups = DBManager::getInstance()->getAdminGroupHeads();
 		echo json_encode($groups);
 	}
-	
+
 	public static function db_admingroups_echo()
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
@@ -50,7 +50,7 @@ class Ajax_Admin extends Ajax
 						<td>' . $group['id'] . '</td>
 						<td>' . $group['name'] . '</td>
 						<td style="font-size:0.6em;">';
-					
+
 					// create permissions string
 					$tmp = '';
 					foreach ($group['perms'] AS $key=>$val) {
@@ -59,12 +59,13 @@ class Ajax_Admin extends Ajax
 						}
 					}
 					// strip leading comma
-					if(!empty($tmp))
+					if (!empty($tmp)) {
 						$tmp = substr($tmp, 2);
+					}
 					echo $tmp;
-					
+
 					echo '</td>';
-					
+
 					// admin on servers
 					echo '<td>';
 					$tmp = '';
@@ -73,7 +74,7 @@ class Ajax_Admin extends Ajax
 					}
 					echo substr($tmp, 0, strlen($tmp)-2);
 					echo '</td>';
-					
+
 					echo '<td>';
 					echo 	'<a class="jqlink" onclick="jq_admingroup_perms_edit_display(' . $group['id'] . ')">edit perms</a>, ';
 					echo 	'<a class="jqlink" onclick="jq_admingroup_server_assoc_edit_display(' . $group['id'] . ')">edit servers</a>, ';
@@ -86,40 +87,40 @@ class Ajax_Admin extends Ajax
 		</table>
 <?php
 	}
-	
+
 	public static function db_adminGroup_add()
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
-		
+
 		DBManager::getInstance()->addAdminGroup($_POST['name']);
 		MessageManager::echoAll();
 	}
-	
+
 	public static function db_adminGroup_remove()
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
-		
+
 		DBManager::getInstance()->removeAdminGroup(intval($_POST['id']));
 		MessageManager::echoAll();
 	}
-	
+
 	public static function db_adminGroup_perms_edit_display()
 	{
 		// TODO server specific perms
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
-		
+
 		// exit on missing params
 		if (!isset($_POST['groupID']))
 			exit();
-		
+
 		// make sure only ints are passed
 		$_POST['groupID'] = intval($_POST['groupID']);
 		$_POST['serverID'] = isset($_POST['serverID'])?intval($_POST['serverID']):null;
 		$group = DBManager::getInstance()->getAdminGroup($_POST['groupID']);
-		
+
 		// output
 		echo '<ul class="form_group_permissions">';
 		foreach ($group['perms'] AS $key=>$val) {
@@ -131,7 +132,7 @@ class Ajax_Admin extends Ajax
 		}
 		echo '</ul>';
 	}
-	
+
 	public static function db_adminGroup_perm_update()
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins()) {
@@ -141,26 +142,26 @@ class Ajax_Admin extends Ajax
 		}
 		MessageManager::echoAll();
 	}
-	
+
 	public static function db_adminGroup_perms_edit()
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
-		
+
 		// TODO: [security] perms should only hold the correct keys and boolean vals
 		$group = DBManager::getInstance()->updateAdminGroupPermissions(intval($_POST['gid']), $_POST['perms']);
 		MessageManager::echoAll();
 	}
-	
+
 	public static function db_adminGroups_makeAdminOnServer()
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins()) {
 			return;
 		}
-		
+
 		$groupID = intval($_POST['groupID']);
 		$serverID = intval($_POST['serverID']);
-		
+
 		DBManager::getInstance()->makeAdminGroupAdminOfServer($groupID, $serverID);
 	}
 	public static function db_adminGroups_revokeAdminOnServer()
@@ -168,26 +169,26 @@ class Ajax_Admin extends Ajax
 		if (!PermissionManager::getInstance()->serverCanEditAdmins()) {
 			return;
 		}
-		
+
 		$groupID = intval($_POST['groupID']);
 		$serverID = intval($_POST['serverID']);
-		
+
 		DBManager::getInstance()->removeAdminGroupAsAdminOfServer($groupID, $serverID);
 	}
 	public static function db_adminGroup_servers_edit_display()
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
-		
+
 		// exit on missing params
 		if (!isset($_POST['groupID']))
 			exit();
-		
+
 		// make sure only ints are passed
 		$_POST['groupID'] = intval($_POST['groupID']);
 		$group = DBManager::getInstance()->getAdminGroup($_POST['groupID']);
 		$servers = ServerInterface::getInstance()->getServers();
-		
+
 		// output
 		echo '<ul class="form_group_servers">';
 		foreach ($servers AS $srv) {
@@ -197,34 +198,34 @@ class Ajax_Admin extends Ajax
 		}
 		echo '</ul>';
 	}
-	
+
 	public static function db_admins_echo()
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
-		
+
 		echo '<table class="list_admins"><thead><tr class="head"><th>Username</th><th>global Admin</th><th>Groups</th><th>Actions</th></tr></thead>';
 		echo '<tbody>';
 		$admins = DBManager::getInstance()->getAdmins();
-		foreach($admins AS $admin){
+		foreach ($admins AS $admin) {
 			$groups = DBManager::getInstance()->getAdminGroupsByAdminID($admin['id']);
-			
+
 			echo '<tr id="admin_list_item_'.$admin['id'].'" class="list_admins_item">';
 			echo 	'<td>'.$admin['name'].'</td>';
 			echo 	'<td>' . ($admin['isGlobalAdmin'] ? 'yes' : 'no') . '</td>';
 			echo 	'<td>';
-			
+
 			echo 		'<ul class="list_groups">';
 			foreach ($groups AS $group) {
 				echo 		'<li>' . $group['name'] . '</li>';
 			}
 			echo 		'</ul>';
-			
+
 			echo 	'</td>';
 			echo 	'<td>';
 			echo 		'<ul>';
 			// TODO: I18N
-			if(empty($groups))
+			if (empty($groups))
 				echo 			'<li><a title="add" class="jqlink" onclick="jq_admin_addToGroup_display(' . $admin['id'] . ');">addToGroup</a></li>';
 			else
 				echo 			'<li><a title="add" class="jqlink" onclick="jq_admin_removeFromGroups(' . $admin['id'] . ');">removeFromGroups</a></li>';
@@ -242,15 +243,15 @@ class Ajax_Admin extends Ajax
 		echo 	'</tbody>';
 		echo '</table>';
 	}
-	
+
 	public static function db_admin_update_name()
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
-		
+
 		DBManager::getInstance()->updateAdminName($_POST['name'], $_POST['pw']);
 	}
-	
+
 	public static function db_admin_add()
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
@@ -258,16 +259,16 @@ class Ajax_Admin extends Ajax
 		DBManager::getInstance()->addAdmin(strip_tags($_POST['name']), strip_tags($_POST['pw']), strip_tags($_POST['isGlobalAdmin']));
 		MessageManager::echoAllErrors();
 	}
-	
+
 	public static function db_admin_remove()
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
-		
+
 		DBManager::getInstance()->removeAdminLogin($_POST['id']);
 		MessageManager::echoAllErrors();
 	}
-	
+
 	/**
 	 * requires admin id 'aid' and group id 'gid' as _POST
 	 */
@@ -275,7 +276,7 @@ class Ajax_Admin extends Ajax
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
-		
+
 		DBManager::getInstance()->addAdminToGroup($_POST['aid'], $_POST['gid']);
 		MessageManager::echoAllErrors();
 	}
@@ -287,11 +288,11 @@ class Ajax_Admin extends Ajax
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
-		
+
 		DBManager::getInstance()->removeAdminFromGroup($_POST['aid']);
 		MessageManager::echoAllErrors();
 	}
-	
+
 	/**
 	 * requires group id 'aid' as _POST
 	 */
@@ -299,77 +300,76 @@ class Ajax_Admin extends Ajax
 	{
 		if (!PermissionManager::getInstance()->serverCanEditAdmins())
 			return ;
-		
+
 		$aid = intval($_POST['aid']);
-		
+
 		$admin = DBManager::getInstance()->getAdmin($aid);
 		$groups = DBManager::getInstance()->getAdminGroups();
-		
+
 		echo 'Add ' . $admin['name'] . ' to group:<br/>';
 		echo '<ul>';
-		foreach($groups AS $group)
-		{
+		foreach ($groups AS $group) {
 			echo '<li><a class="jqlink" onclick="jq_admin_addToGroup(' . $aid . ', ' . $group['id'] . ');">' . $group['name'] . '</a></li>';
 		}
 		echo '</ul>';
 	}
-	
+
 	public static function meta_showDefaultConfig()
 	{
 		$config = ServerInterface::getInstance()->getDefaultConfig();
 		echo '<table>';
-		foreach($config AS $key=>$value){
+		foreach ($config AS $key=>$value) {
 			echo '<tr><td>'.$key.':</td><td>'.$value.'</td></tr>';
 		}
 		echo '</table>';
 		MessageManager::echoAllErrors();
 	}
-	
+
 	public static function server_create()
 	{
 		if (!PermissionManager::getInstance()->isGlobalAdmin())
 			return ;
-		
+
 		echo ServerInterface::getInstance()->createServer();
 	}
-	
+
 	public static function server_delete()
 	{
 		$serverId = intval($_POST['sid']);
 		if (!PermissionManager::getInstance()->isGlobalAdmin($serverId))
 			return ;
-		
+
 		ServerInterface::getInstance()->deleteServer($serverId);
 		SettingsManager::getInstance()->removeServerInformation($serverId);
 	}
-	
+
 	public static function server_start()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		if (!PermissionManager::getInstance()->serverCanStartStop($_POST['sid']))
 			return ;
-		
+
 		ServerInterface::getInstance()->startServer($_POST['sid']);
 	}
-	
+
 	public static function server_stop()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		if (!PermissionManager::getInstance()->serverCanStartStop($_POST['sid']))
 			return ;
-		
+
 		ServerInterface::getInstance()->stopServer($_POST['sid']);
 	}
-	
+
 	public static function server_setSuperuserPassword()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		if (!PermissionManager::getInstance()->serverCanGenSuUsPW($_POST['sid']))
 			return ;
-		
+
 		ServerInterface::getInstance()->setServerSuperuserPassword($_POST['sid'], $_POST['pw']);
 	}
-	
+
 	public static function server_getRegistrations()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
@@ -378,7 +378,7 @@ class Ajax_Admin extends Ajax
 			MessageManager::echoAllMessages();
 			exit();
 		}
-		
+
 		$users = array();
 		try {
 			$users = ServerInterface::getInstance()->getServerRegistrations($_POST['sid']);
@@ -406,7 +406,7 @@ class Ajax_Admin extends Ajax
 						<td id="user_name_<?php echo $userId; ?>" class="jq_editable"><?php echo $userName; ?></td>
 						<td id="user_email_<?php echo $userId; ?>" class="jq_editable"><?php echo $user->getEmail(); ?></td>
 						<td id="userComment<?php echo $user->getUserId(); ?>" class="comment userComment">
-							<?php $commentClean = htmlspecialchars($user->getComment()); ?>							
+							<?php $commentClean = htmlspecialchars($user->getComment()); ?>
 							<?php if (!empty($commentClean)) { ?>
 								<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getUserId(); ?>);" style="float:left; margin-right:4px;">○</a>
 								<div class="teaser"><?php echo(substr($commentClean, 0, 10) . (strlen($commentClean)>0?'…':'')); ?></div>
@@ -442,7 +442,7 @@ class Ajax_Admin extends Ajax
 			echo '<div class="error">Server is not running</div>';
 		}
 	}
-	
+
 	public static function show_onlineUsers()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
@@ -452,9 +452,9 @@ class Ajax_Admin extends Ajax
 			exit();
 		}
 		$canModerate = PermissionManager::getInstance()->serverCanModerate($_POST['sid']);
-		
+
 		$users = array();
-		try{
+		try {
 			$users = ServerInterface::getInstance()->getServerUsersConnected($_POST['sid']);
 ?>
 			<h2>Online Users</h2>
@@ -465,13 +465,13 @@ class Ajax_Admin extends Ajax
 						<th>Reg ID</th>
 						<th>Username</th>
 						<th></th>
-						
+
 						<th>muted?</th>
 						<th>deaf?</th>
 						<th>suppressed</th>
 						<th>selfMuted</th>
 						<th>selfDeafened</th>
-						
+
 						<th>time online</th>
 						<th>idle</th>
 						<th>B/s</th>
@@ -479,7 +479,7 @@ class Ajax_Admin extends Ajax
 						<th>comment</th>
 						<th>address</th>
 						<th>TCPonly</th>
-						
+
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -487,20 +487,20 @@ class Ajax_Admin extends Ajax
 <?php				foreach ($users AS $user) {	?>
 					<tr>
 						<td><?php echo $user->getSessionId(); ?></td>
-						<td><?php if($user->getRegistrationId() !== -1) echo $user->getRegistrationId(); ?></td>
+						<td><?php if ($user->getRegistrationId() !== -1) echo $user->getRegistrationId(); ?></td>
 						<td id="user_name_<?php echo $user->sessionId; ?>" class="jq_editable"><?php echo $user->name; ?></td>
 						<td><?php echo $user->get ?></td>
-						<td><input id="user_mute_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if($user->getIsMuted()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
-						<td><input id="user_deaf_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if($user->getIsDeafened()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
-						<td><input id="user_suppr_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if($user->getIsSuppressed()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
-						<td><input id="user_selfm_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if($user->getIsSelfMuted()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
-						<td><input id="user_selfd_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if($user->getIsSelfDeafened()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
-						
+						<td><input id="user_mute_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsMuted()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
+						<td><input id="user_deaf_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsDeafened()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
+						<td><input id="user_suppr_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsSuppressed()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
+						<td><input id="user_selfm_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsSelfMuted()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
+						<td><input id="user_selfd_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsSelfDeafened()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
+
 						<td id="user_email_<?php echo $user->getSessionId(); ?>" class="jq_editable">
-							<?php $on = $user->getOnlineSeconds(); if($on > 59){ echo sprintf('%.0f', $on/60).'m'; }else{ echo $on.'s'; } ?>
+							<?php $on = $user->getOnlineSeconds(); if ($on > 59) { echo sprintf('%.0f', $on/60).'m'; } else { echo $on.'s'; } ?>
 						</td>
 						<td>
-							<?php $idle = $user->getIdleSeconds(); if($idle > 59){ echo sprintf('%.0f', $idle/60).'m'; }else{ echo $idle.'s'; } ?>
+							<?php $idle = $user->getIdleSeconds(); if ($idle > 59) { echo sprintf('%.0f', $idle/60).'m'; } else { echo $idle.'s'; } ?>
 						</td>
 						<td><?php echo $user->getBytesPerSecond(); ?></td>
 						<td><?php echo $user->clientVersion() . ($user->clientVersion()!=$user->clientRelease())?$user->clientRelease():'' . $user->clientOs() . $user->clientOsVersion(); ?></td>
@@ -526,7 +526,7 @@ class Ajax_Admin extends Ajax
 							<?php if ($user->getAddress()->isIPv4()) { echo '<div>' . $user->getAddress()->toStringAsIPv4() . '</div>'; } ?>
 						</td>
 						<td><?php echo $user->getIsTcpOnly()?'true':'false'; ?></td>
-						
+
 						<td>
 <?php
 						if (PermissionManager::getInstance()->serverCanKick($_POST['sid']))
@@ -542,23 +542,24 @@ class Ajax_Admin extends Ajax
 ?>
 				<script type="text/javascript">/*<![CDATA[*/
 					$('.jq_toggleable').click(
-							function(event){
+							function(event)
+							{
 								var id = $(this).attr('id');
 								var sub = id.substring(0, id.lastIndexOf('_'));
 								var id = id.substring(id.lastIndexOf('_')+1, id.length);
-								switch(sub){
+								switch (sub) {
 									case 'user_mute':
-										if($(this).attr('checked')){
+										if ($(this).attr('checked')) {
 											jq_server_user_mute(id);
-										}else{
+										} else {
 											jq_server_user_unmute(id);
 										}
-										
+
 										break;
 									case 'user_deaf':
-										if($(this).attr('checked')){
+										if ($(this).attr('checked')) {
 											jq_server_user_deaf(id);
-										}else{
+										} else {
 											jq_server_user_undeaf(id);
 										}
 										break;
@@ -569,17 +570,17 @@ class Ajax_Admin extends Ajax
 				</script>
 <?php
 			} // permission check: moderate
-		}catch(Murmur_ServerBootedException $exc){
+		} catch(Murmur_ServerBootedException $exc) {
 			echo '<div class="error">Server is not running</div>';
 		}
 	} // show_onlineUsers()
-	
+
 	public static function server_regstration_remove()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		if (!PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid']))
 			return ;
-		
+
 		ServerInterface::getInstance()->removeRegistration($_POST['sid'], $_POST['uid']);
 	}
 	public static function server_regstration_genpw()
@@ -593,50 +594,50 @@ class Ajax_Admin extends Ajax
 		$reg->setPassword($newPw);
 		ServerInterface::getInstance()->saveRegistration($reg);
 	}
-	
+
 	public static function server_user_mute()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		if (!PermissionManager::getInstance()->serverCanModerate($_POST['sid']))
 			return ;
-		
+
 		ServerInterface::getInstance()->muteUser($_POST['sid'], $_POST['sessid']);
 	}
-	
+
 	public static function server_user_unmute()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		if (!PermissionManager::getInstance()->serverCanModerate($_POST['sid']))
 			return ;
-		
+
 		ServerInterface::getInstance()->unmuteUser($_POST['sid'], $_POST['sessid']);
 	}
-	
+
 	public static function server_user_deaf()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		if (!PermissionManager::getInstance()->serverCanModerate($_POST['sid']))
 			return ;
-		
+
 		ServerInterface::getInstance()->deafUser($_POST['sid'], $_POST['sessid']);
 	}
-	
+
 	public static function server_user_undeaf()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		if (!PermissionManager::getInstance()->serverCanModerate($_POST['sid']))
 			return ;
-		
+
 		ServerInterface::getInstance()->undeafUser($_POST['sid'], $_POST['sessid']);
 	}
-	
+
 	public static function server_user_kick()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		if (PermissionManager::getInstance()->serverCanKick($_POST['sid']))
 			ServerInterface::getInstance()->kickUser($_POST['sid'], $_POST['sessid']);
 	}
-	
+
 	public static function show_server_bans()
 	{
 		$serverId = intval($_POST['sid']);
@@ -720,7 +721,7 @@ class Ajax_Admin extends Ajax
 			ServerInterface::getInstance()->unban($serverId, $ipmask, $bits);
 		}
 	}
-	
+
 	public static function show_tree()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
@@ -729,7 +730,7 @@ class Ajax_Admin extends Ajax
 			MessageManager::echoAllMessages();
 			exit();
 		}
-		
+
 		try {
 			$tree = ServerInterface::getInstance()->getServer($_POST['sid'])->getTree();
 			HelperFunctions::showChannelTree($tree);
@@ -738,18 +739,18 @@ class Ajax_Admin extends Ajax
 			echo 'Server is not running.';
 		}
 	}
-	
+
 	public static function show_acl()
 	{
 		//TODO: IMPLEMENT show_acl()
 	}
-	
+
 	public static function server_config_get()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		ServerInterface::getInstance()->getServerConfig($_POST['sid']);
 	}
-	
+
 	public static function server_config_show()
 	{
 		if(!isset($_POST['sid'])) return;
@@ -780,7 +781,7 @@ class Ajax_Admin extends Ajax
 						$server = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($_POST['sid']));
 						$defaultChannel = $server->getChannel($defaultChannelId);
 						echo $defaultChannel->getName();
-						
+
 						// change default chan functionality
 						$chanTree = $server->getTree();
 						function treePrint(MurmurTree $tree, $first=true)
@@ -812,23 +813,22 @@ class Ajax_Admin extends Ajax
 				</td>
 			</tr>
 			<tr><td>welcometext</td>	<td class="jq_editable" id="jq_editable_server_conf_welcometext"><?php echo $conf['welcometext']; unset($conf['welcometext']); ?></td></tr>
-			
+
 			<tr class="table_headline">	<td colspan="2"></td></tr>
 			<tr><td>bandwidth</td>		<td class="jq_editable" id="jq_editable_server_conf_bandwidth"><?php echo $conf['bandwidth']; unset($conf['bandwidth']); ?></td></tr>
 			<tr><td>channelname</td>	<td class="jq_editable" id="jq_editable_server_conf_channelname"><?php echo $conf['channelname']; unset($conf['channelname']); ?></td></tr>
 			<tr><td>username</td>		<td class="jq_editable" id="jq_editable_server_conf_playername"><?php echo $conf['username']; unset($conf['username']); ?></td></tr>
 			<tr><td>textmessagelength</td>		<td class="jq_editable" id="jq_editable_server_conf_playername"><?php echo $conf['textmessagelength']; unset($conf['textmessagelength']); ?></td></tr>
 			<tr><td>obfuscate</td>		<td class="jq_editable" id="jq_editable_server_conf_obfuscate"><?php echo $conf['obfuscate']; unset($conf['obfuscate']); ?></td></tr>
-			
+
 			<tr class="table_headline">	 <td colspan="2">Server Registration</td></tr>
 			<tr><td>registerhostname</td><td class="jq_editable" id="jq_editable_server_conf_registerhostname"><?php echo $conf['registerhostname']; unset($conf['registerhostname']); ?></td></tr>
 			<tr><td>registername</td>	 <td class="jq_editable" id="jq_editable_server_conf_registername"><?php echo $conf['registername']; unset($conf['registername']); ?></td></tr>
 			<tr><td>registerpassword</td><td class="jq_editable" id="jq_editable_server_conf_registerpassword"><?php echo $conf['registerpassword']; unset($conf['registerpassword']); ?></td></tr>
 			<tr><td>registerurl</td>	 <td class="jq_editable" id="jq_editable_server_conf_registerurl"><?php echo $conf['registerurl']; unset($conf['registerurl']); ?></td></tr>
-			
+
 <?php
-		foreach($conf AS $key=>$val)
-		{
+		foreach ($conf AS $key=>$val) {
 ?>
 			<tr>
 				<td><?php echo $key; ?></td>
@@ -875,7 +875,7 @@ class Ajax_Admin extends Ajax
 				jq_editable_server_conf_text2textarea('welcometext');
 				jq_editable_server_conf_text2textarea('certificate');
 				jq_editable_server_conf_text2textarea('key');
-				
+
 				// default channel editable:
 		jQuery('#jq_editable_server_conf_defaultchannel_form').ready(function(){
 			jQuery("#jq_editable_server_conf_defaultchannel_form").dialog({
@@ -912,7 +912,7 @@ class Ajax_Admin extends Ajax
 <?php
 		}
 	}
-	
+
 	public static function server_config_update()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
@@ -923,7 +923,7 @@ class Ajax_Admin extends Ajax
 			}
 		}
 	}
-	
+
 	public static function server_user_updateUsername()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
@@ -932,7 +932,7 @@ class Ajax_Admin extends Ajax
 			ServerInterface::getInstance()->updateUserName($_POST['sid'], $_POST['uid'], $_POST['newValue']);
 		}
 	}
-	
+
 	public static function server_user_updateEmail()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
@@ -941,7 +941,7 @@ class Ajax_Admin extends Ajax
 			ServerInterface::getInstance()->updateUserEmail($_POST['sid'], $_POST['uid'], $_POST['newValue']);
 		}
 	}
-	
+
 	public static function server_user_updateHash()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
@@ -950,13 +950,13 @@ class Ajax_Admin extends Ajax
 			ServerInterface::getInstance()->updateUserHash($_POST['sid'], $_POST['uid'], $_POST['newValue']);
 		}
 	}
-	
+
 	public static function meta_server_information_edit()
 	{
 		$_POST['serverid'] = intval($_POST['serverid']);
 		if (!PermissionManager::getInstance()->serverCanEditConf($_POST['serverid']))
 			return ;
-		
+
 		$server = SettingsManager::getInstance()->getServerInformation($_POST['serverid']);
 
 		echo '<div>';
@@ -989,7 +989,7 @@ class Ajax_Admin extends Ajax
 		echo	'<input type="button" value="cancel" onclick="$(\'#jq_information\').html(\'\');" />';
 		echo '</div>';
 	}
-	
+
 	public static function meta_server_information_update()
 	{
 		$serverId = isset($_POST['serverid'])?intval($_POST['serverid']):null;
@@ -1007,7 +1007,7 @@ class Ajax_Admin extends Ajax
 				$allowRegistration = $_POST['allowregistration'];
 				$forcemail = $_POST['forcemail'];
 				$authByMail = $_POST['authbymail'];
-				
+
 				SettingsManager::getInstance()->setServerInformation($serverId, $name, $allowLogin, $allowRegistration, $forcemail, $authByMail);
 			} else {
 				MessageManager::addError(TranslationManager::getInstance()->getText('error_missing_values'));
@@ -1016,7 +1016,5 @@ class Ajax_Admin extends Ajax
 			MessageManager::addError('You don’t have permission to do this.');
 		}
 	}
-	
-}
 
-?>
+}

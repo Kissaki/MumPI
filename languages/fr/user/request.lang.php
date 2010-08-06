@@ -1,9 +1,5 @@
 <?php
 /**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * 
  * @subpackage 	languages (mumble PHP Interface v0.3.6.7)
  * @author 		esion - esion99@gmail.com
  * @since 		25 oct. 2009
@@ -22,5 +18,3 @@
 
 	$txt['request_nosuchaccount'] 	= 'Aucun compte avec cette adresse email n\'a été trouvé sur ce serveur.<br/><a onclick="history.go(-1); return false;" href="?page=login">Retour</a>.';
 	$txt['request_mail_sent'] 		= 'Un email à été envoyé.<br/>Merci de vérifier votre boite mail dans quelques minutes.<br/>Selon votre fournisseur d\'email, la reception de l\'email peut prendre un certain temps ou se retrouver dans votre dossier d\'emails indésirables.<br/>MSN/Live peuvent completement bloquer cet email, faites appel à un administrateur à ce .';
-
-?>

@@ -1,5 +1,5 @@
 <?php
-	if(SessionManager::getInstance()->isAdmin()){
+	if (SessionManager::getInstance()->isAdmin()) {
 ?>
 		<script type="text/javascript">/*<![CDATA[*/
 			function jq_loadPage(page){
@@ -22,7 +22,7 @@
 			<div class="updatecheck_result"></div>
 		</div>
 <?php
-		//if(!isset($_SESSION['mumpiVersionCheckLast'])) {
+		//if (!isset($_SESSION['mumpiVersionCheckLast'])) {
 		//	$_SESSION['mumpiVersionCheckLast'] = 0;
 		//}
 		// only check every 60 minutes

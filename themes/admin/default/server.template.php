@@ -5,7 +5,7 @@
 		<h1>Select a server</h1>
 		<ul>
 <?php
-			foreach($servers AS $server) {
+			foreach ($servers AS $server) {
 				if (PermissionManager::getInstance()->isAdminOfServer($server->id())) {
 ?>
 					<li><a href="?page=server&amp;sid=<?php echo $server->id(); ?>"><?php echo $server->id().': '.SettingsManager::getInstance()->getServerName($server->id()); ?></a></li>
@@ -38,15 +38,16 @@
 			echo sprintf('<li><a class="jqlink" onclick="jq_server_config_show(%d); return false;">Config</a></li>', $server->id());
 ?>
 	</ul>
-	
+
 	<hr/>
-	
+
 	<div id="jq_information" style="display:none;">
-		
+
 	</div>
 	<script type="text/javascript">
-		
-		function randomString(length) {
+
+		function randomString(length)
+		{
 			var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz§$%&/()=?!{[]}";
 			var str = '';
 			for (var i=0; i<length; i++) {
@@ -55,7 +56,8 @@
 			}
 			return str;
 		}
-		function jq_server_setSuperuserPassword(sid) {
+		function jq_server_setSuperuserPassword(sid)
+		{
 			$('#li_server_superuserpassword > .ajax_info').html(imgAjaxLoading);
 			var pw = randomString(6);
 			$.post('./?ajax=server_setSuperuserPassword',
@@ -69,9 +71,11 @@
 					}
 				);
 		}
-		function jq_server_getRegistrations(sid) {
-			if(sid==null)
+		function jq_server_getRegistrations(sid)
+		{
+			if (sid==null) {
 				sid = <?php echo isset($_GET['sid'])?$_GET['sid']:0; ?>;
+			}
 			$.post("./?ajax=server_getRegistrations",
 					{ 'sid': sid },
 					function (data) {
@@ -110,7 +114,8 @@
 					}
 				);
 		}
-		function jq_server_registration_remove(uid) {
+		function jq_server_registration_remove(uid)
+		{
 			$.post(
 						"./?ajax=server_regstration_remove",
 						{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid },
@@ -122,7 +127,8 @@
 						}
 			);
 		}
-		function jq_server_user_genNewPw(serverId, userId) {
+		function jq_server_user_genNewPw(serverId, userId)
+		{
 			var newPw = randomString(6);
 			$.post(
 						"./?ajax=server_regstration_genpw",
@@ -137,7 +143,8 @@
 						}
 			);
 		}
-		function jq_user_updateUsername(uid, newVal) {
+		function jq_user_updateUsername(uid, newVal)
+		{
 			$('#user_name_'+uid).append(imgAjaxLoading);
 			var serverId = <?php echo $_GET['sid']; ?>;
 			$.post("./?ajax=server_user_updateUsername",
@@ -148,28 +155,31 @@
 					}
 				);
 		}
-		function jq_user_updateEmail(uid, newVal) {
+		function jq_user_updateEmail(uid, newVal)
+		{
 			$('#user_name_'+uid).append(imgAjaxLoading);
 			$.post("./?ajax=server_user_updateEmail",
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid, 'newValue': newVal },
 					function (data) {
-						if(data.length>0){ alert('failed: '+data); }
+						if (data.length>0) { alert('failed: '+data); }
 						jq_server_getRegistrations();
 					}
 				);
 		}
-		function jq_user_updateHash(uid, newVal) {
+		function jq_user_updateHash(uid, newVal)
+		{
 			$('#user_name_'+uid).append(imgAjaxLoading);
 			$.post("./?ajax=server_user_updateHash",
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid, 'newValue': newVal },
 					function (data) {
-						if(data.length>0){ alert('failed: '+data); }
+						if (data.length>0) { alert('failed: '+data); }
 						jq_server_getRegistrations();
 					}
 				);
 		}
 
-		function jq_server_getOnlineUsers(sid){
+		function jq_server_getOnlineUsers(sid)
+		{
 			$.post("./?ajax=show_onlineUsers",
 					{ 'sid': sid },
 					function(data){
@@ -177,9 +187,10 @@
 					}
 				);
 		}
-		
 
-		function jq_server_getBans(sid){
+
+		function jq_server_getBans(sid)
+		{
 			$('#jq_information').show().html('Bans are not ported yet to Mumble/Murmur 1.2. Please be patient. ☺<br/>You can use the clients ban editor for now.');
 			return;
 			$.post("./?ajax=show_server_bans",
@@ -189,7 +200,8 @@
 					}
 				);
 		}
-		function jq_server_showACL(sid, cid){
+		function jq_server_showACL(sid, cid)
+		{
 			$.post("./?ajax=show_acl",
 					{ 'sid': sid },
 					function(data){
@@ -197,7 +209,8 @@
 					}
 				);
 		}
-		function jq_server_showTree(sid){
+		function jq_server_showTree(sid)
+		{
 			$.post("./?ajax=show_tree",
 					{ 'sid': sid },
 					function(data){
@@ -205,7 +218,8 @@
 					}
 				);
 		}
-		function jq_server_config_show(sid){
+		function jq_server_config_show(sid)
+		{
 			$.post("./?ajax=server_config_show",
 					{ 'sid': sid },
 					function(data){
@@ -213,32 +227,37 @@
 					}
 				);
 		}
-		
-		function jq_server_user_mute(sessid){
+
+		function jq_server_user_mute(sessid)
+		{
 			$.post("./?ajax=server_user_mute",
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
 				);
 			jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 		}
-		function jq_server_user_unmute(sessid){
+		function jq_server_user_unmute(sessid)
+		{
 			$.post("./?ajax=server_user_unmute",
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
 				);
 			jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 		}
-		function jq_server_user_deaf(sessid){
+		function jq_server_user_deaf(sessid)
+		{
 			$.post("./?ajax=server_user_deaf",
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
 				);
 			jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 		}
-		function jq_server_user_undeaf(sessid){
+		function jq_server_user_undeaf(sessid)
+		{
 			$.post("./?ajax=server_user_undeaf",
 					{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
 				);
 			jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 		}
-		function jq_server_user_kick(sessid){
+		function jq_server_user_kick(sessid)
+		{
 			if (!confirm('Are you sure you want to kick this user from the server?')) {
 				return;
 			} else {
@@ -248,7 +267,7 @@
 							jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 						}
 					);
-				
+
 			}
 		}
 		function jq_server_unban(serverId, mask, bits)
@@ -257,7 +276,7 @@
 					"./?ajax=server_unban",
 					{ 'serverId': serverId, 'ipmask': mask, 'bits': bits },
 					function(data) {
-						if(data.length>0){ alert('failed: '+data); }
+						if (data.length>0) { alert('failed: '+data); }
 						jq_server_getBans(serverId);
 					}
 				);
@@ -278,13 +297,13 @@
 					"./?ajax=server_ban",
 					{ 'serverId': serverId, 'ipmask': mask, 'bits': bits },
 					function(data) {
-						if(data.length>0){ alert('failed: '+data); } else {
+						if (data.length>0) { alert('failed: '+data); } else {
 							jq_server_getBans(serverId);
 						}
 					}
 				);
 		}
-		
+
 		function center(object)
 		{
 			object.style.marginLeft = "-" + parseInt(object.offsetWidth / 2) + "px";

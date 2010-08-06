@@ -1,12 +1,5 @@
 <?php
 /**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author Kissaki
- */
-
-/**
  * Provides logging functionality
  */
 class Logger
@@ -16,7 +9,7 @@ class Logger
 	const LEVEL_ERROR='ERROR';
 	const LEVEL_FATAL='FATAL';
 	const LEVEL_SECURITY='SECURITY';	// failed logins etc.
-	
+
 	public static function log($message, $level)
 	{
 		if ($level==self::LEVEL_DEBUG && !SettingsManager::getInstance()->isDebugMode())
@@ -48,5 +41,3 @@ class Logger
 		DBManager::getInstance()->append('log_register.log', time().';'.$_SERVER['REMOTE_ADDR'].';'.$_SERVER['HTTP_REFERER'].';uname:'.$uname);
 	}
 }
-
-?>

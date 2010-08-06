@@ -1,11 +1,5 @@
 <?php
 /**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author Kissaki
- */
-/**
  * Language file for section: user, page: request
  */
 
@@ -18,5 +12,3 @@
 
 	$txt['request_nosuchaccount'] = 'Es wurde kein Benutzeraccount mit dieser E-Mail Adresse auf diesem Server gefunden.<br/><a onclick="history.go(-1); return false;" href="?page=login">Geh zurück</a> und prüf deine Eingaben.';
 	$txt['request_mail_sent'] = 'Die Daten wurden abgesandt.<br/>Bitte prüfe deine E-Mails in ein paar Minuten.<br/>Je nach deinem E-Mail Provider könnte es etwas dauern bis die E-Mail ankommt oder könnte in deinem Spam-Ordner landen.<br/>MSN/Live könnte die E-Mails sogar komplett blocken. Wenn es also nicht funktioniert, frag einem Admin (des Mumble Servers/dieser Webseite).';
-
-?>

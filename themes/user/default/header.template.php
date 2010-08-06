@@ -8,18 +8,14 @@
 			}
 
 			echoMenuEntry('./', 'home');
-			if(!SessionManager::getInstance()->isUser())
-			{
+			if (!SessionManager::getInstance()->isUser()) {
 				echoMenuEntry('./?page=login', 'login');
 				echoMenuEntry('./?page=register', 'register');
-			}
-			else
-			{
+			} else {
 				echoMenuEntry('./?page=profile', 'profile');
 				echoMenuEntry('./?page=logout', 'logout');
 			}
-			if(SettingsManager::getInstance()->isShowAdminLink())
-			{
+			if (SettingsManager::getInstance()->isShowAdminLink()) {
 				echoMenuEntry('../admin/', 'admin_area');
 			}
 		?>

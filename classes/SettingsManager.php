@@ -1,11 +1,4 @@
 <?php
-/**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author Kissaki
- */
-
 require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
 
 /**
@@ -17,11 +10,13 @@ class SettingsManager {
 	 * @return SettingsManager
 	 */
 	public static function getInstance(){	// $obj=NULL){
-		if(!isset(self::$instance))
-			if(!isset($obj))
+		if (!isset(self::$instance)) {
+			if (!isset($obj)) {
 				self::$instance = new SettingsManager();
-			else
+			} else {
 				self::$instance = $obj;
+			}
+		}
 		return self::$instance;
 	}
 
@@ -65,8 +60,8 @@ class SettingsManager {
 
 		$this->servers = $servers;
 
-		foreach($this->servers AS $server){
-			if($server['authbymail']){
+		foreach ($this->servers AS $server) {
+			if ($server['authbymail']) {
 				$server['forcemail'] = true;
 			}
 		}
@@ -78,12 +73,13 @@ class SettingsManager {
 	 */
 	private static function getSettingsFileContents($filename=null)
 	{
-		if($filename==null)
+		if ($filename==null) {
 			$filename = 'settings.inc.php';
+		}
 
-		if(file_exists(MUMPHPI_MAINDIR.'/'.$filename)){
+		if (file_exists(MUMPHPI_MAINDIR.'/'.$filename)) {
 			$settings = file_get_contents(MUMPHPI_MAINDIR.'/'.$filename);
-		}else{
+		} else {
 			$settings = file_get_contents(MUMPHPI_MAINDIR.'/settings.inc.default.php');
 			// strip php tags
 			$settings = substr($settings, 5, strlen($settings)-7);
@@ -97,8 +93,9 @@ class SettingsManager {
 	}
 	private static function setSettingsFileContents($settings_content, $filename=null)
 	{
-		if($filename==null)
+		if ($filename==null) {
 			$filename = 'settings.inc.php';
+		}
 
 		$settings_content = '<?php'.$settings_content.'?>';
 
@@ -106,12 +103,13 @@ class SettingsManager {
 	}
 	private static function appendToSettingsFile($append, $filename=null)
 	{
-		if($filename==null)
+		if ($filename==null) {
 			$filename = 'settings.inc.php';
+		}
 
 		$settings_content = self::getSettingsFileContents($filename);
 		$settings_content = '<?php'.$settings_content.$append."\n".'?>';
-		if(file_exists(MUMPHPI_MAINDIR.'/'.$filename)){
+		if (file_exists(MUMPHPI_MAINDIR.'/'.$filename)) {
 			file_put_contents(MUMPHPI_MAINDIR.'/'.$filename, $settings_content);
 		}
 	}
@@ -119,43 +117,51 @@ class SettingsManager {
 	/**
 	 * @return string local main dir of the interface WITHOUT trailing slash
 	 */
-	function getMainDir(){
+	function getMainDir()
+	{
 		return $this->mainDir;
 	}
-	function getMainUrl(){
+	function getMainUrl()
+	{
 		return $this->mainUrl;
 	}
 	/**
 	 * @return theme name
 	 */
-	function getTheme(){
+	function getTheme()
+	{
 		return $this->theme;
 	}
 	/**
 	 *
 	 * @return path to theme without trailing slash (theme/ + themename)
 	 */
-	function getThemePath(){
+	function getThemePath()
+	{
 		return 'themes/' . HelperFunctions::getActiveSection() . '/'.$this->theme;
 	}
 	/**
 	 *
 	 * @return theme directoy on server filesystem
 	 */
-	function getThemeDir(){
+	function getThemeDir()
+	{
 		return $this->mainDir.'/'.$this->getThemePath();
 	}
-	function getThemeUrl(){
+	function getThemeUrl()
+	{
 		return $this->mainUrl.'/'.$this->getThemePath();
 	}
 	/**
 	 * Get default language
 	 * @return string default language (eg: en or de)
 	 */
-	function getDefaultLanguage(){
+	function getDefaultLanguage()
+	{
 		return $this->defaultLanguage;
 	}
-	public function getServerIp() {
+	public function getServerIp()
+	{
 		if (strtolower($this->dbInterface_type)==='ice') {
 			$matches;
 			preg_match('/-h ([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/', $this->dbInterface_address, $matches);
@@ -163,60 +169,72 @@ class SettingsManager {
 		}
 		return null;
 	}
-	function getDbInterfaceType(){
+	function getDbInterfaceType()
+	{
 		return $this->dbInterface_type;
 	}
-	function getDbInterface_address(){
+	function getDbInterface_address()
+	{
 		return $this->dbInterface_address;
 	}
-	function getDbInterface_iceSecrets(){
+	function getDbInterface_iceSecrets()
+	{
 		return $this->dbInterface_icesecrets;
 	}
-	function isUseCaptcha(){
+	function isUseCaptcha()
+	{
 		return $this->useCaptcha;
 	}
-	function isShowAdminLink(){
+	function isShowAdminLink()
+	{
 		return $this->showAdminLink;
 	}
-	function isChannelViewerWebserviceAllowed() {
+	function isChannelViewerWebserviceAllowed()
+	{
 		return $this->allowChannelViewerWebservice;
 	}
-	function getDbType(){
+	function getDbType()
+	{
 		return $this->dbType;
 	}
-	function getSiteTitle(){
+	function getSiteTitle()
+	{
 		return $this->site['title'];
 	}
-	function getSiteDescription(){
+	function getSiteDescription()
+	{
 		return $this->site['description'];
 	}
-	function getSiteKeywords(){
+	function getSiteKeywords()
+	{
 		$this->site['keywords'];
 	}
-	function getNumberOfServers(){
+	function getNumberOfServers()
+	{
 		return $this->numberOfServers;
 	}
-	function getServers(){
+	function getServers()
+	{
 		return $this->servers;
 	}
-	function getServerName($serverid){
-		if(!isset($this->servers[$serverid])){
+	function getServerName($serverid)
+	{
+		if (!isset($this->servers[$serverid])) {
 			return null;
 		}
 		return $this->servers[$serverid]['name'];
 	}
 
-	function isForceEmail($serverid){
-		if(isset($this->servers[$serverid]))
-			return $this->servers[$serverid]['forcemail'];
-		return null;	// no such server (TODO: implement exception?)
+	function isForceEmail($serverid)
+	{
+		return (isset($this->servers[$serverid])?$this->servers[$serverid]['forcemail']:null);
 	}
-	function isAuthByMail($serverid){
-		if(isset($this->servers[$serverid]))
-			return $this->servers[$serverid]['authbymail'];
-		return null;	// no such server (TODO: implement exception?)
+	function isAuthByMail($serverid)
+	{
+		return (isset($this->servers[$serverid])?$this->servers[$serverid]['authbymail']:null);
 	}
-	function isDebugMode(){
+	function isDebugMode()
+	{
 		return $this->isDebugMode;
 	}
 
@@ -228,8 +246,7 @@ class SettingsManager {
 	 */
 	function getServerInformation($serverid)
 	{
-		if(isset($this->servers[$serverid]))
-		{
+		if (isset($this->servers[$serverid])) {
 			return $this->servers[$serverid];
 		}
 		return null;
@@ -318,4 +335,3 @@ class SettingsManager {
 		Logger::error('Server with id ' . $serverId . ' was not found in the settings file.');
 	}
 }
-?>

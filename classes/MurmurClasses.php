@@ -1,12 +1,4 @@
 <?php
-/**
- * Mumble PHP Interface by Kissaki
- * Released under Creative Commons Attribution-Noncommercial License
- * http://creativecommons.org/licenses/by-nc/3.0/
- * @author Kissaki
- */
-
-
 class MurmurServer
 {
 	/**
@@ -15,8 +7,9 @@ class MurmurServer
 	 */
 	public static function fromIceObject($iceObject)
 	{
-		if($iceObject==null)
+		if ($iceObject==null) {
 			throw new Exception('Required iceObject parameter was null');
+		}
 		return new self($iceObject);
 	}
 
@@ -314,15 +307,15 @@ class MurmurRegistration
 	public function toArray()
 	{
 		$array = array();
-		if(null!==$this->name)
+		if (null!==$this->name)
 			$array[self::USERNAME] = $this->name;
-		if(null!==$this->email)
+		if (null!==$this->email)
 			$array[self::USEREMAIL] = $this->email;
-		if(null!==$this->comment)
+		if (null!==$this->comment)
 			$array[self::USERCOMMENT] = $this->comment;
-		if(null!==$this->hash)
+		if (null!==$this->hash)
 			$array[self::USERHASH] = $this->hash;
-		if(null!==$this->password)
+		if (null!==$this->password)
 			$array[self::USERPASSWORD] = $this->password;
 		return $array;
 
@@ -722,7 +715,7 @@ class MurmurNetAddress
 	{
 		// IPv4 range
 		$expected = $this->IPv4Range;
-		for($byte=0; $byte<count($expected); $byte++) {
+		for ($byte=0; $byte<count($expected); $byte++) {
 			if ($expected[$byte] !== $this->address[$byte]) {
 				return false;
 			}
