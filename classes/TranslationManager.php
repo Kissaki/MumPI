@@ -58,7 +58,8 @@ class TranslationManager_Instance
 	public function __construct()
 	{
 		$this->defaultLanguage = SettingsManager::getInstance()->getDefaultLanguage();
-		if (isset($_GET['lang']) && !empty($_GET['lang'])) {
+		// get lang setting from URL param, session or use default
+		if (!empty($_GET['lang'])) {
 			$this->language = $_GET['lang'];
 		} elseif (($ses_lang = SessionManager::getInstance()->getLanguage())!=null) {
 			$this->language = $ses_lang;
@@ -66,7 +67,6 @@ class TranslationManager_Instance
 			$this->language = $this->defaultLanguage;
 		}
 
-		// TODO add check, if translation files are recent version
 		$txt = array();
 		// Parse Main lang file
 		eval(self::parseLanguageFile($this->language));
@@ -138,11 +138,12 @@ class TranslationManager_Instance
 		// Parse file
 		if (file_exists($filename)) {
 			$langfile = file_get_contents($filename);
-			$langfile = substr($langfile, 5, strlen($langfile)-7);	// strip php tags
 		} elseif (file_exists($fallback)) {
 			$langfile = file_get_contents($fallback);
-			$langfile = substr($langfile, 5, strlen($langfile)-7);	// strip php tags
 		}
+		// strip php tags
+		$langfile = str_replace('<?php', '', $langfile);
+		$langfile = str_replace('?>', '', $langfile);
 		return $langfile;
 	}
 }
