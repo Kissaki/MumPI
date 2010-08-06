@@ -91,26 +91,18 @@ class SettingsManager {
 		// strip php tags
 		$settings = substr($settings, 5, strlen($settings)-7);
 		return $settings;
-
 	}
-	private static function setSettingsFileContents($settings_content, $filename=null)
+	private static function setSettingsFileContents($settings_content, $filename='settings.inc.php')
 	{
-		if ($filename==null) {
-			$filename = 'settings.inc.php';
-		}
-
-		$settings_content = '<?php'.$settings_content.'?>';
-
+		// add php tag to settings content
+		$settings_content = '<?php' . $settings_content;
+		// save file
 		file_put_contents(MUMPHPI_MAINDIR.'/'.$filename, $settings_content);
 	}
-	private static function appendToSettingsFile($append, $filename=null)
+	private static function appendToSettingsFile($append, $filename='settings.inc.php')
 	{
-		if ($filename==null) {
-			$filename = 'settings.inc.php';
-		}
-
 		$settings_content = self::getSettingsFileContents($filename);
-		$settings_content = '<?php'.$settings_content.$append."\n".'?>';
+		$settings_content = '<?php' . $settings_content . $append . "\n";
 		if (file_exists(MUMPHPI_MAINDIR.'/'.$filename)) {
 			file_put_contents(MUMPHPI_MAINDIR.'/'.$filename, $settings_content);
 		}
