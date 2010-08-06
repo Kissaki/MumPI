@@ -77,12 +77,14 @@ class SettingsManager {
 			$filename = 'settings.inc.php';
 		}
 
+		// use existant settings file or use default one and save it as a normal settings file
 		if (file_exists(MUMPHPI_MAINDIR.'/'.$filename)) {
 			$settings = file_get_contents(MUMPHPI_MAINDIR.'/'.$filename);
 		} else {
 			$settings = file_get_contents(MUMPHPI_MAINDIR.'/settings.inc.default.php');
 			// strip php tags
-			$settings = substr($settings, 5, strlen($settings)-7);
+			$settings = str_replace('<?php', '', $settings);
+			$settings = str_replace('?>', '', $settings);
 			self::setSettingsFileContents($settings);
 			$settings = file_get_contents(MUMPHPI_MAINDIR.'/'.$filename);
 		}
