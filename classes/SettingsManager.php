@@ -71,12 +71,8 @@ class SettingsManager {
 	 * Get the content of a settings file (opening and closing php tags are stripped)
 	 * @return string whole settings file content, without opening and closing php tags are stripped
 	 */
-	private static function getSettingsFileContents($filename=null)
+	private static function getSettingsFileContents($filename='settings.inc.php')
 	{
-		if ($filename==null) {
-			$filename = 'settings.inc.php';
-		}
-
 		// use existant settings file or use default one and save it as a normal settings file
 		if (file_exists(MUMPHPI_MAINDIR.'/'.$filename)) {
 			$settings = file_get_contents(MUMPHPI_MAINDIR.'/'.$filename);
@@ -156,7 +152,7 @@ class SettingsManager {
 	}
 	public function getServerIp()
 	{
-		if (strtolower($this->dbInterface_type)==='ice') {
+		if (strtolower($this->dbInterface_type) === 'ice') {
 			$matches;
 			preg_match('/-h ([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/', $this->dbInterface_address, $matches);
 			return isset($matches[1])?$matches[1]:null;
@@ -248,8 +244,7 @@ class SettingsManager {
 	function setServerInformation($serverid, $name, $allowlogin=true, $allowregistration=true, $forcemail=true, $authbymail=false)
 	{
 		if (isset($this->servers[$serverid])) {
-			// server already has settings
-
+			// server already has settings; thus update them
 			// get and open settings file
 			$filename = 'settings.inc.php';
 			$filepath = MUMPHPI_MAINDIR.'/'.$filename;

@@ -235,39 +235,101 @@ function checkMemoryLimit()
 			</tr>
 			<tr><?php // USERNAME ?>
 				<td class="formitemname"><?php echo tr('username'); ?>:</td>
-				<td><?php
-					if (isset($_GET['action']) && $_GET['action']=='edit_uname') {
-						?><input type="text" name="name" value="<?php echo ServerInterface::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
-					} else {
-						echo ServerInterface::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']);
-					} ?></td>
+				<td>
+					<?php
+						if (isset($_GET['action']) && $_GET['action']=='edit_uname') {
+							?>
+								<input type="text" name="name" value="<?php echo ServerInterface::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']); ?>" />
+							<?php
+						} else {
+							echo ServerInterface::getInstance()->getUsername($_SESSION['serverid'], $_SESSION['userid']);
+						}
+					?>
+				</td>
 				<td class="alignl">
-					<a href="?page=profile&amp;action=edit_uname" id="profile_uname_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_uname'){ echo 'class="hidden"'; } ?>><?php echo tr('edit'); ?></a>
-					<?php if(isset($_GET['action']) && $_GET['action']=='edit_uname'){ echo '<input type="submit" value="update"/>'; } ?><a href="?page=profile&amp;action=doedit_uname" id="profile_uname_update" class="hidden"><?php echo tr('update'); ?></a>
-					<a href="?page=profile" id="profile_uname_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_uname'){ ?> class="hidden"<?php } ?>><?php echo tr('cancel'); ?></a>
+					<a href="?page=profile&amp;action=edit_uname" id="profile_uname_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_uname'){ echo 'class="hidden"'; } ?>>
+						<?php echo tr('edit'); ?>
+					</a>
+					<?php
+						if (isset($_GET['action']) && $_GET['action']=='edit_uname') {
+							echo '<input type="submit" value="update"/>';
+						}
+					?>
+					<a href="?page=profile&amp;action=doedit_uname" id="profile_uname_update" class="hidden">
+						<?php echo tr('update'); ?>
+					</a>
+					<a href="?page=profile" id="profile_uname_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_uname'){ ?> class="hidden"<?php } ?>>
+						<?php echo tr('cancel'); ?>
+					</a>
 				</td>
 			</tr>
 			<tr><?php // PASSWORD ?>
 				<td class="formitemname"><?php echo tr('password'); ?>:</td>
-				<td><?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?><input type="text" name="password" id="password" value="" /><?php } else { echo '<span class="info" title="password is not displayed">*****</span>'; } ?></td>
+				<td>
+					<?php
+						if (isset($_GET['action']) && $_GET['action']=='edit_pw') {
+							?>
+								<input type="text" name="password" id="password" value="" />
+							<?php
+						} else {
+							?>
+								<span class="info" title="password is not displayed">*****</span>
+							<?php
+						}
+					?>
+				</td>
 				<td class="alignl">
-					<a href="?page=profile&amp;action=edit_pw" id="profile_pw_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?> class="hidden"<?php } ?>><?php echo tr('edit'); ?></a>
-					<?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_pw_update" class="hidden"><?php echo tr('update'); ?></a>
-					<a href="?page=profile" id="profile_pw_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_pw'){ ?> class="hidden"<?php } ?>><?php echo tr('cancel'); ?></a></td>
+					<a href="?page=profile&amp;action=edit_pw" id="profile_pw_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_pw'){ ?> class="hidden"<?php } ?>>
+						<?php echo tr('edit'); ?>
+					</a>
+					<?php
+						if (isset($_GET['action']) && $_GET['action']=='edit_pw') {
+							?>
+								<input type="submit" value="update"/>
+							<?php
+						}
+					?>
+					<a id="profile_pw_update" class="hidden">
+						<?php echo tr('update'); ?>
+					</a>
+					<a href="?page=profile" id="profile_pw_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_pw'){ ?> class="hidden"<?php } ?>>
+						<?php echo tr('cancel'); ?>
+					</a>
+				</td>
 			</tr>
 			<tr><?php // E-MAIL ?>
-				<td class="formitemname"><?php echo tr('email'); ?>:</td>
-				<td><?php
-					if (isset($_GET['action']) && $_GET['action']=='edit_email') {
-						?><input type="text" name="email" id="email" value="<?php echo ServerInterface::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']); ?>" /><?php
-					} else {
-						echo ServerInterface::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']);
-					}
-				?></td>
+				<td class="formitemname">
+					<?php echo tr('email'); ?>:
+				</td>
+				<td>
+					<?php
+						if (isset($_GET['action']) && $_GET['action']=='edit_email') {
+							?>
+								<input type="text" name="email" id="email" value="<?php echo ServerInterface::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']); ?>" />
+							<?php
+						} else {
+							echo ServerInterface::getInstance()->getUserEmail($_SESSION['serverid'], $_SESSION['userid']);
+						}
+					?>
+				</td>
 				<td class="alignl">
-					<a href="?page=profile&amp;action=edit_email" id="profile_email_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_email'){ ?> class="hidden"<?php } ?>><?php echo tr('edit'); ?></a>
-					<?php if(isset($_GET['action']) && $_GET['action']=='edit_email'){ echo '<input type="submit" value="update"/>'; } ?><a id="profile_email_update" class="hidden"><?php echo tr('update'); ?></a>
-					<a href="?page=profile" id="profile_email_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_email'){ ?> class="hidden"<?php } ?>><?php echo tr('cancel'); ?></a></td>
+					<a href="?page=profile&amp;action=edit_email" id="profile_email_edit"<?php if(isset($_GET['action']) && $_GET['action']=='edit_email'){ ?> class="hidden"<?php } ?>>
+						<?php echo tr('edit'); ?>
+					</a>
+					<?php
+						if (isset($_GET['action']) && $_GET['action']=='edit_email') {
+							?>
+								<input type="submit" value="update"/>
+							<?php
+						}
+					?>
+					<a id="profile_email_update" class="hidden">
+						<?php echo tr('update'); ?>
+					</a>
+					<a href="?page=profile" id="profile_email_cancel"<?php if(!isset($_GET['action']) || $_GET['action']!='edit_email'){ ?> class="hidden"<?php } ?>>
+						<?php echo tr('cancel'); ?>
+					</a>
+				</td>
 			</tr>
 			<tr>
 				<?php

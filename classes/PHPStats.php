@@ -1,5 +1,6 @@
 <?php
-class PHPStats{
+class PHPStats
+{
 	private static $scriptExecutionTimeStart;
 
 	public  static function scriptExecTimeStart()
@@ -10,6 +11,6 @@ class PHPStats{
 	}
 	public  static function scriptExecTimeGet()
 	{
-		return (microtime(true)-self::$scriptExecutionTimeStart);
+		return (microtime(true) - self::$scriptExecutionTimeStart);
 	}
 }
