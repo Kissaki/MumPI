@@ -488,26 +488,41 @@ class Ajax_Admin extends Ajax
 					jQuery('.mpi_userComment_form textarea')
 						.resizable()
 						.css('padding', '0');
-					jQuery('.mpi_userComment_form')
-						.dialog(
+
+					function displayUserCommentChangeDialog(userId) {
+					  jQuery('#mpi_userComment_form_' + userId).dialog(
 								{
-									//autoOpen: false,
-									title: 'user comment',
+									title: 'Update User Comment',
 									width: 'auto',
 									height: 'auto',
+									modal: true,
 									buttons: {
 										'Cancel': function () {
 												jQuery(this).dialog('close');
 											},
 								  	'Update': function () {
 										  	var newComment = jQuery(this).find('textarea').val();
-										  	jq_user_updateComment(<?php echo $serverId; ?>, <?php echo $userId; ?>, newComment);
+										  	jq_user_updateComment(<?php echo $serverId; ?>, userId, newComment);
 									  		jQuery(this).dialog('close');
 								  		}
 										}
 								}
-							)
-						.parent('.userComment').click(function () {jQuery(this).find('.mpi_userComment_form').dialog('open');});
+							);
+					}
+					jQuery('.userComment').each(
+							function (index, el)
+							{
+								jQuery(el).dblclick(
+										function()
+										{
+										  console.log(jQuery(this));
+										  userId = jQuery(this).attr('id').substr(11);
+										  console.log(userId);
+											displayUserCommentChangeDialog(userId);
+										}
+									);
+							}
+						);
 					/*jQuery('.userComment').editable(
 							{	'submit': 'save',
 								'cancel':'cancel',
