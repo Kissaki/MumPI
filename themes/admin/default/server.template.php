@@ -187,6 +187,16 @@
 						}
 					);
 			}
+			function jq_user_updateAvatar(serverId, userId, newVal)
+			{
+				$.post("./?ajax=server_user_updateAvatar",
+						{ 'sid': serverId, 'uid': userId, 'newValue': newVal },
+						function (data) {
+							if (data.length>0) { alert('failed: '+data); }
+							jq_server_getRegistrations();
+						}
+					);
+			}
 
 			function jq_server_getOnlineUsers(sid)
 			{

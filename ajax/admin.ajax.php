@@ -416,7 +416,7 @@ class Ajax_Admin extends Ajax
 										<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getUserId(); ?>);" style="float:left; margin-right:4px;">
 											○
 										</a>
-										<div class="teaser"><?php echo(substr($commentClean, 0, 10) . (strlen($commentClean)>0?'…':'')); ?></div>
+										<div class="teaser"><?php echo substr($commentClean, 0, 10) . ((strlen($commentClean)>10)?'…':''); ?></div>
 										<div class="complete" style="display:none;"><?php echo $commentClean; ?></div>
 										<script type="text/javascript">/*<![CDATA[*/
 											// toggle display of user comment teaser <-> full
@@ -435,19 +435,37 @@ class Ajax_Admin extends Ajax
 						<td>
 							<?php
 								$userAvatarByteSequence = $server->getTexture($user->getUserId());
-								$texBytes = '';
-								foreach ($userAvatarByteSequence as $val) {
-									$texBytes .= chr($val);
+								$hasAvatar = count($userAvatarByteSequence) > 0;
+								if ($hasAvatar) {
+									$texBytes = '';
+									foreach ($userAvatarByteSequence as $val) {
+										$texBytes .= chr($val);
+									}
+									$texB64 = base64_encode($texBytes);
 								}
-								$texB64 = base64_encode($texBytes);
 							?>
 							<div class="userAva">
-								<div class="userAvaToggle" style="font-style:italic;">
-									show
-								</div>
-								<div class="userAvaImage" style="display:none;">
-									<img src="data:image/*;base64,<?php echo $texB64; ?>" alt="" />
-								</div>
+								<?php
+									if ($hasAvatar) {
+										?>
+											<div class="userAvaLinks">
+												<a class="userAvaToggle jqlink" style="font-style:italic;">
+													show
+												</a><br/>
+												<a class="jqlink" onclick="if(confirm('Are you sure you want to remove this users avatar?')){jq_user_updateAvatar(<?php echo $serverId; ?>, <?php echo $userId; ?>, null);}">
+													remove
+												</a>
+											</div>
+											<div class="userAvaImage" style="display:none;">
+															<img src="data:image/*;base64,<?php echo $texB64; ?>" alt="" />
+											</div>
+										<?php
+									} else {
+										?>
+											none
+										<?php
+									}
+								?>
 							</div>
 						</td>
 						<td>
@@ -470,12 +488,15 @@ class Ajax_Admin extends Ajax
 				/*<![CDATA[*/
 					jQuery('.userAvaToggle').toggle(
 							function (eventObj) {
-							  jQuery(this).parent().find('.userAvaImage').css('display', 'block');
+							  jQuery(this).parent().parent().find('.userAvaImage').css('display', 'block');
+							  jQuery(this).html('hide');
 							},
 							function (eventObj) {
-							  jQuery(this).parent().find('.userAvaImage').css('display', 'none');
+							  jQuery(this).parent().parent().find('.userAvaImage').css('display', 'none');
+							  jQuery(this).html('show');
 							}
 						);
+
 					jQuery('.mpi_userComment_form textarea')
 						.resizable()
 						.css('padding', '0');
@@ -1039,6 +1060,16 @@ class Ajax_Admin extends Ajax
 		$_POST['uid'] = intval($_POST['uid']);
 		if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid'])) {
 			ServerInterface::getInstance()->updateUserHash($_POST['sid'], $_POST['uid'], $_POST['newValue']);
+		}
+	}
+
+	public static function server_user_updateAvatar()
+	{
+		$serverId = intval($_POST['sid']);
+		$userId = intval($_POST['uid']);
+		$newValue = $_POST['newValue']=='null'?array():$_POST['newValue'];
+		if (PermissionManager::getInstance()->serverCanEditRegistrations($serverId)) {
+			ServerInterface::getInstance()->updateUserTexture($serverId, $userId, $newValue);
 		}
 	}
 
