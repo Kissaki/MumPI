@@ -416,12 +416,8 @@ class Ajax_Admin extends Ajax
 										<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getUserId(); ?>);" style="float:left; margin-right:4px;">
 											○
 										</a>
-										<div class="teaser">
-											<?php echo(substr($commentClean, 0, 10) . (strlen($commentClean)>0?'…':'')); ?>
-										</div>
-										<div class="complete" style="display:none;">
-											<?php echo $commentClean; ?>
-										</div>
+										<div class="teaser"><?php echo(substr($commentClean, 0, 10) . (strlen($commentClean)>0?'…':'')); ?></div>
+										<div class="complete" style="display:none;"><?php echo $commentClean; ?></div>
 										<script type="text/javascript">/*<![CDATA[*/
 											// toggle display of user comment teaser <-> full
 											function toggleUserComment(userId)
@@ -434,9 +430,6 @@ class Ajax_Admin extends Ajax
 									<?php
 								}
 							?>
-							<div id="mpi_userComment_form_<?php echo $userId; ?>" class="mpi_userComment_form" style="display:block;">
-								<textarea rows="8" cols="80"><?php echo $commentClean; ?></textarea>
-							</div>
 						</td>
 						<td id="user_hash_<?php echo $userId; ?>" class="userHash jq_editable"><?php echo $user->getHash(); ?></td>
 						<td>
@@ -461,8 +454,8 @@ class Ajax_Admin extends Ajax
 <?php
 							if (PermissionManager::getInstance()->serverCanEditRegistrations($serverId)) {
 								echo '<ul>';
-								echo '<li><a class="jqlink" onclick="if(confirm(\'Do you really want to remove the user ' . str_replace('"', '', $userName) . '?\')){jq_server_registration_remove('.$userId.');}">remove</a></li>';
-								echo '<li><a title="generate a new password for the user" class="jqlink" onclick="if(confirm(\'Are you sure you want to generate and set a new password for this account?\')){jq_server_user_genNewPw('.$user->getServerId().', '.$user->getUserId().'); return false;}">genNewPw</a></li>';
+								echo '	<li><a class="jqlink" onclick="if(confirm(\'Do you really want to remove the user ' . str_replace('"', '', $userName) . '?\')){jq_server_registration_remove('.$userId.');}">remove</a></li>';
+								echo '	<li><a title="generate a new password for the user" class="jqlink" onclick="if(confirm(\'Are you sure you want to generate and set a new password for this account?\')){jq_server_user_genNewPw('.$user->getServerId().', '.$user->getUserId().'); return false;}">genNewPw</a></li>';
 								echo '</ul>';
 							}
 ?>
@@ -477,8 +470,6 @@ class Ajax_Admin extends Ajax
 				/*<![CDATA[*/
 					jQuery('.userAvaToggle').toggle(
 							function (eventObj) {
-								console.log(this);
-								console.log(eventObj);
 							  jQuery(this).parent().find('.userAvaImage').css('display', 'block');
 							},
 							function (eventObj) {
@@ -490,24 +481,28 @@ class Ajax_Admin extends Ajax
 						.css('padding', '0');
 
 					function displayUserCommentChangeDialog(userId) {
-					  jQuery('#mpi_userComment_form_' + userId).dialog(
-								{
-									title: 'Update User Comment',
-									width: 'auto',
-									height: 'auto',
-									modal: true,
-									buttons: {
-										'Cancel': function () {
-												jQuery(this).dialog('close');
-											},
-								  	'Update': function () {
-										  	var newComment = jQuery(this).find('textarea').val();
-										  	jq_user_updateComment(<?php echo $serverId; ?>, userId, newComment);
-									  		jQuery(this).dialog('close');
-								  		}
-										}
-								}
-							);
+						jQuery('#userComment' + userId)
+							.append('<div id="userComment' + userId + 'ChangeForm"><textarea rows="8" cols="80">' + jQuery('#userComment' + userId + ' .complete').html() + '</textarea></div>');
+
+						jQuery('#userComment' + userId + 'ChangeForm')
+							.dialog(
+									{
+										title: 'Update User Comment',
+										width: 'auto',
+										height: 'auto',
+										modal: true,
+										buttons: {
+											'Cancel': function () {
+													jQuery(this).dialog('close');
+												},
+									  	'Update': function () {
+											  	var newComment = jQuery(this).find('textarea').val();
+											  	jq_user_updateComment(<?php echo $serverId; ?>, userId, newComment);
+										  		jQuery(this).dialog('close');
+									  		}
+											}
+									}
+								);
 					}
 					jQuery('.userComment').each(
 							function (index, el)
@@ -515,27 +510,12 @@ class Ajax_Admin extends Ajax
 								jQuery(el).dblclick(
 										function()
 										{
-										  console.log(jQuery(this));
 										  userId = jQuery(this).attr('id').substr(11);
-										  console.log(userId);
 											displayUserCommentChangeDialog(userId);
 										}
 									);
 							}
 						);
-					/*jQuery('.userComment').editable(
-							{	'submit': 'save',
-								'cancel':'cancel',
-								'editBy': 'dblclick',
-								'onSubmit':
-									function (content) {
-										var domId = jQuery(this).attr('id');
-										if (domId.substr(0, 11) == 'userComment') {
-											var id = domId.substring(12);
-										}
-									}
-							}
-						);*/
 				/*]]>*/
 			</script>
 <?php
