@@ -372,16 +372,16 @@ class Ajax_Admin extends Ajax
 
 	public static function server_getRegistrations()
 	{
-		$_POST['sid'] = intval($_POST['sid']);
-		if (!PermissionManager::getInstance()->serverCanViewRegistrations($_POST['sid'])) {
+		$serverId = intval($_POST['sid']);
+		if (!PermissionManager::getInstance()->serverCanViewRegistrations($serverId)) {
 			echo tr('permission_denied');
 			MessageManager::echoAllMessages();
 			exit();
 		}
 
-		$users = array();
 		try {
-			$users = ServerInterface::getInstance()->getServerRegistrations($_POST['sid']);
+			$server = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($serverId));
+			$users = $server->getRegisteredUsers();
 ?>
 			<h2>Registrations</h2>
 			<table>
@@ -392,40 +392,74 @@ class Ajax_Admin extends Ajax
 						<th>email</th>
 						<th>comment</th>
 						<th>cert hash</th>
+						<th>avatar</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>
 <?php
 					foreach ($users AS $userId=>$userName) {
-						//FIXME Ice version check, enum-index available? otherwise, one has to edit his slice file
-						$user=ServerInterface::getInstance()->getServerRegistration($_POST['sid'], $userId);
+						//FIXME Ice version check, enum-index available? otherwise, one has to edit his slice file – actually, this fixme should be a general check, in install or general warning-disableable
+						$user = ServerInterface::getInstance()->getServerRegistration($serverId, $userId);
 ?>
 					<tr>
-						<td><?php echo $userId; ?></td>
+						<td>
+							<?php echo $userId; ?>
+						</td>
 						<td id="user_name_<?php echo $userId; ?>" class="jq_editable"><?php echo $userName; ?></td>
 						<td id="user_email_<?php echo $userId; ?>" class="jq_editable"><?php echo $user->getEmail(); ?></td>
 						<td id="userComment<?php echo $user->getUserId(); ?>" class="comment userComment">
-							<?php $commentClean = htmlspecialchars($user->getComment()); ?>
-							<?php if (!empty($commentClean)) { ?>
-								<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getUserId(); ?>);" style="float:left; margin-right:4px;">○</a>
-								<div class="teaser"><?php echo(substr($commentClean, 0, 10) . (strlen($commentClean)>0?'…':'')); ?></div>
-								<div class="complete" style="display:none;"><?php echo $commentClean; ?></div>
-								<script type="text/javascript">/*<![CDATA[*/
-									// toggle display of user comment teaser <-> full
-									function toggleUserComment(userId)
-									{
-										jQuery('#userComment' + userId + ' .teaser').css('display', (jQuery('#userComment' + userId + ' .teaser').css('display')=='block'?'none':'block'));
-										jQuery('#userComment' + userId + ' .complete').css('display', (jQuery('#userComment' + userId + ' .complete').css('display')=='block'?'none':'block'));
-									}
-									/*]]>*/
-								</script>
-							<?php } ?>
+							<?php
+								$commentClean = htmlspecialchars($user->getComment());
+								if (!empty($commentClean)) {
+									?>
+										<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getUserId(); ?>);" style="float:left; margin-right:4px;">
+											○
+										</a>
+										<div class="teaser">
+											<?php echo(substr($commentClean, 0, 10) . (strlen($commentClean)>0?'…':'')); ?>
+										</div>
+										<div class="complete" style="display:none;">
+											<?php echo $commentClean; ?>
+										</div>
+										<script type="text/javascript">/*<![CDATA[*/
+											// toggle display of user comment teaser <-> full
+											function toggleUserComment(userId)
+											{
+												jQuery('#userComment' + userId + ' .teaser').css('display', (jQuery('#userComment' + userId + ' .teaser').css('display')=='block'?'none':'block'));
+												jQuery('#userComment' + userId + ' .complete').css('display', (jQuery('#userComment' + userId + ' .complete').css('display')=='block'?'none':'block'));
+											}
+											/*]]>*/
+										</script>
+									<?php
+								}
+							?>
+							<div id="mpi_userComment_form_<?php echo $userId; ?>" class="mpi_userComment_form" style="display:block;">
+								<textarea rows="8" cols="80"><?php echo $commentClean; ?></textarea>
+							</div>
 						</td>
 						<td id="user_hash_<?php echo $userId; ?>" class="userHash jq_editable"><?php echo $user->getHash(); ?></td>
 						<td>
+							<?php
+								$userAvatarByteSequence = $server->getTexture($user->getUserId());
+								$texBytes = '';
+								foreach ($userAvatarByteSequence as $val) {
+									$texBytes .= chr($val);
+								}
+								$texB64 = base64_encode($texBytes);
+							?>
+							<div class="userAva">
+								<div class="userAvaToggle" style="font-style:italic;">
+									show
+								</div>
+								<div class="userAvaImage" style="display:none;">
+									<img src="data:image/*;base64,<?php echo $texB64; ?>" alt="" />
+								</div>
+							</div>
+						</td>
+						<td>
 <?php
-							if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid'])) {
+							if (PermissionManager::getInstance()->serverCanEditRegistrations($serverId)) {
 								echo '<ul>';
 								echo '<li><a class="jqlink" onclick="if(confirm(\'Do you really want to remove the user ' . str_replace('"', '', $userName) . '?\')){jq_server_registration_remove('.$userId.');}">remove</a></li>';
 								echo '<li><a title="generate a new password for the user" class="jqlink" onclick="if(confirm(\'Are you sure you want to generate and set a new password for this account?\')){jq_server_user_genNewPw('.$user->getServerId().', '.$user->getUserId().'); return false;}">genNewPw</a></li>';
@@ -434,9 +468,61 @@ class Ajax_Admin extends Ajax
 ?>
 						</td>
 					</tr>
-<?php				}	?>
+<?php
+				} // /foreach users
+?>
 				</tbody>
 			</table>
+			<script type="text/javascript">
+				/*<![CDATA[*/
+					jQuery('.userAvaToggle').toggle(
+							function (eventObj) {
+								console.log(this);
+								console.log(eventObj);
+							  jQuery(this).parent().find('.userAvaImage').css('display', 'block');
+							},
+							function (eventObj) {
+							  jQuery(this).parent().find('.userAvaImage').css('display', 'none');
+							}
+						);
+					jQuery('.mpi_userComment_form textarea')
+						.resizable()
+						.css('padding', '0');
+					jQuery('.mpi_userComment_form')
+						.dialog(
+								{
+									//autoOpen: false,
+									title: 'user comment',
+									width: 'auto',
+									height: 'auto',
+									buttons: {
+										'Cancel': function () {
+												jQuery(this).dialog('close');
+											},
+								  	'Update': function () {
+										  	var newComment = jQuery(this).find('textarea').val();
+										  	jq_user_updateComment(<?php echo $serverId; ?>, <?php echo $userId; ?>, newComment);
+									  		jQuery(this).dialog('close');
+								  		}
+										}
+								}
+							)
+						.parent('.userComment').click(function () {jQuery(this).find('.mpi_userComment_form').dialog('open');});
+					/*jQuery('.userComment').editable(
+							{	'submit': 'save',
+								'cancel':'cancel',
+								'editBy': 'dblclick',
+								'onSubmit':
+									function (content) {
+										var domId = jQuery(this).attr('id');
+										if (domId.substr(0, 11) == 'userComment') {
+											var id = domId.substring(12);
+										}
+									}
+							}
+						);*/
+				/*]]>*/
+			</script>
 <?php
 		} catch(Murmur_ServerBootedException $exc) {
 			echo '<div class="error">Server is not running</div>';
@@ -939,6 +1025,16 @@ class Ajax_Admin extends Ajax
 		$_POST['uid'] = intval($_POST['uid']);
 		if (PermissionManager::getInstance()->serverCanEditRegistrations($_POST['sid'])) {
 			ServerInterface::getInstance()->updateUserEmail($_POST['sid'], $_POST['uid'], $_POST['newValue']);
+		}
+	}
+
+	public static function server_user_updateComment()
+	{
+		$serverId = intval($_POST['sid']);
+		$userId = intval($_POST['uid']);
+		$newValue = $_POST['newValue'];
+		if (PermissionManager::getInstance()->serverCanEditRegistrations($serverId)) {
+			ServerInterface::getInstance()->updateUserComment($serverId, $userId, $newValue);
 		}
 	}
 

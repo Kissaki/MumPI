@@ -45,9 +45,9 @@
 		{
 			var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz§$%&/()=?!{[]}";
 			var str = '';
-			for (var i = 0; i < length; i++) {
+			for (i = 0; i < length; i++) {
 				var r = Math.floor(Math.random() * chars.length);
-				str += chars.substring(r, 1);
+				str += chars.substring(r, r+1);
 			}
 			return str;
 		}

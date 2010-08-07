@@ -17,6 +17,6 @@
 ?>
 		<li style="height:10px; font-size:10px; line-height:10px; margin-top:10px; border-bottom:black;">Back to…</li>
 <?php } ?>
-		<li><a href="../user/"><-- User</a></li>
+		<li><a href="../user/">&lt;-- User</a></li>
 	</ul>
 </div>

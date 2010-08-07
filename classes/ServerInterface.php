@@ -390,18 +390,25 @@ class ServerInterface_ice
 		$reg->setEmail($newEmail);
 		$srv->updateregistration($userId, $reg->toArray());
 	}
-	function updateUserHash($srvid, $userId, $newHash)
+	function updateUserHash($srvId, $userId, $newHash)
 	{
-		$srv = $this->getServer($srvid);
-		$reg = $this->getServerRegistration($srvid, $userId);
+		$srv = $this->getServer($srvId);
+		$reg = $this->getServerRegistration($srvId, $userId);
 		$reg->setHash($newHash);
 		$srv->updateRegistration($userId, $reg->toArray());
 	}
-	function updateUserPw($srvid, $userId, $newPw)
+	function updateUserPw($srvId, $userId, $newPw)
 	{
-		$srv = $this->getServer($srvid);
-		$reg = $this->getServerRegistration($srvid, $userId);
+		$srv = $this->getServer($srvId);
+		$reg = $this->getServerRegistration($srvId, $userId);
 		$reg->setPassword($newPw);
+		$srv->updateRegistration($userId, $reg->toArray());
+	}
+	function updateUserComment($srvId, $userId, $newC)
+	{
+		$srv = $this->getServer($srvId);
+		$reg = $this->getServerRegistration($srvId, $userId);
+		$reg->setComment($newC);
 		$srv->updateRegistration($userId, $reg->toArray());
 	}
 	function updateUserTexture($srvid, $uid, $newTexture)

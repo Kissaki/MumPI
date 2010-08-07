@@ -249,7 +249,7 @@ class MurmurServer
 	 * @param string $filter
 	 * @return array(int registrationIds, string registrationUserName)
 	 */
-	public function getRegisteredUsers($filter)
+	public function getRegisteredUsers($filter=null)
 	{
 		return $this->iceObj->getRegisteredUsers($filter);
 	}

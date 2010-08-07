@@ -179,23 +179,25 @@ if (isset($_GET['action']) && $_GET['action']=='doedit') {
 							}
 							$texB64 = base64_encode($texBytes);
 							?>
-							<div id="userAva">
-								<div id="userAvaToggle" style="font-style:italic;">
-									show
-								</div>
-								<div id="userAvaImage" style="display:none;">
-									<img src="data:image/*;base64,<?php echo $texB64; ?>" alt="" />
-								</div>
+								<div id="userAva">
+									<div id="userAvaToggle" style="font-style:italic;">
+										show
+									</div>
+									<div id="userAvaImage" style="display:none;">
+										<img src="data:image/*;base64,<?php echo $texB64; ?>" alt="" />
+									</div>
 								</div>
 								<script type="text/javascript">
-									jQuery('#userAvaToggle').toggle(
-											function (eventObj) {
-											  jQuery('#userAvaImage').css('display', 'block');
-											},
-											function (eventObj) {
-											  jQuery('#userAvaImage').css('display', 'none');
-											}
-										);
+									/*<![CDATA[*/
+										jQuery('#userAvaToggle').toggle(
+												function (eventObj) {
+												  jQuery('#userAvaImage').css('display', 'block');
+												},
+												function (eventObj) {
+												  jQuery('#userAvaImage').css('display', 'none');
+												}
+											);
+									/*]]>*/
 								</script>
 							<?php
 						} else {

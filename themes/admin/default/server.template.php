@@ -45,270 +45,281 @@
 
 	</div>
 	<script type="text/javascript">
-
-		function randomString(length)
-		{
-			var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz§$%&/()=?!{[]}";
-			var str = '';
-			for (var i=0; i<length; i++) {
-				var r = Math.floor(Math.random() * chars.length);
-				str += chars.substring(r,r+1);
+		/*<![CDATA[*/
+			function randomString(length)
+			{
+				var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz§$%&/()=?!{[]}";
+				var str = '';
+				for (i=0; i < length; i++) {
+					var r = Math.floor(Math.random() * chars.length);
+					str += chars.substring(r, r+1);
+				}
+				return str;
 			}
-			return str;
-		}
-		function jq_server_setSuperuserPassword(sid)
-		{
-			$('#li_server_superuserpassword > .ajax_info').html(imgAjaxLoading);
-			var pw = randomString(6);
-			$.post('./?ajax=server_setSuperuserPassword',
-					{ 'sid': <?php echo $_GET['sid']; ?>, 'pw': pw },
-					function (data) {
-						if (data=='') {
-							$('#li_server_superuserpassword > .ajax_info').html('<div>Password set to: '+pw+'</div>');
-						} else {
-							$('#li_server_superuserpassword > .ajax_info').html(data);
-						}
-					}
-				);
-		}
-		function jq_server_getRegistrations(sid)
-		{
-			if (sid==null) {
-				sid = <?php echo isset($_GET['sid'])?$_GET['sid']:0; ?>;
-			}
-			$.post("./?ajax=server_getRegistrations",
-					{ 'sid': sid },
-					function (data) {
-						$('#jq_information').show().html(data);
-						<?php if (PermissionManager::getInstance()->serverCanEditRegistrations($_GET['sid'])) { ?>
-							$('#jq_information').prepend('<p style="font-size:x-small;">(Double-click entries to edit them)</p>');
-							$('.jq_editable').editable(
-																					{	'submit': 'save',
-																						'cancel':'cancel',
-																						'editBy': 'dblclick',
-																						'onSubmit':
-																							function (content) {
-																								var domId = $(this).attr('id');
-																								var sub = domId.substring(0, domId.lastIndexOf('_'));
-																								var id = domId.substring(domId.lastIndexOf('_')+1, domId.length);
-																								if (id==0) {
-																									alert('Changing the superuser account is not possible.');
-																									jq_server_getRegistrations(sid);
-																									return;
-																								}
-																								switch (sub) {
-																									case 'user_name':
-																										jq_user_updateUsername(id, content.current);
-																										break;
-																									case 'user_email':
-																										jq_user_updateEmail(id, content.current);
-																										break;
-																									case 'user_hash':
-																										jq_user_updateHash(id, content.current);
-																										break;
-																								}
-																							}
-																					}
-																				);
-						<?php } ?>
-					}
-				);
-		}
-		function jq_server_registration_remove(uid)
-		{
-			$.post(
-						"./?ajax=server_regstration_remove",
-						{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid },
-						function(data) {
-							if (data.length>0) {
-								alert('failed: '+data);
-							}
-							jq_server_getRegistrations(<?php echo $_GET['sid']; ?>);
-						}
-			);
-		}
-		function jq_server_user_genNewPw(serverId, userId)
-		{
-			var newPw = randomString(6);
-			$.post(
-						"./?ajax=server_regstration_genpw",
-						{ 'serverId': serverId, 'userId': userId, 'newPw': newPw },
-						function(data) {
-							if (data.length>0) {
-								alert('failed: '+data);
+			function jq_server_setSuperuserPassword(sid)
+			{
+				$('#li_server_superuserpassword > .ajax_info').html(imgAjaxLoading);
+				var pw = randomString(6);
+				$.post('./?ajax=server_setSuperuserPassword',
+						{ 'sid': <?php echo $_GET['sid']; ?>, 'pw': pw },
+						function (data) {
+							if (data=='') {
+								$('#li_server_superuserpassword > .ajax_info').html('<div>Password set to: '+pw+'</div>');
 							} else {
-								alert('Password set to: ' + newPw);
+								$('#li_server_superuserpassword > .ajax_info').html(data);
 							}
-							jq_server_getRegistrations(serverId);
-						}
-			);
-		}
-		function jq_user_updateUsername(uid, newVal)
-		{
-			$('#user_name_'+uid).append(imgAjaxLoading);
-			var serverId = <?php echo $_GET['sid']; ?>;
-			$.post("./?ajax=server_user_updateUsername",
-					{ 'sid': serverId, 'uid': uid, 'newValue': newVal },
-					function (data) {
-						if (data.length>0) { alert('failed: '+data); }
-						jq_server_getRegistrations(serverId);
-					}
-				);
-		}
-		function jq_user_updateEmail(uid, newVal)
-		{
-			$('#user_name_'+uid).append(imgAjaxLoading);
-			$.post("./?ajax=server_user_updateEmail",
-					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid, 'newValue': newVal },
-					function (data) {
-						if (data.length>0) { alert('failed: '+data); }
-						jq_server_getRegistrations();
-					}
-				);
-		}
-		function jq_user_updateHash(uid, newVal)
-		{
-			$('#user_name_'+uid).append(imgAjaxLoading);
-			$.post("./?ajax=server_user_updateHash",
-					{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid, 'newValue': newVal },
-					function (data) {
-						if (data.length>0) { alert('failed: '+data); }
-						jq_server_getRegistrations();
-					}
-				);
-		}
-
-		function jq_server_getOnlineUsers(sid)
-		{
-			$.post("./?ajax=show_onlineUsers",
-					{ 'sid': sid },
-					function(data){
-						$('#jq_information').show().html(data);
-					}
-				);
-		}
-
-
-		function jq_server_getBans(sid)
-		{
-			$('#jq_information').show().html('Bans are not ported yet to Mumble/Murmur 1.2. Please be patient. ☺<br/>You can use the clients ban editor for now.');
-			return;
-			$.post("./?ajax=show_server_bans",
-					{ 'sid': sid },
-					function(data){
-						$('#jq_information').show().html(data);
-					}
-				);
-		}
-		function jq_server_showACL(sid, cid)
-		{
-			$.post("./?ajax=show_acl",
-					{ 'sid': sid },
-					function(data){
-						$('#jq_information').show().html(data);
-					}
-				);
-		}
-		function jq_server_showTree(sid)
-		{
-			$.post("./?ajax=show_tree",
-					{ 'sid': sid },
-					function(data){
-						$('#jq_information').show().html(data);
-					}
-				);
-		}
-		function jq_server_config_show(sid)
-		{
-			$.post("./?ajax=server_config_show",
-					{ 'sid': sid },
-					function(data){
-						$('#jq_information').show().html(data);
-					}
-				);
-		}
-
-		function jq_server_user_mute(sessid)
-		{
-			$.post("./?ajax=server_user_mute",
-					{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
-				);
-			jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
-		}
-		function jq_server_user_unmute(sessid)
-		{
-			$.post("./?ajax=server_user_unmute",
-					{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
-				);
-			jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
-		}
-		function jq_server_user_deaf(sessid)
-		{
-			$.post("./?ajax=server_user_deaf",
-					{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
-				);
-			jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
-		}
-		function jq_server_user_undeaf(sessid)
-		{
-			$.post("./?ajax=server_user_undeaf",
-					{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
-				);
-			jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
-		}
-		function jq_server_user_kick(sessid)
-		{
-			if (!confirm('Are you sure you want to kick this user from the server?')) {
-				return;
-			} else {
-				$.post("./?ajax=server_user_kick",
-						{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid },
-						function(data) {
-							jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 						}
 					);
-
 			}
-		}
-		function jq_server_unban(serverId, mask, bits)
-		{
-			$.post(
-					"./?ajax=server_unban",
-					{ 'serverId': serverId, 'ipmask': mask, 'bits': bits },
-					function(data) {
-						if (data.length>0) { alert('failed: '+data); }
-						jq_server_getBans(serverId);
-					}
+			function jq_server_getRegistrations(sid)
+			{
+				if (sid==null) {
+					sid = <?php echo isset($_GET['sid'])?$_GET['sid']:0; ?>;
+				}
+				$.post("./?ajax=server_getRegistrations",
+						{ 'sid': sid },
+						function (data) {
+							$('#jq_information').show().html(data);
+							<?php if (PermissionManager::getInstance()->serverCanEditRegistrations($_GET['sid'])) { ?>
+								$('#jq_information').prepend('<p style="font-size:x-small;">(Double-click entries to edit them)</p>');
+								$('.jq_editable').editable(
+																						{	'submit': 'save',
+																							'cancel':'cancel',
+																							'editBy': 'dblclick',
+																							'onSubmit':
+																								function (content) {
+																									var domId = $(this).attr('id');
+																									var sub = domId.substring(0, domId.lastIndexOf('_'));
+																									var id = domId.substring(domId.lastIndexOf('_')+1);
+																									if (id == 0) {
+																										alert('Changing the superuser account is not possible.');
+																										jq_server_getRegistrations(sid);
+																										return;
+																									}
+																									switch (sub) {
+																										case 'user_name':
+																											jq_user_updateUsername(id, content.current);
+																											break;
+																										case 'user_email':
+																											jq_user_updateEmail(id, content.current);
+																											break;
+																										case 'user_hash':
+																											jq_user_updateHash(id, content.current);
+																											break;
+																									}
+																								}
+																						}
+																					);
+							<?php } ?>
+						}
+					);
+			}
+			function jq_server_registration_remove(uid)
+			{
+				$.post(
+							"./?ajax=server_regstration_remove",
+							{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid },
+							function(data) {
+								if (data.length>0) {
+									alert('failed: '+data);
+								}
+								jq_server_getRegistrations(<?php echo $_GET['sid']; ?>);
+							}
 				);
-		}
-		function jq_server_ban_show(serverId)
-		{
-			$.post(
-					"./?ajax=server_ban_show",
-					{ 'serverId': serverId },
-					function(data) {
-						$('#jq_information').show().html(data);
-					}
+			}
+			function jq_server_user_genNewPw(serverId, userId)
+			{
+				var newPw = randomString(6);
+				$.post(
+							"./?ajax=server_regstration_genpw",
+							{ 'serverId': serverId, 'userId': userId, 'newPw': newPw },
+							function(data) {
+								if (data.length>0) {
+									alert('failed: '+data);
+								} else {
+									alert('Password set to: ' + newPw);
+								}
+								jq_server_getRegistrations(serverId);
+							}
 				);
-		}
-		function jq_server_ban(serverId, mask, bits)
-		{
-			$.post(
-					"./?ajax=server_ban",
-					{ 'serverId': serverId, 'ipmask': mask, 'bits': bits },
-					function(data) {
-						if (data.length>0) { alert('failed: '+data); } else {
+			}
+			function jq_user_updateUsername(uid, newVal)
+			{
+				$('#user_name_'+uid).append(imgAjaxLoading);
+				var serverId = <?php echo $_GET['sid']; ?>;
+				$.post("./?ajax=server_user_updateUsername",
+						{ 'sid': serverId, 'uid': uid, 'newValue': newVal },
+						function (data) {
+							if (data.length>0) { alert('failed: '+data); }
+							jq_server_getRegistrations(serverId);
+						}
+					);
+			}
+			function jq_user_updateEmail(uid, newVal)
+			{
+				$('#user_name_'+uid).append(imgAjaxLoading);
+				$.post("./?ajax=server_user_updateEmail",
+						{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid, 'newValue': newVal },
+						function (data) {
+							if (data.length>0) { alert('failed: '+data); }
+							jq_server_getRegistrations();
+						}
+					);
+			}
+			function jq_user_updateHash(uid, newVal)
+			{
+				$('#user_name_'+uid).append(imgAjaxLoading);
+				$.post("./?ajax=server_user_updateHash",
+						{ 'sid': <?php echo $_GET['sid']; ?>, 'uid': uid, 'newValue': newVal },
+						function (data) {
+							if (data.length>0) { alert('failed: '+data); }
+							jq_server_getRegistrations();
+						}
+					);
+			}
+			function jq_user_updateComment(serverId, userId, newVal)
+			{
+				$.post("./?ajax=server_user_updateComment",
+						{ 'sid': serverId, 'uid': userId, 'newValue': newVal },
+						function (data) {
+							if (data.length>0) { alert('failed: '+data); }
+							jq_server_getRegistrations();
+						}
+					);
+			}
+
+			function jq_server_getOnlineUsers(sid)
+			{
+				$.post("./?ajax=show_onlineUsers",
+						{ 'sid': sid },
+						function(data){
+							$('#jq_information').show().html(data);
+						}
+					);
+			}
+
+
+			function jq_server_getBans(sid)
+			{
+				$('#jq_information').show().html('Bans are not ported yet to Mumble/Murmur 1.2. Please be patient. ☺<br/>You can use the clients ban editor for now.');
+				return;
+				$.post("./?ajax=show_server_bans",
+						{ 'sid': sid },
+						function(data){
+							$('#jq_information').show().html(data);
+						}
+					);
+			}
+			function jq_server_showACL(sid, cid)
+			{
+				$.post("./?ajax=show_acl",
+						{ 'sid': sid },
+						function(data){
+							$('#jq_information').show().html(data);
+						}
+					);
+			}
+			function jq_server_showTree(sid)
+			{
+				$.post("./?ajax=show_tree",
+						{ 'sid': sid },
+						function(data){
+							$('#jq_information').show().html(data);
+						}
+					);
+			}
+			function jq_server_config_show(sid)
+			{
+				$.post("./?ajax=server_config_show",
+						{ 'sid': sid },
+						function(data){
+							$('#jq_information').show().html(data);
+						}
+					);
+			}
+
+			function jq_server_user_mute(sessid)
+			{
+				$.post("./?ajax=server_user_mute",
+						{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
+					);
+				jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
+			}
+			function jq_server_user_unmute(sessid)
+			{
+				$.post("./?ajax=server_user_unmute",
+						{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
+					);
+				jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
+			}
+			function jq_server_user_deaf(sessid)
+			{
+				$.post("./?ajax=server_user_deaf",
+						{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
+					);
+				jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
+			}
+			function jq_server_user_undeaf(sessid)
+			{
+				$.post("./?ajax=server_user_undeaf",
+						{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
+					);
+				jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
+			}
+			function jq_server_user_kick(sessid)
+			{
+				if (!confirm('Are you sure you want to kick this user from the server?')) {
+					return;
+				} else {
+					$.post("./?ajax=server_user_kick",
+							{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid },
+							function(data) {
+								jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
+							}
+						);
+
+				}
+			}
+			function jq_server_unban(serverId, mask, bits)
+			{
+				$.post(
+						"./?ajax=server_unban",
+						{ 'serverId': serverId, 'ipmask': mask, 'bits': bits },
+						function(data) {
+							if (data.length>0) { alert('failed: '+data); }
 							jq_server_getBans(serverId);
 						}
-					}
-				);
-		}
+					);
+			}
+			function jq_server_ban_show(serverId)
+			{
+				$.post(
+						"./?ajax=server_ban_show",
+						{ 'serverId': serverId },
+						function(data) {
+							$('#jq_information').show().html(data);
+						}
+					);
+			}
+			function jq_server_ban(serverId, mask, bits)
+			{
+				$.post(
+						"./?ajax=server_ban",
+						{ 'serverId': serverId, 'ipmask': mask, 'bits': bits },
+						function(data) {
+							if (data.length>0) { alert('failed: '+data); } else {
+								jq_server_getBans(serverId);
+							}
+						}
+					);
+			}
 
-		function center(object)
-		{
-			object.style.marginLeft = "-" + parseInt(object.offsetWidth / 2) + "px";
-			object.style.marginTop = "-" + parseInt(object.offsetHeight / 2) + "px";
-		}
-		//$('#jq_information').show().html($(parent).id());
+			function center(object)
+			{
+				object.style.marginLeft = "-" + parseInt(object.offsetWidth / 2) + "px";
+				object.style.marginTop = "-" + parseInt(object.offsetHeight / 2) + "px";
+			}
+			//$('#jq_information').show().html($(parent).id());
+		/*]]>*/
 	</script>
 <?php } ?>
