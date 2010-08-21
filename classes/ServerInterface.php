@@ -2,6 +2,11 @@
 require_once dirname(__FILE__).'/PermissionManager.php';
 require_once dirname(__FILE__).'/MurmurClasses.php';
 
+
+set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/' . 'ice');
+require_once 'Ice.php';
+require_once 'Murmur_1.2.2.php';
+
 /**
  * Provides murmur server functionality
  */
@@ -39,20 +44,52 @@ class ServerInterface_ice
 		if (!extension_loaded('ice')) {
 			MessageManager::addError(tr('error_noIceExtensionLoaded'));
 		} else {
-			try {
+			$this->contextVars = SettingsManager::getInstance()->getDbInterface_iceSecrets();
+			if (Ice_intVersion() < 30400) {
+				// ice 3.3
+				global $ICE;
 				Ice_loadProfile();
-				$this->contextVars = SettingsManager::getInstance()->getDbInterface_iceSecrets();
-				$this->connect();
-			} catch (Ice_ProfileAlreadyLoadedException $exc) {
-				MessageManager::addError(tr('iceprofilealreadyloaded'));
+				$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
+				$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
+				// use IceSecret if set
+				if (!empty($this->contextVars)) {
+					$this->meta = $this->meta->ice_context($this->contextVars);
+				}
+				$this->meta = $this->meta->ice_timeout(10000);
+			} else {
+				// ice 3.4
+				$initData = new Ice_InitializationData;
+				$initData->properties = Ice_createProperties();
+				$initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
+				$ICE = Ice_initialize($initData);
+				/*
+				 * getImplicitContext() is not implemented for icePHP yet…
+				 * $ICE->getImplicitContext();
+				 * foreach ($this->contextVars as $key=>$value) {
+				 * 	 $ICE->getImplicitContext()->put($key, $value);
+				 * }
+				 */
+				try {
+					$this->meta = Murmur_MetaPrxHelper::checkedCast($ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address()));
+				} catch (Ice_ConnectionRefusedException $exc) {
+					MessageManager::addError(tr('error_iceConnectionRefused'));
+				}
 			}
+
+//			try {
+//				if (function_exists('Ice_loadProfile')) {
+//				} else {
+//				}
+//			} catch (Ice_ProfileAlreadyLoadedException $exc) {
+//				MessageManager::addError(tr('iceprofilealreadyloaded'));
+//			}
+
+			$this->connect();
 		}
 	}
 
 	private function connect()
 	{
-		global $ICE;
-
 		//$ICE->setProperty('Ice.ImplicitContext', 'Shared');
 		/* not avail. in Ice 3.3
 		$ICE->getImplicitContext();
@@ -65,15 +102,9 @@ class ServerInterface_ice
 		 * $ICE = Ice_initialize($initData);
 		 */
 
-		$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
 		// it would be good to be able to add a check if slice file is loaded
+		//if (empty(ini_get('ice.slice'))) {
 		//MessageManager::addError(tr('error_noIceSliceLoaded'));
-		$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
-		// use IceSecret if set
-		if (!empty($this->contextVars)) {
-			$this->meta = $this->meta->ice_context($this->contextVars);
-		}
-		$this->meta = $this->meta->ice_timeout(10000);
 
 		// to check the connection get the version (e.g. was a needed (context-)password not provided?)
 		try {
@@ -156,6 +187,10 @@ class ServerInterface_ice
 	public function getServer($srvid)
 	{
 		$server = $this->meta->getServer(intval($srvid));
+		/**
+		 * @var Murmur_Server
+		 */
+		$this->meta;
 		if (!empty($this->contextVars)) {
 			$server = $server->ice_context($this->contextVars);
 		}

@@ -5,3 +5,4 @@
 /.settings/org.eclipse.wst.*
 /.settings/org.eclipse.ltk.core.refactoring.prefs
 /.settings/org.eclipse.php.ui.prefs
+/classes/ice

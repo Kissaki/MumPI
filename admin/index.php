@@ -7,7 +7,6 @@ define('MUMPHPI_SECTION', 'admin');
 	PHPStats::scriptExecTimeStart();
 
 	require_once(MUMPHPI_MAINDIR.'/classes/SettingsManager.php');
-//	require_once(MUMPHPI_MAINDIR.'/classes/Server_Admin_Group_Permissions.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/DBManager.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/Logger.php');
 	require_once(MUMPHPI_MAINDIR.'/classes/SessionManager.php');
