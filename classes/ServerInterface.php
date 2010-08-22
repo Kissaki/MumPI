@@ -2,10 +2,11 @@
 require_once dirname(__FILE__).'/PermissionManager.php';
 require_once dirname(__FILE__).'/MurmurClasses.php';
 
-
-set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/' . 'ice');
-require_once 'Ice.php';
-require_once 'Murmur_1.2.2.php';
+if (extension_loaded('ice') && Ice_intVersion() >= 30400) {
+  set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/' . 'ice');
+  require_once 'Ice.php';
+  require_once 'Murmur_1.2.2.php';
+}
 
 /**
  * Provides murmur server functionality
@@ -63,7 +64,7 @@ class ServerInterface_ice
 				$initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
 				$ICE = Ice_initialize($initData);
 				/*
-				 * getImplicitContext() is not implemented for icePHP yet…
+				 * getImplicitContext() is not implemented for icePHP yetâ€¦
 				 * $ICE->getImplicitContext();
 				 * foreach ($this->contextVars as $key=>$value) {
 				 * 	 $ICE->getImplicitContext()->put($key, $value);
