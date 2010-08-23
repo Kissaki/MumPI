@@ -32,13 +32,14 @@
 
 	//Errors
 	$txt['error_noIceExtensionLoaded']	= 'It seems your PHP configuration is not running with the Ice extension.<br/>Please set up your PHP to load the Ice extension.<br/><br/>Ice is the middleware between <acronym title="Mumble Server">Murmur</acronym> and PHP/the Interface, allowing PHP to call Murmur functions. Thus, this is necessary.<br/>For introductions on how to set it up, see <a href="http://mumble.sourceforge.net/Ice">mumble.sf.net/Ice</a>.';
-	$txt['error_noIceSliceLoaded']		= 'It seems your PHP configuration does not know the necessary slice file.<br/>For introductions on how to set it up, see <a href="http://mumble.sourceforge.net/Ice">mumble.sf.net/Ice</a>.<br/><br/>The slice file tells PHP which methods and data are available to PHP, to access <acronym title="Mumble Server">Murmur</acronym>.';
-	$txt['error_noIce']					= 'Could not connect to Ice.<br/>Either your server is not running or it is not running with Ice. Check your configuration.';
-	$txt['error_unknowninterface']		= 'Misconfiguration: Unknown <acronym title="database">DB</acronym> Interface Type!';
-	$txt['unknownserver']				= 'No such server found.';
-	$txt['error_missing_values']		= 'It seems not all necessary values have been specified.';
-	$txt['error_db_unknowntype']		= 'The Database type you specified (in your settings) is not available/defined.';
-	$txt['iceprofilealreadyloaded'] 	= 'Ice Profile has already been loaded!';
+	$txt['error_noIceSliceLoaded']			= 'It seems your PHP configuration does not know the necessary slice file.<br/>For introductions on how to set it up, see <a href="http://mumble.sourceforge.net/Ice">mumble.sf.net/Ice</a>.<br/><br/>The slice file tells PHP which methods and data are available to PHP, to access <acronym title="Mumble Server">Murmur</acronym>.';
+	$txt['error_noIce']									= 'Could not connect to Ice.<br/>Either your server is not running or it is not running with Ice. Check your configuration.';
+	$txt['error_iceConnectionRefused']	= 'Could not connect to Ice.<br/>Either your server is not running or it is not running with Ice. Check your configuration.';
+	$txt['error_unknowninterface']			= 'Misconfiguration: Unknown <acronym title="database">DB</acronym> Interface Type!';
+	$txt['unknownserver']								= 'No such server found.';
+	$txt['error_missing_values']				= 'It seems not all necessary values have been specified.';
+	$txt['error_db_unknowntype']				= 'The Database type you specified (in your settings) is not available/defined.';
+	$txt['iceprofilealreadyloaded'] 		= 'Ice Profile has already been loaded!';
 	$txt['error_dbmanager_couldnotopenadmins'] = 'Could not open admins.dat file.';
-	$txt['error_invalidTexture']		= 'Invalid image data. Please check your image file.';
-	$txt['login_missing_data'] = 'Login failed: You did not seem to provide all the necessary data.';
+	$txt['error_invalidTexture']				= 'Invalid image data. Please check your image file.';
+	$txt['login_missing_data'] 					= 'Login failed: You did not seem to provide all the necessary data.';
