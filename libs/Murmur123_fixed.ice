@@ -6,7 +6,8 @@
  *
  **/
 
-#include <Ice/SliceChecksumDict.ice>
+/*FIX
+#include <Ice/SliceChecksumDict.ice>*/
 
 module Murmur
 {
@@ -790,6 +791,7 @@ module Murmur
 		/** Returns a checksum dict for the slice file.
 		 * @return Checksum dict
 		 */
-		idempotent Ice::SliceChecksumDict getSliceChecksums();
+    /*FIX
+		idempotent Ice::SliceChecksumDict getSliceChecksums();*/
 	};
 };
