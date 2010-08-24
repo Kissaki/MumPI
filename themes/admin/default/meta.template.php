@@ -74,8 +74,13 @@
 				$.get("./?ajax=server_create",
 					function(data) {
 						// reload content (serverlist)
-						$('#jq_information').html('Server created with ID: ' + data);
-						jq_loadPage('meta');
+						var newServerId = new Number(data);
+						if (isNaN(newServerId)) {
+							alert('Error returned: ' + data);
+						} else {
+							$('#jq_information').html('Server created with ID: ' + data);
+							jq_loadPage('meta');
+						}
 					}
 				);
 			});
