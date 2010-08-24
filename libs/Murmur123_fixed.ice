@@ -6,7 +6,7 @@
  *
  **/
 
-/*FIX
+/*FIX sadly this file is GPL and can't be copied into this LGPL
 #include <Ice/SliceChecksumDict.ice>*/
 
 module Murmur
