@@ -560,7 +560,7 @@ class Ajax_Admin extends Ajax
 			$users = ServerInterface::getInstance()->getServerUsersConnected($_POST['sid']);
 ?>
 			<h2>Online Users</h2>
-			<table>
+			<table id="mpi_table_onlineusers">
 				<thead>
 					<tr>
 						<th>Sess ID</th>
@@ -608,20 +608,32 @@ class Ajax_Admin extends Ajax
 						<td><?php echo $user->clientVersion() . ($user->clientVersion()!=$user->clientRelease())?$user->clientRelease():'' . $user->clientOs() . $user->clientOsVersion(); ?></td>
 						<td id="userComment<?php echo $user->getSessionId(); ?>" class="comment userComment">
 							<?php $commentClean = htmlspecialchars($user->getComment()); ?>
-							<?php if (!empty($commentClean)) { ?>
-								<a title="Toggle display of full comment. HTML is escaped to ensure you can safely view it." href="javascript:toggleUserComment(<?php echo $user->getSessionId(); ?>);" style="float:left; margin-right:4px;">○</a>
-								<div class="teaser">“<?php echo substr($commentClean, 0, 10); ?>…“</div>
-								<div class="complete" style="display:none;"><?php echo $commentClean; ?></div>
-								<script type="text/javascript">/*<![CDATA[*/
-									// toggle display of user comment teaser <-> full
-									function toggleUserComment(userSessionId)
-									{
-										jQuery('#userComment' + userSessionId + ' .teaser').css('display', (jQuery('#userComment' + userSessionId + ' .teaser').css('display')=='block'?'none':'block'));
-										jQuery('#userComment' + userSessionId + ' .complete').css('display', (jQuery('#userComment' + userSessionId + ' .complete').css('display')=='block'?'none':'block'));
+							<?php
+								if (!empty($commentClean)) {
+									if (strlen($commentClean) > 10) {
+										?>
+											<a title="Toggle display of full comment. HTML is escaped to ensure you can safely view it." href="javascript:toggleUserComment(<?php echo $user->getSessionId(); ?>);" style="float:left; margin-right:4px;">○</a>
+										<?php
+											}
+										?>
+										<div class="teaser">
+											“<?php echo ((strlen($commentClean) > 10) ? substr($commentClean, 0, 10) . '…' : $commentClean); ?>“
+										</div>
+										<div class="complete" style="display:none;">
+											<?php echo $commentClean; ?>
+										</div>
+										<script type="text/javascript">/*<![CDATA[*/
+											// toggle display of user comment teaser <-> full
+											function toggleUserComment(userSessionId)
+											{
+												jQuery('#userComment' + userSessionId + ' .teaser').css('display', (jQuery('#userComment' + userSessionId + ' .teaser').css('display')=='block'?'none':'block'));
+												jQuery('#userComment' + userSessionId + ' .complete').css('display', (jQuery('#userComment' + userSessionId + ' .complete').css('display')=='block'?'none':'block'));
+											}
+											/*]]>*/
+										</script>
+									<?php
 								}
-								/*]]>*/
-							</script>
-							<?php } ?>
+							?>
 						</td>
 						<td class="userAddress">
 							<?php echo $user->getAddress()->__toString(); ?> <sup>(<a href="http://[<?php echo $user->getAddress(); ?>]">http</a>, <a href="http://www.db.ripe.net/whois?searchtext=<?php echo $user->getAddress(); ?>">lookup</a>)</sup>
