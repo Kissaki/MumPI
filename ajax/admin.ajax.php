@@ -992,7 +992,7 @@ class Ajax_Admin extends Ajax
 					}
 				}
 			});
-			jQuery('#jq_editable_server_conf_defaultchannel_form .form_clickable_submit').unbind('click').click(function(event){
+			jQuery('#jq_editable_server_conf_defaultchannel_form .form_clickable_submit').click(function(event){
 					var id = jQuery(this).attr('id');
 					var channelId = id.substr(id.indexOf('_')+1);
 					$.post(
@@ -1000,7 +1000,7 @@ class Ajax_Admin extends Ajax
 						{ 'sid': currentServerId, 'key': 'defaultchannel', 'value': channelId },
 						function(data) {
 							jq_server_config_show(currentServerId);
-							jQuery('#jq_editable_server_conf_defaultchannel_form').dialog('close');
+							jQuery('#jq_editable_server_conf_defaultchannel_form').dialog('close').remove();
 						}
 					);
 				});
