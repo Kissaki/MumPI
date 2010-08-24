@@ -103,7 +103,7 @@ class ServerInterface_ice
 		 * $ICE = Ice_initialize($initData);
 		 */
 
-		// it would be good to be able to add a check if slice file is loaded
+		//TODO it would be good to be able to add a check if slice file is loaded
 		//if (empty(ini_get('ice.slice'))) {
 		//MessageManager::addError(tr('error_noIceSliceLoaded'));
 
@@ -182,16 +182,12 @@ class ServerInterface_ice
 	}
 	/**
 	 * Get a specific virtual server
-	 * @param $srvid server id
+	 * @param int $srvid server id
 	 * @return unknown_type (virtual) server
 	 */
 	public function getServer($srvid)
 	{
 		$server = $this->meta->getServer(intval($srvid));
-		/**
-		 * @var Murmur_Server
-		 */
-		$this->meta;
 		if (!empty($this->contextVars)) {
 			$server = $server->ice_context($this->contextVars);
 		}
@@ -463,7 +459,7 @@ class ServerInterface_ice
 	}
 	function muteUser($srvid, $sessid)
 	{
-		$srv = $this->meta->getServer(intval($srvid));
+		$srv = $this->getServer(intval($srvid));
 		$user = $srv->getState(intval($sessid));
 		$user->mute = true;
 		$srv->setState($user);
