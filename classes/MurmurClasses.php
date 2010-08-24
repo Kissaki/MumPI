@@ -118,9 +118,9 @@ class MurmurServer
 	{
 		return $this->iceObj->setBans();
 	}
-	public function kickUser()
+	public function kickUser($sessionId, $reason='')
 	{
-		return $this->iceObj->kickUser();
+		return $this->iceObj->kickUser($sessionId, $reason);
 	}
 	public function getState()
 	{

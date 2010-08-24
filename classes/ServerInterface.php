@@ -492,7 +492,11 @@ class ServerInterface_ice
 	}
 	function kickUser($srvid, $sessid, $reason='')
 	{
-		$this->meta->getServer(intval($srvid))->kickUser(intval($sessid), $reason);
+		$srv = $this->meta->getServer(intval($srvid));
+		if (!empty($this->contextVars)) {
+			$srv = $srv->ice_context($this->contextVars);
+		}
+		MurmurServer::fromIceObject($srv)->kickUser(intval($sessid), $reason);
 	}
 	function ban($serverId, $ip, $bits=32)
 	{
