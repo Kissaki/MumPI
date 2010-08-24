@@ -206,8 +206,6 @@ module Murmur
 	/** User information map.
 	 * Older versions of ice-php can't handle enums as keys. If you are using one of these, replace 'UserInfo' with 'byte'.
 	 */
-
-	/*FIXME enum-keys in newer ice version*/
 	dictionary<byte, string> UserInfoMap;
 	/*dictionary<UserInfo, string> UserInfoMap;*/
 

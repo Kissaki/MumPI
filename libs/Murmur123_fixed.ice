@@ -210,8 +210,8 @@ module Murmur
 	/** User information map.
 	 * Older versions of ice-php can't handle enums as keys. If you are using one of these, replace 'UserInfo' with 'byte'.
 	 */
-
-	dictionary<UserInfo, string> UserInfoMap;
+	dictionary<byte, string> UserInfoMap;
+	/*dictionary<UserInfo, string> UserInfoMap;*/
 
 	/** User and subchannel state. Read-only.
 	 **/
