@@ -556,7 +556,7 @@ class ServerInterface_ice
 	{
 		$bans=$this->getServerBans($srvid);
 		foreach ($bans as &$ban) {
-			$ban->address=HelperFunctions::int2ip($ban->address);
+			$ban->address=HelperFunctions::int2ipAddress($ban->address);
 		}
 		return $bans;
 	}

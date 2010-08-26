@@ -145,16 +145,59 @@ class HelperFunctions
 		}
 		return $int;
 	}
-	public static function int2ip($int)
+	/**
+	 * @param (int_or_array) $int
+	 * @throws Exception
+	 */
+	public static function int2ipAddress($ipAddress)
 	{
-		//127.0.0.1 = 2130706433 = 0111 1111  0000 0000  0000 0000  0000 0001
-		$int = intval($int);
-		$ip = '';
-		for ($i=0; $i<4; $i++) {
-			$ip = '.' . ($int & 255) . $ip;
-			$int = $int >> 8;
+		$ipAsString = '';
+		if (is_int($ipAddress)) {
+			//127.0.0.1 = 2130706433 = 0111 1111  0000 0000  0000 0000  0000 0001
+			$ipAddress = intval($ipAddress);
+			for ($i=0; $i<4; $i++) {
+				$ipAsString = '.' . ($ipAddress & 255) . $ipAsString;
+				$ipAddress = $ipAddress >> 8;
+			}
+			$ipAsString = substr($ipAsString, 1);
 		}
-		$ip = substr($ip, 1);
+		else if(is_array($ipAddress)) {
+			if (count($ipAddress) == 16) {
+				// first check if it’s a mapped IP, so it can be displayed in IPv4 format
+				$mappedIpv4Mask = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255);
+				$isIp4InIp6 = true;
+				foreach ($mappedIpv4Mask as $i => $val) {
+					if ($ipAddress[$i] != $val) {
+						$isIp4InIp6 = false;
+					}
+				}
+				// it’s an IPv4 address in IPv6 address format (mapped address)
+				if ($isIp4InIp6) {
+					for ($i = 12; $i < 16; $i++) {
+						$ipAsString .= $ipAddress[$i];
+						if ($i < 15) {
+							$ipAsString .= '.';
+						}
+					}
+				}
+				// it’s a “normal” IPv6 address
+				else {
+					for ($i = 0; $i < 16; $i++) {
+						$ipAsString = sprintf($ipAsString . '%x', $ipAddress[$i]);
+						if ($i % 2 == 1 && $i < 15) {
+							$ipAsString .= ':';
+						}
+					}
+				}
+				return $ipAsString;
+			}
+			else {
+				throw new Exception('IP adress array has unexpected length.');
+			}
+		}
+		else {
+			throw new Exception('Unknown format as param.');
+		}
 		return $ip;
 	}
 

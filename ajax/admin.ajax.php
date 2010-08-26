@@ -785,7 +785,7 @@ class Ajax_Admin extends Ajax
 					<tbody>
 						<?php foreach ($bans as $ban) { ?>
 							<tr>
-								<td><?php echo HelperFunctions::int2ip($ban->address); ?></td>
+								<td><?php echo HelperFunctions::int2ipAddress($ban->address); ?></td>
 								<td><?php echo $ban->bits; ?></td>
 								<td>
 									<?php
