@@ -16,4 +16,4 @@
 
 	$txt['info_ip_bits'] = 'Info über Ban IP Masken-Bits:<br/>
 					128 Bits heißt nur genau diese IP(v6) ist gebannt.<br/>
-					24 würde heißen, die ersten 24 Bit der IP-Adresse würden überprüft, die darauffolgenden wären egal.';
+					24 würde heißen, die ersten 24 Bit der IP-Adresse würden überprüft, die darauffolgenden wären egal (IP-Bereich-Bann).';
