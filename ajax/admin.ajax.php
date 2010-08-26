@@ -782,7 +782,7 @@ class Ajax_Admin extends Ajax
 							<th>bits</th>
 							<th>hash</th>
 							<th>reason</th>
-							<th>banned at (until)
+							<th>banned at (until)</th>
 							<th>actions</th>
 						</tr>
 					</thead>
@@ -798,7 +798,7 @@ class Ajax_Admin extends Ajax
 								<td>
 									<?php
 										if (PermissionManager::getInstance()->serverCanBan($serverId))
-											echo "<a class=\"jqlink\" onclick=\"jq_server_unban($serverId, $ban->address, $ban->bits)\">remove</a>";
+											echo "<a class=\"jqlink\" onclick=\"if(confirm('Are you sure you want to remove this ban?')){jq_server_unban($serverId, $ban->address, $ban->bits);}\">remove</a>";
 									?>
 							</td>
 							</tr>
@@ -829,8 +829,8 @@ class Ajax_Admin extends Ajax
 	public static function server_ban()
 	{
 		$serverId = intval($_POST['serverId']);
-		$ip = strip_tags($_POST['ipmask']);
-		$bits = intval($_POST['bits']);
+		$ip       = strip_tags($_POST['ipmask']);
+		$bits     = intval($_POST['bits']);
 		if (strpos($ip, '.') === false) {
 			$ip = intval($ip);
 		} else {
@@ -840,9 +840,9 @@ class Ajax_Admin extends Ajax
 	}
 	public static function server_unban()
 	{
-		$serverId=intval($_POST['serverId']);
-		$ipmask=intval($_POST['ipmask']);
-		$bits=intval($_POST['bits']);
+		$serverId = intval($_POST['serverId']);
+		$ipmask   = intval($_POST['ipmask']);
+		$bits     = intval($_POST['bits']);
 		if (PermissionManager::getInstance()->serverCanBan($serverId)) {
 			ServerInterface::getInstance()->unban($serverId, $ipmask, $bits);
 		}
