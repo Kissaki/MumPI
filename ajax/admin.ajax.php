@@ -412,11 +412,15 @@ class Ajax_Admin extends Ajax
 							<?php
 								$commentClean = htmlspecialchars($user->getComment());
 								if (!empty($commentClean)) {
+									if (strlen($commentClean) > 10) {
+										?>
+											<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getUserId(); ?>);" style="float:left; margin-right:4px;">
+												○
+											</a>
+										<?php
+									}
 									?>
-										<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getUserId(); ?>);" style="float:left; margin-right:4px;">
-											○
-										</a>
-										<div class="teaser"><?php echo substr($commentClean, 0, 10) . ((strlen($commentClean)>10)?'…':''); ?></div>
+										<div class="teaser"><?php echo substr($commentClean, 0, 10) . ((strlen($commentClean)>10) ? '…' : ''); ?></div>
 										<div class="complete" style="display:none;"><?php echo $commentClean; ?></div>
 										<script type="text/javascript">/*<![CDATA[*/
 											// toggle display of user comment teaser <-> full
