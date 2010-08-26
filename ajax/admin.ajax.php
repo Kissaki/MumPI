@@ -788,17 +788,20 @@ class Ajax_Admin extends Ajax
 					</thead>
 					<tbody>
 						<?php foreach ($bans as $ban) { ?>
+						<?php $ipAsString = HelperFunctions::int2ipAddress($ban->address); ?>
 							<tr>
 								<td><?php echo $ban->name; ?></td>
-								<td><?php echo HelperFunctions::int2ipAddress($ban->address); ?></td>
+								<td><?php echo $ipAsString; ?></td>
 								<td><?php echo $ban->bits; ?></td>
 								<td><?php echo $ban->hash; ?></td>
 								<td><?php echo $ban->reason; ?></td>
 								<td><?php echo date('r', $ban->start) . ' (' . ($ban->duration != 0 ? date('r', $ban->duration) : 'unlimited') . ')'; ?></td>
 								<td>
 									<?php
-										if (PermissionManager::getInstance()->serverCanBan($serverId))
-											echo "<a class=\"jqlink\" onclick=\"if(confirm('Are you sure you want to remove this ban?')){jq_server_unban($serverId, $ban->address, $ban->bits);}\">remove</a>";
+										if (PermissionManager::getInstance()->serverCanBan($serverId)) {
+											$banObj = MurmurBan::fromIceObject($ban);
+											echo "<a class=\"jqlink\" onclick=\"if(confirm('Are you sure you want to remove this ban?')){jq_server_unban($serverId, '$ipAsString', $banObj->bits, '$banObj->name', '$banObj->hash', '$banObj->reason', $banObj->start, $banObj->duration);}\">remove</a>";
+										}
 									?>
 							</td>
 							</tr>
@@ -840,11 +843,16 @@ class Ajax_Admin extends Ajax
 	}
 	public static function server_unban()
 	{
-		$serverId = intval($_POST['serverId']);
-		$ipmask   = intval($_POST['ipmask']);
-		$bits     = intval($_POST['bits']);
+		$serverId     = intval($_POST['serverId']);
+		$ip           = $_POST['ip'];
+		$siBits       = intval($_POST['bits']);
+		$username     = $_POST['name'];
+		$hash         = $_POST['hash'];
+		$reason       = $_POST['reason'];
+		$siStart      = intval($_POST['start']);
+		$siDuration   = intval($_POST['duration']);
 		if (PermissionManager::getInstance()->serverCanBan($serverId)) {
-			ServerInterface::getInstance()->unban($serverId, $ipmask, $bits);
+			ServerInterface::getInstance()->unban($serverId, $ip, $siBits, $username, $hash, $reason, $siStart, $siDuration);
 		}
 	}
 

@@ -1032,4 +1032,38 @@ class MurmurChannel
 	}
 }
 
+class MurmurBan
+{
+	/**
+	 * @param $iceObject
+	 * @return MurmurBan
+	 */
+	public static function fromIceObject($iceObject)
+	{
+		return new MurmurBan($iceObject->address, $iceObject->bits, $iceObject->name, $iceObject->hash, $iceObject->reason, $iceObject->start, $iceObject->duration);
+	}
 
+	public function __construct($address=null, $bits=128, $username='', $hash='', $reason='', $start=0, $duration=0)
+  {
+	  $this->address = $address;
+	  $this->bits = $bits;
+	  $this->name = $username;
+	  $this->hash = $hash;
+	  $this->reason = $reason;
+	  $this->start = $start;
+	  $this->duration = $duration;
+  }
+
+  public $address;
+  public $bits;
+  public $name;
+  public $hash;
+  public $reason;
+  public $start;
+  public $duration;
+
+  public function asJson()
+  {
+  	return json_encode(array('address'=>$this->address, 'bits'=>$this->bits, 'name'=>$this->name, 'hash'=>$this->hash, 'reason'=>$this->reason, 'start'=>$this->start, 'duration'=>$this->duration));
+  }
+}

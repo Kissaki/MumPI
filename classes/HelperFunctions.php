@@ -183,7 +183,7 @@ class HelperFunctions
 				// it’s a “normal” IPv6 address
 				else {
 					for ($i = 0; $i < 16; $i++) {
-						$ipAsString = sprintf($ipAsString . '%x', $ipAddress[$i]);
+						$ipAsString = sprintf($ipAsString . '%02x', $ipAddress[$i]);
 						if ($i % 2 == 1 && $i < 15) {
 							$ipAsString .= ':';
 						}

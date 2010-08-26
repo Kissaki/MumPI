@@ -310,11 +310,23 @@
 						);
 				}
 			}
-			function jq_server_unban(serverId, mask, bits)
+			function jq_server_unban(serverId, ipAsString, bits, username, hash, reason, start, duration)
 			{
+				var ip = [];
+				if (ipAsString.indexOf('.') != -1) {
+				  var ipv4 = ipAsString.match(/\d{1,3}/g);
+					ip = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255];
+					ip.concat(ipv4);
+				}
+				else {
+				  ip = ipAsString.match(/[0-9a-zA-Z]{2}/g);
+				  for (i in ip) {
+					  ip[i] = parseInt('0x' + ip[i]);
+				  }
+				}
 				$.post(
 						"./?ajax=server_unban",
-						{ 'serverId': serverId, 'ipmask': mask, 'bits': bits },
+						{ 'serverId': serverId, 'ip': ip, 'bits': bits, 'name': username, 'hash': hash, 'reason': reason, 'start': start, 'duration': duration },
 						function(data) {
 							if (data.length > 0) {
 								alert('Error :' + data);

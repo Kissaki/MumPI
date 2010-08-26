@@ -535,14 +535,14 @@ class ServerInterface_ice
 		$bans[] = $ban;
 		$srv->setBans($bans);
 	}
-	function unban($serverId, $ipmask, $bits=32)
+	function unban($serverId, $ip, $bits, $username, $hash, $reason, $start, $duration)
 	{
 		$srv = $this->getServer(intval($serverId));
 		$bans = $srv->getBans();
 		$newBans = array();
 		foreach ($bans as $ban)
 		{
-			if ($ban->address != $ipmask || $ban->bits != $bits) {
+			if ($ban->address != $ip || $ban->bits != $bits || $ban->name != $username || $ban->hash != $hash || $ban->reason != $reason || $ban->start != $start || $ban->duration != $duration) {
 				$newBans[] = $ban;
 			}
 		}
