@@ -777,16 +777,24 @@ class Ajax_Admin extends Ajax
 				<table>
 					<thead>
 						<tr>
+							<th>username</th>
 							<th>address</th>
 							<th>bits</th>
+							<th>hash</th>
+							<th>reason</th>
+							<th>banned at (until)
 							<th>actions</th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php foreach ($bans as $ban) { ?>
 							<tr>
+								<td><?php echo $ban->name; ?></td>
 								<td><?php echo HelperFunctions::int2ipAddress($ban->address); ?></td>
 								<td><?php echo $ban->bits; ?></td>
+								<td><?php echo $ban->hash; ?></td>
+								<td><?php echo $ban->reason; ?></td>
+								<td><?php echo date('r', $ban->start) . ' (' . ($ban->duration != 0 ? date('r', $ban->duration) : 'unlimited') . ')'; ?></td>
 								<td>
 									<?php
 										if (PermissionManager::getInstance()->serverCanBan($serverId))
