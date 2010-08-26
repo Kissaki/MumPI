@@ -251,30 +251,50 @@
 			function jq_server_user_mute(sessid)
 			{
 				$.post("./?ajax=server_user_mute",
-						{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
+						{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid },
+						function(data) {
+							if (data.length > 0) {
+								alert('Error :' + data);
+							}
+						  jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
+						}
 					);
-				jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 			}
 			function jq_server_user_unmute(sessid)
 			{
 				$.post("./?ajax=server_user_unmute",
-						{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
+						{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid },
+						function(data) {
+							if (data.length > 0) {
+								alert('Error :' + data);
+							}
+					  	jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
+						}
 					);
-				jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 			}
 			function jq_server_user_deaf(sessid)
 			{
 				$.post("./?ajax=server_user_deaf",
-						{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
+						{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid },
+						function(data) {
+							if (data.length > 0) {
+								alert('Error :' + data);
+							}
+							jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
+						}
 					);
-				jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 			}
 			function jq_server_user_undeaf(sessid)
 			{
 				$.post("./?ajax=server_user_undeaf",
-						{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid }
+						{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid },
+						function(data) {
+							if (data.length > 0) {
+								alert('Error :' + data);
+							}
+					  	jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
+						}
 					);
-				jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 			}
 			function jq_server_user_kick(sessid)
 			{
@@ -284,10 +304,12 @@
 					$.post("./?ajax=server_user_kick",
 							{ 'sid': <?php echo $_GET['sid']; ?>, 'sessid': sessid },
 							function(data) {
+								if (data.length > 0) {
+									alert('Error :' + data);
+								}
 								jq_server_getOnlineUsers(<?php echo $_GET['sid']; ?>);
 							}
 						);
-
 				}
 			}
 			function jq_server_unban(serverId, mask, bits)
@@ -296,7 +318,9 @@
 						"./?ajax=server_unban",
 						{ 'serverId': serverId, 'ipmask': mask, 'bits': bits },
 						function(data) {
-							if (data.length>0) { alert('failed: '+data); }
+							if (data.length > 0) {
+								alert('Error :' + data);
+							}
 							jq_server_getBans(serverId);
 						}
 					);

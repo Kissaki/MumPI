@@ -162,12 +162,13 @@ class ServerInterface_ice
 		$servers = $this->meta->getAllServers();
 		$filtered = array();
 		foreach ($servers as $server) {
-			// icesecret context
-			if (!empty($this->contextVars)) {
-				$server = $server->ice_context($this->contextVars);
-			}
-			if (HelperFunctions::getActiveSection()!='admin' || PermissionManager::getInstance()->isAdminOfServer($server->id()))
+			if (HelperFunctions::getActiveSection()!='admin' || PermissionManager::getInstance()->isAdminOfServer($server->id())) {
+				// set icesecret context if set
+				if (!empty($this->contextVars)) {
+					$server = $server->ice_context($this->contextVars);
+				}
 				$filtered[] = $server;
+			}
 		}
 		return $filtered;
 	}
@@ -178,7 +179,17 @@ class ServerInterface_ice
 	public function getRunningServers()
 	{
 		$servers = $this->meta->getBootedServers();
-		return $servers;
+		$filtered = array();
+		foreach ($servers as $server) {
+			if (HelperFunctions::getActiveSection()!='admin' || PermissionManager::getInstance()->isAdminOfServer($server->id())) {
+				// set icesecret context if set
+				if (!empty($this->contextVars)) {
+					$server = $server->ice_context($this->contextVars);
+				}
+				$filtered[] = $server;
+			}
+		}
+		return $filtered;
 	}
 	/**
 	 * Get a specific virtual server
@@ -208,32 +219,32 @@ class ServerInterface_ice
 
 	/**
 	 * Is the virtual server currently running?
-	 * @param $sid server id
+	 * @param int $sid server id
 	 * @return boolean
 	 */
 	public function isRunning($sid)
 	{
-		return self::getServer($sid)->isRunning();
+		return $this->getServer($sid)->isRunning();
 	}
 	/**
 	 * Start a specific virtual server
-	 * @param $sid server id
+	 * @param int $sid server id
 	 */
 	public function startServer($sid)
 	{
-		self::getServer($sid)->start();
+		$this->getServer($sid)->start();
 	}
 	/**
 	 * Stop a specific running virtual server
-	 * @param $sid server id
+	 * @param int $sid server id
 	 */
 	public function stopServer($sid)
 	{
-		self::getServer($sid)->stop();
+		$this->getServer($sid)->stop();
 	}
 	/**
 	 * Delete a virtual server with all it's configuration settings
-	 * @param $sid server id
+	 * @param int $sid server id
 	 */
 	public function deleteServer($sid)
 	{
@@ -245,13 +256,21 @@ class ServerInterface_ice
 	//TODO implement callbacks (add, remove)
 	//TODO setAuthenticator(ServerAuthenticator* auth)
 
+	/**
+	 * @param int $sid serverId
+	 * @param string $key
+	 */
 	public function getServerConfigEntry($sid, $key)
 	{
 		return $this->getServer($sid)->getConf($key);
 	}
+	/**
+	 * @param serverId $sid
+	 */
 	public function getServerConfig($sid)
 	{
-		// As an unset config entry will fall back to the default config, we will get the default config and overwrite/add it with server specific settings
+		// As an unset config entry will fall back to the default config,
+		// we will get the default config and overwrite/add it with server specific settings (merge)
 		$conf = $this->getDefaultConfig();
 		$confS = $this->getServer($sid)->getAllConf();
 		foreach ($confS as $key=>$val) {
@@ -259,21 +278,29 @@ class ServerInterface_ice
 		}
 		return $conf;
 	}
+	/**
+	 * @param int $sid
+	 * @param string $key
+	 * @param string $newValue
+	 */
 	public function setServerConfigEntry($sid, $key, $newValue)
 	{
 		$this->getServer($sid)->setConf($key, $newValue);
 	}
 
+	/**
+	 * @param int $sid
+	 * @param string $newPw
+	 */
 	public function setServerSuperuserPassword($sid, $newPw)
 	{
 		$this->getServer($sid)->setSuperuserPassword($newPw);
 	}
 
 	/**
-	 *
-	 * @param $sid server id
-	 * @param $first Lowest numbered entry to fetch. 0 is the most recent item.
-	 * @param $last Last entry to fetch.
+	 * @param int $sid server id
+	 * @param int $first Lowest numbered entry to fetch. 0 is the most recent item.
+	 * @param int $last Last entry to fetch.
 	 * @return array(string) log entries
 	 */
 	public function getServerLog($sid, $first=25, $last=0)
@@ -284,8 +311,8 @@ class ServerInterface_ice
 
 	/**
 	 * Get all user registrations of the virtual server
-	 * @param $sid
-	 * @param $filter a filter
+	 * @param int $sid
+	 * @param string $filter a filter
 	 * @return sequence of registrations
 	 */
 	public function getServerRegistrations($serverId, $filter='')
@@ -310,7 +337,7 @@ class ServerInterface_ice
 	}
 	/**
 	 * Get connected users of a virtual server
-	 * @param $sid
+	 * @param int $sid
 	 * @return array of MurmurUser objects
 	 */
 	public function getServerUsersConnected($serverId)
@@ -466,7 +493,7 @@ class ServerInterface_ice
 	}
 	function unmuteUser($srvid, $sessid)
 	{
-		$srv = $this->meta->getServer(intval($srvid));
+		$srv = $this->getServer(intval($srvid));
 		$user = $srv->getState(intval($sessid));
 		$user->deaf = false;
 		$user->mute = false;
@@ -474,21 +501,21 @@ class ServerInterface_ice
 	}
 	function deafUser($srvid, $sessid)
 	{
-		$srv = $this->meta->getServer(intval($srvid));
+		$srv = $this->getServer(intval($srvid));
 		$user = $srv->getState(intval($sessid));
 		$user->deaf = true;
 		$srv->setState($user);
 	}
 	function undeafUser($srvid, $sessid)
 	{
-		$srv = $this->meta->getServer(intval($srvid));
+		$srv = $this->getServer(intval($srvid));
 		$user = $srv->getState(intval($sessid));
 		$user->deaf = false;
 		$srv->setState($user);
 	}
 	function kickUser($srvid, $sessid, $reason='')
 	{
-		$srv = $this->meta->getServer(intval($srvid));
+		$srv = $this->getServer(intval($srvid));
 		if (!empty($this->contextVars)) {
 			$srv = $srv->ice_context($this->contextVars);
 		}
@@ -500,7 +527,7 @@ class ServerInterface_ice
 			$ip = HelperFunctions::ip2int($ip);
 		}
 
-		$srv = $this->meta->getServer(intval($serverId));
+		$srv = $this->getServer(intval($serverId));
 		$bans = $srv->getBans();
 		$ban = new Murmur_Ban();
 	  $ban->address = $ip;
@@ -510,7 +537,7 @@ class ServerInterface_ice
 	}
 	function unban($serverId, $ipmask, $bits=32)
 	{
-		$srv = $this->meta->getServer(intval($serverId));
+		$srv = $this->getServer(intval($serverId));
 		$bans = $srv->getBans();
 		$newBans = array();
 		foreach ($bans as $ban)
@@ -523,7 +550,7 @@ class ServerInterface_ice
 	}
 	function getServerBans($serverId)
 	{
-		return $this->meta->getServer(intval($serverId))->getBans();
+		return $this->getServer(intval($serverId))->getBans();
 	}
 	function getServerBansIpString($srvid)
 	{
