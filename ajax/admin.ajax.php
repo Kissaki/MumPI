@@ -900,78 +900,89 @@ class Ajax_Admin extends Ajax
 			if ($canEdit) { ?>
 			<p style="font-size:x-small;">(Double-click entries to edit them)</p>
 		<?php } ?>
-		<table><tbody>
-			<tr class="table_headline"><td colspan="2">General</td></tr>
-			<tr><td>Password</td>		<td class="jq_editable" id="jq_editable_server_conf_password"><?php echo $conf['password']; unset($conf['password']); ?></td></tr>
-			<tr><td>Users</td>			<td class="jq_editable" id="jq_editable_server_conf_users"><?php echo $conf['users'];    unset($conf['users']); ?></td></tr>
-			<tr><td>Timeout</td>		<td class="jq_editable" id="jq_editable_server_conf_timeout"><?php echo $conf['timeout'];  unset($conf['timeout']); ?></td></tr>
-			<tr><td>Host</td>			<td class="jq_editable" id="jq_editable_server_conf_host"><?php echo $conf['host'];     unset($conf['host']); ?></td></tr>
-			<tr><td>Port</td>			<td class="jq_editable" id="jq_editable_server_conf_port"><?php echo $conf['port'];     unset($conf['port']); ?></td></tr>
-			<tr>
-				<td>Default Channel</td>
-				<td id="jq_editable_server_conf_defaultchannel">
-					<?php
-						$defaultChannelId = $conf['defaultchannel'];
-						$server = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($_POST['sid']));
-						$defaultChannel = $server->getChannel($defaultChannelId);
-						echo $defaultChannel->getName();
+		<table>
+			<tbody>
+				<tr class="table_headline"><td colspan="2">General</td></tr>
+				<tr><td>Password</td>		<td class="jq_editable" id="jq_editable_server_conf_password"><?php echo $conf['password']; unset($conf['password']); ?></td></tr>
+				<tr><td>Users</td>			<td class="jq_editable" id="jq_editable_server_conf_users"><?php echo $conf['users'];    unset($conf['users']); ?></td></tr>
+				<tr><td>Timeout</td>		<td class="jq_editable" id="jq_editable_server_conf_timeout"><?php echo $conf['timeout'];  unset($conf['timeout']); ?></td></tr>
+				<tr><td>Host</td>			<td class="jq_editable" id="jq_editable_server_conf_host"><?php echo $conf['host'];     unset($conf['host']); ?></td></tr>
+				<tr><td>Port</td>			<td class="jq_editable" id="jq_editable_server_conf_port"><?php echo $conf['port'];     unset($conf['port']); ?></td></tr>
+				<tr>
+					<td>Default Channel</td>
+					<td id="jq_editable_server_conf_defaultchannel">
+						<?php
+							$defaultChannelId = $conf['defaultchannel'];
+							$server = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($_POST['sid']));
+							$defaultChannel = $server->getChannel($defaultChannelId);
+							echo $defaultChannel->getName();
 
-						// change default chan functionality
-						$chanTree = $server->getTree();
-						function treePrint(MurmurTree $tree, $first=true)
-						{
-							$subs = $tree->getSubChannels();
-							if ($first) {
-								echo '<div id="jq_editable_server_conf_defaultchannel_form">';
-								//TODO i18n
-								echo '<p>Select the channel unregistered and new users are to join when joining the server.</p>';
-							}
-							?>
-								<ul>
-									<li class="form_clickable_submit jslink" id="channel_<?php echo $tree->getRootChannel()->getId(); ?>"><?php echo $tree->getRootChannel()->getName(); ?></li>
-									<?php
-										if (!empty($subs)) {
-											foreach ($subs as $subTree) {
-												treePrint($subTree, false);
+							// change default chan functionality
+							$chanTree = $server->getTree();
+							function treePrint(MurmurTree $tree, $first=true)
+							{
+								$subs = $tree->getSubChannels();
+								if ($first) {
+									echo '<div id="jq_editable_server_conf_defaultchannel_form">';
+									//TODO i18n
+									echo '<p>Select the channel unregistered and new users are to join when joining the server.</p>';
+								}
+								?>
+									<ul>
+										<li class="form_clickable_submit jslink" id="channel_<?php echo $tree->getRootChannel()->getId(); ?>"><?php echo $tree->getRootChannel()->getName(); ?></li>
+										<?php
+											if (!empty($subs)) {
+												foreach ($subs as $subTree) {
+													treePrint($subTree, false);
+												}
 											}
-										}
-									?>
-								</ul>
-							<?php
-							if ($first) {
-								echo '</div>';
+										?>
+									</ul>
+								<?php
+								if ($first) {
+									echo '</div>';
+								}
 							}
-						}
-						treePrint($chanTree);
-					?>
-				</td>
-			</tr>
-			<tr><td>welcometext</td>	<td class="jq_editable" id="jq_editable_server_conf_welcometext"><?php echo $conf['welcometext']; unset($conf['welcometext']); ?></td></tr>
+							treePrint($chanTree);
+						?>
+					</td>
+				</tr>
+				<tr><td>welcometext</td>	<td class="jq_editable" id="jq_editable_server_conf_welcometext"><?php echo $conf['welcometext']; unset($conf['welcometext']); ?></td></tr>
 
-			<tr class="table_headline">	<td colspan="2"></td></tr>
-			<tr><td>bandwidth</td>		<td class="jq_editable" id="jq_editable_server_conf_bandwidth"><?php echo $conf['bandwidth']; unset($conf['bandwidth']); ?></td></tr>
-			<tr><td>channelname</td>	<td class="jq_editable" id="jq_editable_server_conf_channelname"><?php echo $conf['channelname']; unset($conf['channelname']); ?></td></tr>
-			<tr><td>username</td>		<td class="jq_editable" id="jq_editable_server_conf_playername"><?php echo $conf['username']; unset($conf['username']); ?></td></tr>
-			<tr><td>textmessagelength</td>		<td class="jq_editable" id="jq_editable_server_conf_playername"><?php echo $conf['textmessagelength']; unset($conf['textmessagelength']); ?></td></tr>
-			<tr><td>obfuscate</td>		<td class="jq_editable" id="jq_editable_server_conf_obfuscate"><?php echo $conf['obfuscate']; unset($conf['obfuscate']); ?></td></tr>
+				<tr class="table_headline">	<td colspan="2"></td></tr>
+				<tr><td>bandwidth</td>		<td class="jq_editable" id="jq_editable_server_conf_bandwidth"><?php echo $conf['bandwidth']; unset($conf['bandwidth']); ?></td></tr>
+				<tr><td>channelname</td>	<td class="jq_editable" id="jq_editable_server_conf_channelname"><?php echo $conf['channelname']; unset($conf['channelname']); ?></td></tr>
+				<tr><td>username</td>		<td class="jq_editable" id="jq_editable_server_conf_playername"><?php echo $conf['username']; unset($conf['username']); ?></td></tr>
+				<tr><td>textmessagelength</td>		<td class="jq_editable" id="jq_editable_server_conf_playername"><?php echo $conf['textmessagelength']; unset($conf['textmessagelength']); ?></td></tr>
+				<tr><td>allowhtml</td>		<td class="jq_editable" id="jq_editable_server_conf_allowhtml"><?php echo $conf['allowhtml']; unset($conf['allowhtml']); ?></td></tr>
+				<tr><td>obfuscate ips</td>		<td class="jq_editable" id="jq_editable_server_conf_obfuscate"><?php echo $conf['obfuscate']; unset($conf['obfuscate']); ?></td></tr>
+				<tr>
+					<td><abbr title="(service for server discovery on LAN)">bonjour</abbr></td>
+					<td class="jq_editable" id="jq_editable_server_conf_bonjour"><?php echo $conf['bonjour']; unset($conf['bonjour']); ?></td>
+				</tr>
 
-			<tr class="table_headline">	 <td colspan="2">Server Registration</td></tr>
-			<tr><td>registerhostname</td><td class="jq_editable" id="jq_editable_server_conf_registerhostname"><?php echo $conf['registerhostname']; unset($conf['registerhostname']); ?></td></tr>
-			<tr><td>registername</td>	 <td class="jq_editable" id="jq_editable_server_conf_registername"><?php echo $conf['registername']; unset($conf['registername']); ?></td></tr>
-			<tr><td>registerpassword</td><td class="jq_editable" id="jq_editable_server_conf_registerpassword"><?php echo $conf['registerpassword']; unset($conf['registerpassword']); ?></td></tr>
-			<tr><td>registerurl</td>	 <td class="jq_editable" id="jq_editable_server_conf_registerurl"><?php echo $conf['registerurl']; unset($conf['registerurl']); ?></td></tr>
-
-<?php
-		foreach ($conf AS $key=>$val) {
-?>
-			<tr>
-				<td><?php echo $key; ?></td>
-				<td class="jq_editable" id="jq_editable_server_conf_<?php echo $key; ?>"><?php echo $val; ?></td>
-			</tr>
-<?php
-		}
-?>
-		</tbody></table>
+				<tr class="table_headline">	 <td colspan="2">Server Registration</td></tr>
+				<tr><td>registerhostname</td><td class="jq_editable" id="jq_editable_server_conf_registerhostname"><?php echo $conf['registerhostname']; unset($conf['registerhostname']); ?></td></tr>
+				<tr><td>registername</td>	 <td class="jq_editable" id="jq_editable_server_conf_registername"><?php echo $conf['registername']; unset($conf['registername']); ?></td></tr>
+				<tr><td>registerpassword</td><td class="jq_editable" id="jq_editable_server_conf_registerpassword"><?php echo $conf['registerpassword']; unset($conf['registerpassword']); ?></td></tr>
+				<tr><td>registerurl</td>	 <td class="jq_editable" id="jq_editable_server_conf_registerurl"><?php echo $conf['registerurl']; unset($conf['registerurl']); ?></td></tr>
+				<?php
+					if (!empty($conf)) {
+						?>
+							<tr class="table_headline">	 <td colspan="2">Misc</td></tr>
+						<?php
+					}
+					foreach ($conf AS $key=>$val) {
+						?>
+									<tr>
+										<td><?php echo $key; ?></td>
+										<td class="jq_editable" id="jq_editable_server_conf_<?php echo $key; ?>"><?php echo $val; ?></td>
+									</tr>
+						<?php
+					}
+				?>
+			</tbody>
+		</table>
 <?php
 		if ($canEdit) {
 ?>
