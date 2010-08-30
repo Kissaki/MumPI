@@ -927,12 +927,37 @@ class Ajax_Admin extends Ajax
 		<?php } ?>
 		<table>
 			<tbody>
-				<tr class="table_headline"><td colspan="2">General</td></tr>
-				<tr><td>Password</td>		<td class="jq_editable" id="jq_editable_server_conf_password"><?php echo $conf['password']; unset($conf['password']); ?></td></tr>
-				<tr><td>Users</td>			<td class="jq_editable" id="jq_editable_server_conf_users"><?php echo $conf['users'];    unset($conf['users']); ?></td></tr>
-				<tr><td>Timeout</td>		<td class="jq_editable" id="jq_editable_server_conf_timeout"><?php echo $conf['timeout'];  unset($conf['timeout']); ?></td></tr>
-				<tr><td>Host</td>			<td class="jq_editable" id="jq_editable_server_conf_host"><?php echo $conf['host'];     unset($conf['host']); ?></td></tr>
-				<tr><td>Port</td>			<td class="jq_editable" id="jq_editable_server_conf_port"><?php echo $conf['port'];     unset($conf['port']); ?></td></tr>
+				<tr class="table_headline">
+					<td colspan="2">General</td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td class="jq_editable" id="jq_editable_server_conf_password"><?php echo $conf['password']; ?></td>
+					<?php unset($conf['password']); ?>
+				</tr>
+				<tr>
+					<td>Users</td>
+					<td class="jq_editable" id="jq_editable_server_conf_users"><?php echo $conf['users']; ?></td>
+					<?php unset($conf['users']); ?>
+				</tr>
+				<tr>
+					<td>Timeout</td>
+					<td class="jq_editable" id="jq_editable_server_conf_timeout"><?php echo $conf['timeout']; ?></td>
+					<?php unset($conf['timeout']); ?>
+				</tr>
+				<tr>
+					<td>Host</td>
+					<td class="jq_editable" id="jq_editable_server_conf_host"><?php echo $conf['host']; ?></td>
+					<?php unset($conf['host']); ?>
+				</tr>
+				<tr>
+					<td>Port</td>
+					<td class="jq_editable" id="jq_editable_server_conf_port"><?php echo $conf['port']; ?></td>
+					<?php unset($conf['port']); ?>
+				</tr>
+				<?php
+					if (isset($conf['defaultchannel'])) {
+				?>
 				<tr>
 					<td>Default Channel</td>
 					<td id="jq_editable_server_conf_defaultchannel">
@@ -973,6 +998,9 @@ class Ajax_Admin extends Ajax
 						?>
 					</td>
 				</tr>
+				<?php
+					}
+				?>
 				<tr>
 					<td>Welcometext</td>
 					<td class="jq_editable" id="jq_editable_server_conf_welcometext">
@@ -989,6 +1017,9 @@ class Ajax_Admin extends Ajax
 						<?php unset($conf['bandwidth']); ?>
 					</td>
 				</tr>
+				<?php
+					if (isset($conf['obfuscate'])) {
+				?>
 				<tr>
 					<td>Obfuscate IPs</td>
 					<td id="jq_editable_server_conf_obfuscate">
@@ -996,6 +1027,9 @@ class Ajax_Admin extends Ajax
 						<?php unset($conf['obfuscate']); ?>
 					</td>
 				</tr>
+				<?php
+					}
+				?>
 				<tr>
 					<td>Allowed Channelname <a href="http://en.wikipedia.org/wiki/Regular_expression#POSIX" rel="external">Regexp</a></td>
 					<td class="jq_editable" id="jq_editable_server_conf_channelname">
@@ -1010,6 +1044,9 @@ class Ajax_Admin extends Ajax
 						<?php unset($conf['username']); ?>
 					</td>
 				</tr>
+				<?php
+					if (isset($conf['certrequired'])) {
+				?>
 				<tr>
 					<td>UserCert Required</td>
 					<td id="jq_editable_server_conf_certrequired">
@@ -1017,6 +1054,10 @@ class Ajax_Admin extends Ajax
 						<?php unset($conf['certrequired']); ?>
 					</td>
 				</tr>
+				<?php
+					}
+					if (isset($conf['textmessagelength'])) {
+				?>
 				<tr>
 					<td>Textmessagelength</td>
 					<td class="jq_editable" id="jq_editable_server_conf_textmessagelength">
@@ -1024,6 +1065,10 @@ class Ajax_Admin extends Ajax
 						<?php unset($conf['textmessagelength']); ?>
 					</td>
 				</tr>
+				<?php
+					}
+					if (isset($conf['allowhtml'])) {
+				?>
 				<tr>
 					<td>Allow HTML</td>
 					<td id="jq_editable_server_conf_allowhtml">
@@ -1031,6 +1076,10 @@ class Ajax_Admin extends Ajax
 						<?php  unset($conf['allowhtml']); ?>
 					</td>
 				</tr>
+				<?php
+					}
+					if (isset($conf['rememberchannel'])) {
+				?>
 				<tr>
 					<td><abbr title="Remember last channel for registered users; Users will be moved to this channel on connection.">Remember Channel</abbr></td>
 					<td id="jq_editable_server_conf_rememberchannel">
@@ -1038,6 +1087,10 @@ class Ajax_Admin extends Ajax
 						<?php unset($conf['rememberchannel']); ?>
 					</td>
 				</tr>
+				<?php
+					}
+					if (isset($conf['bonjour'])) {
+				?>
 				<tr>
 					<td><abbr title="(service for server discovery on LAN)">Bonjour</abbr></td>
 					<td id="jq_editable_server_conf_bonjour">
@@ -1045,6 +1098,9 @@ class Ajax_Admin extends Ajax
 						<?php unset($conf['bonjour']); ?>
 					</td>
 				</tr>
+				<?php
+					}
+				?>
 
 				<tr class="table_headline">	 <td colspan="2">Server Registration</td></tr>
 				<tr><td>registerhostname</td><td class="jq_editable" id="jq_editable_server_conf_registerhostname"><?php echo $conf['registerhostname']; unset($conf['registerhostname']); ?></td></tr>
