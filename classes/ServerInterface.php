@@ -285,6 +285,9 @@ class ServerInterface_ice
 	 */
 	public function setServerConfigEntry($sid, $key, $newValue)
 	{
+		if ($newValue == 'true' || $newValue == 'false') {
+			$newValue = $newValue == 'true'?'1':'0';
+		}
 		$this->getServer($sid)->setConf($key, $newValue);
 	}
 
