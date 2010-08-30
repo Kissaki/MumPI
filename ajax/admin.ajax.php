@@ -580,8 +580,8 @@ class Ajax_Admin extends Ajax
 
 						<th>time online</th>
 						<th>idle</th>
-						<th>B/s</th>
-						<th><abbr title="client version">client</abbr></th>
+						<th><abbr title="~Bytes per second – “Average transmission rate in bytes per second over the last few seconds.”">B/s</abbr></th>
+						<th><abbr title="Client Version – This is either the stable version number (with major.minor.patchlevel), or the version number with release-version (e.g. snapshot version) in paranthesis">Version</abbr></th>
 						<th>comment</th>
 						<th>address</th>
 						<th>TCPonly</th>
@@ -783,8 +783,6 @@ class Ajax_Admin extends Ajax
 		try {
 			$bans = ServerInterface::getInstance()->getServerBans($serverId);
 			echo '<h2>Bans</h2>';
-			if (PermissionManager::getInstance()->serverCanBan($serverId))
-				echo '<p><a class="jqlink" onclick="jq_server_ban_show(' . $serverId . ')">add</a></p>';
 			if (count($bans)==0) {
 				echo 'no bans on this virtual server';
 			} else {
