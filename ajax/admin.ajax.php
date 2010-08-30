@@ -953,12 +953,27 @@ class Ajax_Admin extends Ajax
 				<tr><td>bandwidth</td>		<td class="jq_editable" id="jq_editable_server_conf_bandwidth"><?php echo $conf['bandwidth']; unset($conf['bandwidth']); ?></td></tr>
 				<tr><td>channelname</td>	<td class="jq_editable" id="jq_editable_server_conf_channelname"><?php echo $conf['channelname']; unset($conf['channelname']); ?></td></tr>
 				<tr><td>username</td>		<td class="jq_editable" id="jq_editable_server_conf_playername"><?php echo $conf['username']; unset($conf['username']); ?></td></tr>
-				<tr><td>textmessagelength</td>		<td class="jq_editable" id="jq_editable_server_conf_playername"><?php echo $conf['textmessagelength']; unset($conf['textmessagelength']); ?></td></tr>
-				<tr><td>allowhtml</td>		<td class="jq_editable" id="jq_editable_server_conf_allowhtml"><?php echo $conf['allowhtml']; unset($conf['allowhtml']); ?></td></tr>
-				<tr><td>obfuscate ips</td>		<td class="jq_editable" id="jq_editable_server_conf_obfuscate"><?php echo $conf['obfuscate']; unset($conf['obfuscate']); ?></td></tr>
+				<tr><td>textmessagelength</td>		<td class="jq_editable" id="jq_editable_server_conf_textmessagelength"><?php echo $conf['textmessagelength']; unset($conf['textmessagelength']); ?></td></tr>
+				<tr>
+					<td>allowhtml</td>
+					<td id="jq_editable_server_conf_allowhtml">
+						<input type="checkbox"<?php if ($conf['allowhtml'] == true) { echo ' checked="checked"'; } ?>/>
+						<?php  unset($conf['allowhtml']); ?>
+					</td>
+				</tr>
+				<tr>
+					<td>obfuscate ips</td>
+					<td id="jq_editable_server_conf_obfuscate">
+						<input type="checkbox"<?php if ($conf['obfuscate'] == true) { echo ' checked="checked"'; } ?>/>
+						<?php unset($conf['obfuscate']); ?>
+					</td>
+				</tr>
 				<tr>
 					<td><abbr title="(service for server discovery on LAN)">bonjour</abbr></td>
-					<td class="jq_editable" id="jq_editable_server_conf_bonjour"><?php echo $conf['bonjour']; unset($conf['bonjour']); ?></td>
+					<td id="jq_editable_server_conf_bonjour">
+						<input type="checkbox"<?php if ($conf['bonjour'] == true) { echo ' checked="checked"'; } ?> disabled="disabled"/>
+						<?php unset($conf['bonjour']); ?>
+					</td>
 				</tr>
 
 				<tr class="table_headline">	 <td colspan="2">Server Registration</td></tr>
@@ -988,20 +1003,45 @@ class Ajax_Admin extends Ajax
 ?>
 			<script type="text/javascript">/*<![CDATA[*/
 				var currentServerId = <?php echo $_POST['sid']; ?>;
+				function jq_server_conf_update(key, newValue)
+				{
+				  $.post('./?ajax=server_config_update',
+							{ 'sid': currentServerId, 'key': key, 'value': newValue.toString() },
+							function(data) {
+								if (data.length > 0) {
+									alert('Error: ' + data);
+								}
+								jq_server_config_show(currentServerId);
+							}
+						);
+				}
+				jQuery('#jq_editable_server_conf_allowhtml input:checkbox')
+				.click(
+					function(ev) {
+						jq_server_conf_update('allowhtml', jQuery(this).attr('checked'));
+					}
+				);
+				jQuery('#jq_editable_server_conf_obfuscate input:checkbox')
+					.click(
+						function(ev) {
+							jq_server_conf_update('obfuscate', jQuery(this).attr('checked'));
+						}
+					);
+				jQuery('#jq_editable_server_conf_bonjour input:checkbox')
+				.click(
+					function(ev) {
+						jq_server_conf_update('bonjour', jQuery(this).attr('checked'));
+					}
+				);
 				function jq_editable_server_conf_onSubmit(obj, content)
 				{
 					var id = obj.attr('id');
 					var subId = id.substring(id.lastIndexOf('_')+1, id.length);
-					$.post('./?ajax=server_config_update',
-						{ 'sid': currentServerId, 'key': subId, 'value': content.current },
-						function(data) {
-							jq_server_config_show(currentServerId);
-						}
-					);
+					jq_server_conf_update(subId, content.current);
 				}
 				function jq_editable_server_conf_text2textarea(key)
 				{
-					$('#jq_editable_server_conf_'+key).editable('destroy').editable({
+				  jQuery('#jq_editable_server_conf_'+key).editable('destroy').editable({
 						'type': 'textarea',
 						'submit': 'save',
 						'cancel':'cancel',
@@ -1009,7 +1049,7 @@ class Ajax_Admin extends Ajax
 						'onSubmit': function(content){ jq_editable_server_conf_onSubmit($(this), content); }
 					});
 				}
-				$('.jq_editable')
+				jQuery('.jq_editable')
 					.editable({
 						'type': 'text',
 						'submit': 'save',
@@ -1058,13 +1098,20 @@ class Ajax_Admin extends Ajax
 		}
 	}
 
+	/**
+	 * params:
+	 *  sid: serverId
+	 *  key: config setting key
+	 *  value: new value
+	 */
 	public static function server_config_update()
 	{
-		$_POST['sid'] = intval($_POST['sid']);
-		if (PermissionManager::getInstance()->serverCanEditConf($_POST['sid'])) {
-			if (isset($_POST['sid']) && isset($_POST['key']) && isset($_POST['value']))
-			{
-				ServerInterface::getInstance()->setServerConfigEntry($_POST['sid'], $_POST['key'], $_POST['value']);
+		$eiServerId = intval($_POST['sid']);
+		if (PermissionManager::getInstance()->serverCanEditConf($eiServerId)) {
+			if (isset($eiServerId) && isset($_POST['key']) && isset($_POST['value'])) {
+				ServerInterface::getInstance()->setServerConfigEntry($eiServerId, $_POST['key'], $_POST['value']);
+			} else {
+				echo 'missing var';
 			}
 		}
 	}
