@@ -1142,29 +1142,35 @@ class Ajax_Admin extends Ajax
 						);
 				}
 				jQuery('#jq_editable_server_conf_allowhtml input:checkbox')
-				.click(
-					function(ev) {
-						jq_server_conf_update('allowhtml', jQuery(this).attr('checked'));
-					}
-				);
+					.click(
+						function(ev) {
+							jq_server_conf_update('allowhtml', jQuery(this).attr('checked'));
+						}
+					);
 				jQuery('#jq_editable_server_conf_obfuscate input:checkbox')
 					.click(
 						function(ev) {
 							jq_server_conf_update('obfuscate', jQuery(this).attr('checked'));
 						}
 					);
+				jQuery('#jq_editable_server_conf_rememberchannel input:checkbox')
+					.click(
+						function(ev) {
+							jq_server_conf_update('rememberchannel', jQuery(this).attr('checked'));
+						}
+					);
 				jQuery('#jq_editable_server_conf_bonjour input:checkbox')
-				.click(
-					function(ev) {
-						jq_server_conf_update('bonjour', jQuery(this).attr('checked'));
-					}
-				);
+					.click(
+						function(ev) {
+							jq_server_conf_update('bonjour', jQuery(this).attr('checked'));
+						}
+					);
 				jQuery('#jq_editable_server_conf_certrequired input:checkbox')
-				.click(
-					function(ev) {
-						jq_server_conf_update('certrequired', jQuery(this).attr('checked'));
-					}
-				);
+					.click(
+						function(ev) {
+							jq_server_conf_update('certrequired', jQuery(this).attr('checked'));
+						}
+					);
 				function jq_editable_server_conf_onSubmit(obj, content)
 				{
 					var id = obj.attr('id');
