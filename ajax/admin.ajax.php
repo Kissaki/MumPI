@@ -878,13 +878,18 @@ class Ajax_Admin extends Ajax
 			exit();
 		}
 
-		try {
-			$tree = ServerInterface::getInstance()->getServer($_POST['sid'])->getTree();
-			HelperFunctions::showChannelTree($tree);
-		} catch(Murmur_ServerBootedException $exc) {
-			//TODO i18n
-			echo 'Server is not running.';
-		}
+		$chanImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/channel.svg';
+		$chanImgHtmlObj = '<object data="' . $chanImgUrl . '" type="image/svg+xml" width="64" height="64"></object>';
+		echo '<div class="servers_tree">';
+		echo MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($_POST['sid']))->getTree()->toHtml();
+		echo '</div>';
+		?>
+			<script type="text/javascript">
+				jQuery('.servers_tree').ready(function(){
+				  	jQuery('.servers_tree .channelname').prepend('<?php echo $chanImgHtmlObj; ?>');
+					});
+			</script>
+		<?php
 	}
 
 	public static function show_acl()

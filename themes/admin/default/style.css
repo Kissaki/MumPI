@@ -109,3 +109,16 @@ table.list_admins .list_admins_item {
 	margin-top:8px;
 	padding:4px 10px;
 }
+
+.servers_tree ul {
+	margin:0px;
+	padding-left:12px;
+}
+.servers_tree .channelname {
+	border-left:1px solid #0000ff;
+	padding-left:2px;
+}
+.servers_tree .username {
+	border-left:1px solid #ff0000;
+	padding-left:2px;
+}
