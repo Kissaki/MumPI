@@ -878,11 +878,14 @@ class Ajax_Admin extends Ajax
 			exit();
 		}
 
-		//TODO how do I correctly resize embedded svg images?
-		//$chanImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/channel.svg';
-		//$chanImgHtmlObj = '<object data="' . $chanImgUrl . '" type="image/svg+xml" width="64" height="64"></object>';
 		$chanImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/channel_12.png';
 		$chanImgHtmlObj = '<img src="' . $chanImgUrl . '" alt=""/>';
+		$chanImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/channel.svg';
+		$chanImgHtmlObj = '<object data="' . $chanImgUrl . '" type="image/svg+xml" width="12" height="12">' . $chanImgHtmlObj . '</object>';
+		$userImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/talking_off_12.png';
+		$userImgHtmlObj = '<img src="' . $userImgUrl . '" alt=""/>';
+		$userImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/talking_off.svg';
+		$userImgHtmlObj = '<object data="' . $userImgUrl . '" type="image/svg+xml" width="12" height="12">' . $userImgHtmlObj . '</object>';
 		echo '<div class="servers_tree">';
 		echo MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($_POST['sid']))->getTree()->toHtml();
 		echo '</div>';
@@ -890,6 +893,7 @@ class Ajax_Admin extends Ajax
 			<script type="text/javascript">
 				jQuery('.servers_tree').ready(function(){
 				  	jQuery('.servers_tree .channelname').prepend('<?php echo $chanImgHtmlObj; ?>');
+				  	jQuery('.servers_tree .username').prepend('<?php echo $userImgHtmlObj; ?>');
 					});
 			</script>
 		<?php
