@@ -944,34 +944,79 @@ class Ajax_Admin extends Ajax
 								}
 							}
 							treePrint($chanTree);
+							unset($conf['defaultchannel']);
 						?>
 					</td>
 				</tr>
-				<tr><td>welcometext</td>	<td class="jq_editable" id="jq_editable_server_conf_welcometext"><?php echo $conf['welcometext']; unset($conf['welcometext']); ?></td></tr>
+				<tr>
+					<td>Welcometext</td>
+					<td class="jq_editable" id="jq_editable_server_conf_welcometext">
+						<?php echo $conf['welcometext']; ?>
+						<?php unset($conf['welcometext']); ?>
+					</td>
+				</tr>
 
 				<tr class="table_headline">	<td colspan="2"></td></tr>
-				<tr><td>bandwidth</td>		<td class="jq_editable" id="jq_editable_server_conf_bandwidth"><?php echo $conf['bandwidth']; unset($conf['bandwidth']); ?></td></tr>
-				<tr><td>channelname</td>	<td class="jq_editable" id="jq_editable_server_conf_channelname"><?php echo $conf['channelname']; unset($conf['channelname']); ?></td></tr>
-				<tr><td>username</td>		<td class="jq_editable" id="jq_editable_server_conf_playername"><?php echo $conf['username']; unset($conf['username']); ?></td></tr>
-				<tr><td>textmessagelength</td>		<td class="jq_editable" id="jq_editable_server_conf_textmessagelength"><?php echo $conf['textmessagelength']; unset($conf['textmessagelength']); ?></td></tr>
 				<tr>
-					<td>allowhtml</td>
-					<td id="jq_editable_server_conf_allowhtml">
-						<input type="checkbox"<?php if ($conf['allowhtml'] == true) { echo ' checked="checked"'; } ?>/>
-						<?php  unset($conf['allowhtml']); ?>
+					<td>Bandwidth</td>
+					<td class="jq_editable" id="jq_editable_server_conf_bandwidth">
+						<?php echo $conf['bandwidth']; ?>
+						<?php unset($conf['bandwidth']); ?>
 					</td>
 				</tr>
 				<tr>
-					<td>obfuscate ips</td>
+					<td>Obfuscate IPs</td>
 					<td id="jq_editable_server_conf_obfuscate">
 						<input type="checkbox"<?php if ($conf['obfuscate'] == true) { echo ' checked="checked"'; } ?>/>
 						<?php unset($conf['obfuscate']); ?>
 					</td>
 				</tr>
 				<tr>
-					<td><abbr title="(service for server discovery on LAN)">bonjour</abbr></td>
+					<td>Allowed Channelname <a href="http://en.wikipedia.org/wiki/Regular_expression#POSIX" rel="external">Regexp</a></td>
+					<td class="jq_editable" id="jq_editable_server_conf_channelname">
+						<?php echo $conf['channelname']; ?>
+						<?php unset($conf['channelname']); ?>
+					</td>
+				</tr>
+				<tr>
+					<td>Allowed Username <a href="http://en.wikipedia.org/wiki/Regular_expression#POSIX" rel="external">Regexp</a></td>
+					<td class="jq_editable" id="jq_editable_server_conf_username">
+						<?php echo $conf['username']; ?>
+						<?php unset($conf['username']); ?>
+					</td>
+				</tr>
+				<tr>
+					<td>UserCert Required</td>
+					<td id="jq_editable_server_conf_certrequired">
+						<input type="checkbox"<?php if ($conf['certrequired'] == true) { echo ' checked="checked"'; } ?>/>
+						<?php unset($conf['certrequired']); ?>
+					</td>
+				</tr>
+				<tr>
+					<td>Textmessagelength</td>
+					<td class="jq_editable" id="jq_editable_server_conf_textmessagelength">
+						<?php echo $conf['textmessagelength']; ?>
+						<?php unset($conf['textmessagelength']); ?>
+					</td>
+				</tr>
+				<tr>
+					<td>Allow HTML</td>
+					<td id="jq_editable_server_conf_allowhtml">
+						<input type="checkbox"<?php if ($conf['allowhtml'] == true) { echo ' checked="checked"'; } ?>/>
+						<?php  unset($conf['allowhtml']); ?>
+					</td>
+				</tr>
+				<tr>
+					<td><abbr title="Remember last channel for registered users; Users will be moved to this channel on connection.">Remember Channel</abbr></td>
+					<td id="jq_editable_server_conf_rememberchannel">
+						<input type="checkbox"<?php if ($conf['rememberchannel'] == true) { echo ' checked="checked"'; } ?>/>
+						<?php unset($conf['rememberchannel']); ?>
+					</td>
+				</tr>
+				<tr>
+					<td><abbr title="(service for server discovery on LAN)">Bonjour</abbr></td>
 					<td id="jq_editable_server_conf_bonjour">
-						<input type="checkbox"<?php if ($conf['bonjour'] == true) { echo ' checked="checked"'; } ?> disabled="disabled"/>
+						<input type="checkbox"<?php if ($conf['bonjour'] == true) { echo ' checked="checked"'; } ?>/>
 						<?php unset($conf['bonjour']); ?>
 					</td>
 				</tr>
@@ -1031,6 +1076,12 @@ class Ajax_Admin extends Ajax
 				.click(
 					function(ev) {
 						jq_server_conf_update('bonjour', jQuery(this).attr('checked'));
+					}
+				);
+				jQuery('#jq_editable_server_conf_certrequired input:checkbox')
+				.click(
+					function(ev) {
+						jq_server_conf_update('certrequired', jQuery(this).attr('checked'));
 					}
 				);
 				function jq_editable_server_conf_onSubmit(obj, content)
