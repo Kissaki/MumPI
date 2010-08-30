@@ -681,6 +681,9 @@ class MurmurUser
 	public function getClientVersion() {
 		return $this->clientVersion;
 	}
+	public function getClientVersionAsString() {
+		return '' . (($this->clientVersion & 0xffff0000) >> 16) . '.' . (($this->clientVersion & 0xff00) >> 8)  . '.' . ($this->clientVersion & 0xff);
+	}
 	public function getClientRelease() {
 		return $this->clientRelease;
 	}

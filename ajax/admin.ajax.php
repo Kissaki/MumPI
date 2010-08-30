@@ -567,21 +567,21 @@ class Ajax_Admin extends Ajax
 			<table id="mpi_table_onlineusers">
 				<thead>
 					<tr>
-						<th>Sess ID</th>
-						<th>Reg ID</th>
+						<th><abbr title="Session">Sess</abbr> ID</th>
+						<th><abbr title="Registration">Reg</abbr> ID (Name)</th>
 						<th>Username</th>
 						<th></th>
 
-						<th>muted?</th>
-						<th>deaf?</th>
-						<th>suppressed</th>
-						<th>selfMuted</th>
-						<th>selfDeafened</th>
+						<th><abbr title="Was the user muted by an admin?">muted?</abbr></th>
+						<th><abbr title="Was the user deafened by an admin?">deaf?</abbr></th>
+						<th><abbr title="Was the user suppressed (“muted” by channel ACL)?">suppressed</abbr></th>
+						<th><abbr title="Did the user mute himself?">selfMuted</abbr></th>
+						<th><abbr title="Did the user deafen himself?">selfDeafened</abbr></th>
 
 						<th>time online</th>
 						<th>idle</th>
 						<th>B/s</th>
-						<th>client</th>
+						<th><abbr title="client version">client</abbr></th>
 						<th>comment</th>
 						<th>address</th>
 						<th>TCPonly</th>
@@ -593,7 +593,15 @@ class Ajax_Admin extends Ajax
 <?php				foreach ($users AS $user) {	?>
 					<tr>
 						<td><?php echo $user->getSessionId(); ?></td>
-						<td><?php if ($user->getRegistrationId() !== -1) echo $user->getRegistrationId(); ?></td>
+						<td>
+							<?php
+								if ($user->getRegistrationId() !== -1) {
+									$regId = $user->getRegistrationId();
+									echo $regId;
+									echo ' (' . ServerInterface::getInstance()->getServerRegistration($_POST['sid'], $regId)->getName() . ')';
+								}
+							?>
+						</td>
 						<td id="user_name_<?php echo $user->sessionId; ?>" class="jq_editable"><?php echo $user->name; ?></td>
 						<td><?php echo $user->get ?></td>
 						<td><input id="user_mute_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsMuted()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
@@ -609,7 +617,14 @@ class Ajax_Admin extends Ajax
 							<?php $idle = $user->getIdleSeconds(); if ($idle > 59) { echo sprintf('%.0f', $idle/60).'m'; } else { echo $idle.'s'; } ?>
 						</td>
 						<td><?php echo $user->getBytesPerSecond(); ?></td>
-						<td><?php echo $user->clientVersion() . ($user->clientVersion()!=$user->clientRelease())?$user->clientRelease():'' . $user->clientOs() . $user->clientOsVersion(); ?></td>
+						<td>
+							<?php
+								echo $user->getClientVersionAsString();
+								if ($user->getClientVersionAsString() != $user->getClientRelease()) {
+									echo ' (' . $user->clientOs() . $user->getClientRelease() . ')';
+								}
+							?>
+						</td>
 						<td id="userComment<?php echo $user->getSessionId(); ?>" class="comment userComment">
 							<?php $commentClean = htmlspecialchars($user->getComment()); ?>
 							<?php
