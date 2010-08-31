@@ -442,7 +442,6 @@ class ServerInterface_ice
 	function updateUserName($srvid, $userId, $newName)
 	{
 		$reg = $this->getServerRegistration($srvid, $userId);
-		var_dump($reg);
 		$reg->setName($newName);
 		$this->getServer($srvid)->updateRegistration($userId, $reg->toArray());
 	}
