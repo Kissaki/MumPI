@@ -58,7 +58,7 @@ define('MUMPHPI_SECTION', 'viewer');
 	<script type="text/javascript" src="../js/jquery.eztip.js"></script>
 	<script type="text/javascript" src="../js/jquery.ba-bbq.min.js"></script>
 	<script type="text/javascript" src="../js/mumpi.js"></script>
-	<script type="text/javascript"><!--
+	<script type="text/javascript">/*<![CDATA[*/
 		var mumpiSetting_viewerDefaultRefreshInterval = 20; // seconds
 		var mumpiSetting_viewerServerId = <?php echo $serverId; ?>;
 		var mumpiSetting_viewerServerIp = '<?php echo SettingsManager::getInstance()->getServerAddress($serverId); ?>';
@@ -83,6 +83,19 @@ define('MUMPHPI_SECTION', 'viewer');
 								linkChannels();
 							}
 							hideAjaxLoading();
+						  // add chan and user icons
+						  <?php
+							  $chanImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/channel_12.png';
+								$chanImgHtmlObj = '<img src="' . $chanImgUrl . '" alt=""/>';
+								$chanImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/channel.svg';
+								$chanImgHtmlObj = '<object data="' . $chanImgUrl . '" type="image/svg+xml" width="12" height="12">' . $chanImgHtmlObj . '</object>';
+								$userImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/talking_off_12.png';
+								$userImgHtmlObj = '<img src="' . $userImgUrl . '" alt=""/>';
+								$userImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/talking_off.svg';
+								$userImgHtmlObj = '<object data="' . $userImgUrl . '" type="image/svg+xml" width="12" height="12">' . $userImgHtmlObj . '</object>';
+							?>
+					  	jQuery('.channelname').prepend('<?php echo $chanImgHtmlObj; ?>');
+					  	jQuery('.username').prepend('<?php echo $userImgHtmlObj; ?>');
 						}
 				);
 		}
@@ -145,7 +158,12 @@ define('MUMPHPI_SECTION', 'viewer');
 
 		// document ready -> INITIALIZATION
 		jQuery(document).ready(function(){
-				jQuery('.mumpi_viewer_tree_refresh_interval_value').change(function(){setTreeRefreshIntervalValue(jQuery(this).attr('value')*1000);});
+				jQuery('.mumpi_viewer_tree_refresh_interval_value')
+					.change(
+						function() {
+							setTreeRefreshIntervalValue(jQuery(this).attr('value')*1000);
+						}
+					);
 				setTreeRefreshIntervalValue(mumpiSetting_viewerDefaultRefreshInterval*1000);
 				refreshTreeIntervalStart();
 
@@ -160,7 +178,7 @@ define('MUMPHPI_SECTION', 'viewer');
 			  // tooltips
 				jQuery(document).eztip('.mumpi_tooltip', {contentAttrs:['title', 'href']});
 			});
-		-->
+		/*]]>*/
 	</script>
 </head>
 <body>
