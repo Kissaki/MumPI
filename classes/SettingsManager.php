@@ -166,7 +166,7 @@ class SettingsManager {
 			if (isset($this->serverAddresses[$serverId])) {
 				return $this->serverAddresses[$serverId];
 			}
-			MessageManager::addError('Trying to get serveraddress for a serverIp which does not have an associated server address in the settings file.');
+			MessageManager::addMessage('Trying to get serveraddress for a serverIp which does not have an associated server address in the settings file.');
 		}
 		return null;
 	}

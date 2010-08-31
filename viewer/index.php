@@ -167,7 +167,7 @@ define('MUMPHPI_SECTION', 'viewer');
 	<div class="tree_refresh_interval">
 		Refreshing all: <input class="mumpi_viewer_tree_refresh_interval_value" type="text" size="2" value="?"/><span class="mumpi_viewer_tree_refresh_interval_value_unit">s</span><br/>
 		<input class="mumpi_viewer_tree_refresh_action" type="button" value="stop" title="Do not refresh at all anymore" />
-		<button onclick="refreshTree();"><img src="../img/refresh_16.png" alt="♺" style="height:16px;"/></button>
+		<button onclick="refreshTree();" title="manual refresh"><img src="../img/refresh_16.png" alt="♺" style="height:16px;"/></button>
 		<span class="mumpi_ajax_status"></span>
 	</div>
 	<div class="mumpi_viewer_container_main"></div>
