@@ -2,8 +2,7 @@
 require_once dirname(__FILE__).'/PermissionManager.php';
 require_once dirname(__FILE__).'/MurmurClasses.php';
 
-if (extension_loaded('ice') && Ice_intVersion() >= 30400) {
-  set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/' . 'ice');
+if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersion() >= 30400) {
   require_once 'Ice.php';
   require_once 'Murmur_1.2.2.php';
 }
@@ -46,7 +45,7 @@ class ServerInterface_ice
 			MessageManager::addError(tr('error_noIceExtensionLoaded'));
 		} else {
 			$this->contextVars = SettingsManager::getInstance()->getDbInterface_iceSecrets();
-			if (Ice_intVersion() < 30400) {
+			if (!function_exists('Ice_intVersion') || Ice_intVersion() < 30400) {
 				// ice 3.3
 				global $ICE;
 				Ice_loadProfile();
@@ -76,14 +75,6 @@ class ServerInterface_ice
 					MessageManager::addError(tr('error_iceConnectionRefused'));
 				}
 			}
-
-//			try {
-//				if (function_exists('Ice_loadProfile')) {
-//				} else {
-//				}
-//			} catch (Ice_ProfileAlreadyLoadedException $exc) {
-//				MessageManager::addError(tr('iceprofilealreadyloaded'));
-//			}
 
 			$this->connect();
 		}
