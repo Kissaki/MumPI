@@ -33,12 +33,19 @@ $dbInterface_icesecrets = array(
 // db type for Interface functionality
 // (does not have anything to do with mumble/murmur)
 // specify one of the following: filesystem
-// later, the following will be implemented:
 $dbType		= 'filesystem';
 
 $site_title = 'Mumble Interface';
 $site_description='Mumble Interface to register on a mumble server and edit your account as well as upload a user-texture for the overlay.';
 $site_keywords='mumble,murmur,web-interface,registration,account,management,voip,kcode';
+
+// if you want the viewer to link the channels (click to connect) specify the servers address here (e.g. IP, or a domain)
+// key: serverId, value: address (without port)
+$viewer_serverAddresses = array(
+	//example:
+	//1 => 'kcode.de',
+	//3 => '192.168.0.1',
+);
 
 // For the interface to be able to send emails, make sure your php is set up
 //   to be able to send mails correctly. If it does not work or you want to use

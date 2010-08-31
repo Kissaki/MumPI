@@ -35,6 +35,7 @@ class SettingsManager {
 	private $dbInterface_icesecrets;
 	private $numberOfServers;
 	private $servers;
+	private $serverAddresses;
 
 	function __construct()
 	{
@@ -59,6 +60,8 @@ class SettingsManager {
 		$this->site['keywords'] = $site_keywords;
 
 		$this->servers = $servers;
+
+		$this->serverAddresses = $viewer_serverAddresses;
 
 		foreach ($this->servers AS $server) {
 			if ($server['authbymail']) {
@@ -150,12 +153,20 @@ class SettingsManager {
 	{
 		return $this->defaultLanguage;
 	}
-	public function getServerIp()
+	public function getServerAddress($serverId=null)
 	{
-		if (strtolower($this->dbInterface_type) === 'ice') {
-			$matches;
-			preg_match('/-h ([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/', $this->dbInterface_address, $matches);
-			return isset($matches[1])?$matches[1]:null;
+		if ($serverId == null) {
+			if (strtolower($this->dbInterface_type) === 'ice') {
+				$matches;
+				preg_match('/-h ([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/', $this->dbInterface_address, $matches);
+				return isset($matches[1])?$matches[1]:null;
+			}
+		}
+		else {
+			if (isset($this->serverAddresses[$serverId])) {
+				return $this->serverAddresses[$serverId];
+			}
+			MessageManager::addError('Trying to get serveraddress for a serverIp which does not have an associated server address in the settings file.');
 		}
 		return null;
 	}

@@ -29,7 +29,7 @@ define('MUMPHPI_SECTION', 'viewer');
 		MessageManager::addError(tr('error_noIce'));
 		MessageManager::echoAll();
 		exit();
-  	}
+  }
 
 	if (isset($_GET['ajax'])) {
 		require_once(MUMPHPI_MAINDIR.'/ajax/'.MUMPHPI_SECTION.'.ajax.php');
@@ -61,8 +61,11 @@ define('MUMPHPI_SECTION', 'viewer');
 	<script type="text/javascript"><!--
 		var mumpiSetting_viewerDefaultRefreshInterval = 20; // seconds
 		var mumpiSetting_viewerServerId = <?php echo $serverId; ?>;
-		var mumpiSetting_viewerServerIp = '<?php echo SettingsManager::getInstance()->getServerIp(); ?>';
-		var mumpiSetting_viewerServerVersion = '1.2.0';
+		var mumpiSetting_viewerServerIp = '<?php echo SettingsManager::getInstance()->getServerAddress($serverId); ?>';
+		if (mumpiSetting_viewerServerIp == '') {
+		  mumpiSetting_viewerServerIp = null;
+		}
+		var mumpiSetting_viewerServerVersion = '<?php $a = explode(' ', ServerInterface::getInstance()->getVersion(), 2); echo $a[0]; ?>';
 
 		var mumpiViewerRefreshTreeRunning = false;
 		var mumpiViewerRefreshTreeObject;
@@ -76,7 +79,9 @@ define('MUMPHPI_SECTION', 'viewer');
 					{serverId: mumpiSetting_viewerServerId},
 					function(data){
 							jQuery('.mumpi_viewer_container_main').html(data);
-							linkChannels();
+							if (mumpiSetting_viewerServerIp != null) {
+								linkChannels();
+							}
 							hideAjaxLoading();
 						}
 				);
@@ -113,9 +118,9 @@ define('MUMPHPI_SECTION', 'viewer');
 		}
 		function linkChannels(channel, urlPart, rootChannel)
 		{
-			if (rootChannel==null)
+			if (rootChannel == null)
 				rootChannel = false;
-			if (channel==null) {
+			if (channel == null) {
 				jQuery('.server > .channel').each(function(index) {
 						linkChannels(jQuery(this), 'mumble://' + mumpiSetting_viewerServerIp + '/', true);
 					});
