@@ -437,20 +437,21 @@ class ServerInterface_ice
 	}
 	function saveRegistration(MurmurRegistration $reg)
 	{
-		$this->getServer($reg->getServerId())->updateregistration($reg->getUserId(), $reg->toArray());
+		$this->getServer($reg->getServerId())->updateRegistration($reg->getUserId(), $reg->toArray());
 	}
 	function updateUserName($srvid, $userId, $newName)
 	{
 		$reg = $this->getServerRegistration($srvid, $userId);
+		var_dump($reg);
 		$reg->setName($newName);
-		$this->getServer($srvid)->updateregistration($userId, $reg->toArray());
+		$this->getServer($srvid)->updateRegistration($userId, $reg->toArray());
 	}
 	function updateUserEmail($srvid, $userId, $newEmail)
 	{
 		$srv = $this->getServer($srvid);
 		$reg = $this->getServerRegistration($srvid, $userId);
 		$reg->setEmail($newEmail);
-		$srv->updateregistration($userId, $reg->toArray());
+		$srv->updateRegistration($userId, $reg->toArray());
 	}
 	function updateUserHash($srvId, $userId, $newHash)
 	{
