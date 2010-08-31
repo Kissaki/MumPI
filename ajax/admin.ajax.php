@@ -1003,10 +1003,8 @@ class Ajax_Admin extends Ajax
 				?>
 				<tr>
 					<td>Welcometext</td>
-					<td class="jq_editable" id="jq_editable_server_conf_welcometext">
-						<?php echo $conf['welcometext']; ?>
-						<?php unset($conf['welcometext']); ?>
-					</td>
+					<td class="jq_editable" id="jq_editable_server_conf_welcometext"><?php echo $conf['welcometext']; ?></td>
+					<?php unset($conf['welcometext']); ?>
 				</tr>
 
 				<tr class="table_headline">	<td colspan="2"></td></tr>
