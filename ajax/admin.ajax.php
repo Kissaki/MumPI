@@ -1010,10 +1010,8 @@ class Ajax_Admin extends Ajax
 				<tr class="table_headline">	<td colspan="2"></td></tr>
 				<tr>
 					<td>Bandwidth</td>
-					<td class="jq_editable" id="jq_editable_server_conf_bandwidth">
-						<?php echo $conf['bandwidth']; ?>
-						<?php unset($conf['bandwidth']); ?>
-					</td>
+					<td class="jq_editable" id="jq_editable_server_conf_bandwidth"><?php echo $conf['bandwidth']; ?></td>
+					<?php unset($conf['bandwidth']); ?>
 				</tr>
 				<?php
 					if (isset($conf['obfuscate'])) {
@@ -1030,17 +1028,13 @@ class Ajax_Admin extends Ajax
 				?>
 				<tr>
 					<td>Allowed Channelname <a href="http://en.wikipedia.org/wiki/Regular_expression#POSIX" rel="external">Regexp</a></td>
-					<td class="jq_editable" id="jq_editable_server_conf_channelname">
-						<?php echo $conf['channelname']; ?>
-						<?php unset($conf['channelname']); ?>
-					</td>
+					<td class="jq_editable" id="jq_editable_server_conf_channelname"><?php echo $conf['channelname']; ?></td>
+					<?php unset($conf['channelname']); ?>
 				</tr>
 				<tr>
 					<td>Allowed Username <a href="http://en.wikipedia.org/wiki/Regular_expression#POSIX" rel="external">Regexp</a></td>
-					<td class="jq_editable" id="jq_editable_server_conf_username">
-						<?php echo $conf['username']; ?>
-						<?php unset($conf['username']); ?>
-					</td>
+					<td class="jq_editable" id="jq_editable_server_conf_username"><?php echo $conf['username']; ?></td>
+					<?php unset($conf['username']); ?>
 				</tr>
 				<?php
 					if (isset($conf['certrequired'])) {
@@ -1058,10 +1052,8 @@ class Ajax_Admin extends Ajax
 				?>
 				<tr>
 					<td>Textmessagelength</td>
-					<td class="jq_editable" id="jq_editable_server_conf_textmessagelength">
-						<?php echo $conf['textmessagelength']; ?>
-						<?php unset($conf['textmessagelength']); ?>
-					</td>
+					<td class="jq_editable" id="jq_editable_server_conf_textmessagelength"><?php echo $conf['textmessagelength']; ?></td>
+					<?php unset($conf['textmessagelength']); ?>
 				</tr>
 				<?php
 					}
@@ -1100,11 +1092,25 @@ class Ajax_Admin extends Ajax
 					}
 				?>
 
-				<tr class="table_headline">	 <td colspan="2">Server Registration</td></tr>
-				<tr><td>registerhostname</td><td class="jq_editable" id="jq_editable_server_conf_registerhostname"><?php echo $conf['registerhostname']; unset($conf['registerhostname']); ?></td></tr>
-				<tr><td>registername</td>	 <td class="jq_editable" id="jq_editable_server_conf_registername"><?php echo $conf['registername']; unset($conf['registername']); ?></td></tr>
-				<tr><td>registerpassword</td><td class="jq_editable" id="jq_editable_server_conf_registerpassword"><?php echo $conf['registerpassword']; unset($conf['registerpassword']); ?></td></tr>
-				<tr><td>registerurl</td>	 <td class="jq_editable" id="jq_editable_server_conf_registerurl"><?php echo $conf['registerurl']; unset($conf['registerurl']); ?></td></tr>
+				<tr class="table_headline">
+					<td colspan="2">Server Registration</td>
+				</tr>
+				<tr>
+					<td>registerhostname</td>
+					<td class="jq_editable" id="jq_editable_server_conf_registerhostname"><?php echo $conf['registerhostname']; unset($conf['registerhostname']); ?></td>
+				</tr>
+				<tr>
+					<td>registername</td>
+					<td class="jq_editable" id="jq_editable_server_conf_registername"><?php echo $conf['registername']; unset($conf['registername']); ?></td>
+				</tr>
+				<tr>
+					<td>registerpassword</td>
+					<td class="jq_editable" id="jq_editable_server_conf_registerpassword"><?php echo $conf['registerpassword']; unset($conf['registerpassword']); ?></td>
+				</tr>
+				<tr>
+					<td>registerurl</td>
+					<td class="jq_editable" id="jq_editable_server_conf_registerurl"><?php echo $conf['registerurl']; unset($conf['registerurl']); ?></td>
+				</tr>
 				<?php
 					if (!empty($conf)) {
 						?>
