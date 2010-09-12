@@ -18,6 +18,7 @@
 //
 // </auto-generated>
 
+require 'Ice/SliceChecksumDict.php';
 
 if(!isset($Murmur__t_NetAddress))
 {
@@ -1111,6 +1112,7 @@ if(!interface_exists('Murmur_Meta'))
         public function removeCallback($cb);
         public function getUptime();
         public function getSlice();
+        public function getSliceChecksums();
     }
 
     class Murmur_MetaPrxHelper
@@ -1140,5 +1142,6 @@ if(!interface_exists('Murmur_Meta'))
     IcePHP_defineOperation($Murmur__t_Meta, 'removeCallback', 0, 0, array($Murmur__t_MetaCallbackPrx), null, null, array($Murmur__t_InvalidCallbackException, $Murmur__t_InvalidSecretException));
     IcePHP_defineOperation($Murmur__t_Meta, 'getUptime', 2, 2, null, null, $IcePHP__t_int, null);
     IcePHP_defineOperation($Murmur__t_Meta, 'getSlice', 2, 2, null, null, $IcePHP__t_string, null);
+    IcePHP_defineOperation($Murmur__t_Meta, 'getSliceChecksums', 2, 2, null, null, $Ice__t_SliceChecksumDict, null);
 }
 ?>
