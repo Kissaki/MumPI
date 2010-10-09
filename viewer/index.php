@@ -70,6 +70,8 @@ define('MUMPHPI_SECTION', 'viewer');
 		var mumpiViewerRefreshTreeRunning = false;
 		var mumpiViewerRefreshTreeObject;
 		var mumpiViewerRefreshTreeRate;
+		<?php $rootName = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($serverId))->getConf('registerName'); ?>
+		var mumpiViewerRootName = '<?php echo ( !empty($rootName)?htmlspecialchars($rootName):'Root' ); ?>';
 
 		// create chan and user images as dom objects (for faster draw, especially SVG)
 	  <?php
@@ -101,6 +103,7 @@ define('MUMPHPI_SECTION', 'viewer');
 								linkChannels();
 							}
 							hideAjaxLoading();
+							jQuery('.channelname:first').html(mumpiViewerRootName);
 						  // add chan and user icons
 					  	jQuery('.channelname').prepend(mumpiChanImgHtmlObj);
 					  	jQuery('.username').prepend(mumpiUserImgHtmlObj);
