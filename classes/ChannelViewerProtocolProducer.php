@@ -1,8 +1,8 @@
 <?php
 
-require_once(dirname(__FILE__) . './MurmurClasses.php');
-require_once(dirname(__FILE__) . './ServerInterface.php');
-require_once(dirname(__FILE__) . './SettingsManager.php');
+require_once(dirname(__FILE__) . '/MurmurClasses.php');
+require_once(dirname(__FILE__) . '/ServerInterface.php');
+require_once(dirname(__FILE__) . '/SettingsManager.php');
 
 class ChannelViewerProtocolProducer {
 
