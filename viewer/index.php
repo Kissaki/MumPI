@@ -99,11 +99,13 @@ define('MUMPHPI_SECTION', 'viewer');
 					{serverId: mumpiSetting_viewerServerId},
 					function(data){
 							jQuery('.mumpi_viewer_container_main').html(data);
+							// rename root channel to servers registername, if set
+							jQuery('.channelname:first').html(mumpiViewerRootName);
+							// link channels if a target server ip is set
 							if (mumpiSetting_viewerServerIp != null) {
 								linkChannels();
 							}
 							hideAjaxLoading();
-							jQuery('.channelname:first').html(mumpiViewerRootName);
 						  // add chan and user icons
 					  	jQuery('.channelname').prepend(mumpiChanImgHtmlObj);
 					  	jQuery('.username').prepend(mumpiUserImgHtmlObj);
