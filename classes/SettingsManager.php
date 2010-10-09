@@ -36,6 +36,7 @@ class SettingsManager {
 	private $numberOfServers;
 	private $servers;
 	private $serverAddresses;
+	private $viewerUseSVGImages;
 
 	function __construct()
 	{
@@ -53,6 +54,7 @@ class SettingsManager {
 		$this->dbType = $dbType;
 		$this->showAdminLink = $showAdminLink;
 		$this->allowChannelViewerWebservice = isset($allowChannelViewerWebservice)?$allowChannelViewerWebservice:true;
+		$this->viewerUseSVGImages = isset($viewerUseSVGImages)?$viewerUseSVGImages:false;
 
 		$this->site = array();
 		$this->site['title'] = $site_title;
@@ -237,6 +239,10 @@ class SettingsManager {
 	function isDebugMode()
 	{
 		return $this->isDebugMode;
+	}
+
+	function isViewerSVGImagesEnabled() {
+		return $this->viewerUseSVGImages;
 	}
 
 
