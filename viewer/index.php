@@ -59,6 +59,7 @@ define('MUMPHPI_SECTION', 'viewer');
 	<script type="text/javascript" src="../js/jquery.ba-bbq.min.js"></script>
 	<script type="text/javascript" src="../js/mumpi.js"></script>
 	<script type="text/javascript">/*<![CDATA[*/
+		<?php $mumpiSetting_viewerUseSVGImages = false; ?>
 		var mumpiSetting_viewerDefaultRefreshInterval = 20; // seconds
 		var mumpiSetting_viewerServerId = <?php echo $serverId; ?>;
 		var mumpiSetting_viewerServerIp = '<?php echo SettingsManager::getInstance()->getServerAddress($serverId); ?>';
@@ -70,6 +71,24 @@ define('MUMPHPI_SECTION', 'viewer');
 		var mumpiViewerRefreshTreeRunning = false;
 		var mumpiViewerRefreshTreeObject;
 		var mumpiViewerRefreshTreeRate;
+
+		// create chan and user images as dom objects (for faster draw, especially SVG)
+	  <?php
+		  $chanImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/channel_12.png';
+			$chanImgHtmlObj = '<img src="' . $chanImgUrl . '" alt=""/>';
+			if ($mumpiSetting_viewerUseSVGImages) {
+				$chanImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/channel.svg';
+				$chanImgHtmlObj = '<object data="' . $chanImgUrl . '" type="image/svg+xml" width="12" height="12">' . $chanImgHtmlObj . '</object>';
+			}
+			$userImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/talking_off_12.png';
+			$userImgHtmlObj = '<img src="' . $userImgUrl . '" alt=""/>';
+			if ($mumpiSetting_viewerUseSVGImages) {
+				$userImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/talking_off.svg';
+				$userImgHtmlObj = '<object data="' . $userImgUrl . '" type="image/svg+xml" width="12" height="12">' . $userImgHtmlObj . '</object>';
+			}
+		?>
+		var mumpiChanImgHtmlObj = jQuery('<?php echo $chanImgHtmlObj; ?>');
+		var mumpiUserImgHtmlObj = jQuery('<?php echo $userImgHtmlObj; ?>');
 
 		function refreshTree()
 		{
@@ -84,18 +103,8 @@ define('MUMPHPI_SECTION', 'viewer');
 							}
 							hideAjaxLoading();
 						  // add chan and user icons
-						  <?php
-							  $chanImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/channel_12.png';
-								$chanImgHtmlObj = '<img src="' . $chanImgUrl . '" alt=""/>';
-								$chanImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/channel.svg';
-								$chanImgHtmlObj = '<object data="' . $chanImgUrl . '" type="image/svg+xml" width="12" height="12">' . $chanImgHtmlObj . '</object>';
-								$userImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/talking_off_12.png';
-								$userImgHtmlObj = '<img src="' . $userImgUrl . '" alt=""/>';
-								$userImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/talking_off.svg';
-								$userImgHtmlObj = '<object data="' . $userImgUrl . '" type="image/svg+xml" width="12" height="12">' . $userImgHtmlObj . '</object>';
-							?>
-					  	jQuery('.channelname').prepend('<?php echo $chanImgHtmlObj; ?>');
-					  	jQuery('.username').prepend('<?php echo $userImgHtmlObj; ?>');
+					  	jQuery('.channelname').prepend(mumpiChanImgHtmlObj);
+					  	jQuery('.username').prepend(mumpiUserImgHtmlObj);
 						}
 				);
 		}
