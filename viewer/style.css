@@ -22,3 +22,7 @@ a {
 .users {
 	margin-left:4px;
 }
+.username img {
+	position:relative;
+	top:2px;
+}
