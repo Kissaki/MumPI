@@ -11,17 +11,17 @@ $debug = false;
 // it can be called via URL pointed to the main dir (where this settings file is located) + ?view=json&serverId=1
 $allowChannelViewerWebservice = true;
 // This is recommended to be true to prevent spam/abuse by bots etc. This requires the php gd extension (image manipulation). The captcha is used for user-registration.
-$useCaptcha = true;
+$useCaptcha      = true;
 // Show a link to the admin section in the user section?
-$showAdminLink = true;
+$showAdminLink   = true;
 // currently available: en, de ; en is recommended
 $defaultLanguage = 'en';
 // only “default” right now
-$theme	= 'default';
+$theme           = 'default';
 
 // Interface to use. Currently available: ice
-$dbInterface_type		= 'ice';
-$dbInterface_address	= 'Meta:tcp -h 127.0.0.1 -p 6502';
+$dbInterface_type       = 'ice';
+$dbInterface_address    = 'Meta:tcp -h 127.0.0.1 -p 6502';
 // if you set an icesecret password in your murmur.ini file, specify it here
 $dbInterface_icesecrets = array(
     // for 1.2.2 if you set “icesecret” set “secret” to your value.
@@ -33,11 +33,11 @@ $dbInterface_icesecrets = array(
 // db type for Interface functionality
 // (does not have anything to do with mumble/murmur)
 // specify one of the following: filesystem
-$dbType		= 'filesystem';
+$dbType           = 'filesystem';
 
-$site_title = 'Mumble Interface';
-$site_description='Mumble Interface to register on a mumble server and edit your account as well as upload a user-texture for the overlay.';
-$site_keywords='mumble,murmur,web-interface,registration,account,management,voip,kcode';
+$site_title       = 'Mumble Interface';
+$site_description = 'Mumble Interface to register on a mumble server and edit your account as well as upload a user-texture for the overlay.';
+$site_keywords    = 'mumble,murmur,web-interface,registration,account,management,voip,kcode';
 
 // if you want the viewer to link the channels (click to connect) specify the servers address here (e.g. IP, or a domain)
 // key: serverId, value: address (without port)
@@ -73,16 +73,15 @@ $viewer_serverAddresses = array(
 // authbymail: account has to be activated with a code sent to the mail address
 $servers = array();
 
-$servers[1]['name'] = 'my server';
+$servers[1]['name']       = 'my server';
 $servers[1]['allowlogin'] = true;
 $servers[1]['allowregistration'] = true;
-$servers[1]['forcemail'] = true;
+$servers[1]['forcemail']  = true;
 $servers[1]['authbymail'] = false;
 
-$servers[2]['name'] = 'my private server';
+$servers[2]['name']       = 'my private server';
 $servers[2]['allowlogin'] = true;
 $servers[2]['allowregistration'] = false;
-$servers[2]['forcemail'] = true;
+$servers[2]['forcemail']  = true;
 $servers[2]['authbymail'] = true;
 
-?>
