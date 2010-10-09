@@ -2,6 +2,10 @@
 body {
 	font-size:100%; /* default: 16px */
 }
+a {
+	color:inherit;
+	text-decoration:inherit;
+}
 
 .server {
 	font-size:0.8em;

@@ -144,8 +144,9 @@ define('MUMPHPI_SECTION', 'viewer');
 		}
 		function linkChannels(channel, urlPart, rootChannel)
 		{
-			if (rootChannel == null)
+			if (rootChannel == null) {
 				rootChannel = false;
+			}
 			if (channel == null) {
 				jQuery('.server > .channel').each(function(index) {
 						linkChannels(jQuery(this), 'mumble://' + mumpiSetting_viewerServerIp + '/', true);
