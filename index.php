@@ -11,21 +11,30 @@
 		if (!SettingsManager::getInstance()->isChannelViewerWebserviceAllowed()) {
 			exit('The settings disallow accessing this webservice.');
 		}
-		$serverId = isset($_GET['serverId']) ? intval($_GET['serverId']) : null;
-		if (empty($serverId)) {
-			echo 'provide a serverid!';
-			exit();
-		}
-		$serverId = intval($_GET['serverId']);
-		require_once('./classes/ChannelViewerProtocolProducer.php');
-		$prod = new ChannelViewerProtocolProducer();
-		$json = $prod->generateJson($serverId);
+
+		$json = '';
+
+		// set content type to JS or JSON
 		if (isset($_GET['callback'])) {
+			// if a callback varname is specified, JS is returned
 			header('Content-Type: text/javascript');
-			echo 'var ' . $_GET['callback'] . ' = ';
+			// … and the json content is assigned to the callback var
+			$json .= 'var ' . $_GET['callback'] . ' = ';
 		} else {
 			header('Content-Type: application/json');
 		}
+
+		// check for serverId and generate corresponding json data
+		$serverId = isset($_GET['serverId']) ? intval($_GET['serverId']) : null;
+		if (empty($serverId)) {
+			$json .= json_encode(array('error'=>'No serverId specified, which is required.'));
+		} else {
+			$serverId = intval($_GET['serverId']);
+			require_once('./classes/ChannelViewerProtocolProducer.php');
+			$prod = new ChannelViewerProtocolProducer();
+			$json .= $prod->generateJson($serverId);
+		}
+		// echo JSON data
 		echo $json;
 	} else {
 		// redirect to user section
