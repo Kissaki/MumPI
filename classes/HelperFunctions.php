@@ -167,7 +167,7 @@ class HelperFunctions
 				$mappedIpv4Mask = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255);
 				$isIp4InIp6 = true;
 				foreach ($mappedIpv4Mask as $i => $val) {
-					if ($ipAddress[$i] != $val) {
+					if ($val == 0 && $ipAddress[$i] != 0) {
 						$isIp4InIp6 = false;
 					}
 				}
