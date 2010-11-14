@@ -163,12 +163,13 @@ class HelperFunctions
 		}
 		else if(is_array($ipAddress)) {
 			if (count($ipAddress) == 16) {
-				// first check if it’s a mapped IP, so it can be displayed in IPv4 format
-				$mappedIpv4Mask = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255);
+				// first check if it’s a mapped IP, so it can be displayed in IPv4 format (::ffff:ipv4asHexBytes1+2:ipv4asHexBytes3+4)
+				$mappedIpv4Prefix = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255);
 				$isIp4InIp6 = true;
-				foreach ($mappedIpv4Mask as $i => $val) {
-					if ($val == 0 && $ipAddress[$i] != 0) {
+				foreach ($mappedIpv4Prefix as $i => $val) {
+					if ($ipAddress[$i] != $val) {
 						$isIp4InIp6 = false;
+						break;
 					}
 				}
 				// it’s an IPv4 address in IPv6 address format (mapped address)
