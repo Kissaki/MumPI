@@ -4,7 +4,7 @@ require_once dirname(__FILE__).'/MurmurClasses.php';
 
 if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersion() >= 30400) {
   require_once 'Ice.php';
-  require_once 'Murmur_1.2.2.php';
+  require_once SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName();
 }
 
 /**

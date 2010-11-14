@@ -16,7 +16,7 @@
 		</div>
 		<div id="footer">
 			<?php
-				echo '<div class="">Server Version: '.ServerInterface::getInstance()->getVersion() . '</div>';
+				echo '<div class="">Server Version: ' . ServerInterface::getInstance()->getVersion() . '</div>';
 				echo '<div class="">Script execution time: '.sprintf('%6.3f', PHPStats::scriptExecTimeGet()).'ms | memory peak: '.(memory_get_peak_usage()/1000).' kByte</div>';
 			?>
 			<div class="updatecheck_result"></div>

@@ -31,6 +31,10 @@ $dbInterface_icesecrets = array(
     //   This means you can only use one value for both (this was tested on snapshot 02071e), not different values for them. (Still, no value + one value is ok.)
     'secret' => '',
   );
+// PHP file generated from murmur.ice file with slice2php (see FAQ). Has to be in MumPIs classes subdir.
+// This should specify a file that exists and matches your murmur server version as close as possible.
+// May be values like Murmur_1.2.2.php or Murmur_1.2.3_snapshot.php (check your MumPI/classes folder).
+$iceGeneratedMurmurPHPFileName = 'Murmur_1.2.2.php';
 
 // db type for Interface functionality
 // (does not have anything to do with mumble/murmur)

@@ -33,6 +33,7 @@ class SettingsManager {
 	private $dbInterface_type;
 	private $dbInterface_address;
 	private $dbInterface_icesecrets;
+	private $iceGeneratedMurmurPHPFileName;
 	private $numberOfServers;
 	private $servers;
 	private $serverAddresses;
@@ -48,6 +49,7 @@ class SettingsManager {
 		$this->dbInterface_type = $dbInterface_type;
 		$this->dbInterface_address = $dbInterface_address;
 		$this->dbInterface_icesecrets = $dbInterface_icesecrets;
+		$this->iceGeneratedMurmurPHPFileName = isset($iceGeneratedMurmurPHPFileName)?$iceGeneratedMurmurPHPFileName:'Murmur_1.2.2.php';
 		$this->theme = $theme;
 		$this->defaultLanguage = $defaultLanguage;
 		$this->useCaptcha = $useCaptcha;
@@ -183,6 +185,9 @@ class SettingsManager {
 	function getDbInterface_iceSecrets()
 	{
 		return $this->dbInterface_icesecrets;
+	}
+	function getIceGeneratedMurmurPHPFileName() {
+		return $this->iceGeneratedMurmurPHPFileName;
 	}
 	function isUseCaptcha()
 	{
