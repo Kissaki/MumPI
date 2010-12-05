@@ -214,7 +214,8 @@ module Murmur
 	 * Older versions of ice-php can't handle enums as keys. If you are using one of these, replace 'UserInfo' with 'byte'.
 	 */
 	dictionary<byte, string> UserInfoMap;
-	/*dictionary<UserInfo, string> UserInfoMap;*/
+	/*FIX see comment above
+	dictionary<UserInfo, string> UserInfoMap;*/
 
 	/** User and subchannel state. Read-only.
 	 **/
@@ -798,6 +799,7 @@ module Murmur
 		/** Returns a checksum dict for the slice file.
 		 * @return Checksum dict
 		 */
-		idempotent Ice::SliceChecksumDict getSliceChecksums();
+		/*FIX to not require .ice include
+		idempotent Ice::SliceChecksumDict getSliceChecksums();*/
 	};
 };
