@@ -602,11 +602,11 @@ class Ajax_Admin extends Ajax
 						</td>
 						<td id="user_name_<?php echo $user->sessionId; ?>" class="col_uame"><?php echo $user->name; ?></td>
 
-						<td class="col_isMuted"><input id="user_mute_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsMuted()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
-						<td class="col_isDeafened"><input id="user_deaf_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsDeafened()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
-						<td class="col_isSuppressed"><input id="user_suppr_<?php echo $user->getSessionId(); ?>" class="" type="checkbox" <?php if ($user->getIsSuppressed()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
-						<td class="col_isSelfMuted"><input id="user_selfm_<?php echo $user->getSessionId(); ?>" class="" type="checkbox" <?php if ($user->getIsSelfMuted()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
-						<td class="col_isSelfDeafened"><input id="user_selfd_<?php echo $user->getSessionId(); ?>" class="" type="checkbox" <?php if ($user->getIsSelfDeafened()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
+						<td class="col_isMuted"><input id="user_mute_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsMuted()) echo 'checked=""'; if(!$canModerate) echo 'disabled="disabled"'; ?>/></td>
+						<td class="col_isDeafened"><input id="user_deaf_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsDeafened()) echo 'checked=""'; if(!$canModerate) echo 'disabled="disabled"'; ?>/></td>
+						<td class="col_isSuppressed"><input type="checkbox" <?php if ($user->getIsSuppressed()) echo 'checked=""'; ?> disabled="disabled"/></td>
+						<td class="col_isSelfMuted"><input type="checkbox" <?php if ($user->getIsSelfMuted()) echo 'checked=""'; ?> disabled="disabled"/></td>
+						<td class="col_isSelfDeafened"><input type="checkbox" <?php if ($user->getIsSelfDeafened()) echo 'checked=""'; ?> disabled="disabled"/></td>
 
 						<td id="user_email_<?php echo $user->getSessionId(); ?>" class="col_timeOnline">
 							<?php $on = $user->getOnlineSeconds(); if ($on > 59) { echo sprintf('%.0f', $on/60).'m'; } else { echo $on.'s'; } ?>
@@ -656,7 +656,7 @@ class Ajax_Admin extends Ajax
 							<?php echo $user->getAddress()->__toString(); ?> <sup>(<a href="http://[<?php echo $user->getAddress(); ?>]">http</a>, <a href="http://www.db.ripe.net/whois?searchtext=<?php echo $user->getAddress(); ?>">lookup</a>)</sup>
 							<?php if ($user->getAddress()->isIPv4()) { echo '<div>' . $user->getAddress()->toStringAsIPv4() . '</div>'; } ?>
 						</td>
-						<td class="col_isTcpOnly"><?php echo $user->getIsTcpOnly()?'true':'false'; ?></td>
+						<td class="col_isTcpOnly"><input type="checkbox" <?php echo $user->getIsTcpOnly()?'checked=""':''; ?> disabled="disabled"/></td>
 
 						<td class="col_actions">
 <?php
