@@ -1,4 +1,7 @@
 
+See the guide on the web: https://github.com/Kissaki/MumPI/wiki/Installation
+or continue:
+
 Note: With the installer you should be guided through most of this. However, if you encounter problems, this may still help you fix your problems.
 
 make sure the following folders are writable:
@@ -12,19 +15,10 @@ A .htaccess file is included, but depending on your webserver configuration,
 it will not be read/used or you may want to specify it in your web servers virtual host configuration.
 
 
+Check the settings.inc.php the installer creates to set up MumPI.
+
 If you don't use the default Ice IP + port (localhost), you will have to specify it in the settings file.
 Otherwise, the interface should work out of the box.
 
 For registration to work with captchas, you will need the gd php extension loaded.
 If you don't want to use the included captcha (spam protection), check the settings file.
-
-
-
-The 0.3.0 includes a new settings file format, so it is not compatible with the old one.
-You should make a fresh install.
-
-For updates check the atom feed
-http://kissaki.clandooc.de/mumble/interfaces/PHP_Interface_atom.php
-(Add it to Thunderbird or whatever you're using!)
-
-
