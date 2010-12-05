@@ -125,3 +125,8 @@ table.list_admins .list_admins_item {
 	padding-right:2px;
 	vertical-align:middle;
 }
+
+#mpi_table_onlineusers .col_sessId,
+#mpi_table_onlineusers .col_regId {
+	text-align:right;
+}

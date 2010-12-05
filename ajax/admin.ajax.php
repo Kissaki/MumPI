@@ -567,13 +567,12 @@ class Ajax_Admin extends Ajax
 			<table id="mpi_table_onlineusers">
 				<thead>
 					<tr>
-						<th><abbr title="Session">Sess</abbr> ID</th>
-						<th><abbr title="Registration">Reg</abbr> ID (Name)</th>
-						<th>Username</th>
-						<th></th>
+						<th class="col_sessId"><abbr title="Session">Sess</abbr> ID</th>
+						<th class="col_regId"><abbr title="Registration">Reg</abbr> ID</th>
+						<th class="col_uame">Username</th>
 
-						<th><abbr title="Was the user muted by an admin?">muted?</abbr></th>
-						<th><abbr title="Was the user deafened by an admin?">deaf?</abbr></th>
+						<th class="col_isMuted"><abbr title="Was the user muted by an admin?">muted?</abbr></th>
+						<th class="col_isDeafened"><abbr title="Was the user deafened by an admin?">deaf?</abbr></th>
 						<th><abbr title="Was the user suppressed (“muted” by channel ACL)?">suppressed</abbr></th>
 						<th><abbr title="Did the user mute himself?">selfMuted</abbr></th>
 						<th><abbr title="Did the user deafen himself?">selfDeafened</abbr></th>
@@ -592,18 +591,16 @@ class Ajax_Admin extends Ajax
 				<tbody>
 <?php				foreach ($users AS $user) {	?>
 					<tr>
-						<td><?php echo $user->getSessionId(); ?></td>
-						<td>
+						<td class="col_sessId"><?php echo $user->getSessionId(); ?></td>
+						<td class="col_regId">
 							<?php
-								if ($user->getRegistrationId() !== -1) {
-									$regId = $user->getRegistrationId();
+								$regId = $user->getRegistrationId();
+								if ($regId !== -1) {
 									echo $regId;
-									echo ' (' . ServerInterface::getInstance()->getServerRegistration($_POST['sid'], $regId)->getName() . ')';
 								}
 							?>
 						</td>
-						<td id="user_name_<?php echo $user->sessionId; ?>" class="jq_editable"><?php echo $user->name; ?></td>
-						<td><?php echo $user->get ?></td>
+						<td id="user_name_<?php echo $user->sessionId; ?>" class="col_uame jq_editable"><?php echo $user->name; ?></td>
 						<td><input id="user_mute_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsMuted()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
 						<td><input id="user_deaf_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsDeafened()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
 						<td><input id="user_suppr_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsSuppressed()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
