@@ -573,17 +573,17 @@ class Ajax_Admin extends Ajax
 
 						<th class="col_isMuted"><abbr title="Was the user muted by an admin?">muted?</abbr></th>
 						<th class="col_isDeafened"><abbr title="Was the user deafened by an admin?">deaf?</abbr></th>
-						<th><abbr title="Was the user suppressed (“muted” by channel ACL)?">suppressed</abbr></th>
-						<th><abbr title="Did the user mute himself?">selfMuted</abbr></th>
-						<th><abbr title="Did the user deafen himself?">selfDeafened</abbr></th>
+						<th class="col_isSuppressed"><abbr title="Was the user suppressed (“muted” by channel ACL)?">suppressed</abbr></th>
+						<th class="col_isSelfMuted"><abbr title="Did the user mute himself?">selfMuted</abbr></th>
+						<th class="col_isSelfDeafened"><abbr title="Did the user deafen himself?">selfDeafened</abbr></th>
 
-						<th>time online</th>
-						<th>idle</th>
-						<th><abbr title="~Bytes per second – “Average transmission rate in bytes per second over the last few seconds.”">B/s</abbr></th>
-						<th><abbr title="Client Version – This is either the stable version number (with major.minor.patchlevel), or the version number with release-version (e.g. snapshot version) in paranthesis">Version</abbr></th>
-						<th>comment</th>
-						<th>address</th>
-						<th>TCPonly</th>
+						<th class="col_timeOnline">time online</th>
+						<th class="col_timeIdle">idle</th>
+						<th class="col_bytesPerSecond"><abbr title="~Bytes per second – “Average transmission rate in bytes per second over the last few seconds.”">B/s</abbr></th>
+						<th class="col_version"><abbr title="Client Version – This is either the stable version number (with major.minor.patchlevel), or the version number with release-version (e.g. snapshot version) in paranthesis">Version</abbr></th>
+						<th class="col_comment">comment</th>
+						<th class="col_address">address</th>
+						<th class="col_isTcpOnly">TCPonly</th>
 
 						<th>Actions</th>
 					</tr>

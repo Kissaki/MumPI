@@ -127,6 +127,9 @@ table.list_admins .list_admins_item {
 }
 
 #mpi_table_onlineusers .col_sessId,
-#mpi_table_onlineusers .col_regId {
+#mpi_table_onlineusers .col_regId,
+#mpi_table_onlineusers .col_bytesPerSecond,
+#mpi_table_onlineusers .col_timeOnline,
+#mpi_table_onlineusers .col_timeIdle {
 	text-align:right;
 }
