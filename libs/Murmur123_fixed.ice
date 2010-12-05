@@ -347,7 +347,7 @@ module Murmur
 		 */
 		idempotent int nameToId(string name);
 
-		/** Map a user to a User id.
+		/** Map a user id to a username.
 		 *  @param id User id to map.
 		 *  @return Name of user or empty string for unknown id.
 		 */
