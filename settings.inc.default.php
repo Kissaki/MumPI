@@ -18,7 +18,7 @@ $useCaptcha      = true;
 $showAdminLink   = true;
 // currently available: en, de ; en is recommended
 $defaultLanguage = 'en';
-// only “default” right now
+// only "default" right now
 $theme           = 'default';
 
 // Interface to use. Currently available: ice
@@ -26,9 +26,9 @@ $dbInterface_type       = 'ice';
 $dbInterface_address    = 'Meta:tcp -h 127.0.0.1 -p 6502';
 // if you set an icesecret password in your murmur.ini file, specify it here
 $dbInterface_icesecrets = array(
-    // for 1.2.2 if you set “icesecret” set “secret” to your value.
-    // for versions later than 1.2.2 (currently only snapshots/self-builds) your “icesecretread” and/or “icesecretwrite” will be specified only as secret here.
-    //   This means you can only use one value for both (this was tested on snapshot 02071e), not different values for them. (Still, no value + one value is ok.)
+    // for Murmur 1.2.2: if you set "icesecret" in your Murmur.ini, set "secret" here to your icesecret value.
+    // for Murmur > 1.2.2: you can only set "secret" here, thus you can only use either "icesecretread" or "icesecretwrite" you set in your Murmur.ini.
+    //   This means if you want write access (to be able to fully use the admin interface) you can only use one value for both Murmur-secrets (this was tested on snapshot 02071e).
     'secret' => '',
   );
 // PHP file generated from murmur.ice file with slice2php (see FAQ). Has to be in MumPIs classes subdir.
