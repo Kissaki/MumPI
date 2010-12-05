@@ -585,7 +585,7 @@ class Ajax_Admin extends Ajax
 						<th class="col_address">address</th>
 						<th class="col_isTcpOnly">TCPonly</th>
 
-						<th>Actions</th>
+						<th class="col_actions">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -600,21 +600,22 @@ class Ajax_Admin extends Ajax
 								}
 							?>
 						</td>
-						<td id="user_name_<?php echo $user->sessionId; ?>" class="col_uame jq_editable"><?php echo $user->name; ?></td>
-						<td><input id="user_mute_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsMuted()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
-						<td><input id="user_deaf_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsDeafened()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
-						<td><input id="user_suppr_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsSuppressed()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
-						<td><input id="user_selfm_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsSelfMuted()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
-						<td><input id="user_selfd_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsSelfDeafened()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
+						<td id="user_name_<?php echo $user->sessionId; ?>" class="col_uame"><?php echo $user->name; ?></td>
 
-						<td id="user_email_<?php echo $user->getSessionId(); ?>" class="jq_editable">
+						<td class="col_isMuted"><input id="user_mute_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsMuted()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
+						<td class="col_isDeafened"><input id="user_deaf_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsDeafened()) echo 'checked=""'; if(!$canModerate) echo 'disabled=""'; ?>/></td>
+						<td class="col_isSuppressed"><input id="user_suppr_<?php echo $user->getSessionId(); ?>" class="" type="checkbox" <?php if ($user->getIsSuppressed()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
+						<td class="col_isSelfMuted"><input id="user_selfm_<?php echo $user->getSessionId(); ?>" class="" type="checkbox" <?php if ($user->getIsSelfMuted()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
+						<td class="col_isSelfDeafened"><input id="user_selfd_<?php echo $user->getSessionId(); ?>" class="" type="checkbox" <?php if ($user->getIsSelfDeafened()) echo 'checked=""'; echo 'disabled=""'; ?>/></td>
+
+						<td id="user_email_<?php echo $user->getSessionId(); ?>" class="col_timeOnline">
 							<?php $on = $user->getOnlineSeconds(); if ($on > 59) { echo sprintf('%.0f', $on/60).'m'; } else { echo $on.'s'; } ?>
 						</td>
-						<td>
+						<td class="col_timeIdle">
 							<?php $idle = $user->getIdleSeconds(); if ($idle > 59) { echo sprintf('%.0f', $idle/60).'m'; } else { echo $idle.'s'; } ?>
 						</td>
-						<td><?php echo $user->getBytesPerSecond(); ?></td>
-						<td>
+						<td class="col_bytesPerSecond"><?php echo $user->getBytesPerSecond(); ?></td>
+						<td class="col_version">
 							<?php
 								echo $user->getClientVersionAsString();
 								if ($user->getClientVersionAsString() != $user->getClientRelease()) {
@@ -622,7 +623,7 @@ class Ajax_Admin extends Ajax
 								}
 							?>
 						</td>
-						<td id="userComment<?php echo $user->getSessionId(); ?>" class="comment userComment">
+						<td id="userComment<?php echo $user->getSessionId(); ?>" class="col_comment comment userComment">
 							<?php $commentClean = htmlspecialchars($user->getComment()); ?>
 							<?php
 								if (!empty($commentClean)) {
@@ -651,13 +652,13 @@ class Ajax_Admin extends Ajax
 								}
 							?>
 						</td>
-						<td class="userAddress">
+						<td class="col_address userAddress">
 							<?php echo $user->getAddress()->__toString(); ?> <sup>(<a href="http://[<?php echo $user->getAddress(); ?>]">http</a>, <a href="http://www.db.ripe.net/whois?searchtext=<?php echo $user->getAddress(); ?>">lookup</a>)</sup>
 							<?php if ($user->getAddress()->isIPv4()) { echo '<div>' . $user->getAddress()->toStringAsIPv4() . '</div>'; } ?>
 						</td>
-						<td><?php echo $user->getIsTcpOnly()?'true':'false'; ?></td>
+						<td class="col_isTcpOnly"><?php echo $user->getIsTcpOnly()?'true':'false'; ?></td>
 
-						<td>
+						<td class="col_actions">
 <?php
 						if (PermissionManager::getInstance()->serverCanKick($_POST['sid']))
 							echo '<a class="jqlink" onclick="jq_server_user_kick(' . $user->getSessionId() . ')">kick</a>';
