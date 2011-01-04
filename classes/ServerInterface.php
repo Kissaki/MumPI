@@ -190,7 +190,7 @@ class ServerInterface_ice
 	public function getServer($srvid)
 	{
 		$server = $this->meta->getServer(intval($srvid));
-		if (!empty($this->contextVars)) {
+		if ($server != null && !empty($this->contextVars)) {
 			$server = $server->ice_context($this->contextVars);
 		}
 		return $server;
