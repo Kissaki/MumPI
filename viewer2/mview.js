@@ -25,7 +25,6 @@ var MView = function(){
       }
     );
   }
-  
 };
 // static methods
 MView.getServerHTMLCodeFor = function(json) {
