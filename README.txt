@@ -4,7 +4,7 @@ MumPI is your Webinterface written in PHP for your Mumble Server ("Murmur") usin
 
 For installation notices, see INSTALL.txt or better yet https://github.com/Kissaki/MumPI/wiki/Installation
 For FAQ see https://github.com/Kissaki/MumPI/wiki/FAQ
-For Updates follow http://kcode.de/wordpress/?cat=47 as feed http://kcode.de/wordpress/?feed=rss2&cat=47
+For Updates follow http://kcode.de/wordpress/category/development/mumble_php_interface as feed http://kcode.de/wordpress/category/development/mumble_php_interface/feed
 
 To access the admin area, add /admin/ to your url.
 To access the viewer, add /viewer/ to your url.
