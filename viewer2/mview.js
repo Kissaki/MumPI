@@ -78,7 +78,7 @@ MView.getUsersHTMLCodeFor = function(json) {
 MView.getUserHTMLCodeFor = function(json) {
   var el = jQuery('<li/>');
   el.addClass('mv-u');
-  if (json.selfMute || json.selfDeaf || json.mute || json.deaf || suppress) {
+  if (json.selfMute || json.selfDeaf || json.mute || json.deaf || json.suppress) {
     el.addClass('muted');
   }
   el.append(json.name);
