@@ -18,7 +18,7 @@ mview.load = function(targetDOMElement, sourcePath) {
     function(data) {
       console.log('#' + jQuery(data));
       if (data.error) {
-        targetDOMElement.innerHTML = 'ERROR: ' + data.error;
+        targetDOMElement.innerHTML = 'ERROR: ' + data.error + '<br/>source-url was: ' + sourcePath;
       } else {
         targetDOMElement.innerHTML = data;
       }
@@ -26,16 +26,53 @@ mview.load = function(targetDOMElement, sourcePath) {
   );
 }
 
-server = {
+var server = function() {
+  // mandatory fields
   this.id = null;
   this.name = null;
-  this.root = 
+  this.root = null;
+  // optional fields
+  this.x_connecturl = null;
+  this.x_uptime = null;
 };
-chan = {
+chan = function() {
+  // mandatory fields
+  this.id = null;
   this.parent = null;
-  temporary
-  position
-  name
-  description
-  channels
+  this.temporary = null;
+  this.position = null;
+  this.name = null;
+  this.description = null;
+  this.channels = null;
+  this.users = null;
+  this.links = null; // A list of IDs that name linked channels
+  // optional fields
+  this.x_connecturl = null;
 };
+user = function() {
+  this.channel = null;
+  this.deaf = null;
+  this.mute = null;
+  this.name = null;
+  this.selfDeaf = null;
+  this.selfMute = null;
+  this.session = null;
+  this.suppress = null;
+  this.userid = null;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
