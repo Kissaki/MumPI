@@ -18,8 +18,7 @@ var MView = function() {
     html = jQuery(targetDOMElement);
     jQuery.getJSON(sourcePath, function(data) {
       if (data.error) {
-        targetDOMElement.innerHTML = 'ERROR: ' + data.error
-            + '<br/>source-url was: ' + sourcePath;
+        targetDOMElement.innerHTML = 'ERROR: ' + data.error + '<br/>source-url was: ' + sourcePath;
       } else {
         html.append(MView.getServerHTMLCodeFor(data));
         MView.postLoad(html);
@@ -29,8 +28,7 @@ var MView = function() {
 };
 // static methods
 MView.postLoad = function(el) {
-  jQuery(el).find('.mv-u.muted').append(
-      '<img src="img/muted_self_12.png" alt=[m]"/>');
+  jQuery(el).find('.mv-u.muted').append('<img src="img/muted_self_12.png" alt=[m]"/>');
 };
 
 MView.getServerHTMLCodeFor = function(json) {
@@ -52,8 +50,7 @@ MView.getChansHTMLCodeFor = function(json) {
 MView.getChanHTMLCodeFor = function(json) {
   var html = jQuery('<li/>').addClass("mv-c");
   html.append(jQuery('<div class="mv-c-name"/>').append(
-      (json.x_connecturl == undefined ? json.name : jQuery('<a/>').attr('href',
-          json.x_connecturl).append(json.name))));
+      (json.x_connecturl == undefined ? json.name : jQuery('<a/>').attr('href', json.x_connecturl).append(json.name))));
   html.append(MView.getChansHTMLCodeFor(json.channels));
   html.append(MView.getUsersHTMLCodeFor(json.users));
   return html;
