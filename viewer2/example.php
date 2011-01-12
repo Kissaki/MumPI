@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <title>MView – Mumble Channel Viewer</title>
   <style>
     .code-placeholder { text-decoration:line-through; font-style:italic; }
   </style>
@@ -13,12 +14,12 @@
 
 <h2>How to embed:</h2>
 <pre><code class="language-html">
-&lt;div id="mview-container">&lt;/div>
-&lt;script type="text/javascript" src="mview.js">&lt/script>
-&lt;script type="text/javascript">
+&lt;div id="mview-container"&gt;&lt;/div&gt;
+&lt;script type="text/javascript" src="mview.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
   mv = new MView();
   mv.load(document.getElementById('mview-container'), '<span class="code-placeholder">&lt;pathto&gt;</span>/MumPI/?view=json&amp;serverId=<span class="code-placeholder">&lt;ID&gt;</span>&amp;callback=?');
-&lt/script>
+&lt;/script&gt;
 </code></pre>
 
 <h2>Example:</h2>
@@ -27,6 +28,11 @@
 <script type="text/javascript">
   mv = new MView();
   mv.load(document.getElementById('mview-container'), '../?view=json&serverId=<?php echo (!empty($_GET['serverid']) ? intval($_GET['serverid']) : 1); ?>&callback=?');
+
+  codeEl = document.getElementsByTagName('code')[0];
+  codeEl.innerHTML = codeEl.innerHTML.replace(/(&lt;\/?\w+(?: \w+="[^"]+")*&gt;)/g, '<span style="color:#448844;">$1</span>');
+//  codeEl.innerHTML.indexOf(''
+//  codeEl.innerHTML = codeEl.innerHTML.replace(/(&lt;script .*&gt;)((?:.|\s)*)(&lt;\/script&gt;)/g, '$1<span style="color:#dd8844;">$2</span>$3');
 </script>
 
 </body>
