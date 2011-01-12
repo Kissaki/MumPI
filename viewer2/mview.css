@@ -4,17 +4,17 @@
   padding: 0px;
 }
 
-
 .mv-s {
-  font-size:14px;
+  font-size: 14px;
 }
+
 .mv-s .mv-s-name {
   font-size: 0.8em;
 }
 
 .mv-s .mv-c {
   padding-left: 14px;
-  background:url('img/channel_12.png') no-repeat 0px 0px;
+  background: url('img/channel_12.png') no-repeat 0px 0px;
 }
 
 .mv-s .mv-c .mv-c-name {
@@ -24,5 +24,5 @@
 
 .mv-s .mv-u {
   padding-left: 14px;
-  background:url('img/talking_off_12.png') no-repeat 0px 2px;
+  background: url('img/talking_off_12.png') no-repeat 0px 2px;
 }

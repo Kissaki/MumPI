@@ -8,11 +8,12 @@ if (typeof (jQuery) == 'undefined') {
   // TODO jQuery.noConflict();
 }
 
-//TODO inject css
+// TODO inject css
 
 // classes
 var MView = function() {
   this.load = function(targetDOMElement, sourcePath) {
+    var objThis = this;
     // TODO server id as param, add to ID
     html = jQuery(targetDOMElement);
     jQuery.getJSON(sourcePath, function(data) {
@@ -22,11 +23,21 @@ var MView = function() {
       } else {
         html.append(MView.getServerHTMLCodeFor(data));
         console.debug('#loadEND');
+        MView.postLoad(html);
+        console.debug('#loadEND');
       }
     });
+    jQuery(targetDOMElement).ready(function(){
+      console.log('bb');
+    });
+    console.log('aha');
   };
 };
 // static methods
+MView.postLoad = function(el) {
+  jQuery(el).find('.mv-u.muted').append('<img src="img/muted_self_12.png" alt=[m]"/>');
+};
+
 MView.getServerHTMLCodeFor = function(json) {
   var html = jQuery('<div id="mv-s' + json.id + '" class="mv-s"/>');
   html.append('<div class="mv-s-name">' + json.name + '</div>');
@@ -45,7 +56,9 @@ MView.getChansHTMLCodeFor = function(json) {
 };
 MView.getChanHTMLCodeFor = function(json) {
   var html = jQuery('<li/>').addClass("mv-c");
-  html.append('<div class="mv-c-name">' + json.name + '</div>');
+  html.append(jQuery('<div class="mv-c-name"/>').append(
+      (json.x_connecturl == undefined ? json.name : jQuery('<a/>').attr('href',
+          json.x_connecturl).append(json.name))));
   html.append(MView.getChansHTMLCodeFor(json.channels));
   html.append(MView.getUsersHTMLCodeFor(json.users));
   return html;
@@ -58,11 +71,15 @@ MView.getUsersHTMLCodeFor = function(json) {
   return html;
 };
 MView.getUserHTMLCodeFor = function(json) {
-  var el = document.createElement('li');
-  el.setAttribute('class', 'mv-u');
-  el.innerHTML = json.name;
+  var el = jQuery('<li/>');
+  el.addClass('mv-u');
+  if (json.selfMute || json.selfDeaf || json.mute || json.deaf || suppress) {
+    el.addClass('muted');
+    console.log(json.name + 'muted');
+  }
+  el.append(json.name);
   return el;
-//  return '<li class="mv-u">' + json.name + '</div>';
+  // return '<li class="mv-u">' + json.name + '</div>';
 };
 
 // classes for data; not used atm
@@ -75,7 +92,7 @@ var Server = function(json) {
   this.x_connecturl = json.x_connecturl;
   this.x_uptime = json.x_uptime;
 };
-chan = function() {
+var Chan = function() {
   // mandatory fields
   this.id = null;
   this.parent = null;
@@ -89,7 +106,7 @@ chan = function() {
   // optional fields
   this.x_connecturl = null;
 };
-user = function() {
+var User = function() {
   // mandatory fields
   this.name = null;
   this.session = null;
@@ -100,5 +117,21 @@ user = function() {
   this.mute = null;
   this.deaf = null;
   this.suppress = null;
-  // TODO add optional fields
+  // optional fields
+  this.comment = null;
+  this.x_texture = null;
+  this.version = null;
+  this.release = null;
+  this.identity = null;
+  this.onlinesecs = null;
+  this.idlesecs = null;
+  this.address = null;
+  this.x_addrstring = null;
+  this.recording = null;
+  this.bytespersec = null;
+  this.context = null;
+  this.os = null;
+  this.osversion = null;
+  this.prioritySpeaker = null;
+  this.tcponly = null;
 };
