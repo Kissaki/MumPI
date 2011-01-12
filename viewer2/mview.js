@@ -1,19 +1,25 @@
+
+// code for injecting CSS style
+var init = function(){jQuery('head').append('<link rel="stylesheet" type="text/css" href="mview.css"/>');};
 // load jQuery if not loaded yet
 if (typeof (jQuery) == 'undefined') {
-  console.debug('Loading jQuery.');
+  console.debug('mview.js is injecting jQuery …');
   var fileref = document.createElement('script');
   fileref.setAttribute("type", "text/javascript");
   fileref.setAttribute("src", 'http://code.jquery.com/jquery-1.4.4.min.js');
   document.getElementsByTagName('body')[0].appendChild(fileref);
 
-  ready = function( wait ) {
-    if ( !jQuery ) {
+  (ready = function() {
+    if ( typeof (jQuery) == 'undefined' ) {
       return setTimeout( ready, 1 );
+    } else {
+      // jQuery loaded and ready
+      jQuery.noConflict();
+      init();
     }
-  jQuery.noConflict();
-  jQuery('head').append('<link rel="stylesheet" type="text/css" href="mview.css"/>');
-  console.log(jQuery);
-  };
+  })();
+} else {
+  init();
 }
 
 // classes
@@ -22,7 +28,6 @@ var MView = function() {
       target: '#mview-container'
   };
   this.load = function(settings) {
-    // TODO server id as param, add to ID
     var html = jQuery(settings.target);
     jQuery.getJSON(settings.source, function(data) {
       if (data.error) {
