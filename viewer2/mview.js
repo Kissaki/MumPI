@@ -22,20 +22,15 @@ var MView = function() {
             + '<br/>source-url was: ' + sourcePath;
       } else {
         html.append(MView.getServerHTMLCodeFor(data));
-        console.debug('#loadEND');
         MView.postLoad(html);
-        console.debug('#loadEND');
       }
     });
-    jQuery(targetDOMElement).ready(function(){
-      console.log('bb');
-    });
-    console.log('aha');
   };
 };
 // static methods
 MView.postLoad = function(el) {
-  jQuery(el).find('.mv-u.muted').append('<img src="img/muted_self_12.png" alt=[m]"/>');
+  jQuery(el).find('.mv-u.muted').append(
+      '<img src="img/muted_self_12.png" alt=[m]"/>');
 };
 
 MView.getServerHTMLCodeFor = function(json) {
