@@ -13,7 +13,6 @@
 }
 
 .mv-s .mv-c {
-  margin-left: 6px;
   padding-left: 14px;
   background:url('img/channel_12.png') no-repeat 0px 0px;
 }
@@ -21,10 +20,6 @@
 .mv-s .mv-c .mv-c-name {
   font-size: 12px;
   font-weight: bold;
-}
-
-.mv-s .mv-users {
-  margin-left: 4px;
 }
 
 .mv-s .mv-u {

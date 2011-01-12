@@ -26,11 +26,6 @@ var MView = function() {
     });
   };
 };
-// static fields
-var img = jQuery('<img src="img/channel_12.png" alt="[c]"/>');
-MView.DOMElementImageChannel = img;
-var img = jQuery('<img src="img/talking_off_12.png" alt="[c]"/>');
-MView.DOMElementImageUser = img;
 // static methods
 MView.getServerHTMLCodeFor = function(json) {
   var html = jQuery('<div id="mv-s' + json.id + '" class="mv-s"/>');
