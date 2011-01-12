@@ -12,13 +12,15 @@ if (typeof (jQuery) == 'undefined') {
 
 // classes
 var MView = function() {
-  this.load = function(targetDOMElement, sourcePath) {
-    var objThis = this;
+  this.settings = {
+      target: '#mview-container'
+  };
+  this.load = function(settings) {
     // TODO server id as param, add to ID
-    html = jQuery(targetDOMElement);
-    jQuery.getJSON(sourcePath, function(data) {
+    var html = jQuery(settings.target);
+    jQuery.getJSON(settings.source, function(data) {
       if (data.error) {
-        targetDOMElement.innerHTML = 'ERROR: ' + data.error + '<br/>source-url was: ' + sourcePath;
+        html.append('ERROR: ' + data.error + '<br/>source-url was: ' + settings.source);
       } else {
         html.append(MView.getServerHTMLCodeFor(data));
         MView.postLoad(html);

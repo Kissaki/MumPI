@@ -16,10 +16,11 @@
 
 <h2>How to embed:</h2>
 <pre class="code"><code class="language-html">&lt;div id="mview-container"&gt;&lt;/div&gt;
+&lt;script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="mview.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;
   mv = new MView();
-  mv.load(document.getElementById('mview-container'), '<span class="code-placeholder">&lt;pathto&gt;</span>/MumPI/?view=json&amp;serverId=<span class="code-placeholder">&lt;ID&gt;</span>&amp;callback=?');
+  mv.load({target: '#mview-container', source: '<span class="code-placeholder">&lt;pathto&gt;</span>/MumPI/?view=json&amp;serverId=<span class="code-placeholder">&lt;ID&gt;</span>&amp;callback=?'});
 &lt;/script&gt;
 </code></pre>
 
@@ -29,7 +30,7 @@
 <script type="text/javascript" src="mview.js"></script>
 <script type="text/javascript">
   mv = new MView();
-  mv.load(document.getElementById('mview-container'), '../?view=json&serverId=<?php echo (!empty($_GET['serverid']) ? intval($_GET['serverid']) : 1); ?>&callback=?');
+  mv.load({target: '#mview-container', source: '../?view=json&serverId=<?php echo (!empty($_GET['serverid']) ? intval($_GET['serverid']) : 1); ?>&callback=?'});
 
   codeEl = document.getElementsByTagName('code')[0];
   codeEl.innerHTML = codeEl.innerHTML.replace(/(&lt;\/?\w+(?: \w+="[^"]+")*&gt;)/g, '<span style="color:#448844;">$1</span>');
