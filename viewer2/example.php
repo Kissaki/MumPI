@@ -20,7 +20,8 @@
 <div id="mview-container"></div>
 <script type="text/javascript" src="mview.js"></script>
 <script type="text/javascript">
-  mview.load(document.getElementById('mview-container'), '../?view=json&amp;serverId=<?php echo (!empty($_GET['serverid']) ? intval($_GET['serverid']) : 1); ?>');
+  mv = new MView();
+  mv.load(document.getElementById('mview-container'), '../?view=json&serverId=<?php echo (!empty($_GET['serverid']) ? intval($_GET['serverid']) : 1); ?>&callback=?');
 </script>
 
 </body>
