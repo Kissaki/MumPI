@@ -1,64 +1,76 @@
-
 // load jQuery if not loaded yet
-if (typeof(jQuery) == 'undefined') {
-console.debug('Loading jQuery.');
+if (typeof (jQuery) == 'undefined') {
+  console.debug('Loading jQuery.');
   var fileref = document.createElement('script');
-  fileref.setAttribute("type","text/javascript");
+  fileref.setAttribute("type", "text/javascript");
   fileref.setAttribute("src", 'http://code.jquery.com/jquery-1.4.4.min.js');
   document.getElementsByTagName('body')[0].appendChild(fileref);
-  //TODO jQuery.noConflict();
+  // TODO jQuery.noConflict();
 }
 
-var MView = function(){
+//TODO inject css
+
+// classes
+var MView = function() {
   this.load = function(targetDOMElement, sourcePath) {
-    //TODO server id as param, add to ID
+    // TODO server id as param, add to ID
     html = jQuery(targetDOMElement);
-    jQuery.getJSON(
-      sourcePath,
-      function(data) {
-        if (data.error) {
-          targetDOMElement.innerHTML = 'ERROR: ' + data.error + '<br/>source-url was: ' + sourcePath;
-        } else {
-          html.append(MView.getServerHTMLCodeFor(data));
-          console.debug('#loadEND');
-        }
+    jQuery.getJSON(sourcePath, function(data) {
+      if (data.error) {
+        targetDOMElement.innerHTML = 'ERROR: ' + data.error
+            + '<br/>source-url was: ' + sourcePath;
+      } else {
+        html.append(MView.getServerHTMLCodeFor(data));
+        console.debug('#loadEND');
       }
-    );
-  }
+    });
+  };
 };
+// static fields
+var img = jQuery('<img src="img/channel_12.png" alt="[c]"/>');
+MView.DOMElementImageChannel = img;
+var img = jQuery('<img src="img/talking_off_12.png" alt="[c]"/>');
+MView.DOMElementImageUser = img;
 // static methods
 MView.getServerHTMLCodeFor = function(json) {
   var html = jQuery('<div id="mv-s' + json.id + '" class="mv-s"/>');
   html.append('<div class="mv-s-name">' + json.name + '</div>');
   html.append(MView.getChanHTMLCodeFor(json.root));
   return html;
-}
+};
 MView.getChansHTMLCodeFor = function(json) {
-  var html = jQuery('<div/>').addClass('mv-chans');
-  for (i in json) {
-    html.append(MView.getChanHTMLCodeFor(json[i]));
+  var html;
+  if (json.length > 0) {
+    html = jQuery('<ul/>').addClass('mv-chans');
+    for (i in json) {
+      html.append(MView.getChanHTMLCodeFor(json[i]));
+    }
   }
   return html;
-}
+};
 MView.getChanHTMLCodeFor = function(json) {
-  var html = jQuery('<div/>').addClass("mv-c");
+  var html = jQuery('<li/>').addClass("mv-c");
   html.append('<div class="mv-c-name">' + json.name + '</div>');
   html.append(MView.getChansHTMLCodeFor(json.channels));
   html.append(MView.getUsersHTMLCodeFor(json.users));
   return html;
-}
+};
 MView.getUsersHTMLCodeFor = function(json) {
-  var html = jQuery('<div/>').attr('class', 'mv-users');
+  var html = jQuery('<ul/>').attr('class', 'mv-users');
   for (i in json) {
     html.append(MView.getUserHTMLCodeFor(json[i]));
   }
   return html;
-}
+};
 MView.getUserHTMLCodeFor = function(json) {
-  return '<div class="mv-u">' + json.name + '</div>';
-}
+  var el = document.createElement('li');
+  el.setAttribute('class', 'mv-u');
+  el.innerHTML = json.name;
+  return el;
+//  return '<li class="mv-u">' + json.name + '</div>';
+};
 
-
+// classes for data; not used atm
 var Server = function(json) {
   // mandatory fields
   this.id = json.id;
@@ -93,21 +105,5 @@ user = function() {
   this.mute = null;
   this.deaf = null;
   this.suppress = null;
-  //TODO add optional fields
+  // TODO add optional fields
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

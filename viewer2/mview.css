@@ -1,0 +1,33 @@
+.mv-s ul,.mv-s li {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+
+.mv-s {
+  font-size:14px;
+}
+.mv-s .mv-s-name {
+  font-size: 0.8em;
+}
+
+.mv-s .mv-c {
+  margin-left: 6px;
+  padding-left: 14px;
+  background:url('img/channel_12.png') no-repeat 0px 0px;
+}
+
+.mv-s .mv-c .mv-c-name {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.mv-s .mv-users {
+  margin-left: 4px;
+}
+
+.mv-s .mv-u {
+  padding-left: 14px;
+  background:url('img/talking_off_12.png') no-repeat 0px 2px;
+}
