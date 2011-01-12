@@ -5,10 +5,16 @@ if (typeof (jQuery) == 'undefined') {
   fileref.setAttribute("type", "text/javascript");
   fileref.setAttribute("src", 'http://code.jquery.com/jquery-1.4.4.min.js');
   document.getElementsByTagName('body')[0].appendChild(fileref);
-  // TODO jQuery.noConflict();
-}
 
-// TODO inject css
+  ready = function( wait ) {
+    if ( !jQuery ) {
+      return setTimeout( ready, 1 );
+    }
+  jQuery.noConflict();
+  jQuery('head').append('<link rel="stylesheet" type="text/css" href="mview.css"/>');
+  console.log(jQuery);
+  };
+}
 
 // classes
 var MView = function() {
@@ -69,7 +75,6 @@ MView.getUserHTMLCodeFor = function(json) {
   el.addClass('mv-u');
   if (json.selfMute || json.selfDeaf || json.mute || json.deaf || suppress) {
     el.addClass('muted');
-    console.log(json.name + 'muted');
   }
   el.append(json.name);
   return el;

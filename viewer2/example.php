@@ -3,7 +3,6 @@
 <head>
   <meta charset="utf-8" />
   <title>MView – Mumble Channel Viewer</title>
-  <link rel="stylesheet" type="text/css" href="mview.css"/>
   <style>
     pre.code { background-color:#dddddd; padding:4px 6px; }
     .code-placeholder { font-style:italic; color:#000044; }
@@ -16,7 +15,6 @@
 
 <h2>How to embed:</h2>
 <pre class="code"><code class="language-html">&lt;div id="mview-container"&gt;&lt;/div&gt;
-&lt;script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="mview.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;
   mv = new MView();
@@ -26,7 +24,6 @@
 
 <h2>Example:</h2>
 <div id="mview-container"></div>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="mview.js"></script>
 <script type="text/javascript">
   mv = new MView();
