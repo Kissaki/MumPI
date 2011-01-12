@@ -31,32 +31,24 @@ var MView = function(){
 MView.getServerHTMLCodeFor = function(json) {
   var html = jQuery('<div id="mv-s' + json.id + '" class="mv-s"/>');
   html.append('<div class="mv-s-name">' + json.name + '</div>');
-console.log('#');
-console.log(MView.getChanHTMLCodeFor(json.root));
   html.append(MView.getChanHTMLCodeFor(json.root));
-console.log(html);
   return html;
 }
 MView.getChansHTMLCodeFor = function(json) {
-console.debug('^getChansHTMLCodeFor' + json);
   var html = jQuery('<div/>').addClass('mv-chans');
   for (i in json) {
     html.append(MView.getChanHTMLCodeFor(json[i]));
   }
-console.log(html);
   return html;
 }
 MView.getChanHTMLCodeFor = function(json) {
-console.debug('^getChanHTMLCodeFor' + json);
   var html = jQuery('<div/>').addClass("mv-c");
   html.append('<div class="mv-c-name">' + json.name + '</div>');
   html.append(MView.getChansHTMLCodeFor(json.channels));
   html.append(MView.getUsersHTMLCodeFor(json.users));
-console.log(html);
   return html;
 }
 MView.getUsersHTMLCodeFor = function(json) {
-console.debug('^getUsersHTMLCodeFor' + json);
   var html = jQuery('<div/>').attr('class', 'mv-users');
   for (i in json) {
     html.append(MView.getUserHTMLCodeFor(json[i]));
@@ -64,7 +56,6 @@ console.debug('^getUsersHTMLCodeFor' + json);
   return html;
 }
 MView.getUserHTMLCodeFor = function(json) {
-console.debug('^getUserHTMLCodeFor' + json);
   return '<div class="mv-u">' + json.name + '</div>';
 }
 
