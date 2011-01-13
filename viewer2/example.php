@@ -20,7 +20,8 @@
   var settings = {
     target: '#mview-container',
     source: '<span class="code-placeholder">&lt;pathto&gt;</span>/MumPI/?view=json&amp;serverId=<span class="code-placeholder">&lt;ID&gt;</span>&amp;callback=?',
-    refreshinterval: 30 <span style="color:#666666;">// in seconds, 0 for no automatic refresh</span>
+    resurl: '',           // for url to folder with css file and img folder.
+    refreshinterval: 30   <span style="color:#666666;">// in seconds, 0 for no automatic refresh</span>
   };
   mv = new MView(settings);
   mv.load();
@@ -42,9 +43,10 @@
   var settings = {
       target: '#mview-container',
       source: '../?view=json&serverId=<?php echo (!empty($_GET['serverid']) ? intval($_GET['serverid']) : 1); ?>&callback=?',
+      resurl: '',    // for url to folder with css file and img folder; WITH trailing slash. Example: http://example.com/MumPI/viewer2/
       //source: 'http://demo.mumble-django.org/mumble-django/mumble/1.json?callback=?',
       refreshinterval: 30
-      };
+    };
   mv = new MView(settings);
   mv.load();
 

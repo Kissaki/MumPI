@@ -1,7 +1,4 @@
 
-// code for injecting CSS style
-//TODO css path relative to this js file - any way to do this? problem: relative path will be relative to page url, not js file
-var init = function(){jQuery('head').append('<link rel="stylesheet" type="text/css" href="mview.css"/>');};
 // load jQuery if not loaded yet
 if (typeof (jQuery) == 'undefined') {
   var fileref = document.createElement('script');
@@ -15,17 +12,17 @@ if (typeof (jQuery) == 'undefined') {
     } else {
       // jQuery loaded and ready
       jQuery.noConflict();
-      init();
     }
   })();
-} else {
-  init();
 }
 
 // classes
 var MView = function(settings) {
   MView.instance = this;
   this.settings = settings;
+  //code for injecting CSS style
+  jQuery('head').append('<link rel="stylesheet" type="text/css" href="' + settings.resurl + 'mview.css"/>');
+  
   this.parse = function() {
     var html = jQuery(settings.target);
     jQuery.getJSON(settings.source, function(data) {
@@ -46,7 +43,7 @@ var MView = function(settings) {
 };
 // static methods
 MView.postLoad = function(el) {
-  jQuery(el).find('.mv-u.muted').append('<img src="img/muted_self_12.png" alt=[m]"/>');
+  jQuery(el).find('.mv-u.muted').append('<img class="mv-icon mv-icon-muted" src="' + settings.resurl + 'img/muted_self_12.png" alt=[m]"/>');
 };
 
 MView.getServerHTMLCodeFor = function(json) {
