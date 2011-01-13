@@ -17,7 +17,7 @@
 <pre class="code"><code class="language-html">&lt;div id="mview-container"&gt;&lt;/div&gt;
 &lt;script type="text/javascript" src="mview.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;
-  settings = {
+  var settings = {
     target: '#mview-container',
     source: '<span class="code-placeholder">&lt;pathto&gt;</span>/MumPI/?view=json&amp;serverId=<span class="code-placeholder">&lt;ID&gt;</span>&amp;callback=?',
     refreshinterval: 30 <span style="color:#666666;">// in seconds, 0 for no automatic refresh</span>
@@ -39,7 +39,7 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="mview.js"></script>
 <script type="text/javascript">
-  settings = {
+  var settings = {
       target: '#mview-container',
       source: '../?view=json&serverId=<?php echo (!empty($_GET['serverid']) ? intval($_GET['serverid']) : 1); ?>&callback=?',
       //source: 'http://demo.mumble-django.org/mumble-django/mumble/1.json?callback=?',

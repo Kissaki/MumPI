@@ -1,5 +1,6 @@
 
 // code for injecting CSS style
+//TODO css path relative to this js file - any way to do this? problem: relative path will be relative to page url, not js file
 var init = function(){jQuery('head').append('<link rel="stylesheet" type="text/css" href="mview.css"/>');};
 // load jQuery if not loaded yet
 if (typeof (jQuery) == 'undefined') {
