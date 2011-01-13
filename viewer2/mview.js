@@ -22,8 +22,10 @@ if (typeof (jQuery) == 'undefined') {
 }
 
 // classes
-var MView = function() {
-  this.load = function(settings) {
+var MView = function(settings) {
+  MView.instance = this;
+  this.settings = settings;
+  this.load = function() {
     var html = jQuery(settings.target);
     jQuery.getJSON(settings.source, function(data) {
       if (data.error) {
@@ -33,6 +35,10 @@ var MView = function() {
         MView.postLoad(html);
       }
     });
+  };
+  this.auto = function() {
+    this.load();
+    setTimeout('MView.instance.auto();', settings.refreshinterval*1000);
   };
 };
 // static methods
