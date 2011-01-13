@@ -21,13 +21,22 @@
   mv.load({target: '#mview-container', source: '<span class="code-placeholder">&lt;pathto&gt;</span>/MumPI/?view=json&amp;serverId=<span class="code-placeholder">&lt;ID&gt;</span>&amp;callback=?'});
 &lt;/script&gt;
 </code></pre>
+<p>
+  You’ll have to provide the path to your JSON-data source which provides the server data. If you’re using MumPI just add the correct URL to MumPI with the corresponding parameters (see above).<br/>
+  Adding <code>callback=?</code> as a parameter allows for JSONP callbacks.
+</p>
+<p>
+  As a further example to make it clear: A different but valid source may be <code>source: 'http://demo.mumble-django.org/mumble-django/mumble/1.json?callback=?'</code>.
+</p>
 
 <h2>Example:</h2>
 <div id="mview-container"></div>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="mview.js"></script>
 <script type="text/javascript">
   mv = new MView();
   mv.load({target: '#mview-container', source: '../?view=json&serverId=<?php echo (!empty($_GET['serverid']) ? intval($_GET['serverid']) : 1); ?>&callback=?'});
+//  mv.load({target: '#mview-container', source: 'http://demo.mumble-django.org/mumble-django/mumble/1.json?callback=?'});
 
   codeEl = document.getElementsByTagName('code')[0];
   codeEl.innerHTML = codeEl.innerHTML.replace(/(&lt;\/?\w+(?: \w+="[^"]+")*&gt;)/g, '<span style="color:#448844;">$1</span>');

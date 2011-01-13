@@ -3,6 +3,10 @@
   margin: 0px;
   padding: 0px;
 }
+.mv-s a:link {
+  text-decoration:none;
+  color:inherit;
+}
 
 .mv-s {
   font-size: 14px;

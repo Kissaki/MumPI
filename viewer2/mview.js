@@ -3,14 +3,13 @@
 var init = function(){jQuery('head').append('<link rel="stylesheet" type="text/css" href="mview.css"/>');};
 // load jQuery if not loaded yet
 if (typeof (jQuery) == 'undefined') {
-  console.debug('mview.js is injecting jQuery …');
   var fileref = document.createElement('script');
   fileref.setAttribute("type", "text/javascript");
   fileref.setAttribute("src", 'http://code.jquery.com/jquery-1.4.4.min.js');
   document.getElementsByTagName('body')[0].appendChild(fileref);
 
   (ready = function() {
-    if ( typeof (jQuery) == 'undefined' ) {
+    if ( typeof (jQuery) == 'undefined' || !jQuery) {
       return setTimeout( ready, 1 );
     } else {
       // jQuery loaded and ready
@@ -24,16 +23,13 @@ if (typeof (jQuery) == 'undefined') {
 
 // classes
 var MView = function() {
-  this.settings = {
-      target: '#mview-container'
-  };
   this.load = function(settings) {
     var html = jQuery(settings.target);
     jQuery.getJSON(settings.source, function(data) {
       if (data.error) {
         html.append('ERROR: ' + data.error + '<br/>source-url was: ' + settings.source);
       } else {
-        html.append(MView.getServerHTMLCodeFor(data));
+        html.html(MView.getServerHTMLCodeFor(data));
         MView.postLoad(html);
       }
     });
