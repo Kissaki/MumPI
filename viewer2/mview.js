@@ -38,7 +38,9 @@ var MView = function(settings) {
   };
   this.auto = function() {
     this.load();
-    setTimeout('MView.instance.auto();', settings.refreshinterval*1000);
+    if (settings.refreshinterval > 0) {
+      setTimeout('MView.instance.auto();', settings.refreshinterval*1000);
+    }
   };
 };
 // static methods

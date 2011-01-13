@@ -20,7 +20,7 @@
   settings = {
     target: '#mview-container',
     source: '<span class="code-placeholder">&lt;pathto&gt;</span>/MumPI/?view=json&amp;serverId=<span class="code-placeholder">&lt;ID&gt;</span>&amp;callback=?',
-    refreshinterval: 30 // in seconds, 0 for no automatic refresh
+    refreshinterval: 30 <span style="color:#666666;">// in seconds, 0 for no automatic refresh</span>
   };
   mv = new MView(settings);
   mv.load();
@@ -42,11 +42,11 @@
   settings = {
       target: '#mview-container',
       source: '../?view=json&serverId=<?php echo (!empty($_GET['serverid']) ? intval($_GET['serverid']) : 1); ?>&callback=?',
+      //source: 'http://demo.mumble-django.org/mumble-django/mumble/1.json?callback=?',
       refreshinterval: 30
       };
   mv = new MView(settings);
   mv.load();
-//  mv.load({target: '#mview-container', source: 'http://demo.mumble-django.org/mumble-django/mumble/1.json?callback=?'});
 
   codeEl = document.getElementsByTagName('code')[0];
   codeEl.innerHTML = codeEl.innerHTML.replace(/(&lt;\/?\w+(?: \w+="[^"]+")*&gt;)/g, '<span style="color:#448844;">$1</span>');
