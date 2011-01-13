@@ -25,7 +25,7 @@ if (typeof (jQuery) == 'undefined') {
 var MView = function(settings) {
   MView.instance = this;
   this.settings = settings;
-  this.load = function() {
+  this.parse = function() {
     var html = jQuery(settings.target);
     jQuery.getJSON(settings.source, function(data) {
       if (data.error) {
@@ -36,10 +36,10 @@ var MView = function(settings) {
       }
     });
   };
-  this.auto = function() {
-    this.load();
+  this.load = function() {
+    this.parse();
     if (settings.refreshinterval > 0) {
-      setTimeout('MView.instance.auto();', settings.refreshinterval*1000);
+      setTimeout('MView.instance.load();', settings.refreshinterval*1000);
     }
   };
 };
