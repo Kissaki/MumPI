@@ -19,7 +19,7 @@
   mv = new MView(settings);
   mv.load();
 
-  codeEl = document.getElementsByTagName('code')[0];
+  var codeEl = document.getElementsByTagName('code')[0];
   codeEl.innerHTML = codeEl.innerHTML.replace(/(&lt;\/?\w+(?: \w+="[^"]+")*&gt;)/g, '<span style="color:#448844;">$1</span>');
 </script>
 
