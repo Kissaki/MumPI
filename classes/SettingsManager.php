@@ -105,7 +105,7 @@ class SettingsManager {
 	private static function appendToSettingsFile($append, $filename='settings.inc.php')
 	{
 		$settings_content = self::getSettingsFileContents($filename);
-		$settings_content = '<?php' . $settings_content . $append . "\n";
+		$settings_content = '<?php' . $settings_content . "\n" . $append . "\n";
 		if (file_exists(MUMPHPI_MAINDIR.'/'.$filename)) {
 			file_put_contents(MUMPHPI_MAINDIR.'/'.$filename, $settings_content);
 		}
