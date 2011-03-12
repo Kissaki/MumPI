@@ -13,6 +13,12 @@ To access the user, add /user/ to your url. (redirect in place)
 On first admin-login your admin account will be created. No need to manually create your first admin account yourself. Just login and admin-away!
 
 
+Note on accounts:
+The interface is using a local database for storing mumpi admin accounts etc.
+This has nothing to do with mumble or murmur accounts, but only the interface itself.
+At this moment, filesystem and individual files are totally sufficient and probably better in performance than a DBS like MySQL would be (just disk I/O rather than tcp connections and a separate system to call).
+
+
 3rd Party things:
 Icons from
 http://findicons.com/pack/1156/fugue
