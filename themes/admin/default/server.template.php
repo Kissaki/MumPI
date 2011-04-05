@@ -211,7 +211,7 @@
 
 			function jq_server_getBans(sid)
 			{
-				$.post("./?ajax=show_server_bans",
+				$.post("./?ajax=server_bans_show",
 						{ 'sid': sid },
 						function(data){
 							$('#jq_information').show().html(data);

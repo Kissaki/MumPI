@@ -769,7 +769,7 @@ class Ajax_Admin extends Ajax
 			ServerInterface::getInstance()->kickUser($_POST['sid'], $_POST['sessid']);
 	}
 
-	public static function show_server_bans()
+	public static function server_bans_show()
 	{
 		$serverId = intval($_POST['sid']);
 		if (!PermissionManager::getInstance()->isAdminOfServer($serverId)) {
