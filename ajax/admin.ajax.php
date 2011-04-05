@@ -549,7 +549,7 @@ class Ajax_Admin extends Ajax
 		}
 	}
 
-	public static function show_onlineUsers()
+	public static function server_onlineUsers_show()
 	{
 		$_POST['sid'] = intval($_POST['sid']);
 		if (!PermissionManager::getInstance()->isAdminOfServer($_POST['sid'])) {
@@ -704,7 +704,7 @@ class Ajax_Admin extends Ajax
 		} catch(Murmur_ServerBootedException $exc) {
 			echo '<div class="error">Server is not running</div>';
 		}
-	} // show_onlineUsers()
+	}
 
 	public static function server_regstration_remove()
 	{

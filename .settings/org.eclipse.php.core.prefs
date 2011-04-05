@@ -1,3 +1,5 @@
-#Thu Dec 10 23:09:22 CET 2009
+#Tue Apr 05 16:38:14 CEST 2011
 eclipse.preferences.version=1
 include_path=0;/MumPI
+org.eclipse.php.core.phpForamtterIndentationSize=1
+org.eclipse.php.core.phpForamtterUseTabs=true

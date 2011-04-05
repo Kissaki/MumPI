@@ -200,7 +200,7 @@
 
 			function jq_server_getOnlineUsers(sid)
 			{
-				$.post("./?ajax=show_onlineUsers",
+				$.post("./?ajax=server_onlineUsers_show",
 						{ 'sid': sid },
 						function(data){
 							$('#jq_information').show().html(data);
