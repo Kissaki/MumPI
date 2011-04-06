@@ -6,6 +6,7 @@ require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
  */
 class SettingsManager {
 	private static $instance;
+
 	/**
 	 * @return SettingsManager
 	 */
@@ -41,6 +42,10 @@ class SettingsManager {
 
 	function __construct()
 	{
+		//TODO using hosts timezone or visitors timezone as default fallback would be better than just UTC
+		$iniTimezone = ini_get('date.timezone');
+		date_default_timezone_set( !empty($iniTimezone) ? $iniTimezone : 'UTC');
+
 		eval(self::getSettingsFileContents());
 
 		$this->isDebugMode = $debug;
@@ -283,7 +288,7 @@ class SettingsManager {
 						'allowregistration'=>'$servers['.$serverid.'][\'allowregistration\']',
 						'forcemail'        =>'$servers['.$serverid.'][\'forcemail\']',
 						'authbymail'       =>'$servers['.$serverid.'][\'authbymail\']',
-					);
+				);
 
 				foreach ($lines AS $line) {
 					if (substr($line, 0, strlen($expectedLineBeginning)) == $expectedLineBeginning) {
@@ -310,10 +315,10 @@ class SettingsManager {
 			// There was no server information before, add it to the settings file
 			self::appendToSettingsFile(
 				 '$servers[' . $serverid . '][\'name\']              = \'' . $name . '\';'."\n"
-				.'$servers[' . $serverid . '][\'allowlogin\']        = ' . $allowlogin .        ';'."\n"
-				.'$servers[' . $serverid . '][\'allowregistration\'] = ' . $allowregistration . ';'."\n"
-				.'$servers[' . $serverid . '][\'forcemail\']         = ' . $forcemail .         ';'."\n"
-				.'$servers[' . $serverid . '][\'authbymail\']        = ' . $authbymail .        ';'."\n");
+				 .'$servers[' . $serverid . '][\'allowlogin\']        = ' . $allowlogin .        ';'."\n"
+				 .'$servers[' . $serverid . '][\'allowregistration\'] = ' . $allowregistration . ';'."\n"
+				 .'$servers[' . $serverid . '][\'forcemail\']         = ' . $forcemail .         ';'."\n"
+				 .'$servers[' . $serverid . '][\'authbymail\']        = ' . $authbymail .        ';'."\n");
 		}
 	}
 	function removeServerInformation($serverId)

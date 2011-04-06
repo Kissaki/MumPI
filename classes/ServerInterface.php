@@ -34,6 +34,9 @@ class ServerInterface{
 class ServerInterface_ice
 {
 	private $conn;
+	/**
+	 * @var Murmur_Meta
+	 */
 	private $meta;
 	private $version;
 	private $contextVars;
@@ -46,29 +49,15 @@ class ServerInterface_ice
 		} else {
 			$this->contextVars = SettingsManager::getInstance()->getDbInterface_iceSecrets();
 			if (!function_exists('Ice_intVersion') || Ice_intVersion() < 30400) {
-				// ice 3.3
-				global $ICE;
-				Ice_loadProfile();
-				$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
-				$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
-				// use IceSecret if set
-				if (!empty($this->contextVars)) {
-					$this->meta = $this->meta->ice_context($this->contextVars);
-				}
-				$this->meta = $this->meta->ice_timeout(10000);
+				// ice version prior 3.4, not supported
+				//TODO make it translated string
+				MessageManager::addError(tr('error loaded PHP-ice extension is too old. Use an older MumPI 2 instead, or better yet: update PHP-ice to 3.4 or higher.'));
 			} else {
 				// ice 3.4
 				$initData = new Ice_InitializationData;
 				$initData->properties = Ice_createProperties();
 				$initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
 				$ICE = Ice_initialize($initData);
-				/*
-				 * getImplicitContext() is not implemented for icePHP yet…
-				 * $ICE->getImplicitContext();
-				 * foreach ($this->contextVars as $key=>$value) {
-				 * 	 $ICE->getImplicitContext()->put($key, $value);
-				 * }
-				 */
 				try {
 					$this->meta = Murmur_MetaPrxHelper::checkedCast($ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address()));
 				} catch (Ice_ConnectionRefusedException $exc) {
@@ -93,10 +82,6 @@ class ServerInterface_ice
 		 * $initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
 		 * $ICE = Ice_initialize($initData);
 		 */
-
-		//TODO it would be good to be able to add a check if slice file is loaded
-		//if (empty(ini_get('ice.slice'))) {
-		//MessageManager::addError(tr('error_noIceSliceLoaded'));
 
 		// to check the connection get the version (e.g. was a needed (context-)password not provided?)
 		try {
@@ -509,11 +494,7 @@ class ServerInterface_ice
 	}
 	function kickUser($srvid, $sessid, $reason='')
 	{
-		$srv = $this->getServer(intval($srvid));
-		if (!empty($this->contextVars)) {
-			$srv = $srv->ice_context($this->contextVars);
-		}
-		MurmurServer::fromIceObject($srv)->kickUser(intval($sessid), $reason);
+		$this->meta->getServer(intval($srvid))->kickUser(intval($sessid), $reason);
 	}
 	function ban($serverId, $ip, $bits=32)
 	{

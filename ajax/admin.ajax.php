@@ -380,8 +380,8 @@ class Ajax_Admin extends Ajax
 		}
 
 		try {
-			$server = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($serverId));
-			$users = $server->getRegisteredUsers();
+			$server = ServerInterface::getInstance()->getServer($serverId);
+			$users = $server->getRegisteredUsers('');
 ?>
 			<h2>Registrations</h2>
 			<table>
@@ -885,7 +885,9 @@ class Ajax_Admin extends Ajax
 		$userImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/talking_off.svg';
 		$userImgHtmlObj = '<object data="' . $userImgUrl . '" type="image/svg+xml" width="12" height="12">' . $userImgHtmlObj . '</object>';
 		echo '<div class="servers_tree">';
-		echo MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($_POST['sid']))->getTree()->toHtml();
+		//TODO this is a working workaround, but the toHtml function should be moved to a helper
+		echo MurmurTree::fromIceObject(ServerInterface::getInstance()->getServer(intval($_POST['sid']))->getTree(), ServerInterface::getInstance()->getServer(intval($_POST['sid'])))->toHtml();
+		//echo ServerInterface::getInstance()->getServer(intval($_POST['sid']))->getTree()->toHtml();
 		echo '</div>';
 		?>
 			<script type="text/javascript">
@@ -911,15 +913,15 @@ class Ajax_Admin extends Ajax
 	public static function server_config_show()
 	{
 		if(!isset($_POST['sid'])) return;
-		$_POST['sid'] = intval($_POST['sid']);
-		$conf = ServerInterface::getInstance()->getServerConfig($_POST['sid']);
+		$reqServerId = intval($_POST['sid']);
+		$conf = ServerInterface::getInstance()->getServerConfig($reqServerId);
 		//TODO i18n
 ?>
 		<h1>Server Config</h1>
 		<p>For documentation, see your murmur.ini file (or <a href="http://mumble.git.sourceforge.net/git/gitweb.cgi?p=mumble/mumble;a=blob;f=scripts/murmur.ini;hb=HEAD" rel="external">this</a> one in the repository, which may be newer than yours though)</p>
 		<br/>
 		<br/>
-		<?php $canEdit = PermissionManager::getInstance()->serverCanEditConf($_POST['sid']);
+		<?php $canEdit = PermissionManager::getInstance()->serverCanEditConf($reqServerId);
 			if ($canEdit) { ?>
 			<p style="font-size:x-small;">(Double-click entries to edit them)</p>
 		<?php } ?>
@@ -961,7 +963,7 @@ class Ajax_Admin extends Ajax
 					<td id="jq_editable_server_conf_defaultchannel">
 						<?php
 							$defaultChannelId = $conf['defaultchannel'];
-							$server = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($_POST['sid']));
+							$server = ServerInterface::getInstance()->getServer($reqServerId);
 							$defaultChannel = $server->getChannel($defaultChannelId);
 							echo $defaultChannel->getName();
 
@@ -1130,7 +1132,7 @@ class Ajax_Admin extends Ajax
 		if ($canEdit) {
 ?>
 			<script type="text/javascript">/*<![CDATA[*/
-				var currentServerId = <?php echo $_POST['sid']; ?>;
+				var currentServerId = <?php echo $reqServerId; ?>;
 				function jq_server_conf_update(key, newValue)
 				{
 				  $.post('./?ajax=server_config_update',
@@ -1251,7 +1253,7 @@ class Ajax_Admin extends Ajax
 			if (isset($eiServerId) && isset($_POST['key']) && isset($_POST['value'])) {
 				ServerInterface::getInstance()->setServerConfigEntry($eiServerId, $_POST['key'], $_POST['value']);
 			} else {
-				echo 'missing var';
+				MessageManager::addError('missing var for server config update');
 			}
 		}
 	}

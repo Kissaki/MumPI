@@ -9,7 +9,6 @@
 		{
 			$server = ServerInterface::getInstance()->getServer($serverId);
 			if ($server !== null) {
-				$server = MurmurServer::fromIceObject($server);
 				$tree = $server->getTree();
 				return '<div class="server">' . $tree->toHtml() . '</div>';
 			}

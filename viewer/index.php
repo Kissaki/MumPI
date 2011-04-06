@@ -70,7 +70,7 @@ define('MUMPHPI_SECTION', 'viewer');
 		var mumpiViewerRefreshTreeRunning = false;
 		var mumpiViewerRefreshTreeObject;
 		var mumpiViewerRefreshTreeRate;
-		<?php $rootName = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($serverId))->getConf('registername'); ?>
+		<?php $rootName = ServerInterface::getInstance()->getServer($serverId)->getConf('registername'); ?>
 		var mumpiViewerRootName = '<?php echo ( !empty($rootName)?htmlspecialchars($rootName):'Root' ); ?>';
 
 		// create chan and user images as dom objects (for faster draw, especially SVG)
