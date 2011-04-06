@@ -5,10 +5,10 @@ or continue:
 Note: With the installer you should be guided through most of this. However, if you encounter problems, this may still help you fix your problems.
 
 make sure the following folders are writable:
-* Mumble_PHP_Interface
-* Mumble_PHP_Interface/tmp
-* Mumble_PHP_Interface/data
-(if you renamed Mumble_PHP_Interface, that one of course)
+* MumPI
+* MumPI/tmp
+* MumPI/data
+(if you renamed MumPI, that one of course)
 
 MAKE SURE ppl can not access the data folder or files in it from the web.
 A .htaccess file is included, but depending on your webserver configuration,
