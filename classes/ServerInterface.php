@@ -54,7 +54,7 @@ class ServerInterface_ice
 				MessageManager::addError(tr('error loaded PHP-ice extension is too old. Use an older MumPI 2 instead, or better yet: update PHP-ice to 3.4 or higher.'));
 			} else {
 				// ice 3.4
-				$initData = new Ice_InitializationData;
+				$initData = new Ice_InitializationData();
 				$initData->properties = Ice_createProperties();
 				$initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
 				$ICE = Ice_initialize($initData);
