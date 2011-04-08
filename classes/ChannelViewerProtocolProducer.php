@@ -8,65 +8,69 @@ class ChannelViewerProtocolProducer {
 
 	public function generateJson($serverId)
 	{
-		$server = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($serverId));
+		$server = ServerInterface::getInstance()->getServer($serverId);
 		$tree = $server->getTree();
 		$array = array(
-			'id' => $server->getId(),
-			'name' => SettingsManager::getInstance()->getServerName($server->getId()),
+			'id' => $server->id(),
+			'name' => SettingsManager::getInstance()->getServerName($server->id()),
 			'root' => $this->treeToJsonArray($tree),
 		);
 		return json_encode($array);
 	}
-	private function treeToJsonArray(MurmurTree $tree) {
+	private function treeToJsonArray(Murmur_Tree $tree) {
 		$array = array();
 		$prior = array();
-		$subChannels = $tree->getSubChannels();
+		$subChannels = $tree->children;
 		if (!empty($subChannels)) {
 			foreach ($subChannels as $subChannel) {
 				$prior[] = $this->treeToJsonArray($subChannel);
 			}
 		}
 		/**
-		 * @var MurmurChannel
+		 * @var Murmur_Channel
 		 */
-		$chan = $tree->getRootChannel();
-		$array['id'] = $chan->getId();
-		$array['parent'] = $chan->getParentChannelId();
-		$array['temporary'] = $chan->isTemporary();
-		$array['position'] = $chan->getPosition();
-		$array['name'] = $chan->getName();
-		$array['description'] = $chan->getDescription();
+		$chan = $tree->c;
+		$array['id'] = $chan->id;
+		$array['parent'] = $chan->parent;
+		$array['temporary'] = $chan->temporary;
+		$array['position'] = $chan->position;
+		$array['name'] = $chan->name;
+		$array['description'] = $chan->description;
 		$array['channels'] = $prior;
-		$array['links'] = $chan->getLinkedChannelIds();
-		$array['users'] = $this->usersToJsonArray($tree->getUsers(), $chan->getId());
+		$array['links'] = $chan->links;
+		$array['users'] = $this->usersToJsonArray($tree->users, $chan->id);
 		return $array;
 	}
 	private function usersToJsonArray($users, $channelId) {
 		$array = array();
+    /**
+     * @var Murmur_User
+     */
+    $user = null;
 		foreach ($users as $user) {
 			$array[] = array(
 				'channel' => $channelId,
-				'name' => $user->getName(),
-				'deaf' => $user->isDeafened(),
-				'mute' => $user->isMuted(),
-				'selfDeaf' => $user->isSelfDeafened(),
-				'selfMute' => $user->isSelfMuted(),
-				'session' => $user->getSessionId(),
-				'suppress' => $user->isSuppressed(),
-				'userid' => $user->getRegistrationId(),
+				'name' => $user->name,
+				'deaf' => $user->deaf,
+				'mute' => $user->mute,
+				'selfDeaf' => $user->selfDeaf,
+				'selfMute' => $user->selfMute,
+				'session' => $user->session,
+				'suppress' => $user->suppress,
+				'userid' => $user->userid,
 				// following optional fields
-				'comment' => $user->getComment(),
-				'idlesecs' => $user->getIdleSeconds(),
-				'onlinesecs' => $user->getOnlineSeconds(),
-				'version' => $user->getClientVersion(),
-				'release' => $user->getClientRelease(),
-				'os' => $user->getClientOs(),
-				'osversion' => $user->getClientOsVersion(),
-				'prioritySpeaker' => $user->isPrioritySpeaker(),
-				'bytespersec' => $user->getBytesPerSecond(),
-				'tcponly' => $user->isTcpOnly(),
-				'context' => $user->getPluginContext(),
-				'identity' => $user->getPluginIdentity(),
+				'comment' => $user->comment,
+				'idlesecs' => $user->idlesecs,
+				'onlinesecs' => $user->onlinesecs,
+				'version' => $user->version,
+				'release' => $user->release,
+				'os' => $user->os,
+				'osversion' => $user->osversion,
+				'prioritySpeaker' => $user->prioritySpeaker,
+				'bytespersec' => $user->bytespersec,
+				'tcponly' => $user->tcponly,
+				'context' => $user->context,
+				'identity' => $user->identity,
 			);
 		}
 		return $array;

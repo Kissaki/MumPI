@@ -3,7 +3,7 @@
 if (typeof (jQuery) == 'undefined') {
   var fileref = document.createElement('script');
   fileref.setAttribute("type", "text/javascript");
-  fileref.setAttribute("src", 'http://code.jquery.com/jquery-1.4.4.min.js');
+  fileref.setAttribute("src", 'http://code.jquery.com/jquery-1.5.2.min.js');
   document.getElementsByTagName('body')[0].appendChild(fileref);
 
   (ready = function() {
@@ -25,15 +25,24 @@ var MView = function(settings) {
   
   this.parse = function() {
     var html = jQuery(settings.target);
-    jQuery.getJSON(settings.source, function(data) {
-      if (data.error) {
-        html.append('ERROR: ' + data.error + '<br/>source-url was: ' + settings.source);
-      } else {
-        html.html(MView.getServerHTMLCodeFor(data));
-        MView.postLoad(html);
-      }
-    });
-  };
+    jQuery
+      .getJSON(
+        settings.source,
+        function(data) {
+          if (data.error) {
+            html.append('ERROR: ' + data.error + '<br/>source-url was: ' + settings.source);
+          } else {
+            html.html(MView.getServerHTMLCodeFor(data));
+            MView.postLoad(html);
+          }
+        }
+      )
+      .error(
+        function(resp){
+          html.html('ERROR: ' + resp.responseText);
+        }
+      );
+    };
   this.load = function() {
     this.parse();
     if (settings.refreshinterval > 0) {
