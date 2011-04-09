@@ -590,40 +590,41 @@ class Ajax_Admin extends Ajax
 				<tbody>
 <?php				foreach ($users AS $user) {	?>
 					<tr>
-						<td class="col_sessId"><?php echo $user->getSessionId(); ?></td>
+						<td class="col_sessId"><?php echo $user->session; ?></td>
 						<td class="col_regId">
 							<?php
-								$regId = $user->getRegistrationId();
+								$regId = $user->userid;
 								if ($regId !== -1) {
 									echo $regId;
 								}
 							?>
 						</td>
-						<td id="user_name_<?php echo $user->sessionId; ?>" class="col_uame"><?php echo $user->name; ?></td>
+						<td id="user_name_<?php echo $user->session; ?>" class="col_uame"><?php echo $user->name; ?></td>
 
-						<td class="col_isMuted"><input id="user_mute_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsMuted()) echo 'checked=""'; if(!$canModerate) echo 'disabled="disabled"'; ?>/></td>
-						<td class="col_isDeafened"><input id="user_deaf_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsDeafened()) echo 'checked=""'; if(!$canModerate) echo 'disabled="disabled"'; ?>/></td>
-						<td class="col_isSuppressed"><input type="checkbox" <?php if ($user->getIsSuppressed()) echo 'checked=""'; ?> disabled="disabled"/></td>
-						<td class="col_isSelfMuted"><input type="checkbox" <?php if ($user->getIsSelfMuted()) echo 'checked=""'; ?> disabled="disabled"/></td>
-						<td class="col_isSelfDeafened"><input type="checkbox" <?php if ($user->getIsSelfDeafened()) echo 'checked=""'; ?> disabled="disabled"/></td>
+						<td class="col_isMuted"><input id="user_mute_<?php echo $user->session; ?>" class="jq_toggleable" type="checkbox" <?php if ($user->mute) echo 'checked=""'; if(!$canModerate) echo 'disabled="disabled"'; ?>/></td>
+						<td class="col_isDeafened"><input id="user_deaf_<?php echo $user->session; ?>" class="jq_toggleable" type="checkbox" <?php if ($user->deaf) echo 'checked=""'; if(!$canModerate) echo 'disabled="disabled"'; ?>/></td>
+						<td class="col_isSuppressed"><input type="checkbox" <?php if ($user->suppress) echo 'checked=""'; ?> disabled="disabled"/></td>
+						<td class="col_isSelfMuted"><input type="checkbox" <?php if ($user->selfMute) echo 'checked=""'; ?> disabled="disabled"/></td>
+						<td class="col_isSelfDeafened"><input type="checkbox" <?php if ($user->selfDeaf) echo 'checked=""'; ?> disabled="disabled"/></td>
 
-						<td id="user_email_<?php echo $user->getSessionId(); ?>" class="col_timeOnline">
-							<?php $on = $user->getOnlineSeconds(); if ($on > 59) { echo sprintf('%.0f', $on/60).'m'; } else { echo $on.'s'; } ?>
+						<td id="user_email_<?php echo $user->session; ?>" class="col_timeOnline">
+							<?php $on = $user->onlinesecs; if ($on > 59) { echo sprintf('%.0f', $on/60).'m'; } else { echo $on.'s'; } ?>
 						</td>
 						<td class="col_timeIdle">
-							<?php $idle = $user->getIdleSeconds(); if ($idle > 59) { echo sprintf('%.0f', $idle/60).'m'; } else { echo $idle.'s'; } ?>
+							<?php $idle = $user->idlesecs; if ($idle > 59) { echo sprintf('%.0f', $idle/60).'m'; } else { echo $idle.'s'; } ?>
 						</td>
-						<td class="col_bytesPerSecond"><?php echo $user->getBytesPerSecond(); ?></td>
+						<td class="col_bytesPerSecond"><?php echo $user->bytespersec; ?></td>
 						<td class="col_version">
 							<?php
-								echo $user->getClientVersionAsString();
-								if ($user->getClientVersionAsString() != $user->getClientRelease()) {
-									echo ' (' . $user->clientOs() . $user->getClientRelease() . ')';
+								$v = HelperFunctions::clientVersionToString($user->version);
+								echo $v;
+								if ($v != $user->release) {
+									echo ' (' . $user->os . $user->release . ')';
 								}
 							?>
 						</td>
-						<td id="userComment<?php echo $user->getSessionId(); ?>" class="col_comment comment userComment">
-							<?php $commentClean = htmlspecialchars($user->getComment()); ?>
+						<td id="userComment<?php echo $user->session; ?>" class="col_comment comment userComment">
+							<?php $commentClean = htmlspecialchars($user->comment); ?>
 							<?php
 								if (!empty($commentClean)) {
 									if (strlen($commentClean) > 10) {
@@ -652,15 +653,19 @@ class Ajax_Admin extends Ajax
 							?>
 						</td>
 						<td class="col_address userAddress">
-							<?php echo $user->getAddress()->__toString(); ?> <sup>(<a href="http://[<?php echo $user->getAddress(); ?>]">http</a>, <a href="http://www.db.ripe.net/whois?searchtext=<?php echo $user->getAddress(); ?>">lookup</a>)</sup>
-							<?php if ($user->getAddress()->isIPv4()) { echo '<div>' . $user->getAddress()->toStringAsIPv4() . '</div>'; } ?>
+							<?php
+								$adr = $user->address;
+								echo $adr; ?> <sup>(<a href="http://[<?php echo HelperFunctions::Murmur_Address_toString($adr); ?>]">http</a>, <a href="http://www.db.ripe.net/whois?searchtext=<?php echo HelperFunctions::Murmur_Address_toString($adr); ?>">lookup</a>)</sup>
+							<?php
+								if (HelperFunctions::Murmur_Address_isIPv4($adr)) { echo '<div>' . HelperFunctions::Murmur_Address_toIPv4String($adr) . '</div>'; }
+							?>
 						</td>
-						<td class="col_isTcpOnly"><input type="checkbox" <?php echo $user->getIsTcpOnly()?'checked=""':''; ?> disabled="disabled"/></td>
+						<td class="col_isTcpOnly"><input type="checkbox" <?php echo $user->tcponly?'checked=""':''; ?> disabled="disabled"/></td>
 
 						<td class="col_actions">
 <?php
 						if (PermissionManager::getInstance()->serverCanKick($_POST['sid']))
-							echo '<a class="jqlink" onclick="jq_server_user_kick(' . $user->getSessionId() . ')">kick</a>';
+							echo '<a class="jqlink" onclick="jq_server_user_kick(' . $user->session . ')">kick</a>';
 ?>
 						</td>
 					</tr>
@@ -701,7 +706,7 @@ class Ajax_Admin extends Ajax
 <?php
 			} // permission check: moderate
 		} catch(Murmur_ServerBootedException $exc) {
-			echo '<div class="error">Server is not running</div>';
+			MessageManager::addError(tr('error_servernotbooted'));
 		}
 	}
 
@@ -883,18 +888,10 @@ class Ajax_Admin extends Ajax
 		$userImgHtmlObj = '<img src="' . $userImgUrl . '" alt=""/>';
 		$userImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/talking_off.svg';
 		$userImgHtmlObj = '<object data="' . $userImgUrl . '" type="image/svg+xml" width="12" height="12">' . $userImgHtmlObj . '</object>';
-		echo '<div class="servers_tree">';
-		//TODO this is a working workaround, but the toHtml function should be moved to a helper
-		echo MurmurTree::fromIceObject(ServerInterface::getInstance()->getServer(intval($_POST['sid']))->getTree(), ServerInterface::getInstance()->getServer(intval($_POST['sid'])))->toHtml();
-		//echo ServerInterface::getInstance()->getServer(intval($_POST['sid']))->getTree()->toHtml();
-		echo '</div>';
 		?>
-			<script type="text/javascript">
-				jQuery('.servers_tree').ready(function(){
-				  	jQuery('.servers_tree .channelname').prepend('<?php echo $chanImgHtmlObj; ?>');
-				  	jQuery('.servers_tree .username').prepend('<?php echo $userImgHtmlObj; ?>');
-					});
-			</script>
+		<div class="servers_tree">
+			Was removed when refactoring. <a href="../viewer2/">Use the viewer2 (MView) for now.</a>
+		</div>
 		<?php
 	}
 

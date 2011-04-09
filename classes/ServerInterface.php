@@ -333,32 +333,26 @@ class ServerInterface_ice
 	 */
 	public function getServerUsersConnected($serverId)
 	{
-		//return $this->getServer($serverId)->getUsers();
-		$users = array();
 		$userMap = $this->getServer($serverId)->getUsers();
-		foreach ($userMap as $sessionId=>$iceUser) {
-			$user = MurmurUser::fromIceObject($iceUser);
-			$users[] = $user;
-		}
-		return $users;
+		return $userMap;
 	}
 	/**
 	 * @param int $serverId
 	 * @param int $sessionId
-	 * @return MurmurUser
+	 * @return Murmur_User
 	 */
 	public function getServerUser($serverId, $sessionId)
 	{
-		return MurmurUser::fromIceObject($this->getServer($serverId)->getState($sessionId));
+		return $this->getServer($serverId)->getState($sessionId);
 	}
 	/**
 	 * @param int $serverId
 	 * @param MurmurUser $user
 	 * @return void
 	 */
-	public function saveServerUser($serverId, MurmurUser $user)
+	public function saveServerUser($serverId, $user)
 	{
-		MurmurUser::fromIceObject($this->getServer($serverId)->setState($user->toIceObject()));
+		$this->getServer($serverId)->setState($user);
 	}
 	/**
 	 * Get a user account by searching for a specific email.

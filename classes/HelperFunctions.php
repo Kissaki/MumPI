@@ -202,5 +202,59 @@ class HelperFunctions
 		return $ip;
 	}
 
+	public static function clientVersionToString($v) {
+		return '' . (($v & 0xffff0000) >> 16) . '.' . (($v & 0xff00) >> 8)  . '.' . ($v & 0xff);
+	}
+
+	public static $IPv4Range = array(
+												0=>0,
+												1=>0,
+												2=>0,
+												3=>0,
+												4=>0,
+												5=>0,
+												6=>0,
+												7=>0,
+												8=>0,
+												9=>0,
+												10=>0,
+												11=>0xffff,
+											);
+	public static function Murmur_Address_isIPv4($adr)
+	{
+		for ($byte=0; $byte<count(self::$IPv4Range); $byte++) {
+			if (self::$IPv4Range[$byte] !== $adr[$byte]) {
+				return false;
+			}
+		}
+		return true;
+	}
+	public static function Murmur_Address_toString($adr)
+	{
+		$str = '';
+		$tmp = null;
+		foreach ($adr AS $byte=>$value) {
+			if ($tmp === null)
+				$tmp = $value;
+			else {
+				$str .= sprintf(':%x', $tmp + $value);
+				$tmp = null;
+			}
+		}
+		$str = substr($str, 1);
+		//TODO: strip 0:, :0: to ::
+		return $str;
+	}
+	public static function Murmur_Address_toIPv4String($adr)
+	{
+		if (!self::Murmur_Address_isIPv4($adr)) {
+			throw new Exception('Not an IPv4 address.');
+		}
+		$str = '';
+		for ($byteNr=count(self::IPv4Range); $byteNr<count($adr); $byteNr++) {
+			$str .= '.' . $adr[$byteNr];
+		}
+		return substr($str, 1);
+	}
 
 }

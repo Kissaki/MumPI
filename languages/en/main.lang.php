@@ -36,6 +36,7 @@
 	$txt['error_noIce']									= 'Could not connect to Ice.<br/>Either your server is not running or it is not running with Ice. Check your configuration.';
 	$txt['error_iceConnectionRefused']	= 'Could not connect to Ice.<br/>Either your server is not running or it is not running with Ice. Check your configuration.';
 	$txt['error_unknowninterface']			= 'Misconfiguration: Unknown <acronym title="database">DB</acronym> Interface Type!';
+	$txt['error_servernotbooted']				= 'Error: The server is not running.';
 	$txt['unknownserver']								= 'No such server found.';
 	$txt['error_missing_values']				= 'It seems not all necessary values have been specified.';
 	$txt['error_db_unknowntype']				= 'The Database type you specified (in your settings) is not available/defined.';
