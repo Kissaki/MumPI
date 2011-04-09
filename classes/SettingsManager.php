@@ -162,7 +162,7 @@ class SettingsManager {
 	{
 		return $this->defaultLanguage;
 	}
-	public function getServerAddress($serverId=null)
+	public function getServerAddress($serverId=null, $path = null)
 	{
 		if ($serverId == null) {
 			if (strtolower($this->dbInterface_type) === 'ice') {
@@ -173,7 +173,11 @@ class SettingsManager {
 		}
 		else {
 			if (isset($this->serverAddresses[$serverId])) {
-				return $this->serverAddresses[$serverId];
+				//TODO static for mum 1.2 only = bad
+				if ($path != null && is_array($path)) {
+					$path = implode('/', $path);
+				}
+				return 'mumble://' . $this->serverAddresses[$serverId] . ($path != null ? urlencode($path) : '') . '?version=1.2.0';
 			}
 			MessageManager::addMessage('Trying to get serveraddress for a serverIp which does not have an associated server address in the settings file.');
 		}

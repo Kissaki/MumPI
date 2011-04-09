@@ -15,15 +15,19 @@ class ChannelViewerProtocolProducer {
 			'name' => SettingsManager::getInstance()->getServerName($server->id()),
 			'root' => $this->treeToJsonArray($tree),
 		);
+		$uri = SettingsManager::getInstance()->getServerAddress($serverId);
+		if ($uri != null) {
+			$array['root']['x_connecturl'] = $uri;
+		}
 		return json_encode($array);
 	}
 	private function treeToJsonArray(Murmur_Tree $tree) {
 		$array = array();
-		$prior = array();
+		$subChansAsJson = array();
 		$subChannels = $tree->children;
 		if (!empty($subChannels)) {
 			foreach ($subChannels as $subChannel) {
-				$prior[] = $this->treeToJsonArray($subChannel);
+				$subChansAsJson[] = $this->treeToJsonArray($subChannel);
 			}
 		}
 		/**
@@ -36,7 +40,7 @@ class ChannelViewerProtocolProducer {
 		$array['position'] = $chan->position;
 		$array['name'] = $chan->name;
 		$array['description'] = $chan->description;
-		$array['channels'] = $prior;
+		$array['channels'] = $subChansAsJson;
 		$array['links'] = $chan->links;
 		$array['users'] = $this->usersToJsonArray($tree->users, $chan->id);
 		return $array;
