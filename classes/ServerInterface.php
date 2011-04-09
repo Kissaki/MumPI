@@ -288,6 +288,16 @@ class ServerInterface_ice
 	{
 		return $this->getServer($sid)->getLog($first, $last);
 	}
+	
+	public function getServerChannel($srv, $id) {
+		$chans = $srv->getChannels();
+		foreach ($chans as $cId=>$chan) {
+			if ($cId == $id) {
+				return $chan;
+			}
+		}
+		return null;
+	}
 
 
 	/**
@@ -314,7 +324,7 @@ class ServerInterface_ice
 		if (null===$server) {
 			throw new Exception('Invalid server id, server not found.');
 		}
-		return MurmurRegistration::fromIceObject($server->getRegistration($userId), $serverId, $userId);
+		return $server->getRegistration($userId);
 	}
 	/**
 	 * Get connected users of a virtual server

@@ -399,7 +399,6 @@ class Ajax_Admin extends Ajax
 				<tbody>
 <?php
 					foreach ($users AS $userId=>$userName) {
-						//FIXME Ice version check, enum-index available? otherwise, one has to edit his slice file – actually, this fixme should be a general check, in install or general warning-disableable
 						$user = ServerInterface::getInstance()->getServerRegistration($serverId, $userId);
 ?>
 					<tr>
@@ -407,14 +406,14 @@ class Ajax_Admin extends Ajax
 							<?php echo $userId; ?>
 						</td>
 						<td id="user_name_<?php echo $userId; ?>" class="jq_editable"><?php echo $userName; ?></td>
-						<td id="user_email_<?php echo $userId; ?>" class="jq_editable"><?php echo $user->getEmail(); ?></td>
-						<td id="userComment<?php echo $user->getUserId(); ?>" class="comment userComment">
+						<td id="user_email_<?php echo $userId; ?>" class="jq_editable"><?php echo $user[Murmur_UserInfo::UserName]; ?></td>
+						<td id="userComment<?php echo $userId; ?>" class="comment userComment">
 							<?php
-								$commentClean = htmlspecialchars($user->getComment());
+								$commentClean = isset($user[Murmur_UserInfo::UserComment]) ? htmlspecialchars($user[Murmur_UserInfo::UserComment]) : '';
 								if (!empty($commentClean)) {
 									if (strlen($commentClean) > 10) {
 										?>
-											<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getUserId(); ?>);" style="float:left; margin-right:4px;">
+											<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $userId; ?>);" style="float:left; margin-right:4px;">
 												○
 											</a>
 										<?php
@@ -435,10 +434,10 @@ class Ajax_Admin extends Ajax
 								}
 							?>
 						</td>
-						<td id="user_hash_<?php echo $userId; ?>" class="userHash jq_editable"><?php echo $user->getHash(); ?></td>
+						<td id="user_hash_<?php echo $userId; ?>" class="userHash jq_editable"><?php echo isset($user[Murmur_UserInfo::UserHash]) ? $user[Murmur_UserInfo::UserHash] : ''; ?></td>
 						<td>
 							<?php
-								$userAvatarByteSequence = $server->getTexture($user->getUserId());
+								$userAvatarByteSequence = $server->getTexture($userId);
 								$hasAvatar = count($userAvatarByteSequence) > 0;
 								if ($hasAvatar) {
 									$texBytes = '';
@@ -477,7 +476,7 @@ class Ajax_Admin extends Ajax
 							if (PermissionManager::getInstance()->serverCanEditRegistrations($serverId)) {
 								echo '<ul>';
 								echo '	<li><a class="jqlink" onclick="if(confirm(\'Do you really want to remove the user ' . str_replace('"', '', $userName) . '?\')){jq_server_registration_remove('.$userId.');}">remove</a></li>';
-								echo '	<li><a title="generate a new password for the user" class="jqlink" onclick="if(confirm(\'Are you sure you want to generate and set a new password for this account?\')){jq_server_user_genNewPw('.$user->getServerId().', '.$user->getUserId().'); return false;}">genNewPw</a></li>';
+								echo '	<li><a title="generate a new password for the user" class="jqlink" onclick="if(confirm(\'Are you sure you want to generate and set a new password for this account?\')){jq_server_user_genNewPw('.$serverId.', '.$userId.'); return false;}">genNewPw</a></li>';
 								echo '</ul>';
 							}
 ?>
@@ -964,14 +963,14 @@ class Ajax_Admin extends Ajax
 						<?php
 							$defaultChannelId = $conf['defaultchannel'];
 							$server = ServerInterface::getInstance()->getServer($reqServerId);
-							$defaultChannel = $server->getChannel($defaultChannelId);
-							echo $defaultChannel->getName();
+							$defaultChannel = ServerInterface::getInstance()->getServerChannel($server, $defaultChannelId);
+							echo $defaultChannel->name;
 
 							// change default chan functionality
 							$chanTree = $server->getTree();
-							function treePrint(MurmurTree $tree, $first=true)
+							function treePrint($tree, $first=true)
 							{
-								$subs = $tree->getSubChannels();
+								$subs = $tree->children;
 								if ($first) {
 									echo '<div id="jq_editable_server_conf_defaultchannel_form">';
 									//TODO i18n
@@ -979,7 +978,7 @@ class Ajax_Admin extends Ajax
 								}
 								?>
 									<ul>
-										<li class="form_clickable_submit jslink" id="channel_<?php echo $tree->getRootChannel()->getId(); ?>"><?php echo $tree->getRootChannel()->getName(); ?></li>
+										<li class="form_clickable_submit jslink" id="channel_<?php echo $tree->c->id; ?>"><?php echo $tree->c->name; ?></li>
 										<?php
 											if (!empty($subs)) {
 												foreach ($subs as $subTree) {
