@@ -1,5 +1,7 @@
 <?php
 require_once dirname(__FILE__).'/PermissionManager.php';
+require_once dirname(__FILE__).'/MessageManager.php';
+require_once dirname(__FILE__).'/TranslationManager.php';
 require_once dirname(__FILE__).'/MurmurClasses.php';
 
 if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersion() >= 30400) {
@@ -115,7 +117,7 @@ class ServerInterface_ice
 	 */
 	public function getVersion()
 	{
-		if ($this->version == null) {
+		if ($this->meta != null && $this->version == null) {
 			$this->meta->getVersion($major, $minor, $patch, $text);
 			$this->version = $major . '.' . $minor . '.' . $patch . ' ' . $text;
 		}
