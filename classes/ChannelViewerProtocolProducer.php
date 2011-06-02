@@ -26,6 +26,13 @@ class ChannelViewerProtocolProducer {
 		$subChansAsJson = array();
 		$subChannels = $tree->children;
 		if (!empty($subChannels)) {
+			$positions = array();
+			$names = array();
+			foreach ($subChannels as $key => $subChannel) {
+				$positions[$key] = $subChannel->c->position;
+				$names[$key] = $subChannel->c->name;
+			}
+			array_multisort($positions, SORT_ASC, SORT_NUMERIC, $names, SORT_ASC, SORT_STRING, $subChannels);
 			foreach ($subChannels as $subChannel) {
 				$subChansAsJson[] = $this->treeToJsonArray($subChannel);
 			}
