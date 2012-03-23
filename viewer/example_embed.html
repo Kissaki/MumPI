@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>How To Embed via HTML – Example</title>
+<style type="text/css">
+	textarea { width:180px; }
+	hr { height:0px; border:0px; border-top:1px solid #000000; margin:32px 0px;}
+</style>
+</head>
+<body>
+
+	<p>As an object:</p>
+	<div class="example">
+		<object type="text/html" data="./index.php?serverId=1" width="180" height="300"></object>
+	</div>
+	<textarea class="code" cols="90" rows="4">&lt;object type="text/html" data="./index.php?serverId=1" width="180" height="300"&gt;&lt;/object&gt;</textarea>
+
+	<hr/>
+
+	<p>As an iframe:</p>
+	<div class="example example1">
+		<iframe src="./index.php?serverId=1" width="180" height="300"></iframe>
+	</div>
+	<textarea class="code code1" cols="90" rows="4">&lt;iframe src="./index.php?serverId=1" width="180" height="300"&gt;&lt;/iframe&gt;</textarea>
+
+	<hr/>
+
+	<p>You can customize the look of it in the style.css</p> 
+
+</body>
+</html>

@@ -1,7 +1,5 @@
 <?php
 require_once dirname(__FILE__).'/PermissionManager.php';
-require_once dirname(__FILE__).'/MessageManager.php';
-require_once dirname(__FILE__).'/TranslationManager.php';
 require_once dirname(__FILE__).'/MurmurClasses.php';
 
 if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersion() >= 30400) {
@@ -36,9 +34,6 @@ class ServerInterface{
 class ServerInterface_ice
 {
 	private $conn;
-	/**
-	 * @var Murmur_Meta
-	 */
 	private $meta;
 	private $version;
 	private $contextVars;
@@ -51,15 +46,29 @@ class ServerInterface_ice
 		} else {
 			$this->contextVars = SettingsManager::getInstance()->getDbInterface_iceSecrets();
 			if (!function_exists('Ice_intVersion') || Ice_intVersion() < 30400) {
-				// ice version prior 3.4, not supported
-				//TODO make it translated string
-				MessageManager::addError(tr('error loaded PHP-ice extension is too old. Use an older MumPI 2 instead, or better yet: update PHP-ice to 3.4 or higher.'));
+				// ice 3.3
+				global $ICE;
+				Ice_loadProfile();
+				$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
+				$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
+				// use IceSecret if set
+				if (!empty($this->contextVars)) {
+					$this->meta = $this->meta->ice_context($this->contextVars);
+				}
+				$this->meta = $this->meta->ice_timeout(10000);
 			} else {
 				// ice 3.4
-				$initData = new Ice_InitializationData();
+				$initData = new Ice_InitializationData;
 				$initData->properties = Ice_createProperties();
 				$initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
 				$ICE = Ice_initialize($initData);
+				/*
+				 * getImplicitContext() is not implemented for icePHP yet…
+				 * $ICE->getImplicitContext();
+				 * foreach ($this->contextVars as $key=>$value) {
+				 * 	 $ICE->getImplicitContext()->put($key, $value);
+				 * }
+				 */
 				try {
 					$this->meta = Murmur_MetaPrxHelper::checkedCast($ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address()));
 				} catch (Ice_ConnectionRefusedException $exc) {
@@ -84,6 +93,10 @@ class ServerInterface_ice
 		 * $initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
 		 * $ICE = Ice_initialize($initData);
 		 */
+
+		//TODO it would be good to be able to add a check if slice file is loaded
+		//if (empty(ini_get('ice.slice'))) {
+		//MessageManager::addError(tr('error_noIceSliceLoaded'));
 
 		// to check the connection get the version (e.g. was a needed (context-)password not provided?)
 		try {
@@ -117,7 +130,7 @@ class ServerInterface_ice
 	 */
 	public function getVersion()
 	{
-		if ($this->meta != null && $this->version == null) {
+		if ($this->version == null) {
 			$this->meta->getVersion($major, $minor, $patch, $text);
 			$this->version = $major . '.' . $minor . '.' . $patch . ' ' . $text;
 		}
@@ -288,16 +301,6 @@ class ServerInterface_ice
 	{
 		return $this->getServer($sid)->getLog($first, $last);
 	}
-	
-	public function getServerChannel($srv, $id) {
-		$chans = $srv->getChannels();
-		foreach ($chans as $cId=>$chan) {
-			if ($cId == $id) {
-				return $chan;
-			}
-		}
-		return null;
-	}
 
 
 	/**
@@ -324,7 +327,7 @@ class ServerInterface_ice
 		if (null===$server) {
 			throw new Exception('Invalid server id, server not found.');
 		}
-		return $server->getRegistration($userId);
+		return MurmurRegistration::fromIceObject($server->getRegistration($userId), $serverId, $userId);
 	}
 	/**
 	 * Get connected users of a virtual server
@@ -333,26 +336,32 @@ class ServerInterface_ice
 	 */
 	public function getServerUsersConnected($serverId)
 	{
+		//return $this->getServer($serverId)->getUsers();
+		$users = array();
 		$userMap = $this->getServer($serverId)->getUsers();
-		return $userMap;
+		foreach ($userMap as $sessionId=>$iceUser) {
+			$user = MurmurUser::fromIceObject($iceUser);
+			$users[] = $user;
+		}
+		return $users;
 	}
 	/**
 	 * @param int $serverId
 	 * @param int $sessionId
-	 * @return Murmur_User
+	 * @return MurmurUser
 	 */
 	public function getServerUser($serverId, $sessionId)
 	{
-		return $this->getServer($serverId)->getState($sessionId);
+		return MurmurUser::fromIceObject($this->getServer($serverId)->getState($sessionId));
 	}
 	/**
 	 * @param int $serverId
 	 * @param MurmurUser $user
 	 * @return void
 	 */
-	public function saveServerUser($serverId, $user)
+	public function saveServerUser($serverId, MurmurUser $user)
 	{
-		$this->getServer($serverId)->setState($user);
+		MurmurUser::fromIceObject($this->getServer($serverId)->setState($user->toIceObject()));
 	}
 	/**
 	 * Get a user account by searching for a specific email.
@@ -500,7 +509,11 @@ class ServerInterface_ice
 	}
 	function kickUser($srvid, $sessid, $reason='')
 	{
-		$this->meta->getServer(intval($srvid))->kickUser(intval($sessid), $reason);
+		$srv = $this->getServer(intval($srvid));
+		if (!empty($this->contextVars)) {
+			$srv = $srv->ice_context($this->contextVars);
+		}
+		MurmurServer::fromIceObject($srv)->kickUser(intval($sessid), $reason);
 	}
 	function ban($serverId, $ip, $bits=32)
 	{

@@ -380,8 +380,8 @@ class Ajax_Admin extends Ajax
 		}
 
 		try {
-			$server = ServerInterface::getInstance()->getServer($serverId);
-			$users = $server->getRegisteredUsers('');
+			$server = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($serverId));
+			$users = $server->getRegisteredUsers();
 ?>
 			<h2>Registrations</h2>
 			<table>
@@ -399,6 +399,7 @@ class Ajax_Admin extends Ajax
 				<tbody>
 <?php
 					foreach ($users AS $userId=>$userName) {
+						//FIXME Ice version check, enum-index available? otherwise, one has to edit his slice file – actually, this fixme should be a general check, in install or general warning-disableable
 						$user = ServerInterface::getInstance()->getServerRegistration($serverId, $userId);
 ?>
 					<tr>
@@ -406,14 +407,14 @@ class Ajax_Admin extends Ajax
 							<?php echo $userId; ?>
 						</td>
 						<td id="user_name_<?php echo $userId; ?>" class="jq_editable"><?php echo $userName; ?></td>
-						<td id="user_email_<?php echo $userId; ?>" class="jq_editable"><?php echo $user[Murmur_UserInfo::UserName]; ?></td>
-						<td id="userComment<?php echo $userId; ?>" class="comment userComment">
+						<td id="user_email_<?php echo $userId; ?>" class="jq_editable"><?php echo $user->getEmail(); ?></td>
+						<td id="userComment<?php echo $user->getUserId(); ?>" class="comment userComment">
 							<?php
-								$commentClean = isset($user[Murmur_UserInfo::UserComment]) ? htmlspecialchars($user[Murmur_UserInfo::UserComment]) : '';
+								$commentClean = htmlspecialchars($user->getComment());
 								if (!empty($commentClean)) {
 									if (strlen($commentClean) > 10) {
 										?>
-											<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $userId; ?>);" style="float:left; margin-right:4px;">
+											<a title="Toggle display of full comment. HTML is escaped to ensure your safety viewing it." href="javascript:toggleUserComment(<?php echo $user->getUserId(); ?>);" style="float:left; margin-right:4px;">
 												○
 											</a>
 										<?php
@@ -434,10 +435,10 @@ class Ajax_Admin extends Ajax
 								}
 							?>
 						</td>
-						<td id="user_hash_<?php echo $userId; ?>" class="userHash jq_editable"><?php echo isset($user[Murmur_UserInfo::UserHash]) ? $user[Murmur_UserInfo::UserHash] : ''; ?></td>
+						<td id="user_hash_<?php echo $userId; ?>" class="userHash jq_editable"><?php echo $user->getHash(); ?></td>
 						<td>
 							<?php
-								$userAvatarByteSequence = $server->getTexture($userId);
+								$userAvatarByteSequence = $server->getTexture($user->getUserId());
 								$hasAvatar = count($userAvatarByteSequence) > 0;
 								if ($hasAvatar) {
 									$texBytes = '';
@@ -476,7 +477,7 @@ class Ajax_Admin extends Ajax
 							if (PermissionManager::getInstance()->serverCanEditRegistrations($serverId)) {
 								echo '<ul>';
 								echo '	<li><a class="jqlink" onclick="if(confirm(\'Do you really want to remove the user ' . str_replace('"', '', $userName) . '?\')){jq_server_registration_remove('.$userId.');}">remove</a></li>';
-								echo '	<li><a title="generate a new password for the user" class="jqlink" onclick="if(confirm(\'Are you sure you want to generate and set a new password for this account?\')){jq_server_user_genNewPw('.$serverId.', '.$userId.'); return false;}">genNewPw</a></li>';
+								echo '	<li><a title="generate a new password for the user" class="jqlink" onclick="if(confirm(\'Are you sure you want to generate and set a new password for this account?\')){jq_server_user_genNewPw('.$user->getServerId().', '.$user->getUserId().'); return false;}">genNewPw</a></li>';
 								echo '</ul>';
 							}
 ?>
@@ -590,41 +591,40 @@ class Ajax_Admin extends Ajax
 				<tbody>
 <?php				foreach ($users AS $user) {	?>
 					<tr>
-						<td class="col_sessId"><?php echo $user->session; ?></td>
+						<td class="col_sessId"><?php echo $user->getSessionId(); ?></td>
 						<td class="col_regId">
 							<?php
-								$regId = $user->userid;
+								$regId = $user->getRegistrationId();
 								if ($regId !== -1) {
 									echo $regId;
 								}
 							?>
 						</td>
-						<td id="user_name_<?php echo $user->session; ?>" class="col_uame"><?php echo $user->name; ?></td>
+						<td id="user_name_<?php echo $user->sessionId; ?>" class="col_uame"><?php echo $user->name; ?></td>
 
-						<td class="col_isMuted"><input id="user_mute_<?php echo $user->session; ?>" class="jq_toggleable" type="checkbox" <?php if ($user->mute) echo 'checked=""'; if(!$canModerate) echo 'disabled="disabled"'; ?>/></td>
-						<td class="col_isDeafened"><input id="user_deaf_<?php echo $user->session; ?>" class="jq_toggleable" type="checkbox" <?php if ($user->deaf) echo 'checked=""'; if(!$canModerate) echo 'disabled="disabled"'; ?>/></td>
-						<td class="col_isSuppressed"><input type="checkbox" <?php if ($user->suppress) echo 'checked=""'; ?> disabled="disabled"/></td>
-						<td class="col_isSelfMuted"><input type="checkbox" <?php if ($user->selfMute) echo 'checked=""'; ?> disabled="disabled"/></td>
-						<td class="col_isSelfDeafened"><input type="checkbox" <?php if ($user->selfDeaf) echo 'checked=""'; ?> disabled="disabled"/></td>
+						<td class="col_isMuted"><input id="user_mute_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsMuted()) echo 'checked=""'; if(!$canModerate) echo 'disabled="disabled"'; ?>/></td>
+						<td class="col_isDeafened"><input id="user_deaf_<?php echo $user->getSessionId(); ?>" class="jq_toggleable" type="checkbox" <?php if ($user->getIsDeafened()) echo 'checked=""'; if(!$canModerate) echo 'disabled="disabled"'; ?>/></td>
+						<td class="col_isSuppressed"><input type="checkbox" <?php if ($user->getIsSuppressed()) echo 'checked=""'; ?> disabled="disabled"/></td>
+						<td class="col_isSelfMuted"><input type="checkbox" <?php if ($user->getIsSelfMuted()) echo 'checked=""'; ?> disabled="disabled"/></td>
+						<td class="col_isSelfDeafened"><input type="checkbox" <?php if ($user->getIsSelfDeafened()) echo 'checked=""'; ?> disabled="disabled"/></td>
 
-						<td id="user_email_<?php echo $user->session; ?>" class="col_timeOnline">
-							<?php $on = $user->onlinesecs; if ($on > 59) { echo sprintf('%.0f', $on/60).'m'; } else { echo $on.'s'; } ?>
+						<td id="user_email_<?php echo $user->getSessionId(); ?>" class="col_timeOnline">
+							<?php $on = $user->getOnlineSeconds(); if ($on > 59) { echo sprintf('%.0f', $on/60).'m'; } else { echo $on.'s'; } ?>
 						</td>
 						<td class="col_timeIdle">
-							<?php $idle = $user->idlesecs; if ($idle > 59) { echo sprintf('%.0f', $idle/60).'m'; } else { echo $idle.'s'; } ?>
+							<?php $idle = $user->getIdleSeconds(); if ($idle > 59) { echo sprintf('%.0f', $idle/60).'m'; } else { echo $idle.'s'; } ?>
 						</td>
-						<td class="col_bytesPerSecond"><?php echo $user->bytespersec; ?></td>
+						<td class="col_bytesPerSecond"><?php echo $user->getBytesPerSecond(); ?></td>
 						<td class="col_version">
 							<?php
-								$v = HelperFunctions::clientVersionToString($user->version);
-								echo $v;
-								if ($v != $user->release) {
-									echo ' (' . $user->os . $user->release . ')';
+								echo $user->getClientVersionAsString();
+								if ($user->getClientVersionAsString() != $user->getClientRelease()) {
+									echo ' (' . $user->clientOs() . $user->getClientRelease() . ')';
 								}
 							?>
 						</td>
-						<td id="userComment<?php echo $user->session; ?>" class="col_comment comment userComment">
-							<?php $commentClean = htmlspecialchars($user->comment); ?>
+						<td id="userComment<?php echo $user->getSessionId(); ?>" class="col_comment comment userComment">
+							<?php $commentClean = htmlspecialchars($user->getComment()); ?>
 							<?php
 								if (!empty($commentClean)) {
 									if (strlen($commentClean) > 10) {
@@ -653,19 +653,15 @@ class Ajax_Admin extends Ajax
 							?>
 						</td>
 						<td class="col_address userAddress">
-							<?php
-								$adr = $user->address;
-								echo $adr; ?> <sup>(<a href="http://[<?php echo HelperFunctions::Murmur_Address_toString($adr); ?>]">http</a>, <a href="http://www.db.ripe.net/whois?searchtext=<?php echo HelperFunctions::Murmur_Address_toString($adr); ?>">lookup</a>)</sup>
-							<?php
-								if (HelperFunctions::Murmur_Address_isIPv4($adr)) { echo '<div>' . HelperFunctions::Murmur_Address_toIPv4String($adr) . '</div>'; }
-							?>
+							<?php echo $user->getAddress()->__toString(); ?> <sup>(<a href="http://[<?php echo $user->getAddress(); ?>]">http</a>, <a href="http://www.db.ripe.net/whois?searchtext=<?php echo $user->getAddress(); ?>">lookup</a>)</sup>
+							<?php if ($user->getAddress()->isIPv4()) { echo '<div>' . $user->getAddress()->toStringAsIPv4() . '</div>'; } ?>
 						</td>
-						<td class="col_isTcpOnly"><input type="checkbox" <?php echo $user->tcponly?'checked=""':''; ?> disabled="disabled"/></td>
+						<td class="col_isTcpOnly"><input type="checkbox" <?php echo $user->getIsTcpOnly()?'checked=""':''; ?> disabled="disabled"/></td>
 
 						<td class="col_actions">
 <?php
 						if (PermissionManager::getInstance()->serverCanKick($_POST['sid']))
-							echo '<a class="jqlink" onclick="jq_server_user_kick(' . $user->session . ')">kick</a>';
+							echo '<a class="jqlink" onclick="jq_server_user_kick(' . $user->getSessionId() . ')">kick</a>';
 ?>
 						</td>
 					</tr>
@@ -706,7 +702,7 @@ class Ajax_Admin extends Ajax
 <?php
 			} // permission check: moderate
 		} catch(Murmur_ServerBootedException $exc) {
-			MessageManager::addError(tr('error_servernotbooted'));
+			echo '<div class="error">Server is not running</div>';
 		}
 	}
 
@@ -888,10 +884,16 @@ class Ajax_Admin extends Ajax
 		$userImgHtmlObj = '<img src="' . $userImgUrl . '" alt=""/>';
 		$userImgUrl = SettingsManager::getInstance()->getMainUrl() . '/img/mumble/talking_off.svg';
 		$userImgHtmlObj = '<object data="' . $userImgUrl . '" type="image/svg+xml" width="12" height="12">' . $userImgHtmlObj . '</object>';
+		echo '<div class="servers_tree">';
+		echo MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($_POST['sid']))->getTree()->toHtml();
+		echo '</div>';
 		?>
-		<div class="servers_tree">
-			Was removed when refactoring. <a href="../viewer2/">Use the viewer2 (MView) for now.</a>
-		</div>
+			<script type="text/javascript">
+				jQuery('.servers_tree').ready(function(){
+				  	jQuery('.servers_tree .channelname').prepend('<?php echo $chanImgHtmlObj; ?>');
+				  	jQuery('.servers_tree .username').prepend('<?php echo $userImgHtmlObj; ?>');
+					});
+			</script>
 		<?php
 	}
 
@@ -909,15 +911,15 @@ class Ajax_Admin extends Ajax
 	public static function server_config_show()
 	{
 		if(!isset($_POST['sid'])) return;
-		$reqServerId = intval($_POST['sid']);
-		$conf = ServerInterface::getInstance()->getServerConfig($reqServerId);
+		$_POST['sid'] = intval($_POST['sid']);
+		$conf = ServerInterface::getInstance()->getServerConfig($_POST['sid']);
 		//TODO i18n
 ?>
 		<h1>Server Config</h1>
 		<p>For documentation, see your murmur.ini file (or <a href="http://mumble.git.sourceforge.net/git/gitweb.cgi?p=mumble/mumble;a=blob;f=scripts/murmur.ini;hb=HEAD" rel="external">this</a> one in the repository, which may be newer than yours though)</p>
 		<br/>
 		<br/>
-		<?php $canEdit = PermissionManager::getInstance()->serverCanEditConf($reqServerId);
+		<?php $canEdit = PermissionManager::getInstance()->serverCanEditConf($_POST['sid']);
 			if ($canEdit) { ?>
 			<p style="font-size:x-small;">(Double-click entries to edit them)</p>
 		<?php } ?>
@@ -959,15 +961,15 @@ class Ajax_Admin extends Ajax
 					<td id="jq_editable_server_conf_defaultchannel">
 						<?php
 							$defaultChannelId = $conf['defaultchannel'];
-							$server = ServerInterface::getInstance()->getServer($reqServerId);
-							$defaultChannel = ServerInterface::getInstance()->getServerChannel($server, $defaultChannelId);
-							echo $defaultChannel->name;
+							$server = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($_POST['sid']));
+							$defaultChannel = $server->getChannel($defaultChannelId);
+							echo $defaultChannel->getName();
 
 							// change default chan functionality
 							$chanTree = $server->getTree();
-							function treePrint($tree, $first=true)
+							function treePrint(MurmurTree $tree, $first=true)
 							{
-								$subs = $tree->children;
+								$subs = $tree->getSubChannels();
 								if ($first) {
 									echo '<div id="jq_editable_server_conf_defaultchannel_form">';
 									//TODO i18n
@@ -975,7 +977,7 @@ class Ajax_Admin extends Ajax
 								}
 								?>
 									<ul>
-										<li class="form_clickable_submit jslink" id="channel_<?php echo $tree->c->id; ?>"><?php echo $tree->c->name; ?></li>
+										<li class="form_clickable_submit jslink" id="channel_<?php echo $tree->getRootChannel()->getId(); ?>"><?php echo $tree->getRootChannel()->getName(); ?></li>
 										<?php
 											if (!empty($subs)) {
 												foreach ($subs as $subTree) {
@@ -1128,7 +1130,7 @@ class Ajax_Admin extends Ajax
 		if ($canEdit) {
 ?>
 			<script type="text/javascript">/*<![CDATA[*/
-				var currentServerId = <?php echo $reqServerId; ?>;
+				var currentServerId = <?php echo $_POST['sid']; ?>;
 				function jq_server_conf_update(key, newValue)
 				{
 				  $.post('./?ajax=server_config_update',
@@ -1249,7 +1251,7 @@ class Ajax_Admin extends Ajax
 			if (isset($eiServerId) && isset($_POST['key']) && isset($_POST['value'])) {
 				ServerInterface::getInstance()->setServerConfigEntry($eiServerId, $_POST['key'], $_POST['value']);
 			} else {
-				MessageManager::addError('missing var for server config update');
+				echo 'missing var';
 			}
 		}
 	}

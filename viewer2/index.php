@@ -7,7 +7,7 @@
 <body>
 
 <div id="mview-container"></div>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="mview.js"></script>
 <script type="text/javascript">
   var settings = {
@@ -20,7 +20,7 @@
   mv.load();
 
   var codeEl = document.getElementsByTagName('code')[0];
-  //codeEl.innerHTML = codeEl.innerHTML.replace(/(&lt;\/?\w+(?: \w+="[^"]+")*&gt;)/g, '<span style="color:#448844;">$1</span>');
+  codeEl.innerHTML = codeEl.innerHTML.replace(/(&lt;\/?\w+(?: \w+="[^"]+")*&gt;)/g, '<span style="color:#448844;">$1</span>');
 </script>
 
 </body>

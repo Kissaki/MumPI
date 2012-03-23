@@ -51,7 +51,7 @@ $site_keywords    = 'mumble,murmur,web-interface,registration,account,management
 $viewer_serverAddresses = array(
 	//example:
 	//1 => 'kcode.de',
-	//3 => '192.168.0.1:64739',
+	//3 => '192.168.0.1',
 );
 
 // For the interface to be able to send emails, make sure your php is set up
