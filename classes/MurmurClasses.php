@@ -161,7 +161,11 @@ class MurmurServer
 	 */
 	public function getChannel($channelId)
 	{
-		return MurmurChannel::fromIceObject($this->iceObj->getChannelState(intval($channelId)), $this);
+		try {
+			return MurmurChannel::fromIceObject($this->iceObj->getChannelState(intval($channelId)), $this);
+		} catch(MurmurException $e) {
+			return 0;
+		}
 	}
 	public function setChannelState()
 	{
