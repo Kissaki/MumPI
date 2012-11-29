@@ -45,5 +45,5 @@
 		echo $json;
 	} else {
 		// redirect to user section
-		header('Location: ./user');
+		header('Location: ./user/');
 	}
