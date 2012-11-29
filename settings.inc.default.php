@@ -5,6 +5,7 @@
 // 1 for true, 0 for false
 
 // Debug? - This should be turned off for production sites.
+// It is meant to find issues in MumPI, like/or lost error messages etc.
 $debug = false;
 
 // allow freely calling data for a web serverviewer? http://mumble.sourceforge.net/Channel_Viewer_Protocol
@@ -26,11 +27,11 @@ $dbInterface_type       = 'ice';
 $dbInterface_address    = 'Meta:tcp -h 127.0.0.1 -p 6502';
 // if you set an icesecret password in your murmur.ini file, specify it here
 $dbInterface_icesecrets = array(
-    // for Murmur 1.2.2: if you set "icesecret" in your Murmur.ini, set "secret" here to your icesecret value.
-    // for Murmur > 1.2.2: you can only set "secret" here, thus you can only use either "icesecretread" or "icesecretwrite" you set in your Murmur.ini.
-    //   This means if you want write access (to be able to fully use the admin interface) you can only use one value for both Murmur-secrets (this was tested on snapshot 02071e).
-    'secret' => '',
-  );
+		// for Murmur 1.2.2: if you set "icesecret" in your Murmur.ini, set "secret" here to your icesecret value.
+		// for Murmur > 1.2.2: you can only set "secret" here, thus you can only use either "icesecretread" or "icesecretwrite" you set in your Murmur.ini.
+		//   This means if you want write access (to be able to fully use the admin interface) you can only use one value for both Murmur-secrets (this was tested on snapshot 02071e).
+		'secret' => '',
+);
 // PHP file generated from murmur.ice file with slice2php (see FAQ). Has to be in MumPIs classes subdir.
 // This should specify a file that exists and matches your murmur server version as close as possible.
 // May be values like Murmur_1.2.2.php or Murmur_1.2.3.php (check your MumPI/classes folder).
@@ -49,9 +50,9 @@ $site_keywords    = 'mumble,murmur,web-interface,registration,account,management
 // if you want the viewer to link the channels (click to connect) specify the servers address here (e.g. IP, or a domain)
 // key: serverId, value: address (without port)
 $viewer_serverAddresses = array(
-	//example:
-	//1 => 'kcode.de',
-	//3 => '192.168.0.1',
+		//example:
+		//1 => 'kcode.de',
+		//3 => '192.168.0.1',
 );
 
 // For the interface to be able to send emails, make sure your php is set up

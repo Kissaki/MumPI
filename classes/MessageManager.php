@@ -15,12 +15,12 @@ class MessageManager
 	public static function addError($text)
 	{
 		self::$errors[] = $text;
-		if (SettingsManager::getInstance()->isDebugMode()) echo '<div class="error">[Debug:] '.$text.'</div>';
+		if (SettingsManager::getInstance()->isDebugMode()) echo '<div class="error">[Debug: Error was added] '.$text.'</div>';
 	}
 	public static function addWarning($text)
 	{
 		self::$warnings[] = $text;
-		if (SettingsManager::getInstance()->isDebugMode()) echo '<div class="warning">'.$text.'</div>';
+		if (SettingsManager::getInstance()->isDebugMode()) echo '<div class="warning">[Debug: Warning was added]'.$text.'</div>';
 	}
 	public static function addMessage($text)
 	{
