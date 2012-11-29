@@ -3,8 +3,22 @@ require_once dirname(__FILE__).'/PermissionManager.php';
 require_once dirname(__FILE__).'/MurmurClasses.php';
 
 if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersion() >= 30400) {
-  require_once 'Ice.php';
-  require_once SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName();
+	$ICE_INCLUSION_FILENAME = 'Ice.php';
+	// Ice.php is a hard dependency. Whatever includes this file will require Ice to work.
+	if (!stream_resolve_include_path($ICE_INCLUSION_FILENAME)) {
+		MessageManager::addError(TranslationManager::getText('error_iceInclusionFileNotFound'));
+		MessageManager::echoAll();
+		exit();
+	}
+
+	if (!stream_resolve_include_path(SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName())) {
+		MessageManager::addError(TranslationManager::getText('error_iceMurmurPHPFileNotFound') . ' Current setting: ' . SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName());
+		MessageManager::echoAll();
+		exit();
+	}
+
+	require_once $ICE_INCLUSION_FILENAME;
+	require_once SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName();
 }
 
 /**
@@ -71,6 +85,7 @@ class ServerInterface_ice
 				 */
 				try {
 					$this->meta = Murmur_MetaPrxHelper::checkedCast($ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address()));
+					$this->meta = $this->meta->ice_context($this->contextVars);
 				} catch (Ice_ConnectionRefusedException $exc) {
 					MessageManager::addError(tr('error_iceConnectionRefused'));
 				}
@@ -201,7 +216,7 @@ class ServerInterface_ice
 	 */
 	public function createServer()
 	{
-		return $this->meta->newServer()->id();
+		return $this->meta->ice_context($this->contextVars)->newServer()->id();
 	}
 
 
@@ -524,8 +539,8 @@ class ServerInterface_ice
 		$srv = $this->getServer(intval($serverId));
 		$bans = $srv->getBans();
 		$ban = new Murmur_Ban();
-	  $ban->address = $ip;
-	  $ban->bits = $bits;
+		$ban->address = $ip;
+		$ban->bits = $bits;
 		$bans[] = $ban;
 		$srv->setBans($bans);
 	}
