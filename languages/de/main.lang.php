@@ -36,6 +36,8 @@
 	$txt['error_noIce']									= 'Konnte keine Verbindung zu Ice herstellen.<br/>Entweder läuft dein Server nicht oder ohne Ice, weil er falsch eingestellt wurde. Prüfe deine Konfiguration.';
 	$txt['error_iceConnectionRefused'] 	= 'Konnte keine Verbindung zu Ice herstellen.<br/>Entweder läuft dein Server nicht oder ohne Ice, weil er falsch eingestellt wurde. Prüfe deine Konfiguration.';
 	$txt['error_unknowninterface']			= 'Falsche Konfiguration: unbekannter <acronym title="Datenbank">DB</acronym> Interface Typ!';
+	$txt['error_iceInclusionFileNotFound'] = 'Die Datei Ice.php konnte nicht gefunden werden. Bitte stellen Sie sicher, dass das Ice PHP Inkludierungsverzeichnis über den PHP include_path eingebunden wird (überprüfen Sie Ihre PHP Konfiguration).';
+	$txt['error_iceMurmurPHPFileNotFound'] = 'Die generierte Murmur.php Datei die zur Verwendung konfiguriert ist wurde nicht gefunden. Die Datei wird aus der Mumble Server slice Definitionsdatei generiert, und einige sind mit MumPI ausgeliefert (siehe Dateien <code>classes/Murmur_<em>[…]</em>.php</code>). Die zu verwendende Datei wird mittels der Einstellungsvariablen <code>$iceGeneratedMurmurPHPFileName</code> in der MumPI <code>settings.inc.php</code> Datei angegeben.';
 	$txt['unknownserver']								= 'Kein solcher Server gefunden.';
 	$txt['error_missing_values']				= 'Es scheint, als seien nicht alle notwendigen Felder ausgefüllt/Werte definiert worden.';
 	$txt['error_db_unknowntype']				= 'Der Datenbanktyp, den du spezifiziert hast (in der Einstellungs- "settings"-Datei) ist nicht verfügbar.';
