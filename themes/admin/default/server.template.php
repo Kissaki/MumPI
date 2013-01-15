@@ -314,15 +314,29 @@
 			{
 				var ip = [];
 				if (ipAsString.indexOf('.') != -1) {
-				  var ipv4 = ipAsString.match(/\d{1,3}/g);
+					// Convert ipv4 string to ipv6 bytearray
+					// ipv4s are put into an ipv4 by preceding 0s and 255; last 4 bytes are the ipv4
 					ip = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255];
-					ip.concat(ipv4);
+					var ipv4 = ipAsString.match(/\d{1,3}/g);
+					for (var i in ipv4) {
+						var realInt = parseInt(ipv4[i], 10);
+						if (isNaN(realInt)) {
+							console.log('[M] Error: Could not convert ipv4 string to ipv6 bytearray. Intparsing returned NaN.');
+							return;
+						}
+						ip[ip.length] = realInt;
+					}
 				}
 				else {
-				  ip = ipAsString.match(/[0-9a-zA-Z]{2}/g);
-				  for (i in ip) {
-					  ip[i] = parseInt('0x' + ip[i]);
-				  }
+					// Convert ipv6 string to ipv6 bytearray
+					ip = ipAsString.match(/[0-9a-zA-Z]{2}/g);
+					for (i in ip) {
+						ip[i] = parseInt('0x' + ip[i]);
+					}
+					if (ip.length != 16) {
+						console.log('[M] Error: Could not convert ipv6 string to ipv6 bytearray. Resulting arraylength is != 16.');
+						return;
+					}
 				}
 				$.post(
 						"./?ajax=server_unban",
