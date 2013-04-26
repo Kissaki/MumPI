@@ -24,6 +24,10 @@ $theme           = 'default';
 
 // Interface to use. Currently available: ice
 $dbInterface_type       = 'ice';
+// Ice target address.
+// If you are using IcePHP 3.5 with Mumble 1.2.4 or lower (which uses Ice 3.4), use the -e parameter for compatibility.
+// For example: 'Meta -e 1.0:tcp -h 127.0.0.1 -p 6502'
+// Default: 'Meta:tcp -h 127.0.0.1 -p 6502'
 $dbInterface_address    = 'Meta:tcp -h 127.0.0.1 -p 6502';
 // if you set an icesecret password in your murmur.ini file, specify it here
 $dbInterface_icesecrets = array(
@@ -32,11 +36,12 @@ $dbInterface_icesecrets = array(
 		//   This means if you want write access (to be able to fully use the admin interface) you can only use one value for both Murmur-secrets (this was tested on snapshot 02071e).
 		'secret' => '',
 );
+// This setting only becomes active for php-zeroc-ice versions at or above 3.4. Before 3.4 IcePHPs ice.slice setting was used.
 // PHP file generated from murmur.ice file with slice2php (see FAQ). Has to be in MumPIs classes subdir.
 // This should specify a file that exists and matches your murmur server version as close as possible.
-// May be values like Murmur_1.2.2.php or Murmur_1.2.3.php (check your MumPI/classes folder).
+// May be values like Murmur_1.2.3.php or Murmur_1.2.4.php (check your MumPI/classes folder).
 // If you have a different version of Mumble-Server / Murmur, you may want to compile it yourself; see FAQ on how to: https://github.com/Kissaki/MumPI/wiki/FAQ
-$iceGeneratedMurmurPHPFileName = 'Murmur_1.2.3.php';
+$iceGeneratedMurmurPHPFileName = 'Murmur_1.2.4.php';
 
 // db type for Interface functionality
 // (does not have anything to do with mumble/murmur)
