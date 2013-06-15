@@ -47,7 +47,6 @@ class ServerInterface{
 
 class ServerInterface_ice
 {
-	private $conn;
 	private $meta;
 	private $version;
 	private $contextVars;
@@ -82,8 +81,8 @@ class ServerInterface_ice
 		Ice_loadProfile();
 		try
 		{
-			$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
-			$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
+			$conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
+			$this->meta = $conn->ice_checkedCast("::Murmur::Meta");
 			// use IceSecret if set
 			if (!empty($this->contextVars)) {
 				$this->meta = $this->meta->ice_context($this->contextVars);
