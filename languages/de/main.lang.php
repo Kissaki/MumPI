@@ -45,3 +45,4 @@
 	$txt['error_dbmanager_couldnotopenadmins'] = 'Konnte die admins.dat Datei nicht öffnen.';
 	$txt['error_invalidTexture']				= 'Ungültige Bilddaten. Bitte überprüfen Sie ihre Bilddatei.';
 	$txt['login_missing_data'] 					= 'Login fehlgeschlagen: Sie haben scheinbar nicht alle notwendigen Daten angegeben.';
+	$txt['error_invalidIceInterface_address'] = 'Die konfigurierte Ice Interface Adresse konnte nicht verarbeitet werden. Bitte korrigieren Sie diese in ein gültiges Format.';

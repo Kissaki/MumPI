@@ -45,3 +45,4 @@
 	$txt['error_dbmanager_couldnotopenadmins'] = 'Could not open admins.dat file.';
 	$txt['error_invalidTexture']				= 'Invalid image data. Please check your image file.';
 	$txt['login_missing_data'] 					= 'Login failed: You did not seem to provide all the necessary data.';
+	$txt['error_invalidIceInterface_address'] = 'The configured Ice interface address could not be parsed. Please make it a valid address.';

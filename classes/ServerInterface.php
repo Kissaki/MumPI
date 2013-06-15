@@ -61,9 +61,9 @@ class ServerInterface_ice
 			$this->contextVars = SettingsManager::getInstance()->getDbInterface_iceSecrets();
 
 			if (!function_exists('Ice_intVersion') || Ice_intVersion() < 30400) {
-				initIce33();
+				$this->initIce33();
 			} else {
-				initIce34();
+				$this->initIce34();
 			}
 
 			$this->connect();
@@ -80,13 +80,20 @@ class ServerInterface_ice
 
 		global $ICE;
 		Ice_loadProfile();
-		$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
-		$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
-		// use IceSecret if set
-		if (!empty($this->contextVars)) {
-			$this->meta = $this->meta->ice_context($this->contextVars);
+		try
+		{
+			$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
+			$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
+			// use IceSecret if set
+			if (!empty($this->contextVars)) {
+				$this->meta = $this->meta->ice_context($this->contextVars);
+			}
+			$this->meta = $this->meta->ice_timeout(10000);
 		}
-		$this->meta = $this->meta->ice_timeout(10000);
+		catch (Ice_ProxyParseException $e)
+		{
+			MessageManager::addError(tr('error_invalidIceInterface_address'));
+		}
 	}
 
 	private function initIce34()
@@ -109,6 +116,7 @@ class ServerInterface_ice
 		try {
 			$this->meta = Murmur_MetaPrxHelper::checkedCast($ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address()));
 			$this->meta = $this->meta->ice_context($this->contextVars);
+			//TODO: catch ProxyParseException, EndpointParseException, IdentityParseException from stringToProxy()
 		} catch (Ice_ConnectionRefusedException $exc) {
 			MessageManager::addError(tr('error_iceConnectionRefused'));
 		}
@@ -125,19 +133,16 @@ class ServerInterface_ice
 					//TODO i18n
 					MessageManager::addError('The Ice end requires a password, but you did not specify one or not the correct one.');
 					die('The Ice end requires a password, but you did not specify one or not the correct one.' . get_class($exc) . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>' );
-					$this->conn = null;
 					break;
 
 				default:
 					//TODO i18n
 					MessageManager::addError('Unknown exception was thrown. Please report to the developer. Class: ' . get_class($exc) . isset($exc->unknown)?' ->unknown: '.$exc->unknown:'' . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>');
-					$this->conn = null;
 					break;
 			}
 		} catch (Ice_LocalException $exc) {
 			//TODO i18n
 			MessageManager::addError('Unknown exception was thrown. Please report to the developer. Class: ' . get_class($exc) . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>');
-			$this->conn = null;
 		}
 	}
 
