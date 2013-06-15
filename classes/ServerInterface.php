@@ -152,26 +152,30 @@ class ServerInterface_ice
 	 */
 	public function getVersion()
 	{
-		if ($this->version == null) {
+		if ($this->meta != null && $this->version == null) {
 			$this->meta->getVersion($major, $minor, $patch, $text);
 			$this->version = $major . '.' . $minor . '.' . $patch . ' ' . $text;
 		}
 		return $this->version;
 	}
 	/**
-	 *
 	 * @return Array with name=>value
 	 */
 	public function getDefaultConfig()
 	{
-		return $this->meta->getDefaultConf();
+		return $this->meta != null ? $this->meta->getDefaultConf() : array();
 	}
 	/**
 	 * Get all virtual servers
-	 * @return unknown_type all virtual servers
+	 * @return array all virtual servers
 	 */
 	public function getServers()
 	{
+		if ($this->meta == null)
+		{
+			return array();
+		}
+
 		$servers = $this->meta->getAllServers();
 		$filtered = array();
 		foreach ($servers as $server) {
@@ -187,10 +191,15 @@ class ServerInterface_ice
 	}
 	/**
 	 * Get all running virtual servers
-	 * @return unknown_type all running virtual servers
+	 * @return array all running virtual servers
 	 */
 	public function getRunningServers()
 	{
+		if ($this->meta == null)
+		{
+			return array();
+		}
+
 		$servers = $this->meta->getBootedServers();
 		$filtered = array();
 		foreach ($servers as $server) {
@@ -211,6 +220,11 @@ class ServerInterface_ice
 	 */
 	public function getServer($srvid)
 	{
+		if ($this->meta == null)
+		{
+			return array();
+		}
+
 		$server = $this->meta->getServer(intval($srvid));
 		if ($server != null && !empty($this->contextVars)) {
 			$server = $server->ice_context($this->contextVars);
@@ -223,6 +237,11 @@ class ServerInterface_ice
 	 */
 	public function createServer()
 	{
+		if ($this->meta == null)
+		{
+			return array();
+		}
+
 		return $this->meta->ice_context($this->contextVars)->newServer()->id();
 	}
 
