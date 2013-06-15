@@ -59,56 +59,58 @@ class ServerInterface_ice
 			MessageManager::addError(tr('error_noIceExtensionLoaded'));
 		} else {
 			$this->contextVars = SettingsManager::getInstance()->getDbInterface_iceSecrets();
+
 			if (!function_exists('Ice_intVersion') || Ice_intVersion() < 30400) {
-				// ice 3.3
-				global $ICE;
-				Ice_loadProfile();
-				$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
-				$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
-				// use IceSecret if set
-				if (!empty($this->contextVars)) {
-					$this->meta = $this->meta->ice_context($this->contextVars);
-				}
-				$this->meta = $this->meta->ice_timeout(10000);
+				initIce33();
 			} else {
-				// ice 3.4
-				$initData = new Ice_InitializationData;
-				$initData->properties = Ice_createProperties();
-				$initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
-				$ICE = Ice_initialize($initData);
-				/*
-				 * getImplicitContext() is not implemented for icePHP yet…
-				 * $ICE->getImplicitContext();
-				 * foreach ($this->contextVars as $key=>$value) {
-				 * 	 $ICE->getImplicitContext()->put($key, $value);
-				 * }
-				 */
-				try {
-					$this->meta = Murmur_MetaPrxHelper::checkedCast($ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address()));
-					$this->meta = $this->meta->ice_context($this->contextVars);
-				} catch (Ice_ConnectionRefusedException $exc) {
-					MessageManager::addError(tr('error_iceConnectionRefused'));
-				}
+				initIce34();
 			}
 
 			$this->connect();
 		}
 	}
+	
+	private function initIce33()
+	{
+		// ice 3.3
+		global $ICE;
+		Ice_loadProfile();
+		$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
+		$this->meta = $this->conn->ice_checkedCast("::Murmur::Meta");
+		// use IceSecret if set
+		if (!empty($this->contextVars)) {
+			$this->meta = $this->meta->ice_context($this->contextVars);
+		}
+		$this->meta = $this->meta->ice_timeout(10000);
+	}
+
+	private function initIce34()
+	{
+		// ice 3.4
+		$initData = new Ice_InitializationData;
+		$initData->properties = Ice_createProperties();
+		$initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
+		$ICE = Ice_initialize($initData);
+		/*
+		 * getImplicitContext() is not implemented for icePHP yet…
+		 * $ICE->getImplicitContext();
+		 * foreach ($this->contextVars as $key=>$value) {
+		 * 	 $ICE->getImplicitContext()->put($key, $value);
+		 * }
+		 * which should result in 
+		 * $ICE->getImplicitContext()->put('secret', 'ts');
+		 * $ICE->getImplicitContext()->put('icesecret', 'ts');
+		 */
+		try {
+			$this->meta = Murmur_MetaPrxHelper::checkedCast($ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address()));
+			$this->meta = $this->meta->ice_context($this->contextVars);
+		} catch (Ice_ConnectionRefusedException $exc) {
+			MessageManager::addError(tr('error_iceConnectionRefused'));
+		}
+	}
 
 	private function connect()
 	{
-		//$ICE->setProperty('Ice.ImplicitContext', 'Shared');
-		/* not avail. in Ice 3.3
-		$ICE->getImplicitContext();
-		$ICE->getImplicitContext()->put('secret', 'ts');
-		$ICE->getImplicitContext()->put('icesecret', 'ts');*/
-		/* for Ice 3.4:
-		 * $initData = new Ice_InitializationData;
-		 * $initData->properties = Ice_createProperties();
-		 * $initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
-		 * $ICE = Ice_initialize($initData);
-		 */
-
 		//TODO it would be good to be able to add a check if slice file is loaded
 		//if (empty(ini_get('ice.slice'))) {
 		//MessageManager::addError(tr('error_noIceSliceLoaded'));
@@ -551,7 +553,8 @@ class ServerInterface_ice
 		$newBans = array();
 		foreach ($bans as $ban)
 		{
-			if ($ban->address != $ip || $ban->bits != $bits || $ban->name != $username || $ban->hash != $hash || $ban->reason != $reason || $ban->start != $start || $ban->duration != $duration) {
+			if ($ban->address != $ip || $ban->bits != $bits || $ban->name != $username || $ban->hash != $hash
+					|| $ban->reason != $reason || $ban->start != $start || $ban->duration != $duration) {
 				$newBans[] = $ban;
 			}
 		}
