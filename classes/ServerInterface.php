@@ -73,6 +73,11 @@ class ServerInterface_ice
 	private function initIce33()
 	{
 		// ice 3.3
+
+		//TODO it would be good to be able to add a check if slice file is loaded
+		//if (empty(ini_get('ice.slice'))) {
+		//MessageManager::addError(tr('error_noIceSliceLoaded'));
+
 		global $ICE;
 		Ice_loadProfile();
 		$this->conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
@@ -111,10 +116,6 @@ class ServerInterface_ice
 
 	private function connect()
 	{
-		//TODO it would be good to be able to add a check if slice file is loaded
-		//if (empty(ini_get('ice.slice'))) {
-		//MessageManager::addError(tr('error_noIceSliceLoaded'));
-
 		// to check the connection get the version (e.g. was a needed (context-)password not provided?)
 		try {
 			$this->version = $this->getVersion();
