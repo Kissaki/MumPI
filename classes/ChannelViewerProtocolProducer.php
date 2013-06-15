@@ -13,6 +13,7 @@ class ChannelViewerProtocolProducer {
 		$array = array(
 			'id' => $server->getId(),
 			'name' => SettingsManager::getInstance()->getServerName($server->getId()),
+			'x_connecturl' => 'mumble://' . urlencode(SettingsManager::getInstance()->getServerAddress($server->getId())) . '?version=1.2.0',
 			'root' => $this->treeToJsonArray($tree),
 		);
 		return json_encode($array);
