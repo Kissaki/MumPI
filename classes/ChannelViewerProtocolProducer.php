@@ -10,33 +10,46 @@ class ChannelViewerProtocolProducer {
 	{
 		$server = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($serverId));
 		$tree = $server->getTree();
+		$connecturlTemplate = 'mumble://' . urlencode(SettingsManager::getInstance()->getServerAddress($server->getId())) . '%s?version=1.2.0';
 		$array = array(
 			'id' => $server->getId(),
 			'name' => SettingsManager::getInstance()->getServerName($server->getId()),
-			'x_connecturl' => 'mumble://' . urlencode(SettingsManager::getInstance()->getServerAddress($server->getId())) . '?version=1.2.0',
-			'root' => $this->treeToJsonArray($tree),
+			// Remove the template placeholder. The server connect URL is complete here. 
+			'x_connecturl' => sprintf($connecturlTemplate, ''),
+			'root' => $this->treeToJsonArray($tree, $connecturlTemplate),
 		);
 		return json_encode($array);
 	}
-	private function treeToJsonArray(MurmurTree $tree) {
+	private function treeToJsonArray(MurmurTree $tree, $connecturlTemplate=null) {
+		/**
+		 * @var MurmurChannel
+		 */
+		$chan = $tree->getRootChannel();
+		if ($connecturlTemplate != null && $chan->getParentChannelId() != -1)
+		{
+			$connecturlTemplate = sprintf($connecturlTemplate, '/' . urlencode($chan->getName()) . '%s');
+		}
+
 		$array = array();
 		$prior = array();
 		$subChannels = $tree->getSubChannels();
 		if (!empty($subChannels)) {
 			foreach ($subChannels as $subChannel) {
-				$prior[] = $this->treeToJsonArray($subChannel);
+				$prior[] = $this->treeToJsonArray($subChannel, $connecturlTemplate);
 			}
 		}
-		/**
-		 * @var MurmurChannel
-		 */
-		$chan = $tree->getRootChannel();
+
 		$array['id'] = $chan->getId();
 		$array['parent'] = $chan->getParentChannelId();
 		$array['temporary'] = $chan->isTemporary();
 		$array['position'] = $chan->getPosition();
 		$array['name'] = $chan->getName();
 		$array['description'] = $chan->getDescription();
+		if ($connecturlTemplate != null)
+		{
+			// Remove template placeholder. The URL is complete here.
+			$array['x_connecturl'] = sprintf($connecturlTemplate, '');
+		}
 		$array['channels'] = $prior;
 		$array['links'] = $chan->getLinkedChannelIds();
 		$array['users'] = $this->usersToJsonArray($tree->getUsers(), $chan->getId());

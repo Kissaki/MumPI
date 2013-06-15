@@ -1007,6 +1007,9 @@ class MurmurChannel
 	{
 		return $this->name;
 	}
+	/**
+	 * @return int
+	 */
 	public function getParentChannelId()
 	{
 		return $this->parentId;
