@@ -1,6 +1,9 @@
 <?php
 require_once dirname(__FILE__).'/PermissionManager.php';
 require_once dirname(__FILE__).'/MurmurClasses.php';
+require_once(MUMPHPI_MAINDIR.'/classes/TranslationManager.php');
+require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
+require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
 
 if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersion() >= 30400) {
 	$ICE_INCLUSION_FILENAME = 'Ice.php';

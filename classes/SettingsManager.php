@@ -1,5 +1,6 @@
 <?php
 require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
+require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
 
 /**
  * The SettingsManager class is an interface to the settings.

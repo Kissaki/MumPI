@@ -8,6 +8,10 @@ class ChannelViewerProtocolProducer {
 
 	public function generateJson($serverId)
 	{
+		$serverIce = ServerInterface::getInstance()->getServer($serverId);
+		if ($serverIce == null) {
+		return json_encode(array());
+		}
 		$server = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($serverId));
 		$tree = $server->getTree();
 		$connecturlTemplate = 'mumble://' . urlencode(SettingsManager::getInstance()->getServerAddress($server->getId())) . '%s?version=1.2.0';
