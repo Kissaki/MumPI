@@ -36,10 +36,12 @@
 	$txt['error_noIce']									= 'Impossível conectar ao Ice.<br/>Ou seu servidor não está executando ou não está executando com Ice ativo. Verifique sua configuração.';
 	$txt['error_iceConnectionRefused']	= 'Impossível conectar ao Ice.<br/>Ou seu servidor não está executando ou não está executando com Ice ativo. Verifique sua configuração.';
 	$txt['error_unknowninterface']			= 'Má configuração: Tipo de interface <acronym title="base de dados">BD</acronym> desconhecido!';
+    $txt['error_iceInclusionFileNotFound'] = 'O arquivo Ice.php não foi encontrado. Por favor certifique-se de que o dir de inclusão do arquivo php do ice está no phps include_path (verifique sua configuração PHP).'; 
+    $txt['error_iceMurmurPHPFileNotFound'] = 'O arquivo Murmur.php gerado que foi configurado para ser usado não foi encontrado. O arquivo é gerado pelo servidor mumble pelo arquivo de definição slice, e alguns são distribuidos junto com o MumPI (veja arquivos <code>classes/Murmur_<em>[…]</em>.php</code>). O arquivo que deve ser usado é especificado através da configuração <code>$iceGeneratedMurmurPHPFileName</code> no arquivo <code>settings.inc.php</code> do MumPI.';
 	$txt['unknownserver']								= 'Nenhum servidor encontrado.';
 	$txt['error_missing_values']				= 'Parece que nem todos os valores necessários foram especificados.';
 	$txt['error_db_unknowntype']				= 'O tipo de base de dados especificado (nas configurações) não está disponível/definido.';
 	$txt['iceprofilealreadyloaded'] 		= 'Perfil Ice já foi carregado!';
 	$txt['error_dbmanager_couldnotopenadmins'] = 'Impossível abrir o arquivo admins.dat.';
 	$txt['error_invalidTexture']				= 'Dados de imagem inválidos. Por favor verifique seu arquivo de imagem.';
-	$txt['login_missing_data'] 					= 'Falha de autenticação: Não forneceu todos os dados necessários.';
+	$txt['login_missing_data'] 					= 'Falha de autenticação: Não forneceu todos os dados necessários.'r
