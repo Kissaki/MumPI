@@ -44,4 +44,4 @@
 	$txt['iceprofilealreadyloaded'] 		= 'Perfil Ice já foi carregado!';
 	$txt['error_dbmanager_couldnotopenadmins'] = 'Impossível abrir o arquivo admins.dat.';
 	$txt['error_invalidTexture']				= 'Dados de imagem inválidos. Por favor verifique seu arquivo de imagem.';
-	$txt['login_missing_data'] 					= 'Falha de autenticação: Não forneceu todos os dados necessários.'r
+	$txt['login_missing_data'] 					= 'Falha de autenticação: Não forneceu todos os dados necessários.';
