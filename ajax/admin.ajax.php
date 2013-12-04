@@ -842,11 +842,12 @@ class Ajax_Admin extends Ajax
 	}
 	public static function server_log_show()
 	{
+		echo "<h2>Log Entries</h2>";
 		$serverId = intval($_POST['serverId']);
 		if(!isset($_POST['first']) || is_null($_POST['first'])){
 			$first = 0;
-			$last = 200;
-			$results = 200;
+			$last = 50;
+			$results = 50;
 		}else if ( $first < 0){
 			$first = 0;
 			$results = intval($_POST['results']);
@@ -874,16 +875,16 @@ class Ajax_Admin extends Ajax
 			echo '<a class="jqlink log_pagination"  onclick="jq_server_log_show('.$serverId.','.($first-$results).','.$results.'); return false;">'.($currpage-1).'</a>';
 		}
 		echo $currpage;
-		if($first < ($totalentries-$results)){
+		if($first < (($totalentries-$results)-1)){
 			echo '<a class="jqlink log_pagination" onclick="jq_server_log_show('.$serverId.','.($first+$results).','.$results.'); return false;">'.($currpage+1).'</a>';
 			echo '<a class="jqlink log_pagination" onclick="jq_server_log_show('.$serverId.','.($totalentries-$results).','.$results.'); return false;">Last</a>';
 		}
 		echo '<select name="log_results" class="log_results" width="100" onchange="jq_server_log_show('.$serverId.','.$first.',$(this).val())">
-			<option value="200">Number of Results</option>
-			<option value="200">200</option>
+			<option value="50">Number of Results</option>
+			<option value="50">50</option>
+			<option value="100">100</option>
 			<option value="500">500</option>
 			<option value="1000">1000</option>
-			<option value="5000">5000</option>
 			<option value="10000">10000</option>
 		</select>';
 		echo "</div>";
