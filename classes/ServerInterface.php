@@ -346,6 +346,15 @@ class ServerInterface_ice
 		return $this->getServer($sid)->getLog($first, $last);
 	}
 
+        /**
+         * @param int $sid server id
+         * @return int number of total log entries
+         */
+	public function getServerLogLength($sid)
+	{
+		return $this->getServer($sid)->getLogLen();
+	}
+	
 
 	/**
 	 * Get all user registrations of the virtual server

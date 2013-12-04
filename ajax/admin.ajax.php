@@ -840,6 +840,54 @@ class Ajax_Admin extends Ajax
 		echo tr('info_ip_bits');
 		echo '</div>';
 	}
+	public static function server_log_show()
+	{
+		$serverId = intval($_POST['serverId']);
+		if(!isset($_POST['first']) || is_null($_POST['first'])){
+			$first = 0;
+			$last = 200;
+			$results = 200;
+		}else if ( $first < 0){
+			$first = 0;
+			$results = intval($_POST['results']);
+			$last = $first+$results;
+		}else{
+        	        $first = intval($_POST['first']);
+	                $results = intval($_POST['results']);
+			$last = $first+$results;
+		}
+
+		$log = ServerInterface::getInstance()->getServerLog($serverId, $first, $last);
+		$totalentries = ServerInterface::getInstance()->getServerLogLength($serverId);
+		$totalpages = round($totalentries/$results);
+		echo '<div class="log_table">';
+		echo '<table><thead><tr><th>Timestamp</th><th>String</th></tr></thead>';
+		foreach($log as $key=>$value){
+			echo "<tr><td>".date("M j G:i:s T Y",$value->timestamp)."</td><td>".$value->txt."</td></tr>";
+		}
+		echo "</table>";
+		echo '</div>';
+		echo "<div class='log_controls'>";
+		$currpage = round($first/$results+1);
+		if($first != 0){
+			echo '<a class="jqlink log_pagination" onclick="jq_server_log_show('.$serverId.'); return false;">First</a>';
+			echo '<a class="jqlink log_pagination"  onclick="jq_server_log_show('.$serverId.','.($first-$results).','.$results.'); return false;">'.($currpage-1).'</a>';
+		}
+		echo $currpage;
+		if($first < ($totalentries-$results)){
+			echo '<a class="jqlink log_pagination" onclick="jq_server_log_show('.$serverId.','.($first+$results).','.$results.'); return false;">'.($currpage+1).'</a>';
+			echo '<a class="jqlink log_pagination" onclick="jq_server_log_show('.$serverId.','.($totalentries-$results).','.$results.'); return false;">Last</a>';
+		}
+		echo '<select name="log_results" class="log_results" width="100" onchange="jq_server_log_show('.$serverId.','.$first.',$(this).val())">
+			<option value="200">200</option>
+			<option value="500">500</option>
+			<option value="1000">1000</option>
+			<option value="5000">5000</option>
+			<option value="10000">10000</option>
+		</select>';
+		echo "</div>";
+		
+	}
 	public static function server_ban()
 	{
 		$serverId = intval($_POST['serverId']);
