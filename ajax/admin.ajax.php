@@ -879,6 +879,7 @@ class Ajax_Admin extends Ajax
 			echo '<a class="jqlink log_pagination" onclick="jq_server_log_show('.$serverId.','.($totalentries-$results).','.$results.'); return false;">Last</a>';
 		}
 		echo '<select name="log_results" class="log_results" width="100" onchange="jq_server_log_show('.$serverId.','.$first.',$(this).val())">
+			<option value="200">Number of Results</option>
 			<option value="200">200</option>
 			<option value="500">500</option>
 			<option value="1000">1000</option>
