@@ -1,4 +1,3 @@
-
 // load jQuery if not loaded yet
 if (typeof (jQuery) == 'undefined') {
   var fileref = document.createElement('script');
@@ -49,16 +48,23 @@ MView.postLoad = function(el) {
 MView.getServerHTMLCodeFor = function(json) {
   var html = jQuery('<div id="mv-s' + json.id + '" class="mv-s"/>');
   html.append('<div class="mv-s-name">' + json.name + '</div>');
-  html.append(MView.getChanHTMLCodeFor(json.root));
+  html.append(MView.getChanHTMLCodeFor(json.root).html);
   return html;
 };
 MView.getChansHTMLCodeFor = function(json) {
   var html;
   if (json.length > 0) {
     html = jQuery('<ul/>').addClass('mv-chans');
-    for (i in json) {
-      html.append(MView.getChanHTMLCodeFor(json[i]));
-    }
+    var channels = new Array();
+    for (i in json) { channels.push(MView.getChanHTMLCodeFor(json[i])); }
+    channels.sort(function(a,b) {
+      if (a.pos < b.pos)
+         return -1;
+      if (a.pos > b.pos)
+        return 1;
+      return 0;
+    });
+    for (i in channels) { html.append(channels[i].html); }
   }
   return html;
 };
@@ -68,7 +74,7 @@ MView.getChanHTMLCodeFor = function(json) {
       (json.x_connecturl == undefined ? json.name : jQuery('<a/>').attr('href', json.x_connecturl).append(json.name))));
   html.append(MView.getChansHTMLCodeFor(json.channels));
   html.append(MView.getUsersHTMLCodeFor(json.users));
-  return html;
+  return {'html': html, 'pos': json.position};
 };
 MView.getUsersHTMLCodeFor = function(json) {
   var html = jQuery('<ul/>').attr('class', 'mv-users');
