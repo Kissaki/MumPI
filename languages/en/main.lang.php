@@ -36,7 +36,7 @@
 	$txt['error_noIce']									= 'Could not connect to Ice.<br/>Either your server is not running or it is not running with Ice. Check your configuration.';
 	$txt['error_iceConnectionRefused']	= 'Could not connect to Ice.<br/>Either your server is not running or it is not running with Ice. Check your configuration.';
 	$txt['error_unknowninterface']			= 'Misconfiguration: Unknown <acronym title="database">DB</acronym> Interface Type!';
-	$txt['error_iceInclusionFileNotFound'] = 'The Ice.php file could not be found. Please make sure the ice php file inclusion dir is in the phps include_path (check your PHP configuration).';
+	$txt['error_iceInclusionFileNotFound'] = 'The Ice.php file could not be found. Please make sure the ice php file inclusion dir is in the phps include_path (check your PHP configuration).<br/><br/>E.g., if you are using php-fpm and php-zeroc-ice on Ubuntu 14.04:<br/>Open the php.ini: <code>sudo vim php5/fpm/php.ini</code><br/>And adjust the include path: <code>include_path = ".:/usr/share/Ice-3.5.1/php/lib"</code><br/><br/>The current include path is: <code>' . get_include_path() . '</code>';
 	$txt['error_iceMurmurPHPFileNotFound'] = 'The generated Murmur.php file that was configured to be used was not found. The file is generated from the mumble server slice definition file, and some are provided with MumPI (see files <code>classes/Murmur_<em>[…]</em>.php</code>). The file that is to be used is specified via the settingvariable <code>$iceGeneratedMurmurPHPFileName</code> in the MumPI <code>settings.inc.php</code> file.';
 	$txt['unknownserver']								= 'No such server found.';
 	$txt['error_missing_values']				= 'It seems not all necessary values have been specified.';
