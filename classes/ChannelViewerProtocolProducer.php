@@ -13,36 +13,41 @@ class ChannelViewerProtocolProducer {
 		return json_encode(array());
 		}
 		$server = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($serverId));
+		$serverConnectAddress = SettingsManager::getInstance()->getServerAddress($server->getId());
+		$path = urlencode($serverConnectAddress);
+		$connecturlTemplate = $serverConnectAddress != null ? 'mumble://%s?version=1.2.0' : null;
 		$tree = $server->getTree();
-		$connecturlTemplate = 'mumble://' . urlencode(SettingsManager::getInstance()->getServerAddress($server->getId())) . '%s?version=1.2.0';
 		$array = array(
 			'id' => $server->getId(),
 			'name' => SettingsManager::getInstance()->getServerName($server->getId()),
 			// Remove the template placeholder. The server connect URL is complete here. 
-			'x_connecturl' => sprintf($connecturlTemplate, ''),
-			'root' => $this->treeToJsonArray($tree, $connecturlTemplate),
+			'x_connecturl' => sprintf($connecturlTemplate, $path),
+			'root' => $this->treeToJsonArray($tree, $connecturlTemplate, $path),
 		);
 		return json_encode($array);
 	}
-	private function treeToJsonArray(MurmurTree $tree, $connecturlTemplate=null) {
+	private function treeToJsonArray(MurmurTree $tree, $connecturlTemplate, $path) {
 		/**
 		 * @var MurmurChannel
 		 */
 		$chan = $tree->getRootChannel();
 		if ($connecturlTemplate != null && $chan->getParentChannelId() != -1)
 		{
-			$connecturlTemplate = sprintf($connecturlTemplate, '/' . urlencode($chan->getName()) . '%s');
+			$path .= '/' . urlencode($chan->getName());
 		}
 
-		$array = array();
+
+		// subchannels data array
 		$prior = array();
 		$subChannels = $tree->getSubChannels();
 		if (!empty($subChannels)) {
 			foreach ($subChannels as $subChannel) {
-				$prior[] = $this->treeToJsonArray($subChannel, $connecturlTemplate);
+				$prior[] = $this->treeToJsonArray($subChannel, $connecturlTemplate, $path);
 			}
 		}
 
+		// This channels data array
+		$array = array();
 		$array['id'] = $chan->getId();
 		$array['parent'] = $chan->getParentChannelId();
 		$array['temporary'] = $chan->isTemporary();
@@ -52,7 +57,7 @@ class ChannelViewerProtocolProducer {
 		if ($connecturlTemplate != null)
 		{
 			// Remove template placeholder. The URL is complete here.
-			$array['x_connecturl'] = sprintf($connecturlTemplate, '');
+			$array['x_connecturl'] = sprintf($connecturlTemplate, $path);
 		}
 		$array['channels'] = $prior;
 		$array['links'] = $chan->getLinkedChannelIds();
