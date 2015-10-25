@@ -104,6 +104,7 @@ class ServerInterface_ice
 		$initData = new Ice_InitializationData;
 		$initData->properties = Ice_createProperties();
 		$initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
+		$initData->properties->setProperty('Ice.Default.EncodingVersion', '1.0');
 		$ICE = Ice_initialize($initData);
 		/*
 		 * getImplicitContext() is not implemented for icePHP yet…
