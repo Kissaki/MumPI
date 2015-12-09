@@ -46,6 +46,15 @@ MView.postLoad = function(el) {
   jQuery(el).find('.mv-u.muted').append('<img class="mv-icon mv-icon-muted" src="' + settings.resurl + 'img/muted_self_12.png" alt=[m]"/>');
 };
 
+MView.stringComparer = Intl.Collator !== undefined ? new Intl.Collator : undefined;
+MView.sortcompareObjName = function(a, b) {
+  return MView.stringComparer !== undefined ? MView.stringComparer.compare(a.name, b.name) : a.name.localeCompare(b.name);
+}
+MView.sortcompareChannels = function(a, b) {
+  var res = a.position - b.position;
+  return res !== 0 ? res : MView.sortcompareObjName(a, b);
+}
+
 MView.getServerHTMLCodeFor = function(json) {
   var html = jQuery('<div id="mv-s' + json.id + '" class="mv-s"/>');
   html.append('<div class="mv-s-name">' + json.name + '</div>');
@@ -56,7 +65,7 @@ MView.getChansHTMLCodeFor = function(json) {
   var html;
   if (json.length > 0) {
     html = jQuery('<ul/>').addClass('mv-chans');
-    for (i in json) {
+    for (i in json.sort(MView.sortcompareChannels)) {
       html.append(MView.getChanHTMLCodeFor(json[i]));
     }
   }
@@ -72,7 +81,7 @@ MView.getChanHTMLCodeFor = function(json) {
 };
 MView.getUsersHTMLCodeFor = function(json) {
   var html = jQuery('<ul/>').attr('class', 'mv-users');
-  for (i in json) {
+  for (i in json.sort(MView.sortcompareObjName)) {
     html.append(MView.getUserHTMLCodeFor(json[i]));
   }
   return html;
