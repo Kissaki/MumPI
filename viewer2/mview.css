@@ -25,6 +25,7 @@
   padding-left: 14px;
   background: url('img/channel_12.png') no-repeat 0px 0px;
   margin-left:-6px;
+  white-space: pre;
 }
 
 .mv-s .mv-c .mv-c-name {
