@@ -26,6 +26,13 @@ class ChannelViewerProtocolProducer {
 		);
 		return json_encode($array);
 	}
+	public static function channelCompare($a, $b) {
+		$res = $a->getRootChannel()->getPosition() - $b->getRootChannel()->getPosition();
+		return $res !== 0 ? $res : strnatcmp($a->getRootChannel()->getName(), $b->getRootChannel()->getName());
+	}
+	public static function userNameCompare($a, $b) {
+		return strnatcmp($a->getName(), $b->getName());
+	}
 	private function treeToJsonArray(MurmurTree $tree, $connecturlTemplate, $path) {
 		/**
 		 * @var MurmurChannel
@@ -41,6 +48,7 @@ class ChannelViewerProtocolProducer {
 		$prior = array();
 		$subChannels = $tree->getSubChannels();
 		if (!empty($subChannels)) {
+			usort($subChannels, 'self::channelCompare');
 			foreach ($subChannels as $subChannel) {
 				$prior[] = $this->treeToJsonArray($subChannel, $connecturlTemplate, $path);
 			}
@@ -66,6 +74,7 @@ class ChannelViewerProtocolProducer {
 	}
 	private function usersToJsonArray($users, $channelId) {
 		$array = array();
+		usort($users, 'self::userNameCompare');
 		foreach ($users as $user) {
 			$array[] = array(
 				'channel' => $channelId,
