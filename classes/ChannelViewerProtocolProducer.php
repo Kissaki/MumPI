@@ -14,7 +14,7 @@ class ChannelViewerProtocolProducer {
 		}
 		$server = MurmurServer::fromIceObject(ServerInterface::getInstance()->getServer($serverId));
 		$serverConnectAddress = SettingsManager::getInstance()->getServerAddress($server->getId());
-		$path = urlencode($serverConnectAddress);
+		$path = rawurlencode($serverConnectAddress);
 		$connecturlTemplate = $serverConnectAddress != null ? 'mumble://%s?version=1.2.0' : null;
 		$tree = $server->getTree();
 		$array = array(
@@ -40,7 +40,7 @@ class ChannelViewerProtocolProducer {
 		$chan = $tree->getRootChannel();
 		if ($connecturlTemplate != null && $chan->getParentChannelId() != -1)
 		{
-			$path .= '/' . urlencode($chan->getName());
+			$path .= '/' . rawurlencode($chan->getName());
 		}
 
 
