@@ -20,10 +20,13 @@ class ChannelViewerProtocolProducer {
 		$array = array(
 			'id' => $server->getId(),
 			'name' => SettingsManager::getInstance()->getServerName($server->getId()),
-			// Remove the template placeholder. The server connect URL is complete here. 
-			'x_connecturl' => sprintf($connecturlTemplate, $path),
 			'root' => $this->treeToJsonArray($tree, $connecturlTemplate, $path),
 		);
+		if ($connecturlTemplate != null)
+		{
+			// Remove the template placeholder. The server connect URL is complete here. 
+			$array['x_connecturl'] = sprintf($connecturlTemplate, $path);
+		}
 		return json_encode($array);
 	}
 	public static function channelCompare($a, $b) {
