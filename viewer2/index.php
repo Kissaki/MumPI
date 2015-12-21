@@ -7,7 +7,7 @@
 <body>
 
 <div id="mview-container"></div>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="mview.js"></script>
 <script type="text/javascript">
   var settings = {
