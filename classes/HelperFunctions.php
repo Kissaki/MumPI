@@ -202,5 +202,75 @@ class HelperFunctions
 		return $ip;
 	}
 
+	/**
+	 * (multibyte) character to Unicode codepoint value
+	 */
+	public static function codepointDec($char)
+	{
+		$size = strlen($char);
+		$ordinal = ord($char[0]) & (0xFF >> $size);
+		for($i = 1; $i < $size; $i++){
+			$ordinal = $ordinal << 6 | (ord($char[$i]) & 127);
+		}
+		return $ordinal;
+	}
 
+	public static function unicodeCodepointOfMBChar($char)
+	{
+		$hex = codepointHex($char);
+		return 'U+' . substr('0000' . strtoupper($hex), min(-4, -1 * strlen($hex)));
+	}
+
+	public static function codepointHex($char)
+	{
+		return dechex(codepointDec($char));
+	}
+
+	/**
+	 * While this is not a complete fix (e.g. Ä is not handled as expected),
+	 * this method does order testa before testA before testb before testB (rather than testA testB testa testb).
+	 */
+	public static function naturalOrderCompare($a, $b)
+	{
+		// I guess this is always the case?
+		$ENCODING = 'UTF-8';
+		$len = min(mb_strlen($a, $ENCODING), mb_strlen($b, $ENCODING));
+		mb_regex_encoding($ENCODING);
+
+		$aa = array();
+		$i = 0;
+		if (mb_ereg_search_init($a, '.', 'suX') === TRUE)
+		{
+			while ($i < $len && ($res = mb_ereg_search_regs()) !== FALSE)
+			{
+				if (count($res) !== 1)
+				{
+					exit('WTF why is the count != 1');
+				}
+				$aa[] = $res[0];
+				$i++;
+			}
+		}
+
+		$i = 0;
+		if (mb_ereg_search_init($b, '.', 'suX') === TRUE)
+		{
+			while (($res = mb_ereg_search_regs()) !== FALSE)
+			{
+				if (count($res) !== 1)
+				{
+					exit('WTF why is the count != 1');
+				}
+				
+				$aaa = $aa[$i];
+				$bbb = $res[0];
+				if ($bbb !== $aaa && mb_strtolower($aaa) === mb_strtolower($bbb))
+				{
+					return self::codepointDec($bbb) - self::codepointDec($aaa);
+				}
+				$i++;
+			}
+		}
+		return strnatcmp($a, $b);
+	}
 }

@@ -31,10 +31,10 @@ class ChannelViewerProtocolProducer {
 	}
 	public static function channelCompare($a, $b) {
 		$res = $a->getRootChannel()->getPosition() - $b->getRootChannel()->getPosition();
-		return $res !== 0 ? $res : strnatcmp($a->getRootChannel()->getName(), $b->getRootChannel()->getName());
+		return $res !== 0 ? $res : HelperFunctions::naturalOrderCompare($a->getRootChannel()->getName(), $b->getRootChannel()->getName());
 	}
 	public static function userNameCompare($a, $b) {
-		return strnatcmp($a->getName(), $b->getName());
+		return HelperFunctions::naturalOrderCompare($a->getName(), $b->getName());
 	}
 	private function treeToJsonArray(MurmurTree $tree, $connecturlTemplate, $path) {
 		/**
