@@ -225,7 +225,13 @@ class DBManager_filesystem
 	{
 		if ($this->getAdminByName($username) == null) {
 			$fd = fopen(SettingsManager::getInstance()->getMainDir().'/data/'.self::$filename_admins, 'a');
-			fwrite($fd, sprintf("%s;%s;%s;%d\n", $this->getNextAdminID(), $username, sha1($password), ($isGlobalAdmin == 'true' ? 1 : 0)));
+
+			//Options for the better hasning algorithm
+			$hashOptions = [
+				'cost' => 11,
+				'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+			];
+			fwrite($fd, sprintf("%s;%s;%s;%d\n", $this->getNextAdminID(), $username, password_hash($password, PASSWORD_BCRYPT, $hashOptions), ($isGlobalAdmin == 'true' ? 1 : 0)));
 			fclose($fd);
 		} else {
 			MessageManager::addError(tr('error_AdminAccountAlreadyExists'));
@@ -379,7 +385,7 @@ class DBManager_filesystem
 	public function checkAdminLogin($username, $password){
 		$admin = $this->getAdminByName($username);
 		// correct login?
-		if ($admin != null && ( $admin['pw'] == sha1($password))) {
+		if ($admin != null && (password_verify($password, $admin['pw']))) {
 			return true;
 		}
 		// no admins yet? create this login as admin
