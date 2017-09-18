@@ -1,0 +1,19 @@
+version: '3'
+services:
+  php:
+    build: php-ice-ubuntu16.04
+    volumes:
+    - ./run/logs:/var/log
+    - ./run:/var/run/php
+    - ./run/www:/var/www:ro
+    - ./conf-php/php.ini:/etc/php/7.0/fpm/php.ini
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+    - "80:80"
+    volumes:
+    - ./run/logs:/var/log/nginx
+    - ./conf-nginx:/etc/nginx:ro
+    - ./run/www:/var/www:ro
+    links:
+    - php

@@ -1,0 +1,8 @@
+location ~ \.php$ {
+	# http://wiki.nginx.org/Pitfalls#Passing_Uncontrolled_Requests_to_PHP
+	try_files $uri =404;
+
+	include includes/fastcgi_params;
+	fastcgi_index  index.php;
+	fastcgi_pass   php:9000;
+}
