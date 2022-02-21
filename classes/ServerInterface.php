@@ -102,11 +102,11 @@ class ServerInterface_ice
 	private function initIce34()
 	{
 		// ice 3.4
-		$initData = new Ice_InitializationData;
-		$initData->properties = Ice_createProperties();
+		$initData = new Ice\InitializationData;
+		$initData->properties = Ice\createProperties();
 		$initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
 		$initData->properties->setProperty('Ice.Default.EncodingVersion', '1.0');
-		$ICE = Ice_initialize($initData);
+		$ICE = Ice\initialize($initData);
 		/*
 		 * getImplicitContext() is not implemented for icePHP yet…
 		 * $ICE->getImplicitContext();
@@ -121,7 +121,7 @@ class ServerInterface_ice
 			$this->meta = Murmur_MetaPrxHelper::checkedCast($ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address()));
 			$this->meta = $this->meta->ice_context($this->contextVars);
 			//TODO: catch ProxyParseException, EndpointParseException, IdentityParseException from stringToProxy()
-		} catch (Ice_ConnectionRefusedException $exc) {
+		} catch (Ice\ConnectionRefusedException $exc) {
 			MessageManager::addError(tr('error_iceConnectionRefused'));
 		}
 	}
