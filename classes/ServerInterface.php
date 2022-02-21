@@ -62,11 +62,12 @@ class ServerInterface_ice
 		} else {
 			$this->contextVars = SettingsManager::getInstance()->getDbInterface_iceSecrets();
 
-			if (!function_exists('Ice_intVersion') || Ice_intVersion() < 30400) {
-				$this->initIce33();
-			} else {
+
+			//if (!function_exists('Ice_intVersion') || Ice_intVersion() < 30400) {
+			//	$this->initIce33();
+			//} else {
 				$this->initIce34();
-			}
+			//}
 
 			$this->connect();
 		}
