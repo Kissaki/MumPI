@@ -41,7 +41,7 @@ $dbInterface_icesecrets = array(
 // This should specify a file that exists and matches your murmur server version as close as possible.
 // May be values like Murmur_1.2.3.php or Murmur_1.2.4.php (check your MumPI/classes folder).
 // If you have a different version of Mumble-Server / Murmur, you may want to compile it yourself; see FAQ on how to: https://github.com/Kissaki/MumPI/wiki/FAQ
-$iceGeneratedMurmurPHPFileName = 'Murmur_1.2.4.php';
+$iceGeneratedMurmurPHPFileName = 'Murmur_1.3.0_ice37.php';
 
 // db type for Interface functionality
 // (does not have anything to do with mumble/murmur)
