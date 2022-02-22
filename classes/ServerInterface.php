@@ -1,4 +1,5 @@
 <?php
+require_once 'Ice.php';
 require_once dirname(__FILE__).'/PermissionManager.php';
 require_once dirname(__FILE__).'/MurmurClasses.php';
 require_once(MUMPHPI_MAINDIR.'/classes/TranslationManager.php');
@@ -6,6 +7,7 @@ require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
 require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
 require_once(MUMPHPI_MAINDIR.'/classes/Logger.php');
 
+/*
 if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersion() >= 30400) {
 
     error_log("*** MumPI Initialising... ***");
@@ -32,6 +34,7 @@ if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersi
     error_log("Generated ICE filename: ".SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName());
 
 }
+*/
 
 /**
  * Provides murmur server functionality
@@ -78,12 +81,12 @@ class ServerInterface_ice
 	
 	private function initIce()
 	{
-		// ice 3.4
-		$initData = new \Ice\InitializationData;
+		// ice 3.7
+		$initData = new IcePHP_InitializationData;
 		$initData->properties = \Ice\createProperties();
 		$initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
 		$initData->properties->setProperty('Ice.Default.EncodingVersion', '1.0');
-		$ICE = \Ice\initialize($initData);
+		$ICE = IcePHP_initialize($initData);
 		/*
 		 * getImplicitContext() is not implemented for icePHP yet…
 		 * $ICE->getImplicitContext();
