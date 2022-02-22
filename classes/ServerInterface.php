@@ -4,8 +4,12 @@ require_once dirname(__FILE__).'/MurmurClasses.php';
 require_once(MUMPHPI_MAINDIR.'/classes/TranslationManager.php');
 require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
 require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
+require_once(MUMPHPI_MAINDIR.'/classes/Logger.php');
 
 if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersion() >= 30400) {
+
+    Logger::log("*** MumPI Initialising... ***");
+
 	$ICE_INCLUSION_FILENAME = 'Ice.php';
 	// Ice.php is a hard dependency. Whatever includes this file will require Ice to work.
 	if (!stream_resolve_include_path($ICE_INCLUSION_FILENAME)) {
@@ -22,6 +26,11 @@ if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersi
 
 	require_once $ICE_INCLUSION_FILENAME;
 	require_once SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName();
+
+
+    Logger::log("Ice Inclusion Filename: ".$ICE_INCLUSION_FILENAME);
+    Logger::log("Generated ICE filename: ".SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName());
+
 }
 
 /**
@@ -62,44 +71,12 @@ class ServerInterface_ice
 		} else {
 			$this->contextVars = SettingsManager::getInstance()->getDbInterface_iceSecrets();
 
-
-			//if (!function_exists('Ice_intVersion') || Ice_intVersion() < 30400) {
-			//	$this->initIce33();
-			//} else {
-				$this->initIce34();
-			//}
-
+			$this->initIce();
 			$this->connect();
 		}
 	}
 	
-	private function initIce33()
-	{
-		// ice 3.3
-
-		//TODO it would be good to be able to add a check if slice file is loaded
-		//if (empty(ini_get('ice.slice'))) {
-		//MessageManager::addError(tr('error_noIceSliceLoaded'));
-
-		global $ICE;
-		Ice_loadProfile();
-		try
-		{
-			$conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
-			$this->meta = $conn->ice_checkedCast("::Murmur::Meta");
-			// use IceSecret if set
-			if (!empty($this->contextVars)) {
-				$this->meta = $this->meta->ice_context($this->contextVars);
-			}
-			$this->meta = $this->meta->ice_timeout(10000);
-		}
-		catch (Ice_ProxyParseException $e)
-		{
-			MessageManager::addError(tr('error_invalidIceInterface_address'));
-		}
-	}
-
-	private function initIce34()
+	private function initIce()
 	{
 		// ice 3.4
 		$initData = new \Ice\InitializationData;
