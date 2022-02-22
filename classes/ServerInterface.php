@@ -109,7 +109,7 @@ class ServerInterface_ice
             $this->meta = Murmur\MetaPrxHelper::checkedCast($ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address()));
             $this->meta = $this->meta->ice_context($this->contextVars);
             //TODO: catch ProxyParseException, EndpointParseException, IdentityParseException from stringToProxy()
-        } catch (\Ice\ConnectionRefusedException $exc) {
+        } catch (Ice\ConnectionRefusedException $exc) {
             MessageManager::addError(tr('error_iceConnectionRefused'));
         }
     }
@@ -507,7 +507,7 @@ class ServerInterface_ice
             }
             $this->getServer($srvid)->setTexture($uid, $newTexture);
             return true;
-        } catch(Murmur_InvalidTextureException $exc) {
+        } catch(Murmur\InvalidTextureException $exc) {
             MessageManager::addError(tr('error_invalidTexture'));
             return false;
         }
@@ -557,7 +557,7 @@ class ServerInterface_ice
 
         $srv = $this->getServer(intval($serverId));
         $bans = $srv->getBans();
-        $ban = new Murmur_Ban();
+        $ban = new Murmur\Ban();
         $ban->address = $ip;
         $ban->bits = $bits;
         $bans[] = $ban;

@@ -14,6 +14,8 @@ For installation notices, see INSTALL.txt or better yet https://github.com/Kissa
 For FAQ see https://github.com/Kissaki/MumPI/wiki/FAQ  
 For Updates follow http://kcode.de/wordpress/category/development/mumble_php_interface as feed http://kcode.de/wordpress/category/development/mumble_php_interface/feed  
 
+There is a CAPTCHA generated on the Registrations screen for users.  This requires the PHP GD extension, so be sure to install and enable that and reload your Apache/nginx server before installation of MumPI.
+
 To access the admin area, add /admin/ to your url.  
 To access the viewer, add /viewer/ to your url.  
 To access the user, add /user/ to your url. (redirect in place)  

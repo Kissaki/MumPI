@@ -544,7 +544,7 @@ class Ajax_Admin extends Ajax
 				/*]]>*/
 			</script>
 <?php
-		} catch(Murmur_ServerBootedException $exc) {
+		} catch(Murmur\ServerBootedException $exc) {
 			echo '<div class="error">Server is not running</div>';
 		}
 	}
@@ -701,7 +701,7 @@ class Ajax_Admin extends Ajax
 				</script>
 <?php
 			} // permission check: moderate
-		} catch(Murmur_ServerBootedException $exc) {
+		} catch(Murmur\ServerBootedException $exc) {
 			echo '<div class="error">Server is not running</div>';
 		}
 	}
@@ -825,7 +825,7 @@ class Ajax_Admin extends Ajax
 				</p>
 <?php
 			}
-		} catch(Murmur_ServerBootedException $exc) {
+		} catch(Murmur\ServerBootedException $exc) {
 			//TODO i18n
 			echo 'Server is not running.';
 		}
