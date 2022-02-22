@@ -1,5 +1,12 @@
-NOTE: Unfortunately I do not have a working Zeroc PHP Ice environment and hence can't test or fix MumPI for new and current Ice and PHP versions. Even now that ZeroC has finally provided stable package releases for current Ubuntu LTS releases I could not get it to work. I gave up.
-If you can get it to work, suggestions and fixes are very welcome!
+#MumPI 3.0.0
+
+{% note %}
+###IMPORTANT
+ 
+Work is ongoing for refactoring MumPI to operate with PHP 7.4 and ZeroC Ice 3.7.
+ 
+We recommend that you do not use this fork until it has been pulled back into the main project, or failing that until this callout is removed from the repo when work is completed.
+{% endnote %}
 
 MumPI is your Webinterface written in PHP for your Mumble Server ("Murmur") using the Ice-Middleware.
 
