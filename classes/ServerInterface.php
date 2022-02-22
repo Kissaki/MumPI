@@ -5,7 +5,8 @@ require_once dirname(__FILE__).'/MurmurClasses.php';
 require_once(MUMPHPI_MAINDIR.'/classes/TranslationManager.php');
 require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
 require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
-require_once(MUMPHPI_MAINDIR.'/classes/Logger.php');
+
+exit(1);
 
 if(!extension_loaded("ice"))
 {
