@@ -8,7 +8,7 @@ require_once(MUMPHPI_MAINDIR.'/classes/Logger.php');
 
 if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersion() >= 30400) {
 
-    Logger::log("*** MumPI Initialising... ***");
+    error_log("*** MumPI Initialising... ***");
 
 	$ICE_INCLUSION_FILENAME = 'Ice.php';
 	// Ice.php is a hard dependency. Whatever includes this file will require Ice to work.
@@ -28,8 +28,8 @@ if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersi
 	require_once SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName();
 
 
-    Logger::log("Ice Inclusion Filename: ".$ICE_INCLUSION_FILENAME);
-    Logger::log("Generated ICE filename: ".SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName());
+    error_log("Ice Inclusion Filename: ".$ICE_INCLUSION_FILENAME);
+    error_log("Generated ICE filename: ".SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName());
 
 }
 
