@@ -1,7 +1,7 @@
-#MumPI 3.0.0
+# MumPI 3.0.0
 
 {% note %}
-###IMPORTANT
+### IMPORTANT
  
 Work is ongoing for refactoring MumPI to operate with PHP 7.4 and ZeroC Ice 3.7.
  
@@ -9,7 +9,6 @@ We recommend that you do not use this fork until it has been pulled back into th
 {% endnote %}
 
 MumPI is your Webinterface written in PHP for your Mumble Server ("Murmur") using the Ice-Middleware.
-
 
 For installation notices, see INSTALL.txt or better yet https://github.com/Kissaki/MumPI/wiki/Installation
 For FAQ see https://github.com/Kissaki/MumPI/wiki/FAQ
