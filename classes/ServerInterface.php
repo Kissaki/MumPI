@@ -1,16 +1,9 @@
 <?php
-//require_once 'Ice.php';
 require_once dirname(__FILE__).'/PermissionManager.php';
 require_once dirname(__FILE__).'/MurmurClasses.php';
 require_once(MUMPHPI_MAINDIR.'/classes/TranslationManager.php');
 require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
 require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
-
-error_log("");
-error_log("*** ------------------------------------------------------------ ***");
-error_log("***                  New MumPI session started!                  ***");
-error_log("*** ------------------------------------------------------------ ***");
-error_log("");
 
 if(!extension_loaded("ice"))
 {
@@ -21,11 +14,7 @@ if(!extension_loaded("ice"))
     error_log("Ice extension loaded.");
 }
 
-error_log("Ice Version: " . Ice\intVersion());
-
 if (extension_loaded('ice') && function_exists('Ice\intVersion') && Ice\intVersion() >= 30400) {
-
-    error_log("*** MumPI Initialising... ***");
 
     $ICE_INCLUSION_FILENAME = 'Ice.php';
     // Ice.php is a hard dependency. Whatever includes this file will require Ice to work.
@@ -43,10 +32,6 @@ if (extension_loaded('ice') && function_exists('Ice\intVersion') && Ice\intVersi
 
     require_once $ICE_INCLUSION_FILENAME;
     require_once SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName();
-
-
-    error_log("Ice Inclusion Filename: ".$ICE_INCLUSION_FILENAME);
-    error_log("Generated ICE filename: ".SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName());
 
 } else {
     error_log("FATAL:  An error occurred during initialisation.  Please check your Ice installation and server settings.");
