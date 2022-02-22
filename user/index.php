@@ -24,7 +24,7 @@
 	// Check for running Ice with Murmur
 	try {
 		ServerInterface::getInstance();
-	} catch(Ice_UnknownLocalException $ex) {
+	} catch(Ice\UnknownLocalException $ex) {
 		MessageManager::addError(tr('error_noIce'));
 		MessageManager::echoAll();
 		exit();
