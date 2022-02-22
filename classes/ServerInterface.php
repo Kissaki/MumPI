@@ -102,11 +102,11 @@ class ServerInterface_ice
 	private function initIce34()
 	{
 		// ice 3.4
-		$initData = new Ice\InitializationData;
-		$initData->properties = Ice\createProperties();
+		$initData = new \Ice\InitializationData;
+		$initData->properties = \Ice\createProperties();
 		$initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
 		$initData->properties->setProperty('Ice.Default.EncodingVersion', '1.0');
-		$ICE = Ice\initialize($initData);
+		$ICE = \Ice\initialize($initData);
 		/*
 		 * getImplicitContext() is not implemented for icePHP yet…
 		 * $ICE->getImplicitContext();
@@ -121,7 +121,7 @@ class ServerInterface_ice
 			$this->meta = Murmur_MetaPrxHelper::checkedCast($ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address()));
 			$this->meta = $this->meta->ice_context($this->contextVars);
 			//TODO: catch ProxyParseException, EndpointParseException, IdentityParseException from stringToProxy()
-		} catch (Ice\ConnectionRefusedException $exc) {
+		} catch (\Ice\ConnectionRefusedException $exc) {
 			MessageManager::addError(tr('error_iceConnectionRefused'));
 		}
 	}
@@ -131,7 +131,7 @@ class ServerInterface_ice
 		// to check the connection get the version (e.g. was a needed (context-)password not provided?)
 		try {
 			$this->version = $this->getVersion();
-		} catch (Ice_UnknownUserException $exc) {
+		} catch (\Ice\UnknownUserException $exc) {
 			switch ($exc->unknown) {
 				case 'Murmur::InvalidSecretException':
 					//TODO i18n
@@ -144,7 +144,7 @@ class ServerInterface_ice
 					MessageManager::addError('Unknown exception was thrown. Please report to the developer. Class: ' . get_class($exc) . isset($exc->unknown)?' ->unknown: '.$exc->unknown:'' . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>');
 					break;
 			}
-		} catch (Ice_LocalException $exc) {
+		} catch (\Ice\LocalException $exc) {
 			//TODO i18n
 			MessageManager::addError('Unknown exception was thrown. Please report to the developer. Class: ' . get_class($exc) . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>');
 		}
