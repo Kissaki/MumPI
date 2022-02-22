@@ -7,6 +7,13 @@ require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
 require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
 require_once(MUMPHPI_MAINDIR.'/classes/Logger.php');
 
+if(!extension_loaded("ice"))
+{
+    printJson("IcePHP extension is not loaded. Revise your IcePHP installation.");
+    error_log("IcePHP extension is not loaded. Revise your IcePHP installation.");
+    exit(1);
+}
+
 /*
 if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersion() >= 30400) {
 
