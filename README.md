@@ -1,6 +1,5 @@
 # MumPI 3.0.0
 
----
 ### Note: 
 Work is ongoing for refactoring MumPI to operate with PHP 7.4 and ZeroC Ice 3.7.
  
