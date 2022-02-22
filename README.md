@@ -1,11 +1,4 @@
-# MumPI 3.0.0
-
-### Note: 
-Work is ongoing for refactoring MumPI to operate with PHP 7.4 and ZeroC Ice 3.7.
- 
-We recommend that you do not use this fork until it has been pulled back into the main project on @Kissaki's repository, or failing that, wait until this callout is removed from the master branch of this repo when work is completed.
-
----
+# MumPI 
 
 MumPI is your Webinterface written in PHP for your Mumble Server ("Murmur") using the Ice-Middleware.
 
@@ -14,7 +7,7 @@ For FAQ see https://github.com/Kissaki/MumPI/wiki/FAQ
 For Updates follow http://kcode.de/wordpress/category/development/mumble_php_interface as feed http://kcode.de/wordpress/category/development/mumble_php_interface/feed  
 
 #### Important  
-There is a CAPTCHA generated on the Registrations screen for users.  This requires the PHP GD extension, so be sure to install and enable that and reload your Apache/nginx server before installation of MumPI.
+There is a CAPTCHA generated on the Registration screen for new users.  This requires the PHP GD extension, so be sure to install and enable that and reload your Apache/nginx server before installation of MumPI.
 
 ---
 To access the admin area, add /admin/ to your url.  
