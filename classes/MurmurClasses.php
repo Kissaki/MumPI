@@ -2,7 +2,7 @@
 class MurmurServer
 {
 	/**
-	 * @param Ice_ObjectPrx $iceObject
+	 * @param Ice\ObjectPrx $iceObject
 	 * @return MurmurServer
 	 */
 	public static function fromIceObject($iceObject)
@@ -104,7 +104,7 @@ class MurmurServer
 	}
 	/**
 	 * @return MurmurTree
-	 * @throws Murmur_ServerBootedException
+	 * @throws Murmur\ServerBootedException
 	 */
 	public function getTree()
 	{
@@ -568,10 +568,10 @@ class MurmurUser
 	}
 	/**
 	 * Create a MurmurUser from an ice User
-	 * @param Murmur_User $iceUser
+	 * @param Murmur\User $iceUser
 	 * @return MurmurUser
 	 */
-	public static function fromIceObject(Murmur_User $iceUser)
+	public static function fromIceObject(Murmur\User $iceUser)
 	{
 		return new self(
 										$iceUser->session,
