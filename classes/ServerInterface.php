@@ -5,24 +5,36 @@ require_once(MUMPHPI_MAINDIR.'/classes/TranslationManager.php');
 require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
 require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
 
-if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersion() >= 30400) {
-	$ICE_INCLUSION_FILENAME = 'Ice.php';
-	// Ice.php is a hard dependency. Whatever includes this file will require Ice to work.
-	if (!stream_resolve_include_path($ICE_INCLUSION_FILENAME)) {
-		MessageManager::addError(TranslationManager::getText('error_iceInclusionFileNotFound'));
-		MessageManager::echoAll();
-		exit();
-	}
-
-	if (!stream_resolve_include_path(SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName())) {
-		MessageManager::addError(TranslationManager::getText('error_iceMurmurPHPFileNotFound') . ' Current setting: ' . SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName());
-		MessageManager::echoAll();
-		exit();
-	}
-
-	require_once $ICE_INCLUSION_FILENAME;
-	require_once SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName();
+if(!extension_loaded('ice'))
+{
+	error_log('FATAL: IcePHP extension is not loaded. Revise your IcePHP installation.');
+	exit(1);
 }
+if (!function_exists('Ice\intVersion')) {
+	error_log('FATAL: The required Ice function intVersion() was not found. Revise your IcePHP installation.');
+	exit(1);
+}
+if (Ice\intVersion() < 30400) {
+	error_log('FATAL: The loaded Ice extension version is unsupported. It must be higher or equal 3.4.');
+	exit(1);
+}
+
+$ICE_INCLUSION_FILENAME = 'Ice.php';
+// Ice.php is a hard dependency. Whatever includes this file will require Ice to work.
+if (!stream_resolve_include_path($ICE_INCLUSION_FILENAME)) {
+	MessageManager::addError(TranslationManager::getText('error_iceInclusionFileNotFound'));
+	MessageManager::echoAll();
+	exit();
+}
+
+if (!stream_resolve_include_path(SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName())) {
+	MessageManager::addError(TranslationManager::getText('error_iceMurmurPHPFileNotFound') . ' Current setting: ' . SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName());
+	MessageManager::echoAll();
+	exit();
+}
+
+require_once $ICE_INCLUSION_FILENAME;
+require_once SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName();
 
 /**
  * Provides murmur server functionality
