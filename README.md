@@ -1,10 +1,10 @@
-# MumPI 
+# MumPI - Mumble Webinterface
 
-MumPI is your Webinterface written in PHP for your Mumble Server ("Murmur") using the Ice-Middleware.
+MumPI is a Webinterface for your Mumble Server ("Murmur"). It is written in PHP, and is using the Ice-Middleware.
 
 For installation notices, see INSTALL.txt or better yet https://github.com/Kissaki/MumPI/wiki/Installation  
 For FAQ see https://github.com/Kissaki/MumPI/wiki/FAQ  
-For Updates follow http://kcode.de/wordpress/category/development/mumble_php_interface as feed http://kcode.de/wordpress/category/development/mumble_php_interface/feed  
+For Updates follow this repository *(e.g. only releases)*
 
 **Note:** User registration has captchas enabled by default, which requires the PHP GD extension installed and enabled.  
 See settings file `$useCaptcha`.
