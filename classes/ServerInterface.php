@@ -5,24 +5,36 @@ require_once(MUMPHPI_MAINDIR.'/classes/TranslationManager.php');
 require_once(MUMPHPI_MAINDIR.'/classes/HelperFunctions.php');
 require_once(MUMPHPI_MAINDIR.'/classes/MessageManager.php');
 
-if (extension_loaded('ice') && function_exists('Ice_intVersion') && Ice_intVersion() >= 30400) {
-	$ICE_INCLUSION_FILENAME = 'Ice.php';
-	// Ice.php is a hard dependency. Whatever includes this file will require Ice to work.
-	if (!stream_resolve_include_path($ICE_INCLUSION_FILENAME)) {
-		MessageManager::addError(TranslationManager::getText('error_iceInclusionFileNotFound'));
-		MessageManager::echoAll();
-		exit();
-	}
-
-	if (!stream_resolve_include_path(SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName())) {
-		MessageManager::addError(TranslationManager::getText('error_iceMurmurPHPFileNotFound') . ' Current setting: ' . SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName());
-		MessageManager::echoAll();
-		exit();
-	}
-
-	require_once $ICE_INCLUSION_FILENAME;
-	require_once SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName();
+if(!extension_loaded('ice'))
+{
+	error_log('FATAL: IcePHP extension is not loaded. Revise your IcePHP installation.');
+	exit(1);
 }
+if (!function_exists('Ice\intVersion')) {
+	error_log('FATAL: The required Ice function intVersion() was not found. Revise your IcePHP installation.');
+	exit(1);
+}
+if (Ice\intVersion() < 30400) {
+	error_log('FATAL: The loaded Ice extension version is unsupported. It must be higher or equal 3.4.');
+	exit(1);
+}
+
+$ICE_INCLUSION_FILENAME = 'Ice.php';
+// Ice.php is a hard dependency. Whatever includes this file will require Ice to work.
+if (!stream_resolve_include_path($ICE_INCLUSION_FILENAME)) {
+	MessageManager::addError(TranslationManager::getText('error_iceInclusionFileNotFound'));
+	MessageManager::echoAll();
+	exit();
+}
+
+if (!stream_resolve_include_path(SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName())) {
+	MessageManager::addError(TranslationManager::getText('error_iceMurmurPHPFileNotFound') . ' Current setting: ' . SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName());
+	MessageManager::echoAll();
+	exit();
+}
+
+require_once $ICE_INCLUSION_FILENAME;
+require_once SettingsManager::getInstance()->getIceGeneratedMurmurPHPFileName();
 
 /**
  * Provides murmur server functionality
@@ -62,65 +74,24 @@ class ServerInterface_ice
 		} else {
 			$this->contextVars = SettingsManager::getInstance()->getDbInterface_iceSecrets();
 
-			if (!function_exists('Ice_intVersion') || Ice_intVersion() < 30400) {
-				$this->initIce33();
-			} else {
-				$this->initIce34();
-			}
-
+			$this->initIce();
 			$this->connect();
 		}
 	}
 	
-	private function initIce33()
+	private function initIce()
 	{
-		// ice 3.3
-
-		//TODO it would be good to be able to add a check if slice file is loaded
-		//if (empty(ini_get('ice.slice'))) {
-		//MessageManager::addError(tr('error_noIceSliceLoaded'));
-
-		global $ICE;
-		Ice_loadProfile();
-		try
-		{
-			$conn = $ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address());
-			$this->meta = $conn->ice_checkedCast("::Murmur::Meta");
-			// use IceSecret if set
-			if (!empty($this->contextVars)) {
-				$this->meta = $this->meta->ice_context($this->contextVars);
-			}
-			$this->meta = $this->meta->ice_timeout(10000);
-		}
-		catch (Ice_ProxyParseException $e)
-		{
-			MessageManager::addError(tr('error_invalidIceInterface_address'));
-		}
-	}
-
-	private function initIce34()
-	{
-		// ice 3.4
-		$initData = new Ice_InitializationData;
-		$initData->properties = Ice_createProperties();
+		$initData = new Ice\InitializationData;
+		$initData->properties = Ice\createProperties();
 		$initData->properties->setProperty('Ice.ImplicitContext', 'Shared');
 		$initData->properties->setProperty('Ice.Default.EncodingVersion', '1.0');
-		$ICE = Ice_initialize($initData);
-		/*
-		 * getImplicitContext() is not implemented for icePHP yet…
-		 * $ICE->getImplicitContext();
-		 * foreach ($this->contextVars as $key=>$value) {
-		 * 	 $ICE->getImplicitContext()->put($key, $value);
-		 * }
-		 * which should result in 
-		 * $ICE->getImplicitContext()->put('secret', 'ts');
-		 * $ICE->getImplicitContext()->put('icesecret', 'ts');
-		 */
+		$ICE = Ice\initialize($initData);
+
 		try {
-			$this->meta = Murmur_MetaPrxHelper::checkedCast($ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address()));
+			$this->meta = Murmur\MetaPrxHelper::checkedCast($ICE->stringToProxy(SettingsManager::getInstance()->getDbInterface_address()));
 			$this->meta = $this->meta->ice_context($this->contextVars);
 			//TODO: catch ProxyParseException, EndpointParseException, IdentityParseException from stringToProxy()
-		} catch (Ice_ConnectionRefusedException $exc) {
+		} catch (Ice\ConnectionRefusedException $exc) {
 			MessageManager::addError(tr('error_iceConnectionRefused'));
 		}
 	}
@@ -130,7 +101,7 @@ class ServerInterface_ice
 		// to check the connection get the version (e.g. was a needed (context-)password not provided?)
 		try {
 			$this->version = $this->getVersion();
-		} catch (Ice_UnknownUserException $exc) {
+		} catch (Ice\UnknownUserException $exc) {
 			switch ($exc->unknown) {
 				case 'Murmur::InvalidSecretException':
 					//TODO i18n
@@ -143,7 +114,7 @@ class ServerInterface_ice
 					MessageManager::addError('Unknown exception was thrown. Please report to the developer. Class: ' . get_class($exc) . isset($exc->unknown)?' ->unknown: '.$exc->unknown:'' . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>');
 					break;
 			}
-		} catch (Ice_LocalException $exc) {
+		} catch (Ice\LocalException $exc) {
 			//TODO i18n
 			MessageManager::addError('Unknown exception was thrown. Please report to the developer. Class: ' . get_class($exc) . ' Stacktrage: <pre>' . $exc->getTraceAsString() . '</pre>');
 		}
@@ -456,13 +427,13 @@ class ServerInterface_ice
 			$tmpUid = $tmpServer->registerUser($reg->toArray());
 
 			echo TranslationManager::getInstance()->getText('doregister_success').'<br/>';
-		} catch(Murmur_InvalidServerException $exc) {	// This is depreciated (murmur.ice)
+		} catch(Murmur\InvalidServerException $exc) {	// This is depreciated (murmur.ice)
 			echo 'Invalid server. Please check your server selection.<br/><a onclick="history.go(-1); return false;" href="?page=register">go back</a><br/>If the problem persists, please contact a server admin or webmaster.<br/>';
-		} catch(Murmur_ServerBootedException $exc) {
+		} catch(Murmur\ServerBootedException $exc) {
 			echo 'Server is currently not running, but it has to to be able to register.<br/>Please contact a server admin';
-		} catch(Murmur_InvalidUserException $exc) {
+		} catch(Murmur\InvalidUserException $exc) {
 			echo 'The username you specified is probably already in use or invalid. Please try another one.<br/><a onclick="history.go(-1); return false;" href="?page=register">go back</a>';
-		} catch(Ice_UnknownUserException $exc) {	// This should not happen
+		} catch(Ice\UnknownUserException $exc) {	// This should not happen
 			echo $exc->unknown.'<br/>';
 //			echo '<pre>'; var_dump($exc); echo '</pre>';
 		}
@@ -518,7 +489,7 @@ class ServerInterface_ice
 			}
 			$this->getServer($srvid)->setTexture($uid, $newTexture);
 			return true;
-		} catch(Murmur_InvalidTextureException $exc) {
+		} catch(Murmur\InvalidTextureException $exc) {
 			MessageManager::addError(tr('error_invalidTexture'));
 			return false;
 		}
@@ -568,7 +539,7 @@ class ServerInterface_ice
 
 		$srv = $this->getServer(intval($serverId));
 		$bans = $srv->getBans();
-		$ban = new Murmur_Ban();
+		$ban = new Murmur\Ban();
 		$ban->address = $ip;
 		$ban->bits = $bits;
 		$bans[] = $ban;

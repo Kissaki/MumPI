@@ -31,7 +31,7 @@ if (isset($_GET['action']) && $_GET['action']=='doedit') {
 	if (isset($_GET['remove_texture'])) {
 		try {
 			ServerInterface::getInstance()->updateUserTexture($_SESSION['serverid'], $_SESSION['userid'], array());
-		} catch(Murmur_InvalidTextureException $exc) {
+		} catch(Murmur\InvalidTextureException $exc) {
 			MessageManager::addWarning(tr('profile_removetexturefailed'));
 		}
 	}

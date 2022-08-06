@@ -50,7 +50,7 @@ class SettingsManager {
 		$this->dbInterface_type = $dbInterface_type;
 		$this->dbInterface_address = $dbInterface_address;
 		$this->dbInterface_icesecrets = $dbInterface_icesecrets;
-		$this->iceGeneratedMurmurPHPFileName = isset($iceGeneratedMurmurPHPFileName)?$iceGeneratedMurmurPHPFileName:'Murmur_1.2.2.php';
+		$this->iceGeneratedMurmurPHPFileName = isset($iceGeneratedMurmurPHPFileName)?$iceGeneratedMurmurPHPFileName:'Murmur_1.3.0_ice37.php';
 		$this->theme = $theme;
 		$this->defaultLanguage = $defaultLanguage;
 		$this->useCaptcha = $useCaptcha;
